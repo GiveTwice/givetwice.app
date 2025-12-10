@@ -1,6 +1,12 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Auth\SocialAuthController;
+use App\Http\Controllers\ClaimController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GiftController;
+use App\Http\Controllers\ListController;
+use App\Http\Controllers\PublicListController;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +31,35 @@ Route::prefix('{locale}')
         Route::get('/', function () {
             return view('home');
         })->name('home');
+
+        // Static pages
+        Route::get('/about', function () {
+            return view('pages.about');
+        })->name('about');
+
+        Route::get('/faq', function () {
+            return view('pages.faq');
+        })->name('faq');
+
+        Route::get('/privacy', function () {
+            return view('pages.privacy');
+        })->name('privacy');
+
+        Route::get('/terms', function () {
+            return view('pages.terms');
+        })->name('terms');
+
+        Route::get('/contact', function () {
+            return view('pages.contact');
+        })->name('contact');
+
+        // Public list view (shareable)
+        Route::get('/view/{slug}', [PublicListController::class, 'show'])->name('public.list');
+
+        // Anonymous claim routes
+        Route::get('/gifts/{gift}/claim', [ClaimController::class, 'showAnonymousForm'])->name('claim.anonymous.form');
+        Route::post('/gifts/{gift}/claim-anonymous', [ClaimController::class, 'storeAnonymous'])->name('claim.anonymous.store');
+        Route::get('/claim/confirm/{token}', [ClaimController::class, 'confirm'])->name('claim.confirm');
 
         // Auth view routes (GET only - POST handled by Fortify)
         Route::middleware('guest')->group(function () {
@@ -64,8 +99,35 @@ Route::prefix('{locale}')
 
         // Protected routes
         Route::middleware(['auth', 'verified'])->group(function () {
-            Route::get('/dashboard', function () {
-                return view('dashboard');
-            })->name('dashboard.locale');
+            Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.locale');
+
+            // List routes
+            Route::get('/lists/create', [ListController::class, 'create'])->name('lists.create');
+            Route::post('/lists', [ListController::class, 'store'])->name('lists.store');
+            Route::get('/list/{slug}', [ListController::class, 'show'])->name('list.show');
+            Route::get('/list/{slug}/edit', [ListController::class, 'edit'])->name('list.edit');
+            Route::put('/list/{slug}', [ListController::class, 'update'])->name('list.update');
+            Route::delete('/list/{slug}', [ListController::class, 'destroy'])->name('list.destroy');
+
+            // Gift routes
+            Route::get('/gifts/create', [GiftController::class, 'create'])->name('gifts.create');
+            Route::post('/gifts', [GiftController::class, 'store'])->name('gifts.store');
+            Route::get('/gifts/{gift}/edit', [GiftController::class, 'edit'])->name('gifts.edit');
+            Route::put('/gifts/{gift}', [GiftController::class, 'update'])->name('gifts.update');
+            Route::delete('/gifts/{gift}', [GiftController::class, 'destroy'])->name('gifts.destroy');
+
+            // Claim routes (for registered users)
+            Route::post('/gifts/{gift}/claim', [ClaimController::class, 'store'])->name('claim.store');
+            Route::delete('/gifts/{gift}/claim', [ClaimController::class, 'destroy'])->name('claim.destroy');
         });
+    });
+
+// Admin routes (English only, no locale prefix)
+Route::prefix('admin')
+    ->middleware(['auth', 'admin'])
+    ->group(function () {
+        Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+        Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+        Route::get('/users/{user}', [AdminController::class, 'showUser'])->name('admin.users.show');
+        Route::post('/users/{user}/toggle-admin', [AdminController::class, 'toggleUserStatus'])->name('admin.users.toggle-admin');
     });

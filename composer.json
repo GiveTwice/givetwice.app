@@ -9,8 +9,12 @@
         "php": "^8.2",
         "laravel/fortify": "^1.32",
         "laravel/framework": "^12.0",
+        "laravel/horizon": "^5.40",
+        "laravel/reverb": "^1.6",
         "laravel/socialite": "^5.24",
-        "laravel/tinker": "^2.10.1"
+        "laravel/tinker": "^2.10.1",
+        "symfony/http-client": "^8.0",
+        "symfony/postmark-mailer": "^8.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

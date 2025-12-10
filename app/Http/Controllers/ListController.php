@@ -1,0 +1,109 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\GiftList;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
+
+class ListController extends Controller
+{
+    public function show(Request $request, string $locale, string $slug): View
+    {
+        $list = GiftList::where('slug', $slug)
+            ->where('user_id', $request->user()->id)
+            ->firstOrFail();
+
+        $gifts = $list->gifts()->paginate(100);
+
+        return view('lists.show', [
+            'list' => $list,
+            'gifts' => $gifts,
+        ]);
+    }
+
+    public function create(): View
+    {
+        return view('lists.create');
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:1000'],
+            'is_public' => ['boolean'],
+            'filter_type' => ['required', 'in:all,criteria,manual'],
+        ]);
+
+        $list = $request->user()->lists()->create([
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+            'is_public' => $validated['is_public'] ?? false,
+            'filter_type' => $validated['filter_type'],
+            'is_default' => false,
+        ]);
+
+        return redirect()
+            ->route('list.show', ['locale' => app()->getLocale(), 'slug' => $list->slug])
+            ->with('success', __('List created successfully.'));
+    }
+
+    public function edit(Request $request, string $locale, string $slug): View
+    {
+        $list = GiftList::where('slug', $slug)
+            ->where('user_id', $request->user()->id)
+            ->firstOrFail();
+
+        return view('lists.edit', [
+            'list' => $list,
+        ]);
+    }
+
+    public function update(Request $request, string $locale, string $slug): RedirectResponse
+    {
+        $list = GiftList::where('slug', $slug)
+            ->where('user_id', $request->user()->id)
+            ->firstOrFail();
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:1000'],
+            'is_public' => ['boolean'],
+            'filter_type' => ['required', 'in:all,criteria,manual'],
+        ]);
+
+        $list->update([
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+            'is_public' => $validated['is_public'] ?? false,
+            'filter_type' => $validated['filter_type'],
+        ]);
+
+        return redirect()
+            ->route('list.show', ['locale' => app()->getLocale(), 'slug' => $list->slug])
+            ->with('success', __('List updated successfully.'));
+    }
+
+    public function destroy(Request $request, string $locale, string $slug): RedirectResponse
+    {
+        $list = GiftList::where('slug', $slug)
+            ->where('user_id', $request->user()->id)
+            ->firstOrFail();
+
+        if ($list->is_default) {
+            return redirect()
+                ->route('dashboard.locale', ['locale' => app()->getLocale()])
+                ->with('error', __('Cannot delete your default list.'));
+        }
+
+        // Detach all gifts from this list (but don't delete the gifts)
+        $list->gifts()->detach();
+        $list->delete();
+
+        return redirect()
+            ->route('dashboard.locale', ['locale' => app()->getLocale()])
+            ->with('success', __('List deleted successfully.'));
+    }
+}
