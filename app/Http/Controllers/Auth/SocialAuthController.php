@@ -1,0 +1,83 @@
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Laravel\Socialite\Facades\Socialite;
+
+class SocialAuthController extends Controller
+{
+    public function redirectToGoogle(): RedirectResponse
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function handleGoogleCallback(): RedirectResponse
+    {
+        return $this->handleSocialCallback('google', 'google_id');
+    }
+
+    public function redirectToFacebook(): RedirectResponse
+    {
+        return Socialite::driver('facebook')->redirect();
+    }
+
+    public function handleFacebookCallback(): RedirectResponse
+    {
+        return $this->handleSocialCallback('facebook', 'facebook_id');
+    }
+
+    protected function handleSocialCallback(string $provider, string $socialIdField): RedirectResponse
+    {
+        try {
+            $socialUser = Socialite::driver($provider)->user();
+        } catch (\Exception $e) {
+            return redirect()->route('home', ['locale' => app()->getLocale()])
+                ->with('error', __('Unable to authenticate with :provider.', ['provider' => ucfirst($provider)]));
+        }
+
+        // Check if user exists with this social ID
+        $user = User::where($socialIdField, $socialUser->getId())->first();
+
+        if ($user) {
+            Auth::login($user, true);
+            return $this->redirectToDashboard();
+        }
+
+        // Check if user exists with this email
+        $user = User::where('email', $socialUser->getEmail())->first();
+
+        if ($user) {
+            // Link social account to existing user
+            $user->update([
+                $socialIdField => $socialUser->getId(),
+                'avatar' => $socialUser->getAvatar(),
+            ]);
+
+            Auth::login($user, true);
+            return $this->redirectToDashboard();
+        }
+
+        // Create new user
+        $user = User::create([
+            'name' => $socialUser->getName(),
+            'email' => $socialUser->getEmail(),
+            $socialIdField => $socialUser->getId(),
+            'avatar' => $socialUser->getAvatar(),
+            'email_verified_at' => now(),
+            'locale_preference' => app()->getLocale(),
+        ]);
+
+        Auth::login($user, true);
+        return $this->redirectToDashboard();
+    }
+
+    protected function redirectToDashboard(): RedirectResponse
+    {
+        $locale = auth()->user()->locale_preference ?? app()->getLocale();
+        return redirect("/{$locale}/dashboard");
+    }
+}
