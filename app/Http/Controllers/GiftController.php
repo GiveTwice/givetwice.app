@@ -13,9 +13,12 @@ class GiftController extends Controller
     public function create(Request $request): View
     {
         $lists = $request->user()->lists()->get();
+        $defaultList = $lists->firstWhere('is_default', true) ?? $lists->first();
 
         return view('gifts.create', [
             'lists' => $lists,
+            'defaultList' => $defaultList,
+            'isSingleListMode' => $lists->count() === 1,
         ]);
     }
 

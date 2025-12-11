@@ -10,7 +10,6 @@ class PublicListController extends Controller
     public function show(string $locale, string $slug): View
     {
         $list = GiftList::where('slug', $slug)
-            ->where('is_public', true)
             ->with('user:id,name')
             ->firstOrFail();
 

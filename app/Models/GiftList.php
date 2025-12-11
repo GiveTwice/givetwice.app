@@ -17,9 +17,6 @@ class GiftList extends Model
         'description',
         'slug',
         'is_default',
-        'is_public',
-        'filter_type',
-        'filter_criteria',
         'cover_image',
     ];
 
@@ -27,8 +24,6 @@ class GiftList extends Model
     {
         return [
             'is_default' => 'boolean',
-            'is_public' => 'boolean',
-            'filter_criteria' => 'array',
         ];
     }
 
@@ -66,20 +61,5 @@ class GiftList extends Model
             ->withPivot('sort_order', 'added_at')
             ->withTimestamps()
             ->orderByPivot('sort_order');
-    }
-
-    public function isFilterTypeAll(): bool
-    {
-        return $this->filter_type === 'all';
-    }
-
-    public function isFilterTypeCriteria(): bool
-    {
-        return $this->filter_type === 'criteria';
-    }
-
-    public function isFilterTypeManual(): bool
-    {
-        return $this->filter_type === 'manual';
     }
 }

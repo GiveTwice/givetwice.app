@@ -9,11 +9,20 @@ use Illuminate\View\View;
 
 class ListController extends Controller
 {
-    public function show(Request $request, string $locale, string $slug): View
+    public function show(Request $request, string $locale, string $slug): View|RedirectResponse
     {
-        $list = GiftList::where('slug', $slug)
-            ->where('user_id', $request->user()->id)
-            ->firstOrFail();
+        $list = GiftList::where('slug', $slug)->first();
+
+        if (!$list) {
+            abort(404);
+        }
+
+        $user = $request->user();
+
+        // If user is not logged in or not the owner, redirect to public view
+        if (!$user || $list->user_id !== $user->id) {
+            return redirect()->route('public.list', ['locale' => $locale, 'slug' => $slug]);
+        }
 
         $gifts = $list->gifts()->paginate(100);
 
@@ -33,15 +42,11 @@ class ListController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
-            'is_public' => ['boolean'],
-            'filter_type' => ['required', 'in:all,criteria,manual'],
         ]);
 
         $list = $request->user()->lists()->create([
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
-            'is_public' => $validated['is_public'] ?? false,
-            'filter_type' => $validated['filter_type'],
             'is_default' => false,
         ]);
 
@@ -70,15 +75,11 @@ class ListController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
-            'is_public' => ['boolean'],
-            'filter_type' => ['required', 'in:all,criteria,manual'],
         ]);
 
         $list->update([
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
-            'is_public' => $validated['is_public'] ?? false,
-            'filter_type' => $validated['filter_type'],
         ]);
 
         return redirect()

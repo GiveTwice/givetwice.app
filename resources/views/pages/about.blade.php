@@ -13,7 +13,7 @@
 </div>
 
 {{-- Main Content --}}
-<div class="max-w-4xl mx-auto pb-16">
+<div class="max-w-4xl mx-auto">
     {{-- Our Mission Section --}}
     <div class="bg-gradient-to-br from-coral-50 to-sunny-50 rounded-3xl p-8 lg:p-12 mb-12 border border-coral-100">
         <div class="flex flex-col md:flex-row items-center gap-8">
@@ -29,35 +29,12 @@
             </div>
         </div>
     </div>
+</div>
 
-    {{-- How It Works Section --}}
-    <div class="mb-12">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">{{ __('How It Works') }}</h2>
-        <div class="grid md:grid-cols-3 gap-6">
-            <div class="bg-white border border-cream-200 rounded-2xl p-6 text-center shadow-sm">
-                <div class="w-14 h-14 bg-sunny-100 text-sunny-600 rounded-xl flex items-center justify-center text-2xl mx-auto mb-4 transform rotate-2">
-                    &#128221;
-                </div>
-                <h3 class="font-semibold text-gray-900 mb-2">{{ __('Create') }}</h3>
-                <p class="text-gray-600 text-sm leading-relaxed">{{ __('Add gifts from any online store by pasting a product URL. We\'ll fetch the details automatically.') }}</p>
-            </div>
-            <div class="bg-white border border-cream-200 rounded-2xl p-6 text-center shadow-sm">
-                <div class="w-14 h-14 bg-coral-100 text-coral-500 rounded-xl flex items-center justify-center text-2xl mx-auto mb-4 transform -rotate-2">
-                    &#128140;
-                </div>
-                <h3 class="font-semibold text-gray-900 mb-2">{{ __('Share') }}</h3>
-                <p class="text-gray-600 text-sm leading-relaxed">{{ __('Send your wishlist link to friends and family via email, chat, or social media.') }}</p>
-            </div>
-            <div class="bg-white border border-cream-200 rounded-2xl p-6 text-center shadow-sm">
-                <div class="w-14 h-14 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center text-2xl mx-auto mb-4 transform rotate-1">
-                    &#10003;
-                </div>
-                <h3 class="font-semibold text-gray-900 mb-2">{{ __('Receive') }}</h3>
-                <p class="text-gray-600 text-sm leading-relaxed">{{ __('Others secretly claim gifts so you don\'t get duplicates. Everyone\'s happy!') }}</p>
-            </div>
-        </div>
-    </div>
+{{-- How It Works Section (full width) --}}
+<x-how-it-works :showCta="false" />
 
+<div class="max-w-4xl mx-auto pb-16">
     {{-- Why We Built This Section --}}
     <div class="bg-cream-100 rounded-3xl p-8 lg:p-12 mb-12">
         <h2 class="text-2xl font-bold text-gray-900 mb-6">{{ __('Why We Built This') }}</h2>

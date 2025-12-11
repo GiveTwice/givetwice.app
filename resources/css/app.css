@@ -5,6 +5,49 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+/* Alpine.js x-cloak directive - hide elements until Alpine initializes */
+[x-cloak] {
+    display: none !important;
+}
+
+/* ============================================
+   Button Component Classes
+   Color scheme matches "How It Works" section:
+   - Primary (coral/red): Create, Add Gift, Submit
+   - Share (sunny/yellow): Share actions
+   - Claim (teal/green): Claim, Receive actions
+   ============================================ */
+
+/* Primary button - coral/red (Create, Add Gift, Submit - matches Step 1) */
+.btn-primary {
+    @apply inline-flex items-center gap-2 bg-coral-500 text-white px-5 py-2.5 rounded-xl hover:bg-coral-600 transition-colors font-medium shadow-sm;
+}
+
+/* Small variant of primary button */
+.btn-primary-sm {
+    @apply inline-flex items-center gap-1.5 bg-coral-500 text-white px-3 py-1.5 rounded-lg hover:bg-coral-600 transition-colors text-sm font-medium;
+}
+
+/* Secondary button - white/outlined */
+.btn-secondary {
+    @apply inline-flex items-center gap-2 bg-white border border-cream-300 text-gray-700 px-4 py-2.5 rounded-xl hover:bg-cream-50 transition-colors font-medium;
+}
+
+/* Share button - sunny/yellow (matches Step 2: Share) */
+.btn-share {
+    @apply inline-flex items-center gap-2 bg-sunny-200 text-sunny-800 px-5 py-2.5 rounded-xl hover:bg-sunny-300 transition-colors font-medium;
+}
+
+/* Claim button - teal/green (matches Step 3: Receive) */
+.btn-claim {
+    @apply inline-flex items-center gap-2 bg-teal-100 text-teal-700 px-5 py-2.5 rounded-xl hover:bg-teal-200 transition-colors font-medium;
+}
+
+/* Text link button style */
+.btn-link {
+    @apply inline-flex items-center gap-2 text-coral-600 hover:text-coral-700 font-medium transition-colors;
+}
+
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
@@ -58,4 +101,301 @@
     --color-cream-700: oklch(0.66 0.11 50);
     --color-cream-800: oklch(0.56 0.10 45);
     --color-cream-900: oklch(0.48 0.08 40);
+}
+
+/* ============================================
+   Hero Animation System
+   Total cycle: 12s
+
+   Timeline:
+   0-3s:    Sarah visible, items Available
+   3-4s:    Sarah fades up/out
+   4-4.5s:  Book Set transitions to Claimed (Sarah claimed it)
+   5-8s:    Nick appears
+   8-9s:    Nick fades up/out
+   9-9.5s:  Cozy Blanket transitions to Claimed (Nick claimed it)
+   10-12s:  Both claimed, pause before loop
+   ============================================ */
+
+/* Sarah's notification - slides up and fades out */
+.hero-notification-sarah {
+    animation: sarah-notification 12s ease-in-out infinite;
+}
+
+@keyframes sarah-notification {
+    0%, 20% {
+        opacity: 1;
+        transform: translateY(0) rotate(-3deg);
+    }
+    30%, 100% {
+        opacity: 0;
+        transform: translateY(-60px) rotate(-3deg);
+    }
+}
+
+/* Nick's notification - appears after Sarah leaves */
+.hero-notification-nick {
+    animation: nick-notification 12s ease-in-out infinite;
+}
+
+@keyframes nick-notification {
+    0%, 35% {
+        opacity: 0;
+        transform: translateY(20px) rotate(2deg);
+    }
+    42%, 62% {
+        opacity: 1;
+        transform: translateY(0) rotate(2deg);
+    }
+    72%, 100% {
+        opacity: 0;
+        transform: translateY(-60px) rotate(2deg);
+    }
+}
+
+/* Book Set badge - Available (fades out when Sarah claims) */
+.hero-badge-available-book {
+    animation: book-available 12s ease-in-out infinite;
+}
+
+@keyframes book-available {
+    0%, 28% {
+        opacity: 1;
+    }
+    35%, 100% {
+        opacity: 0;
+    }
+}
+
+/* Book Set badge - Claimed (fades in when Sarah claims) */
+.hero-badge-claimed-book {
+    animation: book-claimed 12s ease-in-out infinite;
+}
+
+@keyframes book-claimed {
+    0%, 28% {
+        opacity: 0;
+    }
+    35%, 100% {
+        opacity: 1;
+    }
+}
+
+/* Book Set highlight effect (glows when claimed) */
+.hero-claim-highlight-book {
+    animation: book-highlight 12s ease-in-out infinite;
+}
+
+@keyframes book-highlight {
+    0%, 26% {
+        box-shadow: none;
+        background-color: transparent;
+    }
+    30% {
+        box-shadow: 0 0 0 3px oklch(0.65 0.19 25 / 0.4);
+        background-color: oklch(0.65 0.19 25 / 0.08);
+    }
+    40%, 100% {
+        box-shadow: none;
+        background-color: transparent;
+    }
+}
+
+/* Cozy Blanket badge - Available (fades out when Nick claims) */
+.hero-badge-available {
+    animation: cozy-available 12s ease-in-out infinite;
+}
+
+@keyframes cozy-available {
+    0%, 68% {
+        opacity: 1;
+    }
+    75%, 100% {
+        opacity: 0;
+    }
+}
+
+/* Cozy Blanket badge - Claimed (fades in when Nick claims) */
+.hero-badge-claimed {
+    animation: cozy-claimed 12s ease-in-out infinite;
+}
+
+@keyframes cozy-claimed {
+    0%, 68% {
+        opacity: 0;
+    }
+    75%, 100% {
+        opacity: 1;
+    }
+}
+
+/* Cozy Blanket highlight effect (glows when claimed) */
+.hero-claim-highlight-cozy {
+    animation: cozy-highlight 12s ease-in-out infinite;
+}
+
+@keyframes cozy-highlight {
+    0%, 66% {
+        box-shadow: none;
+        background-color: transparent;
+    }
+    70% {
+        box-shadow: 0 0 0 3px oklch(0.70 0.13 175 / 0.4);
+        background-color: oklch(0.70 0.13 175 / 0.08);
+    }
+    80%, 100% {
+        box-shadow: none;
+        background-color: transparent;
+    }
+}
+
+/* Connection dots - visual link between notification and item */
+.hero-claim-arrow {
+    animation: sarah-arrow 12s ease-in-out infinite;
+}
+
+@keyframes sarah-arrow {
+    0%, 22% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    26% {
+        opacity: 1;
+        transform: scale(1.5);
+    }
+    30%, 100% {
+        opacity: 0;
+        transform: scale(0);
+    }
+}
+
+.hero-claim-arrow-nick {
+    animation: nick-arrow 12s ease-in-out infinite;
+}
+
+@keyframes nick-arrow {
+    0%, 62% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    66% {
+        opacity: 1;
+        transform: scale(1.5);
+    }
+    72%, 100% {
+        opacity: 0;
+        transform: scale(0);
+    }
+}
+
+/* ============================================
+   How It Works - Flow Animation System
+   Total cycle: 9s (3s per step)
+
+   Timeline:
+   0-3s:   Step 1 active (sunny glow)
+   2.5-3s: Arrow 1→2 visible
+   3-6s:   Step 2 active (coral glow)
+   5.5-6s: Arrow 2→3 visible
+   6-9s:   Step 3 active (teal glow)
+   ============================================ */
+
+/* Step 1 icon highlight - coral glow */
+.hiw-step-1-icon {
+    animation: step1-glow 9s ease-in-out infinite;
+}
+
+@keyframes step1-glow {
+    0%, 5% {
+        box-shadow: 0 0 0 0 oklch(0.65 0.19 25 / 0);
+        transform: rotate(3deg) scale(1);
+    }
+    10%, 28% {
+        box-shadow: 0 0 20px 4px oklch(0.65 0.19 25 / 0.35);
+        transform: rotate(3deg) scale(1.05);
+    }
+    33%, 100% {
+        box-shadow: 0 0 0 0 oklch(0.65 0.19 25 / 0);
+        transform: rotate(3deg) scale(1);
+    }
+}
+
+/* Step 2 icon highlight - sunny glow */
+.hiw-step-2-icon {
+    animation: step2-glow 9s ease-in-out infinite;
+}
+
+@keyframes step2-glow {
+    0%, 33% {
+        box-shadow: 0 0 0 0 oklch(0.85 0.19 90 / 0);
+        transform: rotate(-2deg) scale(1);
+    }
+    38%, 61% {
+        box-shadow: 0 0 20px 4px oklch(0.85 0.19 90 / 0.4);
+        transform: rotate(-2deg) scale(1.05);
+    }
+    66%, 100% {
+        box-shadow: 0 0 0 0 oklch(0.85 0.19 90 / 0);
+        transform: rotate(-2deg) scale(1);
+    }
+}
+
+/* Step 3 icon highlight - teal glow */
+.hiw-step-3-icon {
+    animation: step3-glow 9s ease-in-out infinite;
+}
+
+@keyframes step3-glow {
+    0%, 66% {
+        box-shadow: 0 0 0 0 oklch(0.70 0.13 175 / 0);
+        transform: rotate(1deg) scale(1);
+    }
+    71%, 94% {
+        box-shadow: 0 0 20px 4px oklch(0.70 0.13 175 / 0.4);
+        transform: rotate(1deg) scale(1.05);
+    }
+    100% {
+        box-shadow: 0 0 0 0 oklch(0.70 0.13 175 / 0);
+        transform: rotate(1deg) scale(1);
+    }
+}
+
+/* Arrow between Step 1 and Step 2 */
+.hiw-arrow-1-2 {
+    animation: arrow12 9s ease-in-out infinite;
+}
+
+@keyframes arrow12 {
+    0%, 24% {
+        opacity: 0;
+        transform: translateX(-4px);
+    }
+    28%, 33% {
+        opacity: 0.5;
+        transform: translateX(0);
+    }
+    38%, 100% {
+        opacity: 0;
+        transform: translateX(4px);
+    }
+}
+
+/* Arrow between Step 2 and Step 3 */
+.hiw-arrow-2-3 {
+    animation: arrow23 9s ease-in-out infinite;
+}
+
+@keyframes arrow23 {
+    0%, 57% {
+        opacity: 0;
+        transform: translateX(-4px);
+    }
+    61%, 66% {
+        opacity: 0.5;
+        transform: translateX(0);
+    }
+    71%, 100% {
+        opacity: 0;
+        transform: translateX(4px);
+    }
 }

@@ -3,27 +3,76 @@
 @section('title', __('Welcome to :app!', ['app' => config('app.name')]))
 
 @section('content')
-    <h1 style="color: #16a34a; margin-top: 0;">{{ __('Welcome to :app!', ['app' => config('app.name')]) }}</h1>
+    {{-- Header with coral accent --}}
+    <h1 style="color: #f97066; margin-top: 0; font-size: 24px;">{{ __('Welcome to :app!', ['app' => config('app.name')]) }}</h1>
 
-    <p>{{ __('Hello') }} {{ $user->name }},</p>
+    <p style="font-size: 16px; color: #374151;">{{ __('Hi :name,', ['name' => $user->name]) }}</p>
 
-    <p>{{ __('Thank you for joining :app! We\'re excited to have you on board.', ['app' => config('app.name')]) }}</p>
+    <p style="font-size: 16px; color: #374151;">{{ __('Your wishlist is ready and waiting for you!') }}</p>
 
-    <p>{{ __('With :app, you can:', ['app' => config('app.name')]) }}</p>
-
-    <ul style="color: #4b5563;">
-        <li>{{ __('Create and share your wishlists') }}</li>
-        <li>{{ __('Add gifts from any online store') }}</li>
-        <li>{{ __('Let friends and family claim gifts without spoiling the surprise') }}</li>
-    </ul>
-
-    <p>{{ __('And the best part? All affiliate revenue from purchases made through your lists goes to charity!') }}</p>
-
+    {{-- Primary CTA Button --}}
     <p style="text-align: center; margin: 30px 0;">
-        <a href="{{ $dashboardUrl }}" style="background: #16a34a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">
-            {{ __('Go to Dashboard') }}
+        <a href="{{ $wishlistUrl }}" style="background: #f97066; color: white; padding: 14px 28px; text-decoration: none; border-radius: 25px; display: inline-block; font-weight: 600; font-size: 16px;">
+            {{ __('Go to My Wishlist') }} &#127873;
         </a>
     </p>
 
-    <p style="color: #666;">{{ __('Happy gifting!') }}</p>
+    {{-- Getting Started Section --}}
+    <div style="background: #fef9f3; border-radius: 12px; padding: 24px; margin: 30px 0;">
+        <h2 style="color: #374151; font-size: 18px; margin-top: 0; margin-bottom: 20px;">{{ __('Get started in 3 easy steps:') }}</h2>
+
+        {{-- Step 1: Create (coral) --}}
+        <table style="width: 100%; margin-bottom: 16px;" cellpadding="0" cellspacing="0">
+            <tr>
+                <td style="width: 40px; vertical-align: top;">
+                    <div style="width: 32px; height: 32px; background: #fee2e2; border-radius: 8px; text-align: center; line-height: 32px; font-size: 16px;">
+                        &#127873;
+                    </div>
+                </td>
+                <td style="vertical-align: top; padding-left: 12px;">
+                    <p style="margin: 0; font-weight: 600; color: #374151;">{{ __('1. Add your favorite items') }}</p>
+                    <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 14px;">{{ __('Paste product URLs from any online store') }}</p>
+                </td>
+            </tr>
+        </table>
+
+        {{-- Step 2: Share (sunny/yellow) --}}
+        <table style="width: 100%; margin-bottom: 16px;" cellpadding="0" cellspacing="0">
+            <tr>
+                <td style="width: 40px; vertical-align: top;">
+                    <div style="width: 32px; height: 32px; background: #fef3c7; border-radius: 8px; text-align: center; line-height: 32px; font-size: 16px;">
+                        &#128140;
+                    </div>
+                </td>
+                <td style="vertical-align: top; padding-left: 12px;">
+                    <p style="margin: 0; font-weight: 600; color: #374151;">{{ __('2. Share with friends & family') }}</p>
+                    <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 14px;">{{ __('Send your wishlist link via email, chat, or social media') }}</p>
+                </td>
+            </tr>
+        </table>
+
+        {{-- Step 3: Receive (teal/green) --}}
+        <table style="width: 100%; margin-bottom: 0;" cellpadding="0" cellspacing="0">
+            <tr>
+                <td style="width: 40px; vertical-align: top;">
+                    <div style="width: 32px; height: 32px; background: #d1fae5; border-radius: 8px; text-align: center; line-height: 32px; font-size: 16px;">
+                        &#10003;
+                    </div>
+                </td>
+                <td style="vertical-align: top; padding-left: 12px;">
+                    <p style="margin: 0; font-weight: 600; color: #374151;">{{ __('3. Receive perfect gifts') }}</p>
+                    <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 14px;">{{ __('They claim secretly - no duplicates, no spoiled surprises!') }}</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    {{-- FAQ Link --}}
+    <p style="color: #6b7280; font-size: 14px;">
+        {{ __('Questions or need help?') }} <a href="{{ $faqUrl }}" style="color: #f97066; text-decoration: none;">{{ __('Check our FAQ') }}</a>
+    </p>
+
+    {{-- Sign-off --}}
+    <p style="color: #374151; margin-top: 24px;">{{ __('Happy gifting!') }}</p>
+    <p style="color: #374151; margin: 0;">{{ config('app.name') }}</p>
 @endsection

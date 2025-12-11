@@ -7,6 +7,15 @@
 
     <title>{{ config('app.name', 'GiftWithLove') }} - @yield('title', 'Home')</title>
 
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="theme-color" content="#f97066">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-cream-50 flex flex-col">
@@ -27,8 +36,6 @@
 
                     <span class="text-cream-300">|</span>
 
-                    <x-language-switcher />
-
                     @auth
                         <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="text-gray-600 hover:text-gray-900 transition-colors">{{ __('Dashboard') }}</a>
                         <form method="POST" action="{{ url('/logout') }}" class="inline">
@@ -39,6 +46,8 @@
                         <a href="{{ url('/' . app()->getLocale() . '/login') }}" class="text-gray-600 hover:text-gray-900 transition-colors">{{ __('Login') }}</a>
                         <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="px-5 py-2 bg-coral-500 text-white rounded-full hover:bg-coral-600 font-medium transition-colors">{{ __('Sign Up') }}</a>
                     @endauth
+
+                    <x-language-switcher />
                 </div>
 
                 {{-- Mobile menu button --}}

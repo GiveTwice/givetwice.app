@@ -26,13 +26,22 @@ class WelcomeEmail extends Mailable
 
     public function content(): Content
     {
-        $dashboardUrl = url('/' . ($this->user->locale_preference ?? 'en') . '/dashboard');
+        $locale = $this->user->locale_preference ?? 'en';
+
+        // Get the user's default list for the direct link
+        $defaultList = $this->user->lists()->where('is_default', true)->first();
+        $wishlistUrl = $defaultList
+            ? url('/' . $locale . '/list/' . $defaultList->slug)
+            : url('/' . $locale . '/dashboard');
+
+        $faqUrl = url('/' . $locale . '/faq');
 
         return new Content(
             view: 'emails.welcome',
             with: [
                 'user' => $this->user,
-                'dashboardUrl' => $dashboardUrl,
+                'wishlistUrl' => $wishlistUrl,
+                'faqUrl' => $faqUrl,
             ],
         );
     }

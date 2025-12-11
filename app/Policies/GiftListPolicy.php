@@ -14,11 +14,8 @@ class GiftListPolicy
 
     public function view(?User $user, GiftList $giftList): bool
     {
-        if ($giftList->is_public) {
-            return true;
-        }
-
-        return $user && $user->id === $giftList->user_id;
+        // All lists are public/viewable
+        return true;
     }
 
     public function create(User $user): bool

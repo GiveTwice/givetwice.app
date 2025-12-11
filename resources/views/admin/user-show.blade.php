@@ -104,7 +104,7 @@
                                 @endif
                             </p>
                             <p class="text-sm text-gray-500">
-                                {{ $list->is_public ? 'Public' : 'Private' }} &bull; {{ $list->slug }}
+                                {{ $list->slug }}
                             </p>
                         </div>
                         <div class="text-right">

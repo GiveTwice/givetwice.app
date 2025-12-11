@@ -18,15 +18,11 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('slug')->unique();
             $table->boolean('is_default')->default(false);
-            $table->boolean('is_public')->default(false);
-            $table->enum('filter_type', ['all', 'criteria', 'manual'])->default('manual');
-            $table->json('filter_criteria')->nullable();
             $table->string('cover_image', 2048)->nullable();
             $table->timestamps();
 
             $table->index('user_id');
             $table->index('slug');
-            $table->index('is_public');
         });
     }
 

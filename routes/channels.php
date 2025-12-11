@@ -23,6 +23,6 @@ Broadcast::channel('list.{listId}', function ($user, $listId) {
         return true;
     }
 
-    // Public lists can be accessed by anyone
-    return $list->is_public;
+    // All lists are publicly accessible
+    return true;
 });

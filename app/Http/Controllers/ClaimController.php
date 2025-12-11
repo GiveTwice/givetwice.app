@@ -81,7 +81,7 @@ class ClaimController extends Controller
         }
 
         // Get the list for the back link
-        $list = $gift->lists()->where('is_public', true)->first();
+        $list = $gift->lists()->first();
 
         return view('claims.anonymous', [
             'gift' => $gift,
@@ -136,7 +136,7 @@ class ClaimController extends Controller
         Mail::to($validated['email'])->send(new ClaimConfirmationMail($claim));
 
         // Get the list for the redirect
-        $list = $gift->lists()->where('is_public', true)->first();
+        $list = $gift->lists()->first();
 
         return redirect()
             ->route('public.list', ['locale' => $locale, 'slug' => $list?->slug ?? 'unknown'])

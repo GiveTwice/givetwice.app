@@ -46,9 +46,9 @@
             </div>
         </div>
 
-        {{-- Right: Visual Element --}}
+        {{-- Right: Visual Element with Animations --}}
         <div class="relative hidden lg:block">
-            {{-- Decorative shapes inspired by LittleBuds --}}
+            {{-- Decorative shapes --}}
             <div class="relative">
                 {{-- Yellow blob background --}}
                 <div class="absolute top-0 right-0 w-80 h-80 bg-sunny-200 rounded-full opacity-60 -z-10 transform translate-x-10"></div>
@@ -60,25 +60,44 @@
                             <div class="text-6xl mb-4">&#127873;</div>
                             <h3 class="font-semibold text-gray-800 mb-2">{{ __('Birthday Wishlist') }}</h3>
                             <div class="space-y-2">
+                                {{-- Wireless Headphones - Available --}}
                                 <div class="flex items-center justify-between bg-gray-50 rounded-lg p-3">
                                     <span class="text-sm text-gray-600">{{ __('Wireless Headphones') }}</span>
-                                    <span class="text-xs bg-sunny-100 text-sunny-700 px-2 py-1 rounded-full">{{ __('Claimed') }}</span>
-                                </div>
-                                <div class="flex items-center justify-between bg-gray-50 rounded-lg p-3">
-                                    <span class="text-sm text-gray-600">{{ __('Cozy Blanket') }}</span>
                                     <span class="text-xs bg-teal-100 text-teal-700 px-2 py-1 rounded-full">{{ __('Available') }}</span>
                                 </div>
-                                <div class="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+
+                                {{-- Cozy Blanket - Animated: Available → Claimed by Nick --}}
+                                <div class="flex items-center justify-between bg-gray-50 rounded-lg p-3 relative hero-item-cozy">
+                                    <span class="text-sm text-gray-600">{{ __('Cozy Blanket') }}</span>
+                                    <div class="relative">
+                                        {{-- Available badge (fades out) --}}
+                                        <span class="hero-badge-available text-xs bg-teal-100 text-teal-700 px-2 py-1 rounded-full">{{ __('Available') }}</span>
+                                        {{-- Claimed badge (fades in) --}}
+                                        <span class="hero-badge-claimed absolute inset-0 text-xs bg-sunny-100 text-sunny-700 px-2 py-1 rounded-full">{{ __('Claimed') }}</span>
+                                    </div>
+                                    {{-- Claim highlight effect --}}
+                                    <div class="hero-claim-highlight-cozy absolute inset-0 rounded-lg pointer-events-none"></div>
+                                </div>
+
+                                {{-- Book Set - Animated: Available → Claimed by Sarah --}}
+                                <div class="flex items-center justify-between bg-gray-50 rounded-lg p-3 relative hero-item-book">
                                     <span class="text-sm text-gray-600">{{ __('Book Set') }}</span>
-                                    <span class="text-xs bg-sunny-100 text-sunny-700 px-2 py-1 rounded-full">{{ __('Claimed') }}</span>
+                                    <div class="relative">
+                                        {{-- Available badge (fades out) --}}
+                                        <span class="hero-badge-available-book text-xs bg-teal-100 text-teal-700 px-2 py-1 rounded-full">{{ __('Available') }}</span>
+                                        {{-- Claimed badge (fades in) --}}
+                                        <span class="hero-badge-claimed-book absolute inset-0 text-xs bg-sunny-100 text-sunny-700 px-2 py-1 rounded-full">{{ __('Claimed') }}</span>
+                                    </div>
+                                    {{-- Claim highlight effect --}}
+                                    <div class="hero-claim-highlight-book absolute inset-0 rounded-lg pointer-events-none"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {{-- Floating notification card --}}
-                <div class="absolute -bottom-4 -left-8 bg-white rounded-xl shadow-lg p-4 transform -rotate-3">
+                {{-- Sarah's notification (animated) --}}
+                <div class="hero-notification-sarah absolute -bottom-4 -left-8 bg-white rounded-xl shadow-lg p-4 transform -rotate-3">
                     <div class="flex items-center space-x-3">
                         <div class="w-10 h-10 bg-coral-100 rounded-full flex items-center justify-center">
                             <span class="text-coral-500">&#10084;</span>
@@ -88,17 +107,29 @@
                             <p class="text-xs text-gray-500">{{ __('Just now') }}</p>
                         </div>
                     </div>
+                    {{-- Connection indicator to Book Set --}}
+                    <div class="hero-claim-arrow absolute -top-2 right-8 w-3 h-3 bg-coral-400 rounded-full opacity-0"></div>
+                </div>
+
+                {{-- Nick's notification (animated, appears after Sarah) --}}
+                <div class="hero-notification-nick absolute -bottom-4 left-4 bg-white rounded-xl shadow-lg p-4 transform rotate-2">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center">
+                            <span class="text-teal-500">&#10084;</span>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-800">{{ __('Nick claimed a gift!') }}</p>
+                            <p class="text-xs text-gray-500">{{ __('Just now') }}</p>
+                        </div>
+                    </div>
+                    {{-- Connection indicator to Cozy Blanket --}}
+                    <div class="hero-claim-arrow-nick absolute -top-2 right-12 w-3 h-3 bg-teal-400 rounded-full opacity-0"></div>
                 </div>
 
                 {{-- Decorative elements --}}
                 <div class="absolute -top-4 right-20 text-coral-400">
                     <svg width="40" height="40" viewBox="0 0 40 40" fill="currentColor">
                         <path d="M20 0l2.5 17.5L40 20l-17.5 2.5L20 40l-2.5-17.5L0 20l17.5-2.5z"/>
-                    </svg>
-                </div>
-                <div class="absolute top-1/2 -right-4 text-teal-300">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                        <path d="M4 12h16M4 6h16M4 18h16" stroke-linecap="round"/>
                     </svg>
                 </div>
             </div>
@@ -125,47 +156,7 @@
 </div>
 
 {{-- How It Works Section --}}
-<div id="how-it-works" class="bg-cream-100 py-16 px-4 -mx-4 sm:-mx-6 lg:-mx-8">
-    <div class="max-w-4xl mx-auto">
-        <h2 class="text-3xl font-bold text-center text-gray-900 mb-4">{{ __('How It Works') }}</h2>
-        <p class="text-center text-gray-600 mb-12">{{ __('Three simple steps to perfect gift-giving') }}</p>
-
-        <div class="grid md:grid-cols-3 gap-8">
-            {{-- Step 1 --}}
-            <div class="text-center">
-                <div class="w-16 h-16 bg-sunny-200 text-sunny-700 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4 transform rotate-3">
-                    &#127873;
-                </div>
-                <h3 class="font-bold text-xl mb-2 text-gray-900">1. {{ __('Create') }}</h3>
-                <p class="text-gray-600">{{ __('Add gifts from any online store by pasting a product URL. We\'ll fetch the details automatically.') }}</p>
-            </div>
-
-            {{-- Step 2 --}}
-            <div class="text-center">
-                <div class="w-16 h-16 bg-coral-100 text-coral-600 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4 transform -rotate-2">
-                    &#128140;
-                </div>
-                <h3 class="font-bold text-xl mb-2 text-gray-900">2. {{ __('Share') }}</h3>
-                <p class="text-gray-600">{{ __('Send your wishlist link to friends and family via email, chat, or social media.') }}</p>
-            </div>
-
-            {{-- Step 3 --}}
-            <div class="text-center">
-                <div class="w-16 h-16 bg-teal-100 text-teal-600 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4 transform rotate-1">
-                    &#10003;
-                </div>
-                <h3 class="font-bold text-xl mb-2 text-gray-900">3. {{ __('Receive') }}</h3>
-                <p class="text-gray-600">{{ __('Others secretly claim gifts so you don\'t get duplicates. Everyone\'s happy!') }}</p>
-            </div>
-        </div>
-
-        <div class="text-center mt-12">
-            <a href="{{ route('register', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center px-8 py-3 bg-coral-500 text-white rounded-full hover:bg-coral-600 font-semibold transition-colors shadow-md hover:shadow-lg">
-                {{ __('Get Started - It\'s Free!') }}
-            </a>
-        </div>
-    </div>
-</div>
+<x-how-it-works />
 
 {{-- Mission Section --}}
 <div class="py-16 px-4">
