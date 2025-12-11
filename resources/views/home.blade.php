@@ -32,19 +32,15 @@
                 </li>
             </ul>
 
-            {{-- CTAs --}}
-            <div class="flex flex-col sm:flex-row gap-4">
+            {{-- CTA --}}
+            <div>
                 @guest
-                    <a href="{{ route('register', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center justify-center px-8 py-4 bg-teal-500 text-white rounded-full hover:bg-teal-600 font-semibold text-lg transition-colors">
-                        <span class="mr-2">&rarr;</span> {{ __('Start My Wishlist') }}
-                    </a>
-                    <a href="#how-it-works" class="inline-flex items-center justify-center px-8 py-4 text-coral-600 font-semibold hover:text-coral-700 transition-colors">
-                        <span class="mr-2 w-10 h-10 rounded-full border-2 border-coral-300 flex items-center justify-center">&#9656;</span>
-                        {{ __('See How It Works') }}
+                    <a href="{{ route('register', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center justify-center px-8 py-3 bg-coral-500 text-white rounded-full hover:bg-coral-600 font-semibold text-lg transition-colors shadow-md hover:shadow-lg">
+                        {{ __('Start My Wishlist') }} <span class="ml-2">&#127873;</span>
                     </a>
                 @else
-                    <a href="{{ route('dashboard.locale', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center justify-center px-8 py-4 bg-teal-500 text-white rounded-full hover:bg-teal-600 font-semibold text-lg transition-colors">
-                        <span class="mr-2">&rarr;</span> {{ __('Go to My Wishlists') }}
+                    <a href="{{ route('dashboard.locale', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center justify-center px-8 py-3 bg-coral-500 text-white rounded-full hover:bg-coral-600 font-semibold text-lg transition-colors shadow-md hover:shadow-lg">
+                        {{ __('Go to My Wishlists') }} <span class="ml-2">&#127873;</span>
                     </a>
                 @endguest
             </div>
@@ -66,15 +62,15 @@
                             <div class="space-y-2">
                                 <div class="flex items-center justify-between bg-gray-50 rounded-lg p-3">
                                     <span class="text-sm text-gray-600">{{ __('Wireless Headphones') }}</span>
-                                    <span class="text-xs bg-teal-100 text-teal-700 px-2 py-1 rounded-full">{{ __('Claimed') }}</span>
+                                    <span class="text-xs bg-sunny-100 text-sunny-700 px-2 py-1 rounded-full">{{ __('Claimed') }}</span>
                                 </div>
                                 <div class="flex items-center justify-between bg-gray-50 rounded-lg p-3">
                                     <span class="text-sm text-gray-600">{{ __('Cozy Blanket') }}</span>
-                                    <span class="text-xs bg-coral-100 text-coral-700 px-2 py-1 rounded-full">{{ __('Available') }}</span>
+                                    <span class="text-xs bg-teal-100 text-teal-700 px-2 py-1 rounded-full">{{ __('Available') }}</span>
                                 </div>
                                 <div class="flex items-center justify-between bg-gray-50 rounded-lg p-3">
                                     <span class="text-sm text-gray-600">{{ __('Book Set') }}</span>
-                                    <span class="text-xs bg-teal-100 text-teal-700 px-2 py-1 rounded-full">{{ __('Claimed') }}</span>
+                                    <span class="text-xs bg-sunny-100 text-sunny-700 px-2 py-1 rounded-full">{{ __('Claimed') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -109,30 +105,20 @@
         </div>
     </div>
 
-    {{-- Dual CTA box (like competitors) --}}
+    {{-- Charity highlight box (replaces dual CTA) --}}
     @guest
-    <div class="bg-white rounded-2xl shadow-lg p-6 lg:p-8 max-w-3xl mx-auto mb-12 border border-cream-200">
-        <div class="grid md:grid-cols-2 gap-6 md:divide-x divide-cream-200">
-            {{-- Find a list --}}
-            <div class="text-center md:pr-6">
-                <p class="text-gray-500 mb-3">{{ __('Looking for someone\'s wishlist?') }}</p>
-                <form action="{{ route('home', ['locale' => app()->getLocale()]) }}" method="GET" class="flex">
-                    <input type="text" name="search" placeholder="{{ __('Enter list code or name...') }}"
-                           class="flex-1 px-4 py-3 border border-gray-200 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent">
-                    <button type="submit" class="px-6 py-3 bg-teal-500 text-white rounded-r-lg hover:bg-teal-600 font-medium transition-colors">
-                        {{ __('Find') }}
-                    </button>
-                </form>
+    <div class="bg-gradient-to-r from-coral-50 to-sunny-50 rounded-2xl p-6 lg:p-8 max-w-3xl mx-auto mb-12 border border-coral-100">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-4">
+                <div class="text-4xl">&#10084;&#65039;</div>
+                <div>
+                    <p class="font-semibold text-gray-900">{{ __('Gifting That Gives Back') }}</p>
+                    <p class="text-gray-600">{{ __('All affiliate revenue goes to charity') }}</p>
+                </div>
             </div>
-
-            {{-- Create new list --}}
-            <div class="text-center md:pl-6">
-                <p class="text-gray-500 mb-3">{{ __('Ready to create your wishlist?') }}</p>
-                <a href="{{ route('register', ['locale' => app()->getLocale()]) }}"
-                   class="block w-full px-6 py-3 bg-coral-500 text-white rounded-lg hover:bg-coral-600 font-medium transition-colors text-center">
-                    {{ __('Create My List') }}
-                </a>
-            </div>
+            <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center px-5 py-2 bg-white text-gray-700 rounded-full hover:bg-gray-50 font-medium transition-colors border border-gray-200">
+                {{ __('Learn More') }} <span class="ml-2">&rarr;</span>
+            </a>
         </div>
     </div>
     @endguest
@@ -174,7 +160,7 @@
         </div>
 
         <div class="text-center mt-12">
-            <a href="{{ route('register', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center px-8 py-4 bg-teal-500 text-white rounded-full hover:bg-teal-600 font-semibold transition-colors">
+            <a href="{{ route('register', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center px-8 py-3 bg-coral-500 text-white rounded-full hover:bg-coral-600 font-semibold transition-colors shadow-md hover:shadow-lg">
                 {{ __('Get Started - It\'s Free!') }}
             </a>
         </div>
@@ -249,13 +235,13 @@
     <h2 class="text-3xl font-bold text-gray-900 mb-4">{{ __('Ready to Create Your Wishlist?') }}</h2>
     <p class="text-xl text-gray-600 mb-8 max-w-xl mx-auto">{{ __('Join thousands of happy gift-givers. It only takes a minute to get started.') }}</p>
     @guest
-        <a href="{{ route('register', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center px-10 py-5 bg-coral-500 text-white rounded-full hover:bg-coral-600 font-bold text-xl transition-colors shadow-lg hover:shadow-xl">
-            {{ __('Create Your Wishlist') }} <span class="ml-2">&#10084;&#65039;</span>
+        <a href="{{ route('register', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center px-10 py-4 bg-coral-500 text-white rounded-full hover:bg-coral-600 font-bold text-xl transition-colors shadow-lg hover:shadow-xl">
+            {{ __('Create Your Wishlist') }} <span class="ml-2">&#127873;</span>
         </a>
         <p class="mt-4 text-gray-500">{{ __('Free forever. No credit card required.') }}</p>
     @else
-        <a href="{{ route('dashboard.locale', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center px-10 py-5 bg-coral-500 text-white rounded-full hover:bg-coral-600 font-bold text-xl transition-colors shadow-lg hover:shadow-xl">
-            {{ __('Go to My Wishlists') }} <span class="ml-2">&rarr;</span>
+        <a href="{{ route('dashboard.locale', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center px-10 py-4 bg-coral-500 text-white rounded-full hover:bg-coral-600 font-bold text-xl transition-colors shadow-lg hover:shadow-xl">
+            {{ __('Go to My Wishlists') }} <span class="ml-2">&#127873;</span>
         </a>
     @endguest
 </div>
