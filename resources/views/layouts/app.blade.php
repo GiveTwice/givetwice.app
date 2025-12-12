@@ -149,12 +149,12 @@
     </div>
 
     <main class="flex-grow">
-        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto pt-6 pb-20 px-4 sm:px-6 lg:px-8">
             @yield('content')
         </div>
     </main>
 
-    <footer class="bg-white border-t border-cream-200 mt-auto">
+    <footer class="bg-white border-t border-cream-200 mt-16">
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-4 gap-8 mb-8">
                 {{-- Brand --}}

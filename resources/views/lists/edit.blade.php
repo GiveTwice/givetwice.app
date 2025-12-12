@@ -98,7 +98,7 @@
 
         {{-- Danger Zone --}}
         @unless($list->is_default)
-            <div class="card border-red-200 mt-6" x-data>
+            <div class="card border-l-4 border-l-red-400 mt-6" x-data>
                 <h2 class="text-lg font-semibold text-red-600 mb-2">{{ __('Danger Zone') }}</h2>
                 <p class="text-sm text-gray-600 mb-4">{{ __('Once you delete a list, there is no going back. Gifts in this list will not be deleted.') }}</p>
                 <button

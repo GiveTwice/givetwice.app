@@ -44,6 +44,8 @@
                     @enderror
                 </div>
 
+                <div class="form-divider"></div>
+
                 {{-- Title --}}
                 <div class="mb-6">
                     <label for="title" class="form-label">
@@ -79,6 +81,8 @@
                     @enderror
                 </div>
 
+                <div class="form-divider"></div>
+
                 {{-- Price --}}
                 <div class="mb-6">
                     <label for="price" class="form-label">
@@ -91,7 +95,7 @@
                                 id="currency"
                                 name="currency"
                                 aria-label="{{ __('Currency') }}"
-                                class="h-full pl-4 pr-8 py-3 border border-r-0 border-cream-200 rounded-l-xl bg-cream-50 text-gray-700 font-medium focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 focus:z-10 appearance-none cursor-pointer transition-colors hover:bg-cream-100"
+                                class="h-full pl-4 pr-8 py-3 border border-r-0 border-gray-200 rounded-l-xl bg-gray-50 text-gray-700 font-medium focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 focus:z-10 appearance-none cursor-pointer transition-colors hover:bg-gray-100"
                             >
                                 <option value="EUR" {{ old('currency', $gift->currency ?? 'EUR') === 'EUR' ? 'selected' : '' }}>€ EUR</option>
                                 <option value="USD" {{ old('currency', $gift->currency ?? 'EUR') === 'USD' ? 'selected' : '' }}>$ USD</option>
@@ -111,7 +115,7 @@
                             step="0.01"
                             min="0"
                             placeholder="0.00"
-                            class="flex-1 min-w-0 px-4 py-3 border border-cream-200 rounded-r-xl focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-colors @error('price') border-red-500 @enderror"
+                            class="flex-1 min-w-0 px-4 py-3 border border-gray-200 rounded-r-xl focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-colors @error('price') border-red-500 @enderror"
                         >
                     </div>
                     @error('price')
@@ -138,7 +142,7 @@
         </div>
 
         {{-- Danger Zone --}}
-        <div class="card border-red-200 mt-6" x-data>
+        <div class="card border-l-4 border-l-red-400 mt-6" x-data>
             <h2 class="text-lg font-semibold text-red-600 mb-2">{{ __('Danger Zone') }}</h2>
             <p class="text-sm text-gray-600 mb-4">{{ __('Once you delete a gift, there is no going back.') }}</p>
             <button
@@ -224,7 +228,7 @@
         {{-- Current Image --}}
         <div class="card mb-6" x-show="gift.image_url" x-cloak>
             <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Current Image') }}</h2>
-            <img :src="gift.image_url" :alt="gift.title" class="w-full h-48 object-cover rounded-xl border border-cream-200">
+            <img :src="gift.image_url" :alt="gift.title" class="w-full h-48 object-cover rounded-xl">
         </div>
 
         {{-- Fetch Status --}}
