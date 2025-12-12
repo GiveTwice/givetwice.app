@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "673b70984d86ac953858c199cd60bb5a",
+    "content-hash": "b137a43c4e148b784feaee0874e32bdf",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -2735,6 +2735,65 @@
                 }
             ],
             "time": "2025-12-07T16:03:21+00:00"
+        },
+        {
+            "name": "mattiasgeniar/product-info-fetcher",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "/Users/mattias/Projects/Repos/product-info-fetcher",
+                "reference": "fc9fe736a55f8ae6b501a8925b19b08c32e55887"
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.9",
+                "php": "^8.4"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "pestphp/pest": "^4.0",
+                "spatie/ray": "^1.28"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Mattiasgeniar\\ProductInfoFetcher\\": "src"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Mattiasgeniar\\ProductInfoFetcher\\Tests\\": "tests"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "vendor/bin/pest --no-coverage"
+                ],
+                "test-coverage": [
+                    "vendor/bin/pest --coverage"
+                ],
+                "format": [
+                    "vendor/bin/pint"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mattias Geniar",
+                    "email": "m@ttias.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "When given a product URL, will return structured data of that product, including name, description, price, etc",
+            "homepage": "https://github.com/mattiasgeniar/product-info-fetcher",
+            "keywords": [
+                "mattiasgeniar",
+                "product-info-fetcher"
+            ],
+            "transport-options": {
+                "relative": false
+            }
         },
         {
             "name": "monolog/monolog",
@@ -10535,7 +10594,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "mattiasgeniar/product-info-fetcher": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

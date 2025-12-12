@@ -120,9 +120,9 @@
 
         {{-- Price --}}
         <div class="mt-2 flex items-center justify-between">
-            @if($gift->price)
+            @if($gift->hasPrice())
                 <span class="text-lg font-bold text-coral-600">
-                    {{ $gift->currency ?? 'EUR' }} {{ number_format($gift->price, 2) }}
+                    {{ $gift->formatPrice() }}
                 </span>
             @else
                 <span class="text-sm text-gray-400 italic">{{ __('No price') }}</span>

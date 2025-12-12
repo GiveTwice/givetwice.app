@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('url', 2048);
             $table->string('title')->nullable();
             $table->text('description')->nullable();
-            $table->decimal('price', 10, 2)->nullable();
+            $table->unsignedBigInteger('price_in_cents')->nullable();
             $table->string('currency', 3)->default('EUR');
             $table->string('image_url', 2048)->nullable();
             $table->enum('fetch_status', ['pending', 'fetching', 'completed', 'failed'])->default('pending');

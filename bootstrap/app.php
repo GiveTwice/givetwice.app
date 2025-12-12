@@ -16,6 +16,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'locale' => \App\Http\Middleware\SetLocale::class,
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
         ]);
+
+        $middleware->redirectGuestsTo(function ($request) {
+            $locale = $request->route('locale') ?? app()->getLocale();
+            return route('login', ['locale' => $locale]);
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

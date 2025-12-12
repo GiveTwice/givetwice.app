@@ -107,9 +107,9 @@
 
                     {{-- Price and meta --}}
                     <div class="flex items-center gap-3 text-gray-500 mb-6">
-                        @if($gift->price)
+                        @if($gift->hasPrice())
                             <span class="text-xl font-bold text-gray-900">
-                                {{ $gift->currency ?? '€' }}{{ number_format($gift->price, 2) }}
+                                {{ $gift->formatPrice() }}
                             </span>
                             <span class="text-gray-300">&middot;</span>
                         @endif

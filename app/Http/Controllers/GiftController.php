@@ -28,7 +28,7 @@ class GiftController extends Controller
             'url' => ['required', 'url', 'max:2048'],
             'title' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
-            'price' => ['nullable', 'numeric', 'min:0', 'max:999999.99'],
+            'price' => ['nullable', 'numeric', 'min:0', 'max:9999999.99'],
             'list_id' => ['nullable', 'exists:lists,id'],
         ]);
 
@@ -40,12 +40,17 @@ class GiftController extends Controller
                 ->firstOrFail();
         }
 
+        // Convert price from decimal to cents
+        $priceInCents = isset($validated['price'])
+            ? (int) round($validated['price'] * 100)
+            : null;
+
         $gift = Gift::create([
             'user_id' => $request->user()->id,
             'url' => $validated['url'],
             'title' => $validated['title'] ?? null,
             'description' => $validated['description'] ?? null,
-            'price' => $validated['price'] ?? null,
+            'price_in_cents' => $priceInCents,
         ]);
 
         // Attach to list if specified, otherwise attach to default list
@@ -94,14 +99,19 @@ class GiftController extends Controller
         $validated = $request->validate([
             'title' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
-            'price' => ['nullable', 'numeric', 'min:0', 'max:999999.99'],
+            'price' => ['nullable', 'numeric', 'min:0', 'max:9999999.99'],
             'url' => ['nullable', 'url', 'max:2048'],
         ]);
+
+        // Convert price from decimal to cents (only if provided)
+        $priceInCents = isset($validated['price'])
+            ? (int) round($validated['price'] * 100)
+            : $gift->price_in_cents;
 
         $gift->update([
             'title' => $validated['title'] ?? $gift->title,
             'description' => $validated['description'] ?? $gift->description,
-            'price' => $validated['price'] ?? $gift->price,
+            'price_in_cents' => $priceInCents,
             'url' => $validated['url'] ?? $gift->url,
         ]);
 

@@ -26,7 +26,7 @@ class Gift extends Model
         'url',
         'title',
         'description',
-        'price',
+        'price_in_cents',
         'currency',
         'image_url',
         'fetch_status',
@@ -36,9 +36,54 @@ class Gift extends Model
     protected function casts(): array
     {
         return [
-            'price' => 'decimal:2',
+            'price_in_cents' => 'integer',
             'fetched_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Format the price for display (e.g., "€ 12.99" or "EUR 12.99").
+     */
+    public function formatPrice(bool $useSymbol = true): ?string
+    {
+        if ($this->price_in_cents === null) {
+            return null;
+        }
+
+        $amount = number_format($this->price_in_cents / 100, 2, '.', '');
+
+        $symbols = [
+            'EUR' => '€',
+            'USD' => '$',
+            'GBP' => '£',
+            'JPY' => '¥',
+        ];
+
+        $currencyDisplay = $useSymbol && isset($symbols[$this->currency])
+            ? $symbols[$this->currency]
+            : $this->currency;
+
+        return $currencyDisplay.' '.$amount;
+    }
+
+    /**
+     * Get the price as a decimal value (for form inputs).
+     */
+    public function getPriceAsDecimal(): ?float
+    {
+        if ($this->price_in_cents === null) {
+            return null;
+        }
+
+        return $this->price_in_cents / 100;
+    }
+
+    /**
+     * Check if the gift has a price set.
+     */
+    public function hasPrice(): bool
+    {
+        return $this->price_in_cents !== null;
     }
 
     public function user(): BelongsTo

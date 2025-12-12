@@ -140,9 +140,9 @@
             <div class="p-5">
                 <h2 class="text-lg font-bold text-gray-900 mb-2">{{ $gift->title ?: __('Untitled gift') }}</h2>
 
-                @if($gift->price)
+                @if($gift->hasPrice())
                     <p class="text-xl font-bold text-coral-600 mb-3">
-                        {{ $gift->currency ?? '€' }}{{ number_format($gift->price, 2) }}
+                        {{ $gift->formatPrice() }}
                     </p>
                 @endif
 

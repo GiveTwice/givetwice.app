@@ -5,6 +5,12 @@
     "description": "The skeleton application for the Laravel framework.",
     "keywords": ["laravel", "framework"],
     "license": "MIT",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "/Users/mattias/Projects/Repos/product-info-fetcher"
+        }
+    ],
     "require": {
         "php": "^8.2",
         "laravel/fortify": "^1.32",
@@ -13,6 +19,7 @@
         "laravel/reverb": "^1.6",
         "laravel/socialite": "^5.24",
         "laravel/tinker": "^2.10.1",
+        "mattiasgeniar/product-info-fetcher": "@dev",
         "symfony/http-client": "^8.0",
         "symfony/postmark-mailer": "^8.0"
     },

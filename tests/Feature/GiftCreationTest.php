@@ -63,6 +63,8 @@ class GiftCreationTest extends TestCase
 
     public function test_gift_is_created_with_pending_fetch_status_by_default(): void
     {
+        Queue::fake();
+
         $user = User::factory()->create();
 
         $gift = Gift::create([

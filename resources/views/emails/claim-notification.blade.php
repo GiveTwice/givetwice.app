@@ -11,8 +11,8 @@
 
     <div style="background: #f0fdfa; padding: 15px; border-radius: 12px; margin: 20px 0; border: 1px solid #99f6e4;">
         <strong style="color: #0f766e;">{{ $gift->title ?: __('Untitled gift') }}</strong>
-        @if($gift->price)
-            <br><span style="color: #14b8a6; font-weight: 600;">{{ $gift->currency }} {{ number_format($gift->price, 2) }}</span>
+        @if($gift->hasPrice())
+            <br><span style="color: #14b8a6; font-weight: 600;">{{ $gift->formatPrice(false) }}</span>
         @endif
     </div>
 

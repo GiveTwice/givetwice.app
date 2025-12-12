@@ -82,13 +82,13 @@
                 {{-- Price --}}
                 <div class="mb-6">
                     <label for="price" class="form-label">
-                        {{ __('Price') }} (EUR)
+                        {{ __('Price') }} ({{ $gift->currency ?? 'EUR' }})
                     </label>
                     <input
                         type="number"
                         id="price"
                         name="price"
-                        value="{{ old('price', $gift->price) }}"
+                        value="{{ old('price', $gift->getPriceAsDecimal()) }}"
                         step="0.01"
                         min="0"
                         placeholder="0.00"

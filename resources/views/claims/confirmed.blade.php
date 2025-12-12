@@ -53,9 +53,9 @@
                 {{-- Gift Info --}}
                 <div class="flex-1 min-w-0">
                     <h2 class="font-bold text-gray-900 mb-1">{{ $gift->title ?: __('Untitled gift') }}</h2>
-                    @if($gift->price)
+                    @if($gift->hasPrice())
                         <p class="text-lg font-bold text-coral-600 mb-2">
-                            {{ $gift->currency ?? '€' }}{{ number_format($gift->price, 2) }}
+                            {{ $gift->formatPrice() }}
                         </p>
                     @endif
                     @if($gift->url && $siteName)
