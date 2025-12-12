@@ -2,33 +2,107 @@
 
 @section('title', __('Claim Gift'))
 
+@php
+    $siteName = '';
+    if ($gift->url) {
+        $parsedUrl = parse_url($gift->url);
+        $host = $parsedUrl['host'] ?? '';
+        $siteName = preg_replace('/^www\./', '', $host);
+    }
+@endphp
+
 @section('content')
-{{-- Breadcrumb --}}
-<div class="breadcrumb">
-    @if($list)
-        <a href="{{ url('/' . app()->getLocale() . '/view/' . $list->slug) }}" class="breadcrumb-link">{{ $list->name }}</a>
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-    @endif
-    <span class="text-gray-900 font-medium">{{ __('Claim Gift') }}</span>
+{{-- Context Hero Card --}}
+<div class="mb-6 bg-white rounded-2xl border border-cream-200/60 shadow-sm overflow-hidden">
+    {{-- Main content area --}}
+    <div class="p-5 sm:p-6">
+        <div class="flex items-start gap-4 sm:gap-5">
+            {{-- Gift image or placeholder --}}
+            <div class="flex-shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-xl bg-cream-50 border border-cream-200 overflow-hidden">
+                @if($gift->image_url)
+                    <img src="{{ $gift->image_url }}" alt="{{ $gift->title }}" class="w-full h-full object-cover">
+                @else
+                    <div class="w-full h-full flex items-center justify-center text-cream-400">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                @endif
+            </div>
+
+            {{-- Gift info --}}
+            <div class="flex-1 min-w-0">
+                @if($list)
+                    <a href="{{ url('/' . app()->getLocale() . '/view/' . $list->slug) }}" class="text-coral-500 text-xs sm:text-sm tracking-wide uppercase font-medium hover:text-coral-600 transition-colors">
+                        {{ __('From :name\'s wishlist', ['name' => $list->user->name]) }}
+                    </a>
+                @else
+                    <p class="text-coral-500 text-xs sm:text-sm tracking-wide uppercase font-medium">
+                        {{ __('Claim Gift') }}
+                    </p>
+                @endif
+                <h1 class="text-lg sm:text-xl font-bold text-gray-900 line-clamp-2 mt-0.5">
+                    {{ $gift->title ?: __('Untitled gift') }}
+                </h1>
+                @if($gift->hasPrice())
+                    <p class="text-coral-600 font-bold mt-1">{{ $gift->formatPrice() }}</p>
+                @endif
+                @if($siteName)
+                    <p class="text-gray-400 text-sm mt-1">{{ $siteName }}</p>
+                @endif
+            </div>
+
+            {{-- Step indicator --}}
+            <div class="flex-shrink-0 hidden sm:block">
+                <div class="flex items-center gap-1.5 px-3 py-1.5 bg-teal-500 rounded-full">
+                    <span class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center text-xs font-bold text-white">2</span>
+                    <span class="text-sm font-medium text-white">{{ __('Claim') }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Step progress footer --}}
+    <div class="px-5 sm:px-6 py-3 bg-cream-50/50 border-t border-cream-100">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3 text-sm">
+                <span class="flex items-center gap-1.5">
+                    <span class="w-6 h-6 bg-coral-100 text-coral-400 rounded-full flex items-center justify-center text-xs font-bold">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                    </span>
+                    <span class="text-gray-400 font-medium">{{ __('Browse') }}</span>
+                </span>
+                <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                <span class="flex items-center gap-1.5">
+                    <span class="w-6 h-6 bg-teal-500 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-sm">2</span>
+                    <span class="text-gray-900 font-semibold">{{ __('Claim') }}</span>
+                </span>
+                <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                <span class="flex items-center gap-1.5">
+                    <span class="w-6 h-6 bg-cream-200 text-gray-400 rounded-full flex items-center justify-center text-xs font-bold">3</span>
+                    <span class="text-gray-400 font-medium">{{ __('Gift') }}</span>
+                </span>
+            </div>
+        </div>
+    </div>
 </div>
 
-{{-- Header --}}
-<div class="mb-8">
-    <h1 class="text-2xl font-bold text-gray-900">{{ __('Claim Gift') }}</h1>
-    <p class="text-gray-600 mt-1">{{ __('Enter your email to claim this gift. We\'ll send you a confirmation link.') }}</p>
-</div>
+{{-- Claim Form Card --}}
+<div class="bg-white rounded-2xl shadow-sm border border-cream-200/60 overflow-hidden">
+    {{-- Section header --}}
+    <div class="px-6 py-5 border-b border-gray-100">
+        <h2 class="text-xl font-bold text-gray-900">{{ __('Confirm your claim') }}</h2>
+        <p class="text-gray-500 text-sm mt-1">{{ __('Enter your email and we\'ll send you a confirmation link.') }}</p>
+    </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
-    {{-- Form Section --}}
-    <div class="lg:col-span-3">
-        <div class="card">
-            <form action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/claim-anonymous') }}" method="POST">
-                @csrf
+    {{-- Form --}}
+    <div class="p-6">
+        <form action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/claim-anonymous') }}" method="POST">
+            @csrf
 
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {{-- Email --}}
-                <div class="mb-6">
+                <div>
                     <label for="email" class="form-label">
                         {{ __('Email') }} <span class="text-coral-500">*</span>
                     </label>
@@ -38,17 +112,17 @@
                         name="email"
                         value="{{ old('email') }}"
                         required
+                        autofocus
                         placeholder="{{ __('your@email.com') }}"
                         class="form-input @error('email') border-red-500 @enderror"
                     >
                     @error('email')
                         <p class="form-error">{{ $message }}</p>
                     @enderror
-                    <p class="form-help">{{ __('We\'ll send you a confirmation link to verify your claim.') }}</p>
                 </div>
 
                 {{-- Name (optional) --}}
-                <div class="mb-6">
+                <div>
                     <label for="name" class="form-label">
                         {{ __('Name') }} <span class="text-gray-400 font-normal">({{ __('optional') }})</span>
                     </label>
@@ -64,50 +138,47 @@
                         <p class="form-error">{{ $message }}</p>
                     @enderror
                 </div>
+            </div>
 
-                {{-- Privacy note --}}
-                <div class="info-box-success mb-6">
-                    <div class="flex gap-3">
-                        <svg class="w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
-                        <div class="text-sm">
-                            <p class="font-medium text-teal-800">{{ __('Your claim is anonymous') }}</p>
-                            <p class="text-teal-700">{{ __('The list owner will only see that someone claimed this gift, not who.') }}</p>
-                        </div>
-                    </div>
+            {{-- Privacy assurance --}}
+            <div class="mt-6 flex items-start gap-3 p-4 bg-teal-50 rounded-xl border border-teal-100">
+                <div class="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg class="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
                 </div>
-
-                {{-- Action buttons --}}
-                <div class="form-actions">
-                    @if($list)
-                        <a href="{{ url('/' . app()->getLocale() . '/view/' . $list->slug) }}" class="btn-cancel">
-                            {{ __('Cancel') }}
-                        </a>
-                    @endif
-                    <button type="submit" class="inline-flex items-center gap-2 bg-teal-500 text-white px-5 py-2.5 rounded-xl hover:bg-teal-600 transition-colors font-medium shadow-sm">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
-                        {{ __('Send Confirmation Email') }}
-                    </button>
+                <div>
+                    <p class="text-sm font-medium text-teal-800">{{ __('Your claim is anonymous') }}</p>
+                    <p class="text-sm text-teal-700 mt-0.5">{{ __('The list owner will only see that someone claimed this gift, not who.') }}</p>
                 </div>
-            </form>
-        </div>
+            </div>
 
-        {{-- Login prompt --}}
-        <div class="mt-6 text-center">
-            <p class="text-gray-500">
-                {{ __('Already have an account?') }}
-                <a href="{{ url('/' . app()->getLocale() . '/login') }}" class="text-coral-600 hover:text-coral-700 hover:underline font-medium">{{ __('Login') }}</a>
-                {{ __('to claim faster') }}
-            </p>
-        </div>
+            {{-- Action buttons --}}
+            <div class="mt-6 flex items-center justify-between gap-4 pt-6 border-t border-gray-100">
+                @if($list)
+                    <a href="{{ url('/' . app()->getLocale() . '/view/' . $list->slug) }}" class="btn-cancel">
+                        {{ __('Cancel') }}
+                    </a>
+                @else
+                    <div></div>
+                @endif
+                <button type="submit" class="inline-flex items-center gap-2 bg-teal-500 text-white px-6 py-3 rounded-xl hover:bg-teal-600 transition-colors font-semibold shadow-sm">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    {{ __('Claim This Gift') }}
+                </button>
+            </div>
+        </form>
     </div>
+</div>
 
-    {{-- Gift Preview Section --}}
-    <div class="lg:col-span-2">
-        <x-gift-preview :gift="$gift" variant="vertical" />
-    </div>
+{{-- Login prompt --}}
+<div class="mt-6 text-center">
+    <p class="text-gray-500 text-sm">
+        {{ __('Already have an account?') }}
+        <a href="{{ url('/' . app()->getLocale() . '/login') }}" class="text-coral-600 hover:text-coral-700 hover:underline font-medium">{{ __('Login') }}</a>
+        {{ __('to claim faster') }}
+    </p>
 </div>
 @endsection

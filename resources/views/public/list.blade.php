@@ -9,6 +9,127 @@
 @endphp
 
 @section('content')
+{{-- Real-time updates wrapper --}}
+<div
+    x-data="{
+        availableCount: {{ $availableGifts }},
+        claimedCount: {{ $claimedGifts }},
+        init() {
+            if (window.Echo) {
+                // Subscribe to public list channel (no auth required)
+                window.Echo.channel('list.{{ $list->slug }}')
+                    .listen('.gift.fetch.completed', (e) => {
+                        this.updateGiftCard(e.gift);
+                    })
+                    .listen('.gift.claimed', (e) => {
+                        this.markGiftAsClaimed(e.gift.id);
+                    });
+            }
+        },
+        updateGiftCard(gift) {
+            const card = document.querySelector(`[data-gift-id='${gift.id}']`);
+            if (!card) return;
+
+            // Update image
+            const imgContainer = card.querySelector('[data-gift-image]');
+            if (imgContainer && gift.image_url) {
+                const placeholder = imgContainer.querySelector('[data-gift-placeholder]');
+                if (placeholder) placeholder.remove();
+                const existingImg = imgContainer.querySelector('img');
+                if (existingImg) existingImg.remove();
+
+                const img = document.createElement('img');
+                img.src = gift.image_url;
+                img.alt = gift.title || '';
+                img.className = 'w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500';
+                img.loading = 'lazy';
+                imgContainer.insertBefore(img, imgContainer.firstChild);
+            }
+
+            // Remove fetching badge
+            const badge = card.querySelector('[data-gift-badge]');
+            if (badge) badge.remove();
+
+            // Update title
+            const titleEl = card.querySelector('[data-gift-title]');
+            if (titleEl) {
+                titleEl.textContent = gift.title || '{{ __('Untitled gift') }}';
+                titleEl.title = gift.title || '';
+            }
+
+            // Update price
+            const priceContainer = card.querySelector('[data-gift-price]');
+            if (priceContainer && gift.price_formatted) {
+                priceContainer.replaceChildren();
+                const priceSpan = document.createElement('span');
+                priceSpan.className = 'text-base font-bold text-coral-600';
+                priceSpan.textContent = gift.price_formatted;
+                priceContainer.appendChild(priceSpan);
+            }
+
+            // Update modal if exists
+            this.updateGiftModal(gift);
+        },
+        updateGiftModal(gift) {
+            // Find the modal component for this gift
+            const modalWrapper = document.querySelector(`[x-on\\:open-gift-modal-${gift.id}\\.window]`);
+            if (!modalWrapper) return;
+
+            // Update modal image
+            const modalImg = modalWrapper.querySelector('img');
+            if (modalImg && gift.image_url) {
+                modalImg.src = gift.image_url;
+                modalImg.alt = gift.title || '';
+            }
+
+            // Update modal title
+            const modalTitle = modalWrapper.querySelector('h2');
+            if (modalTitle) {
+                modalTitle.textContent = gift.title || '{{ __('Untitled gift') }}';
+            }
+        },
+        markGiftAsClaimed(giftId) {
+            const card = document.querySelector(`[data-gift-id='${giftId}']`);
+            if (!card) return;
+
+            // Update stats
+            this.availableCount = Math.max(0, this.availableCount - 1);
+            this.claimedCount++;
+
+            // Add claimed badge if not exists
+            const imgContainer = card.querySelector('[data-gift-image]');
+            if (imgContainer && !imgContainer.querySelector('.claimed-badge')) {
+                const badgeWrapper = document.createElement('div');
+                badgeWrapper.className = 'absolute top-3 right-3 claimed-badge';
+                const badgeSpan = document.createElement('span');
+                badgeSpan.className = 'inline-flex items-center gap-1 px-2.5 py-1 bg-sunny-100/95 backdrop-blur-sm text-sunny-700 text-xs font-semibold rounded-full shadow-sm';
+                badgeSpan.textContent = '{{ __('Claimed') }}';
+                badgeWrapper.appendChild(badgeSpan);
+                imgContainer.appendChild(badgeWrapper);
+            }
+
+            // Disable claim button
+            const claimForm = card.querySelector('form[action*=\"/claim\"]');
+            const claimLink = card.querySelector('a[href*=\"/claim\"]');
+            if (claimForm) {
+                const disabledBtn = document.createElement('button');
+                disabledBtn.type = 'button';
+                disabledBtn.disabled = true;
+                disabledBtn.className = 'w-full text-xs bg-cream-200 text-cream-500 px-3 py-2 rounded-lg cursor-not-allowed';
+                disabledBtn.textContent = '{{ __('Already claimed') }}';
+                claimForm.replaceWith(disabledBtn);
+            } else if (claimLink) {
+                const disabledBtn = document.createElement('button');
+                disabledBtn.type = 'button';
+                disabledBtn.disabled = true;
+                disabledBtn.className = 'w-full text-xs bg-cream-200 text-cream-500 px-3 py-2 rounded-lg cursor-not-allowed';
+                disabledBtn.textContent = '{{ __('Already claimed') }}';
+                claimLink.replaceWith(disabledBtn);
+            }
+        }
+    }"
+>
+
 {{-- Unified Hero Card --}}
 <div class="mb-6 bg-white rounded-2xl border border-cream-200/60 shadow-sm overflow-hidden">
     {{-- Main content area --}}
@@ -33,47 +154,49 @@
                 @endif
             </div>
 
-            {{-- Stats --}}
+            {{-- Stats (reactive with Alpine.js) --}}
             <div class="flex flex-col items-end gap-1.5 flex-shrink-0">
                 <div class="flex items-center gap-1.5 px-3 py-1.5 bg-teal-500 rounded-full">
                     <span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
-                    <span class="text-sm font-bold text-white">{{ $availableGifts }}</span>
+                    <span class="text-sm font-bold text-white" x-text="availableCount">{{ $availableGifts }}</span>
                     <span class="text-xs sm:text-sm text-teal-100">{{ __('available') }}</span>
                 </div>
-                @if($claimedGifts > 0)
-                    <div class="flex items-center gap-1.5 px-2.5 py-1 bg-cream-100 rounded-full">
-                        <span class="w-1.5 h-1.5 bg-sunny-500 rounded-full"></span>
-                        <span class="text-xs font-semibold text-gray-600">{{ $claimedGifts }}</span>
-                        <span class="text-xs text-gray-500">{{ __('claimed') }}</span>
-                    </div>
-                @endif
+                <div class="flex items-center gap-1.5 px-2.5 py-1 bg-cream-100 rounded-full" x-show="claimedCount > 0" x-cloak>
+                    <span class="w-1.5 h-1.5 bg-sunny-500 rounded-full"></span>
+                    <span class="text-xs font-semibold text-gray-600" x-text="claimedCount">{{ $claimedGifts }}</span>
+                    <span class="text-xs text-gray-500">{{ __('claimed') }}</span>
+                </div>
             </div>
         </div>
     </div>
 
     {{-- Integrated explainer footer - only for non-owners --}}
     @unless($isOwner)
-        <div class="px-5 sm:px-6 py-3 bg-cream-50/50 border-t border-cream-100">
-            <div class="flex items-center justify-between gap-4">
-                <p class="text-gray-500 text-sm truncate">
-                    {{ __('Claim gifts to avoid duplicates — :name won\'t see who.', ['name' => $list->user->name]) }}
-                </p>
-                <div class="flex items-center gap-2 text-sm flex-shrink-0">
-                    <span class="flex items-center gap-1">
-                        <span class="w-5 h-5 bg-coral-100 text-coral-600 rounded-full flex items-center justify-center text-xs font-bold">1</span>
-                        <span class="text-gray-500 hidden sm:inline">{{ __('Browse') }}</span>
+        <div class="px-5 sm:px-6 py-4 bg-cream-50/50 border-t border-cream-100">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
+                {{-- Steps first (the "how") --}}
+                <div class="flex items-center gap-3 text-sm">
+                    <span class="flex items-center gap-1.5">
+                        <span class="w-6 h-6 bg-coral-100 text-coral-600 rounded-full flex items-center justify-center text-xs font-bold shadow-sm">1</span>
+                        <span class="text-gray-600 font-medium">{{ __('Browse') }}</span>
                     </span>
-                    <svg class="w-3 h-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-                    <span class="flex items-center gap-1">
-                        <span class="w-5 h-5 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center text-xs font-bold">2</span>
-                        <span class="text-gray-500 hidden sm:inline">{{ __('Claim') }}</span>
+                    <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                    <span class="flex items-center gap-1.5">
+                        <span class="w-6 h-6 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center text-xs font-bold shadow-sm">2</span>
+                        <span class="text-gray-600 font-medium">{{ __('Claim') }}</span>
                     </span>
-                    <svg class="w-3 h-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-                    <span class="flex items-center gap-1">
-                        <span class="w-5 h-5 bg-sunny-200 text-sunny-700 rounded-full flex items-center justify-center text-xs font-bold">3</span>
-                        <span class="text-gray-500 hidden sm:inline">{{ __('Gift') }}</span>
+                    <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                    <span class="flex items-center gap-1.5">
+                        <span class="w-6 h-6 bg-sunny-200 text-sunny-700 rounded-full flex items-center justify-center text-xs font-bold shadow-sm">3</span>
+                        <span class="text-gray-600 font-medium">{{ __('Gift') }}</span>
                     </span>
                 </div>
+                {{-- Divider --}}
+                <div class="hidden sm:block w-px h-4 bg-gray-200"></div>
+                {{-- Privacy note (the "why") --}}
+                <p class="text-gray-400 text-sm">
+                    {{ __(':name won\'t see who claimed what.', ['name' => $list->user->name]) }}
+                </p>
             </div>
         </div>
     @endunless
@@ -205,4 +328,6 @@
         <span>{{ __('Supports charity') }}</span>
     </div>
 </div>
+
+</div>{{-- End real-time updates wrapper --}}
 @endsection

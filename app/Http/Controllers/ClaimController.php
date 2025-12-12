@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\GiftClaimed;
 use App\Mail\ClaimConfirmationMail;
 use App\Models\Claim;
 use App\Models\Gift;
@@ -40,12 +41,16 @@ class ClaimController extends Controller
         }
 
         // Create the claim (auto-confirmed for registered users)
-        Claim::create([
+        $claim = Claim::create([
             'gift_id' => $gift->id,
             'user_id' => $user->id,
             'confirmed_at' => now(),
             'notes' => $request->input('notes'),
         ]);
+
+        // Broadcast the claim event for real-time updates
+        $gift->load('lists');
+        event(new GiftClaimed($gift, $claim));
 
         return back()->with('success', __('Gift claimed! The owner won\'t see who claimed it.'));
     }

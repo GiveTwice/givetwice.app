@@ -3,16 +3,16 @@
 @section('title', __('Someone claimed a gift from your wishlist!'))
 
 @section('content')
-    <h1 style="color: #0d9488; margin-top: 0;">{{ __('Good news!') }}</h1>
+    <h1 style="color: #E8614D; margin-top: 0; font-size: 24px;">{{ __('Good news!') }} &#127873;</h1>
 
     <p>{{ __('Hello') }} {{ $owner->name }},</p>
 
     <p>{{ __('Someone has claimed a gift from your wishlist:') }}</p>
 
-    <div style="background: #f0fdfa; padding: 15px; border-radius: 12px; margin: 20px 0; border: 1px solid #99f6e4;">
-        <strong style="color: #0f766e;">{{ $gift->title ?: __('Untitled gift') }}</strong>
+    <div style="background: #FEF7F5; padding: 16px; border-radius: 12px; margin: 20px 0; border: 1px solid #FECDC7;">
+        <strong style="color: #C4493A;">{{ $gift->title ?: __('Untitled gift') }}</strong>
         @if($gift->hasPrice())
-            <br><span style="color: #14b8a6; font-weight: 600;">{{ $gift->formatPrice(false) }}</span>
+            <br><span style="color: #E8614D; font-weight: 600;">{{ $gift->formatPrice(false) }}</span>
         @endif
     </div>
 

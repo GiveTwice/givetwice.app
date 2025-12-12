@@ -68,12 +68,13 @@ class FetchGiftDetailsAction implements ShouldQueue
             ]);
 
             // Broadcast failure before rethrowing so UI updates
-            GiftFetchCompleted::dispatch($this->gift->fresh());
+            GiftFetchCompleted::dispatch($this->gift->fresh()->load('lists'));
 
             throw $e;
         }
 
         // Broadcast the result (success or handled failure) so UI can update
-        GiftFetchCompleted::dispatch($this->gift->fresh());
+        // Load lists for broadcasting to public list channels
+        GiftFetchCompleted::dispatch($this->gift->fresh()->load('lists'));
     }
 }

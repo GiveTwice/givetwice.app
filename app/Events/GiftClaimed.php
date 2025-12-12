@@ -4,6 +4,7 @@ namespace App\Events;
 
 use App\Models\Claim;
 use App\Models\Gift;
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -21,9 +22,18 @@ class GiftClaimed implements ShouldBroadcast
 
     public function broadcastOn(): array
     {
-        return [
+        $channels = [
+            // Owner's private channel (for dashboard notifications)
             new PrivateChannel('user.'.$this->gift->user_id),
         ];
+
+        // Add public channels for each list this gift belongs to
+        // So other viewers see the real-time claim status update
+        foreach ($this->gift->lists as $list) {
+            $channels[] = new Channel('list.'.$list->slug);
+        }
+
+        return $channels;
     }
 
     public function broadcastAs(): string
