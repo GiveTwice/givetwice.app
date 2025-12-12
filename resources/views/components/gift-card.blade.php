@@ -14,15 +14,15 @@
 @endphp
 
 <div
-    class="group relative bg-white rounded-2xl border border-cream-200 overflow-hidden shadow-sm hover:shadow-lg hover:border-cream-300 transition-all duration-300 {{ $openModal ? 'cursor-pointer' : '' }}"
+    class="group relative bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-lg hover:border-gray-300 transition-all duration-300 {{ $openModal ? 'cursor-pointer' : '' }}"
     data-gift-id="{{ $gift->id }}"
     @if($openModal)
         x-data
         x-on:click="$dispatch('open-gift-modal-{{ $gift->id }}')"
     @endif
 >
-    {{-- Image Container - Fixed 4:3 aspect ratio for consistent heights --}}
-    <div class="relative aspect-[4/3] bg-cream-100 overflow-hidden" data-gift-image>
+    {{-- Image Container - Square aspect ratio for product images --}}
+    <div class="relative aspect-square bg-cream-100 overflow-hidden" data-gift-image>
         @if($gift->image_url)
             {{--
                 Image handling for various aspect ratios:
@@ -112,33 +112,33 @@
         @endif
     </div>
 
-    {{-- Card content --}}
-    <div class="p-4">
+    {{-- Card content - compact --}}
+    <div class="px-3 py-2.5">
         {{-- Title --}}
-        <h3 class="font-semibold text-gray-900 leading-tight line-clamp-2 min-h-[2.5rem]" title="{{ $gift->title }}" data-gift-title>
+        <h3 class="font-semibold text-gray-900 text-sm leading-snug line-clamp-2 min-h-[2.25rem]" title="{{ $gift->title }}" data-gift-title>
             {{ $gift->title ?: __('Untitled gift') }}
         </h3>
 
         {{-- Price --}}
-        <div class="mt-2 flex items-center justify-between" data-gift-price>
+        <div class="mt-1.5 flex items-center justify-between" data-gift-price>
             @if($gift->hasPrice())
-                <span class="text-lg font-bold text-coral-600">
+                <span class="text-base font-bold text-coral-600">
                     {{ $gift->formatPrice() }}
                 </span>
             @else
-                <span class="text-sm text-gray-400 italic">{{ __('No price') }}</span>
+                <span class="text-xs text-gray-400 italic">{{ __('No price') }}</span>
             @endif
         </div>
 
         {{-- Claim actions for public view --}}
         @if($showClaimActions && !$isOwner)
-            <div class="mt-4 space-y-2" @if($openModal) x-on:click.stop @endif>
+            <div class="mt-2.5 space-y-1.5" @if($openModal) x-on:click.stop @endif>
                 {{-- View product link --}}
                 @if($gift->url)
                     <a href="{{ $gift->url }}"
                        target="_blank"
                        rel="noopener noreferrer"
-                       class="block w-full text-center text-sm bg-cream-100 text-gray-700 px-4 py-2.5 rounded-xl hover:bg-cream-200 transition-colors font-medium">
+                       class="block w-full text-center text-xs bg-cream-100 text-gray-700 px-3 py-2 rounded-lg hover:bg-cream-200 transition-colors font-medium">
                         {{ __('View Product') }}
                     </a>
                 @endif
@@ -149,13 +149,13 @@
                         @csrf
                         @method('DELETE')
                         <button type="submit"
-                            class="w-full text-sm bg-coral-100 text-coral-700 px-4 py-2.5 rounded-xl hover:bg-coral-200 transition-colors font-medium">
+                            class="w-full text-xs bg-coral-100 text-coral-700 px-3 py-2 rounded-lg hover:bg-coral-200 transition-colors font-medium">
                             {{ __('Unclaim') }}
                         </button>
                     </form>
                 @elseif($isClaimed)
                     <button type="button" disabled
-                        class="w-full text-sm bg-cream-200 text-cream-500 px-4 py-2.5 rounded-xl cursor-not-allowed">
+                        class="w-full text-xs bg-cream-200 text-cream-500 px-3 py-2 rounded-lg cursor-not-allowed">
                         {{ __('Already claimed') }}
                     </button>
                 @else
@@ -163,13 +163,13 @@
                         <form action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/claim') }}" method="POST">
                             @csrf
                             <button type="submit"
-                                class="w-full text-sm bg-teal-500 text-white px-4 py-2.5 rounded-xl hover:bg-teal-600 transition-colors font-medium shadow-sm hover:shadow">
+                                class="w-full text-xs bg-teal-500 text-white px-3 py-2 rounded-lg hover:bg-teal-600 transition-colors font-medium shadow-sm hover:shadow">
                                 {{ __("I'll get this!") }}
                             </button>
                         </form>
                     @else
                         <a href="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/claim') }}"
-                           class="block w-full text-center text-sm bg-teal-500 text-white px-4 py-2.5 rounded-xl hover:bg-teal-600 transition-colors font-medium shadow-sm hover:shadow">
+                           class="block w-full text-center text-xs bg-teal-500 text-white px-3 py-2 rounded-lg hover:bg-teal-600 transition-colors font-medium shadow-sm hover:shadow">
                             {{ __("I'll get this!") }}
                         </a>
                     @endauth

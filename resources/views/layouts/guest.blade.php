@@ -21,7 +21,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-cream-50 flex flex-col">
+<body class="min-h-screen bg-gradient-warm flex flex-col">
     <header class="bg-white border-b border-cream-200">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">

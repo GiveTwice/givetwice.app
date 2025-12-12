@@ -11,6 +11,20 @@
 }
 
 /* ============================================
+   Page Background - Living Gradient
+   Warmth radiates from top, fading to soft cream
+   ============================================ */
+.bg-gradient-warm {
+    background: linear-gradient(
+        180deg,
+        oklch(0.96 0.04 50) 0%,
+        oklch(0.98 0.02 70) 50%,
+        oklch(0.99 0.01 80) 100%
+    );
+    background-attachment: fixed;
+}
+
+/* ============================================
    Button Component Classes
    Color scheme matches "How It Works" section:
    - Primary (coral/red): Create, Add Gift, Submit

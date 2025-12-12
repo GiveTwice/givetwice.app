@@ -21,7 +21,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-cream-50 flex flex-col">
+<body class="min-h-screen bg-gradient-warm flex flex-col">
     <header class="bg-white border-b border-cream-200">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
@@ -95,24 +95,27 @@
     <div class="fixed top-20 right-4 z-50 flex flex-col gap-3">
         @if (session('success'))
             <div
-                x-data="{ show: true }"
-                x-init="setTimeout(() => show = false, 15000)"
+                x-data="{ show: false }"
+                x-init="$nextTick(() => { show = true; setTimeout(() => show = false, 8000) })"
                 x-show="show"
-                x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="opacity-0 translate-x-8"
-                x-transition:enter-end="opacity-100 translate-x-0"
-                x-transition:leave="transition ease-in duration-200"
-                x-transition:leave-start="opacity-100 translate-x-0"
-                x-transition:leave-end="opacity-0 translate-x-8"
-                class="p-4 bg-white border border-teal-200 text-teal-800 rounded-xl shadow-lg flex items-center gap-3 max-w-sm"
+                x-transition:enter="transition ease-out duration-150"
+                x-transition:enter-start="opacity-0 translate-y-2 scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                x-transition:leave="transition ease-in duration-100"
+                x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-95"
+                x-cloak
+                class="px-4 py-3 bg-teal-500 text-white rounded-xl shadow-lg shadow-teal-500/25 flex items-center gap-3 max-w-sm"
+                role="alert"
+                aria-live="polite"
             >
-                <span class="flex-shrink-0 w-6 h-6 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center">
+                <span class="flex-shrink-0 w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
                     </svg>
                 </span>
-                <span class="text-sm">{{ session('success') }}</span>
-                <button x-on:click="show = false" class="flex-shrink-0 text-gray-400 hover:text-gray-600">
+                <span class="text-sm font-medium flex-1">{{ session('success') }}</span>
+                <button x-on:click="show = false" class="flex-shrink-0 text-white/70 hover:text-white transition-colors" aria-label="{{ __('Dismiss') }}">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -122,24 +125,27 @@
 
         @if (session('error'))
             <div
-                x-data="{ show: true }"
-                x-init="setTimeout(() => show = false, 15000)"
+                x-data="{ show: false }"
+                x-init="$nextTick(() => { show = true; setTimeout(() => show = false, 10000) })"
                 x-show="show"
-                x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="opacity-0 translate-x-8"
-                x-transition:enter-end="opacity-100 translate-x-0"
-                x-transition:leave="transition ease-in duration-200"
-                x-transition:leave-start="opacity-100 translate-x-0"
-                x-transition:leave-end="opacity-0 translate-x-8"
-                class="p-4 bg-white border border-coral-200 text-coral-800 rounded-xl shadow-lg flex items-center gap-3 max-w-sm"
+                x-transition:enter="transition ease-out duration-150"
+                x-transition:enter-start="opacity-0 translate-y-2 scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                x-transition:leave="transition ease-in duration-100"
+                x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-95"
+                x-cloak
+                class="px-4 py-3 bg-coral-500 text-white rounded-xl shadow-lg shadow-coral-500/25 flex items-center gap-3 max-w-sm"
+                role="alert"
+                aria-live="assertive"
             >
-                <span class="flex-shrink-0 w-6 h-6 bg-coral-100 text-coral-600 rounded-full flex items-center justify-center">
+                <span class="flex-shrink-0 w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
                 </span>
-                <span class="text-sm">{{ session('error') }}</span>
-                <button x-on:click="show = false" class="flex-shrink-0 text-gray-400 hover:text-gray-600">
+                <span class="text-sm font-medium flex-1">{{ session('error') }}</span>
+                <button x-on:click="show = false" class="flex-shrink-0 text-white/70 hover:text-white transition-colors" aria-label="{{ __('Dismiss') }}">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>

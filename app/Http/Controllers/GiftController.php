@@ -17,6 +17,14 @@ class GiftController extends Controller
         $lists = $request->user()->lists()->get();
         $defaultList = $lists->firstWhere('is_default', true) ?? $lists->first();
 
+        // Check for list_id query param to pre-select a specific list
+        $selectedListId = $request->query('list');
+        if ($selectedListId && $lists->contains('id', $selectedListId)) {
+            $selectedListId = (int) $selectedListId;
+        } else {
+            $selectedListId = $defaultList?->id;
+        }
+
         $defaultCurrency = match (app()->getLocale()) {
             'en' => 'USD',
             default => 'EUR',
@@ -25,6 +33,7 @@ class GiftController extends Controller
         return view('gifts.create', [
             'lists' => $lists,
             'defaultList' => $defaultList,
+            'selectedListId' => $selectedListId,
             'isSingleListMode' => $lists->count() === 1,
             'defaultCurrency' => $defaultCurrency,
         ]);
@@ -64,11 +73,13 @@ class GiftController extends Controller
         ]);
 
         // Attach to list if specified, otherwise attach to default list
+        $attachedListId = null;
         if ($list !== null) {
             $list->gifts()->attach($gift->id, [
                 'sort_order' => $list->gifts()->count(),
                 'added_at' => now(),
             ]);
+            $attachedListId = $list->id;
         } else {
             /** @var GiftList|null $defaultList */
             $defaultList = $request->user()->lists()->where('is_default', true)->first();
@@ -77,13 +88,15 @@ class GiftController extends Controller
                     'sort_order' => $defaultList->gifts()->count(),
                     'added_at' => now(),
                 ]);
+                $attachedListId = $defaultList->id;
             }
         }
 
         $locale = app()->getLocale();
+        $anchor = $attachedListId ? "#list-{$attachedListId}" : '';
 
         return redirect()
-            ->to("/{$locale}/dashboard")
+            ->to("/{$locale}/dashboard{$anchor}")
             ->with('success', __('Gift added successfully! We\'re fetching the details.'));
     }
 

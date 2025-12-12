@@ -3,25 +3,17 @@
 @section('title', __('Add Gift'))
 
 @section('content')
-{{-- Breadcrumb --}}
-<div class="breadcrumb">
-    <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="breadcrumb-link">{{ __('Dashboard') }}</a>
-    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-    </svg>
-    <span class="text-gray-900 font-medium">{{ __('Add Gift') }}</span>
-</div>
-
-{{-- Header --}}
-<div class="mb-8">
-    <h1 class="text-2xl font-bold text-gray-900">{{ __('Add Gift') }}</h1>
-    <p class="text-gray-600 mt-1">{{ __('Paste a product URL and we\'ll fetch the details automatically.') }}</p>
-</div>
-
-<div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
-    {{-- Form Section --}}
-    <div class="lg:col-span-3">
-        <div class="card">
+<x-app-content
+    :title="__('Add Gift')"
+    :description="__('Paste a product URL and we\'ll fetch the details automatically.')"
+    :breadcrumbs="[
+        ['label' => __('Dashboard'), 'url' => url('/' . app()->getLocale() . '/dashboard')],
+        ['label' => __('Add Gift')]
+    ]"
+>
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+        {{-- Form Section --}}
+        <div class="lg:col-span-3">
             <form method="POST" action="{{ url('/' . app()->getLocale() . '/gifts') }}">
                 @csrf
 
@@ -36,6 +28,7 @@
                         name="url"
                         value="{{ old('url') }}"
                         required
+                        autofocus
                         placeholder="https://www.bol.com/nl/p/..."
                         class="form-input @error('url') border-red-500 @enderror"
                     >
@@ -43,8 +36,6 @@
                         <p class="form-error">{{ $message }}</p>
                     @enderror
                 </div>
-
-                <div class="form-divider"></div>
 
                 {{-- List selection - only show if user has multiple lists --}}
                 @if(!$isSingleListMode)
@@ -54,7 +45,7 @@
                         </label>
                         <select id="list_id" name="list_id" class="form-select">
                             @foreach($lists as $list)
-                                <option value="{{ $list->id }}" {{ $list->is_default ? 'selected' : '' }}>
+                                <option value="{{ $list->id }}" {{ $list->id === $selectedListId ? 'selected' : '' }}>
                                     {{ $list->name }}{{ $list->is_default ? ' (' . __('Default') . ')' : '' }}
                                 </option>
                             @endforeach
@@ -71,7 +62,7 @@
                         {{ __('Optional: Add details manually') }}
                     </summary>
 
-                    <div class="mt-4 space-y-4 pl-6 border-l-2 border-gray-200">
+                    <div class="mt-4 space-y-4 pl-6 border-l-2 border-gray-100">
                         <div>
                             <label for="title" class="form-label">
                                 {{ __('Title') }}
@@ -150,7 +141,7 @@
                 </details>
 
                 {{-- Action buttons - aligned right --}}
-                <div class="form-actions">
+                <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-100">
                     <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="btn-cancel">
                         {{ __('Cancel') }}
                     </a>
@@ -163,54 +154,54 @@
                 </div>
             </form>
         </div>
-    </div>
 
-    {{-- Helper Section --}}
-    <div class="lg:col-span-2">
-        <div class="card">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('How do I find a product URL?') }}</h2>
+        {{-- Helper Section --}}
+        <div class="lg:col-span-2">
+            <div class="bg-cream-50 rounded-xl p-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('How do I find a product URL?') }}</h2>
 
-            <div class="space-y-4">
-                {{-- Step 1 --}}
-                <div class="flex gap-3">
-                    <div class="icon-circle bg-coral-100 text-coral-600 text-sm font-semibold">1</div>
-                    <div>
-                        <p class="text-gray-700 font-medium">{{ __('Find the product') }}</p>
-                        <p class="form-help mt-0">{{ __('Go to the product page in your favorite online store.') }}</p>
+                <div class="space-y-4">
+                    {{-- Step 1 --}}
+                    <div class="flex gap-3">
+                        <div class="icon-circle bg-coral-100 text-coral-600 text-sm font-semibold">1</div>
+                        <div>
+                            <p class="text-gray-700 font-medium">{{ __('Find the product') }}</p>
+                            <p class="form-help mt-0">{{ __('Go to the product page in your favorite online store.') }}</p>
+                        </div>
+                    </div>
+
+                    {{-- Step 2 --}}
+                    <div class="flex gap-3">
+                        <div class="icon-circle bg-teal-100 text-teal-600 text-sm font-semibold">2</div>
+                        <div>
+                            <p class="text-gray-700 font-medium">{{ __('Copy the URL') }}</p>
+                            <p class="form-help mt-0">{{ __('Copy the URL from your browser\'s address bar.') }}</p>
+                        </div>
+                    </div>
+
+                    {{-- Step 3 --}}
+                    <div class="flex gap-3">
+                        <div class="icon-circle bg-sunny-200 text-sunny-700 text-sm font-semibold">3</div>
+                        <div>
+                            <p class="text-gray-700 font-medium">{{ __('Paste it here') }}</p>
+                            <p class="form-help mt-0">{{ __('Paste the URL in the field and we\'ll fetch the details.') }}</p>
+                        </div>
                     </div>
                 </div>
 
-                {{-- Step 2 --}}
-                <div class="flex gap-3">
-                    <div class="icon-circle bg-teal-100 text-teal-600 text-sm font-semibold">2</div>
-                    <div>
-                        <p class="text-gray-700 font-medium">{{ __('Copy the URL') }}</p>
-                        <p class="form-help mt-0">{{ __('Copy the URL from your browser\'s address bar.') }}</p>
+                {{-- Supported stores info --}}
+                <div class="mt-6 pt-4 border-t border-cream-200">
+                    <div class="flex items-center gap-3 text-sm">
+                        <div class="icon-circle bg-teal-100 text-teal-600">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <p class="text-gray-600">{{ __('Works with any online store!') }}</p>
                     </div>
-                </div>
-
-                {{-- Step 3 --}}
-                <div class="flex gap-3">
-                    <div class="icon-circle bg-sunny-200 text-sunny-700 text-sm font-semibold">3</div>
-                    <div>
-                        <p class="text-gray-700 font-medium">{{ __('Paste it here') }}</p>
-                        <p class="form-help mt-0">{{ __('Paste the URL in the field and we\'ll fetch the details.') }}</p>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Supported stores info --}}
-            <div class="mt-6 pt-4 border-t border-cream-200">
-                <div class="flex items-center gap-3 text-sm">
-                    <div class="icon-circle bg-teal-100 text-teal-600">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                    </div>
-                    <p class="text-gray-600">{{ __('Works with any online store!') }}</p>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</x-app-content>
 @endsection
