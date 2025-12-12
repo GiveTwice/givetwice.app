@@ -15,13 +15,14 @@
 
 <div
     class="group relative bg-white rounded-2xl border border-cream-200 overflow-hidden shadow-sm hover:shadow-lg hover:border-cream-300 transition-all duration-300 {{ $openModal ? 'cursor-pointer' : '' }}"
+    data-gift-id="{{ $gift->id }}"
     @if($openModal)
         x-data
         x-on:click="$dispatch('open-gift-modal-{{ $gift->id }}')"
     @endif
 >
     {{-- Image Container - Fixed 4:3 aspect ratio for consistent heights --}}
-    <div class="relative aspect-[4/3] bg-cream-100 overflow-hidden">
+    <div class="relative aspect-[4/3] bg-cream-100 overflow-hidden" data-gift-image>
         @if($gift->image_url)
             {{--
                 Image handling for various aspect ratios:
@@ -37,7 +38,7 @@
             >
         @else
             {{-- Placeholder for missing images --}}
-            <div class="w-full h-full flex flex-col items-center justify-center text-cream-400">
+            <div class="w-full h-full flex flex-col items-center justify-center text-cream-400" data-gift-placeholder>
                 @if($isPending)
                     <div class="relative">
                         <svg class="w-12 h-12 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,7 +90,7 @@
                 </span>
             </div>
         @elseif($isPending)
-            <div class="absolute top-3 right-3">
+            <div class="absolute top-3 right-3" data-gift-badge>
                 <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-sunny-100/95 backdrop-blur-sm text-sunny-700 text-xs font-semibold rounded-full shadow-sm">
                     <svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -114,12 +115,12 @@
     {{-- Card content --}}
     <div class="p-4">
         {{-- Title --}}
-        <h3 class="font-semibold text-gray-900 leading-tight line-clamp-2 min-h-[2.5rem]" title="{{ $gift->title }}">
+        <h3 class="font-semibold text-gray-900 leading-tight line-clamp-2 min-h-[2.5rem]" title="{{ $gift->title }}" data-gift-title>
             {{ $gift->title ?: __('Untitled gift') }}
         </h3>
 
         {{-- Price --}}
-        <div class="mt-2 flex items-center justify-between">
+        <div class="mt-2 flex items-center justify-between" data-gift-price>
             @if($gift->hasPrice())
                 <span class="text-lg font-bold text-coral-600">
                     {{ $gift->formatPrice() }}

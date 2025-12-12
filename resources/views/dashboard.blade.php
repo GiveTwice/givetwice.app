@@ -3,6 +3,69 @@
 @section('title', __('Dashboard'))
 
 @section('content')
+{{-- Dashboard with real-time gift updates --}}
+<div
+    x-data="{
+        init() {
+            if (window.Echo) {
+                window.Echo.private('user.{{ auth()->id() }}')
+                    .listen('.gift.fetch.completed', (e) => {
+                        this.updateGiftCard(e.gift);
+                    });
+            }
+        },
+        updateGiftCard(gift) {
+            const card = document.querySelector(`[data-gift-id='${gift.id}']`);
+            if (!card) return;
+
+            // Update image - remove placeholder or existing img, add new img
+            const imgContainer = card.querySelector('[data-gift-image]');
+            if (imgContainer && gift.image_url) {
+                // Remove existing placeholder if present
+                const placeholder = imgContainer.querySelector('[data-gift-placeholder]');
+                if (placeholder) {
+                    placeholder.remove();
+                }
+                // Remove existing img if present (in case of re-fetch)
+                const existingImg = imgContainer.querySelector('img');
+                if (existingImg) {
+                    existingImg.remove();
+                }
+                // Create and insert new image as first child
+                const img = document.createElement('img');
+                img.src = gift.image_url;
+                img.alt = gift.title || '';
+                img.className = 'w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500';
+                img.loading = 'lazy';
+                imgContainer.insertBefore(img, imgContainer.firstChild);
+            }
+
+            // Update title
+            const titleEl = card.querySelector('[data-gift-title]');
+            if (titleEl) {
+                titleEl.textContent = gift.title || '{{ __('Untitled gift') }}';
+                titleEl.title = gift.title || '';
+            }
+
+            // Update price
+            const priceEl = card.querySelector('[data-gift-price]');
+            if (priceEl && gift.price_formatted) {
+                priceEl.textContent = '';
+                const priceSpan = document.createElement('span');
+                priceSpan.className = 'text-lg font-bold text-coral-600';
+                priceSpan.textContent = gift.price_formatted;
+                priceEl.appendChild(priceSpan);
+            }
+
+            // Remove fetching badge on completion
+            const badgeEl = card.querySelector('[data-gift-badge]');
+            if (badgeEl && gift.fetch_status === 'completed') {
+                badgeEl.remove();
+            }
+        }
+    }"
+>
+
 {{-- Welcome header --}}
 <div class="mb-8">
     <h1 class="text-2xl font-bold text-gray-900">{{ __('Welcome back, :name!', ['name' => auth()->user()->name]) }}</h1>
@@ -168,4 +231,6 @@
         </div>
     @endif
 @endif
+
+</div>{{-- End real-time updates wrapper --}}
 @endsection

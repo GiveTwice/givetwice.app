@@ -44,14 +44,38 @@
         </nav>
     </header>
 
+    {{-- Toast Notifications --}}
+    <div class="fixed top-20 right-4 z-50 flex flex-col gap-3">
+        @if (session('status'))
+            <div
+                x-data="{ show: true }"
+                x-init="setTimeout(() => show = false, 15000)"
+                x-show="show"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-x-8"
+                x-transition:enter-end="opacity-100 translate-x-0"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100 translate-x-0"
+                x-transition:leave-end="opacity-0 translate-x-8"
+                class="p-4 bg-white border border-teal-200 text-teal-800 rounded-xl shadow-lg flex items-center gap-3 max-w-sm"
+            >
+                <span class="flex-shrink-0 w-6 h-6 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                </span>
+                <span class="text-sm">{{ session('status') }}</span>
+                <button x-on:click="show = false" class="flex-shrink-0 text-gray-400 hover:text-gray-600">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        @endif
+    </div>
+
     <main class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div class="w-full max-w-md">
-            @if (session('status'))
-                <div class="mb-4 p-4 bg-teal-50 border border-teal-200 text-teal-700 rounded-xl">
-                    {{ session('status') }}
-                </div>
-            @endif
-
             @yield('content')
         </div>
     </main>

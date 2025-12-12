@@ -80,7 +80,7 @@
     {{-- Info Section --}}
     <div class="lg:col-span-2">
         <div class="card">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('About Lists') }}</h3>
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('About Lists') }}</h2>
 
             <div class="space-y-4">
                 <div class="flex gap-3">

@@ -13,10 +13,11 @@
         <div class="flex-1 min-w-64">
             <input type="text" name="search" value="{{ request('search') }}"
                    placeholder="Search by name or email..."
+                   aria-label="Search users"
                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
         </div>
 
-        <select name="filter" class="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+        <select name="filter" aria-label="Filter users" class="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
             <option value="">All Users</option>
             <option value="admin" {{ request('filter') === 'admin' ? 'selected' : '' }}>Admins Only</option>
             <option value="verified" {{ request('filter') === 'verified' ? 'selected' : '' }}>Verified</option>

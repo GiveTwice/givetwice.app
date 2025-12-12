@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\FetchGiftDetailsAction;
 use App\Models\Gift;
 use App\Models\GiftList;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -148,12 +149,20 @@ class GiftController extends Controller
     /**
      * Re-fetch gift details from URL (admin only).
      */
-    public function refreshGiftDetails(Request $request, string $locale, Gift $gift): RedirectResponse
+    public function refreshGiftDetails(Request $request, string $locale, Gift $gift): RedirectResponse|JsonResponse
     {
         // Reset status and dispatch the fetch action
         $gift->update(['fetch_status' => 'pending']);
 
         FetchGiftDetailsAction::dispatch($gift);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => __('Gift details refresh has been queued.'),
+                'fetch_status' => 'pending',
+            ]);
+        }
 
         return redirect()
             ->back()

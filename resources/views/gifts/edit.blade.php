@@ -90,6 +90,7 @@
                             <select
                                 id="currency"
                                 name="currency"
+                                aria-label="{{ __('Currency') }}"
                                 class="h-full pl-4 pr-8 py-3 border border-r-0 border-cream-200 rounded-l-xl bg-cream-50 text-gray-700 font-medium focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 focus:z-10 appearance-none cursor-pointer transition-colors hover:bg-cream-100"
                             >
                                 <option value="EUR" {{ old('currency', $gift->currency ?? 'EUR') === 'EUR' ? 'selected' : '' }}>€ EUR</option>
@@ -138,12 +139,12 @@
 
         {{-- Danger Zone --}}
         <div class="card border-red-200 mt-6" x-data>
-            <h3 class="text-lg font-semibold text-red-600 mb-2">{{ __('Danger Zone') }}</h3>
+            <h2 class="text-lg font-semibold text-red-600 mb-2">{{ __('Danger Zone') }}</h2>
             <p class="text-sm text-gray-600 mb-4">{{ __('Once you delete a gift, there is no going back.') }}</p>
             <button
                 type="button"
                 x-on:click="$dispatch('open-confirm-delete-gift')"
-                class="inline-flex items-center gap-2 bg-red-500 text-white px-5 py-2.5 rounded-xl hover:bg-red-600 transition-colors font-medium"
+                class="inline-flex items-center gap-2 bg-red-600 text-white px-5 py-2.5 rounded-xl hover:bg-red-700 transition-colors font-medium"
             >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -164,7 +165,7 @@
                 @method('DELETE')
                 <button
                     type="submit"
-                    class="inline-flex items-center gap-2 bg-red-500 text-white px-4 py-2.5 rounded-xl hover:bg-red-600 transition-colors font-medium"
+                    class="inline-flex items-center gap-2 bg-red-600 text-white px-4 py-2.5 rounded-xl hover:bg-red-700 transition-colors font-medium"
                 >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -175,74 +176,111 @@
         </x-confirm-modal>
     </div>
 
-    {{-- Info Section --}}
-    <div class="lg:col-span-2">
+    {{-- Info Section with real-time updates --}}
+    <div
+        class="lg:col-span-2"
+        x-data="{
+            gift: {
+                id: {{ $gift->id }},
+                title: @js($gift->title),
+                image_url: @js($gift->image_url),
+                fetch_status: @js($gift->fetch_status),
+                fetched_at: @js($gift->fetched_at?->diffForHumans())
+            },
+            refreshing: false,
+            async refresh() {
+                this.refreshing = true;
+                try {
+                    const response = await fetch('{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/refresh') }}', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    if (response.ok) {
+                        this.gift.fetch_status = 'pending';
+                    }
+                } finally {
+                    this.refreshing = false;
+                }
+            },
+            init() {
+                if (window.Echo) {
+                    window.Echo.private('user.{{ auth()->id() }}')
+                        .listen('.gift.fetch.completed', (e) => {
+                            if (e.gift.id === this.gift.id) {
+                                this.gift.title = e.gift.title;
+                                this.gift.image_url = e.gift.image_url;
+                                this.gift.fetch_status = e.gift.fetch_status;
+                                this.gift.fetched_at = '{{ __('Just now') }}';
+                            }
+                        });
+                }
+            }
+        }"
+    >
         {{-- Current Image --}}
-        @if($gift->image_url)
-            <div class="card mb-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Current Image') }}</h3>
-                <img src="{{ $gift->image_url }}" alt="{{ $gift->title }}" class="w-full h-48 object-cover rounded-xl border border-cream-200">
-            </div>
-        @endif
+        <div class="card mb-6" x-show="gift.image_url" x-cloak>
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Current Image') }}</h2>
+            <img :src="gift.image_url" :alt="gift.title" class="w-full h-48 object-cover rounded-xl border border-cream-200">
+        </div>
 
         {{-- Fetch Status --}}
         <div class="card">
-            <h3 class="text-lg font-semibold text-gray-900 mb-3">{{ __('Fetch Status') }}</h3>
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">{{ __('Fetch Status') }}</h2>
             <p class="form-help mb-4 mt-0">{{ __('We automatically fetch the product image, description, and price from the URL in the background.') }}</p>
 
             <div class="space-y-3">
                 <div class="flex items-center justify-between">
                     <span class="text-gray-600">{{ __('Status') }}</span>
                     <div class="flex items-center gap-2">
-                        @if($gift->isPending())
-                            <span class="badge badge-warning">
-                                <span class="w-2 h-2 bg-sunny-500 rounded-full"></span>
-                                {{ __('Pending') }}
-                            </span>
-                        @elseif($gift->isFetching())
-                            <span class="badge badge-warning">
-                                <span class="w-2 h-2 bg-sunny-500 rounded-full animate-pulse"></span>
-                                {{ __('Fetching') }}
-                            </span>
-                        @elseif($gift->isFetched())
-                            <span class="badge badge-success">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                </svg>
-                                {{ __('Completed') }}
-                            </span>
-                        @elseif($gift->isFetchFailed())
-                            <span class="badge badge-danger">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                                {{ __('Failed') }}
-                            </span>
-                        @endif
+                        {{-- Pending --}}
+                        <span x-show="gift.fetch_status === 'pending'" class="badge badge-warning">
+                            <span class="w-2 h-2 bg-sunny-500 rounded-full"></span>
+                            {{ __('Pending') }}
+                        </span>
+                        {{-- Fetching --}}
+                        <span x-show="gift.fetch_status === 'fetching'" class="badge badge-warning">
+                            <span class="w-2 h-2 bg-sunny-500 rounded-full animate-pulse"></span>
+                            {{ __('Fetching') }}
+                        </span>
+                        {{-- Completed --}}
+                        <span x-show="gift.fetch_status === 'completed'" x-cloak class="badge badge-success">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            {{ __('Completed') }}
+                        </span>
+                        {{-- Failed --}}
+                        <span x-show="gift.fetch_status === 'failed'" x-cloak class="badge badge-danger">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            {{ __('Failed') }}
+                        </span>
 
                         @if(auth()->user()->is_admin)
-                            <form method="POST" action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/refresh') }}" class="inline">
-                                @csrf
-                                <button
-                                    type="submit"
-                                    title="{{ __('Re-fetch details') }}"
-                                    class="p-1.5 text-gray-400 hover:text-coral-600 hover:bg-coral-50 rounded-lg transition-colors"
-                                >
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                                    </svg>
-                                </button>
-                            </form>
+                            <button
+                                type="button"
+                                x-on:click="refresh()"
+                                :disabled="refreshing"
+                                title="{{ __('Re-fetch details') }}"
+                                class="p-1.5 text-gray-400 hover:text-coral-600 hover:bg-coral-50 rounded-lg transition-colors disabled:opacity-50"
+                            >
+                                <svg class="w-4 h-4" :class="{ 'animate-spin': refreshing }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                            </button>
                         @endif
                     </div>
                 </div>
 
-                @if($gift->fetched_at)
-                    <div class="flex items-center justify-between">
-                        <span class="text-gray-600">{{ __('Last fetched') }}</span>
-                        <span class="text-gray-900 font-medium">{{ $gift->fetched_at->diffForHumans() }}</span>
-                    </div>
-                @endif
+                <div x-show="gift.fetched_at" class="flex items-center justify-between">
+                    <span class="text-gray-600">{{ __('Last fetched') }}</span>
+                    <span class="text-gray-900 font-medium" x-text="gift.fetched_at"></span>
+                </div>
             </div>
         </div>
     </div>

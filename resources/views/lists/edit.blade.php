@@ -99,12 +99,12 @@
         {{-- Danger Zone --}}
         @unless($list->is_default)
             <div class="card border-red-200 mt-6" x-data>
-                <h3 class="text-lg font-semibold text-red-600 mb-2">{{ __('Danger Zone') }}</h3>
+                <h2 class="text-lg font-semibold text-red-600 mb-2">{{ __('Danger Zone') }}</h2>
                 <p class="text-sm text-gray-600 mb-4">{{ __('Once you delete a list, there is no going back. Gifts in this list will not be deleted.') }}</p>
                 <button
                     type="button"
                     x-on:click="$dispatch('open-confirm-delete-list')"
-                    class="inline-flex items-center gap-2 bg-red-500 text-white px-5 py-2.5 rounded-xl hover:bg-red-600 transition-colors font-medium"
+                    class="inline-flex items-center gap-2 bg-red-600 text-white px-5 py-2.5 rounded-xl hover:bg-red-700 transition-colors font-medium"
                 >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -125,7 +125,7 @@
                     @method('DELETE')
                     <button
                         type="submit"
-                        class="inline-flex items-center gap-2 bg-red-500 text-white px-4 py-2.5 rounded-xl hover:bg-red-600 transition-colors font-medium"
+                        class="inline-flex items-center gap-2 bg-red-600 text-white px-4 py-2.5 rounded-xl hover:bg-red-700 transition-colors font-medium"
                     >
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -140,7 +140,7 @@
     {{-- Info Section --}}
     <div class="lg:col-span-2">
         <div class="card">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('List Info') }}</h3>
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('List Info') }}</h2>
 
             <div class="space-y-3">
                 <div class="flex items-center justify-between">

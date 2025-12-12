@@ -113,6 +113,7 @@
                                     <select
                                         id="currency"
                                         name="currency"
+                                        aria-label="{{ __('Currency') }}"
                                         class="h-full pl-4 pr-8 py-3 border border-r-0 border-cream-200 rounded-l-xl bg-cream-50 text-gray-700 font-medium focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 focus:z-10 appearance-none cursor-pointer transition-colors hover:bg-cream-100"
                                     >
                                         <option value="EUR" {{ old('currency', $defaultCurrency) === 'EUR' ? 'selected' : '' }}>€ EUR</option>
@@ -165,7 +166,7 @@
     {{-- Helper Section --}}
     <div class="lg:col-span-2">
         <div class="card">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('How do I find a product URL?') }}</h3>
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('How do I find a product URL?') }}</h2>
 
             <div class="space-y-4">
                 {{-- Step 1 --}}

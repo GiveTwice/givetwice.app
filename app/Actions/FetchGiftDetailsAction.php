@@ -48,8 +48,6 @@ class FetchGiftDetailsAction implements ShouldQueue
                 'fetch_status' => 'completed',
                 'fetched_at' => now(),
             ]);
-
-            GiftFetchCompleted::dispatch($this->gift->fresh());
         } catch (ClientException|ServerException|ConnectException $e) {
             // HTTP errors (4xx, 5xx) and connection failures - mark as failed without retrying
             Log::warning('Gift fetch failed due to HTTP error', [
@@ -69,7 +67,13 @@ class FetchGiftDetailsAction implements ShouldQueue
                 'fetched_at' => now(),
             ]);
 
+            // Broadcast failure before rethrowing so UI updates
+            GiftFetchCompleted::dispatch($this->gift->fresh());
+
             throw $e;
         }
+
+        // Broadcast the result (success or handled failure) so UI can update
+        GiftFetchCompleted::dispatch($this->gift->fresh());
     }
 }

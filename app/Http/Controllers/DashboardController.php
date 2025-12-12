@@ -16,7 +16,7 @@ class DashboardController extends Controller
                 $query->whereHas('claims');
             }])
             ->with(['gifts' => function ($query) {
-                $query->with('claims')->latest();
+                $query->with('claims')->reorder()->orderByDesc('created_at');
             }])
             ->get();
 
