@@ -98,16 +98,34 @@
 
         {{-- Danger Zone --}}
         @unless($list->is_default)
-            <div class="card border-red-200 mt-6">
+            <div class="card border-red-200 mt-6" x-data>
                 <h3 class="text-lg font-semibold text-red-600 mb-2">{{ __('Danger Zone') }}</h3>
                 <p class="text-sm text-gray-600 mb-4">{{ __('Once you delete a list, there is no going back. Gifts in this list will not be deleted.') }}</p>
-                <form action="{{ url('/' . app()->getLocale() . '/list/' . $list->slug) }}" method="POST"
-                      onsubmit="return confirm('{{ __('Are you sure you want to delete this list?') }}')">
+                <button
+                    type="button"
+                    x-on:click="$dispatch('open-confirm-delete-list')"
+                    class="inline-flex items-center gap-2 bg-red-500 text-white px-5 py-2.5 rounded-xl hover:bg-red-600 transition-colors font-medium"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    {{ __('Delete List') }}
+                </button>
+            </div>
+
+            {{-- Delete Confirmation Modal --}}
+            <x-confirm-modal
+                id="delete-list"
+                :title="__('Delete List')"
+                :message="__('Are you sure you want to delete this list? This action cannot be undone. Gifts in this list will not be deleted.')"
+                :confirmText="__('Delete List')"
+            >
+                <form method="POST" action="{{ url('/' . app()->getLocale() . '/list/' . $list->slug) }}">
                     @csrf
                     @method('DELETE')
                     <button
                         type="submit"
-                        class="inline-flex items-center gap-2 bg-red-500 text-white px-5 py-2.5 rounded-xl hover:bg-red-600 transition-colors font-medium"
+                        class="inline-flex items-center gap-2 bg-red-500 text-white px-4 py-2.5 rounded-xl hover:bg-red-600 transition-colors font-medium"
                     >
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -115,7 +133,7 @@
                         {{ __('Delete List') }}
                     </button>
                 </form>
-            </div>
+            </x-confirm-modal>
         @endunless
     </div>
 
