@@ -14,7 +14,7 @@ class CreateDefaultListForNewUser
         $user = $event->user;
 
         // Use the user's locale preference or the current app locale
-        $locale = $user->locale_preference ?? app()->getLocale() ?? 'en';
+        $locale = $user->locale_preference ?? app()->getLocale();
 
         // Temporarily set locale to get the correct translation
         $originalLocale = app()->getLocale();

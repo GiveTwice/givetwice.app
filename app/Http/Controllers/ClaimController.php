@@ -142,7 +142,7 @@ class ClaimController extends Controller
         $list = $gift->lists()->first();
 
         return redirect()
-            ->route('public.list', ['locale' => $locale, 'slug' => $list?->slug ?? 'unknown'])
+            ->route('public.list', ['locale' => $locale, 'slug' => $list->slug ?? 'unknown'])
             ->with('success', __('Please check your email to confirm your claim.'));
     }
 
