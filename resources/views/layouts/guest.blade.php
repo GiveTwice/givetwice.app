@@ -16,6 +16,9 @@
     <link rel="manifest" href="/site.webmanifest">
     <meta name="theme-color" content="#f97066">
 
+    <!-- Hreflang alternate URLs for SEO -->
+    <x-hreflang-tags />
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-cream-50 flex flex-col">
