@@ -193,31 +193,48 @@
             <div class="space-y-3">
                 <div class="flex items-center justify-between">
                     <span class="text-gray-600">{{ __('Status') }}</span>
-                    @if($gift->isPending())
-                        <span class="badge badge-warning">
-                            <span class="w-2 h-2 bg-sunny-500 rounded-full"></span>
-                            {{ __('Pending') }}
-                        </span>
-                    @elseif($gift->isFetching())
-                        <span class="badge badge-warning">
-                            <span class="w-2 h-2 bg-sunny-500 rounded-full animate-pulse"></span>
-                            {{ __('Fetching') }}
-                        </span>
-                    @elseif($gift->isFetched())
-                        <span class="badge badge-success">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
-                            {{ __('Completed') }}
-                        </span>
-                    @elseif($gift->isFetchFailed())
-                        <span class="badge badge-danger">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                            {{ __('Failed') }}
-                        </span>
-                    @endif
+                    <div class="flex items-center gap-2">
+                        @if($gift->isPending())
+                            <span class="badge badge-warning">
+                                <span class="w-2 h-2 bg-sunny-500 rounded-full"></span>
+                                {{ __('Pending') }}
+                            </span>
+                        @elseif($gift->isFetching())
+                            <span class="badge badge-warning">
+                                <span class="w-2 h-2 bg-sunny-500 rounded-full animate-pulse"></span>
+                                {{ __('Fetching') }}
+                            </span>
+                        @elseif($gift->isFetched())
+                            <span class="badge badge-success">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                {{ __('Completed') }}
+                            </span>
+                        @elseif($gift->isFetchFailed())
+                            <span class="badge badge-danger">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                {{ __('Failed') }}
+                            </span>
+                        @endif
+
+                        @if(auth()->user()->is_admin)
+                            <form method="POST" action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/refresh') }}" class="inline">
+                                @csrf
+                                <button
+                                    type="submit"
+                                    title="{{ __('Re-fetch details') }}"
+                                    class="p-1.5 text-gray-400 hover:text-coral-600 hover:bg-coral-50 rounded-lg transition-colors"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                    </svg>
+                                </button>
+                            </form>
+                        @endif
+                    </div>
                 </div>
 
                 @if($gift->fetched_at)

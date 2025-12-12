@@ -117,6 +117,9 @@ Route::prefix('{locale}')
             Route::get('/gifts/{gift}/edit', [GiftController::class, 'edit'])->name('gifts.edit');
             Route::put('/gifts/{gift}', [GiftController::class, 'update'])->name('gifts.update');
             Route::delete('/gifts/{gift}', [GiftController::class, 'destroy'])->name('gifts.destroy');
+            Route::post('/gifts/{gift}/refresh', [GiftController::class, 'refreshGiftDetails'])
+                ->middleware('admin')
+                ->name('gifts.refresh');
 
             // Claim routes (for registered users)
             Route::post('/gifts/{gift}/claim', [ClaimController::class, 'store'])->name('claim.store');

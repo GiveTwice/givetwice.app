@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\FetchGiftDetailsAction;
 use App\Models\Gift;
 use App\Models\GiftList;
 use Illuminate\Http\RedirectResponse;
@@ -142,5 +143,20 @@ class GiftController extends Controller
         return redirect()
             ->to("/{$locale}/dashboard")
             ->with('success', __('Gift deleted successfully.'));
+    }
+
+    /**
+     * Re-fetch gift details from URL (admin only).
+     */
+    public function refreshGiftDetails(Request $request, string $locale, Gift $gift): RedirectResponse
+    {
+        // Reset status and dispatch the fetch action
+        $gift->update(['fetch_status' => 'pending']);
+
+        FetchGiftDetailsAction::dispatch($gift);
+
+        return redirect()
+            ->back()
+            ->with('success', __('Gift details refresh has been queued.'));
     }
 }
