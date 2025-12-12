@@ -15,10 +15,16 @@ class GiftController extends Controller
         $lists = $request->user()->lists()->get();
         $defaultList = $lists->firstWhere('is_default', true) ?? $lists->first();
 
+        $defaultCurrency = match (app()->getLocale()) {
+            'en' => 'USD',
+            default => 'EUR',
+        };
+
         return view('gifts.create', [
             'lists' => $lists,
             'defaultList' => $defaultList,
             'isSingleListMode' => $lists->count() === 1,
+            'defaultCurrency' => $defaultCurrency,
         ]);
     }
 
@@ -29,6 +35,7 @@ class GiftController extends Controller
             'title' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
             'price' => ['nullable', 'numeric', 'min:0', 'max:9999999.99'],
+            'currency' => ['nullable', 'string', 'in:EUR,USD'],
             'list_id' => ['nullable', 'exists:lists,id'],
         ]);
 
@@ -51,6 +58,7 @@ class GiftController extends Controller
             'title' => $validated['title'] ?? null,
             'description' => $validated['description'] ?? null,
             'price_in_cents' => $priceInCents,
+            'currency' => $validated['currency'] ?? 'EUR',
         ]);
 
         // Attach to list if specified, otherwise attach to default list
@@ -100,6 +108,7 @@ class GiftController extends Controller
             'title' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
             'price' => ['nullable', 'numeric', 'min:0', 'max:9999999.99'],
+            'currency' => ['nullable', 'string', 'in:EUR,USD'],
             'url' => ['nullable', 'url', 'max:2048'],
         ]);
 
@@ -112,6 +121,7 @@ class GiftController extends Controller
             'title' => $validated['title'] ?? $gift->title,
             'description' => $validated['description'] ?? $gift->description,
             'price_in_cents' => $priceInCents,
+            'currency' => $validated['currency'] ?? $gift->currency,
             'url' => $validated['url'] ?? $gift->url,
         ]);
 

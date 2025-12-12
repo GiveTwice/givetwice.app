@@ -61,7 +61,7 @@
                 @endif
 
                 {{-- Optional details --}}
-                <details class="mb-6 group">
+                <details class="mb-6 group" @if($errors->hasAny(['title', 'description', 'price', 'currency'])) open @endif>
                     <summary class="cursor-pointer text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors flex items-center gap-2">
                         <svg class="w-4 h-4 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -105,19 +105,41 @@
 
                         <div>
                             <label for="price" class="form-label">
-                                {{ __('Price') }} (EUR)
+                                {{ __('Price') }}
                             </label>
-                            <input
-                                type="number"
-                                id="price"
-                                name="price"
-                                value="{{ old('price') }}"
-                                step="0.01"
-                                min="0"
-                                placeholder="0.00"
-                                class="form-input @error('price') border-red-500 @enderror"
-                            >
+                            <div class="flex">
+                                {{-- Currency selector --}}
+                                <div class="relative">
+                                    <select
+                                        id="currency"
+                                        name="currency"
+                                        class="h-full pl-4 pr-8 py-3 border border-r-0 border-cream-200 rounded-l-xl bg-cream-50 text-gray-700 font-medium focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 focus:z-10 appearance-none cursor-pointer transition-colors hover:bg-cream-100"
+                                    >
+                                        <option value="EUR" {{ old('currency', $defaultCurrency) === 'EUR' ? 'selected' : '' }}>€ EUR</option>
+                                        <option value="USD" {{ old('currency', $defaultCurrency) === 'USD' ? 'selected' : '' }}>$ USD</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-2 flex items-center pointer-events-none">
+                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                {{-- Price input --}}
+                                <input
+                                    type="number"
+                                    id="price"
+                                    name="price"
+                                    value="{{ old('price') }}"
+                                    step="0.01"
+                                    min="0"
+                                    placeholder="0.00"
+                                    class="flex-1 min-w-0 px-4 py-3 border border-cream-200 rounded-r-xl focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-colors @error('price') border-red-500 @enderror"
+                                >
+                            </div>
                             @error('price')
+                                <p class="form-error">{{ $message }}</p>
+                            @enderror
+                            @error('currency')
                                 <p class="form-error">{{ $message }}</p>
                             @enderror
                         </div>
