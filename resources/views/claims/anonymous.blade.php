@@ -14,9 +14,9 @@
 
 @section('content')
 {{-- Breadcrumb --}}
-<div class="flex items-center gap-2 text-sm text-gray-500 mb-6">
+<div class="breadcrumb">
     @if($list)
-        <a href="{{ url('/' . app()->getLocale() . '/view/' . $list->slug) }}" class="hover:text-coral-600 transition-colors">{{ $list->name }}</a>
+        <a href="{{ url('/' . app()->getLocale() . '/view/' . $list->slug) }}" class="breadcrumb-link">{{ $list->name }}</a>
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
@@ -33,13 +33,13 @@
 <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
     {{-- Form Section --}}
     <div class="lg:col-span-3">
-        <div class="bg-white rounded-2xl border border-cream-200 p-6">
+        <div class="card">
             <form action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/claim-anonymous') }}" method="POST">
                 @csrf
 
                 {{-- Email --}}
                 <div class="mb-6">
-                    <label for="email" class="block text-gray-700 mb-2 font-medium">
+                    <label for="email" class="form-label">
                         {{ __('Email') }} <span class="text-coral-500">*</span>
                     </label>
                     <input
@@ -49,17 +49,17 @@
                         value="{{ old('email') }}"
                         required
                         placeholder="{{ __('your@email.com') }}"
-                        class="w-full px-4 py-3 border border-cream-200 rounded-xl focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-colors @error('email') border-red-500 @enderror"
+                        class="form-input @error('email') border-red-500 @enderror"
                     >
                     @error('email')
-                        <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                        <p class="form-error">{{ $message }}</p>
                     @enderror
-                    <p class="text-sm text-gray-500 mt-2">{{ __('We\'ll send you a confirmation link to verify your claim.') }}</p>
+                    <p class="form-help">{{ __('We\'ll send you a confirmation link to verify your claim.') }}</p>
                 </div>
 
                 {{-- Name (optional) --}}
                 <div class="mb-6">
-                    <label for="name" class="block text-gray-700 mb-2 font-medium">
+                    <label for="name" class="form-label">
                         {{ __('Name') }} <span class="text-gray-400 font-normal">({{ __('optional') }})</span>
                     </label>
                     <input
@@ -68,15 +68,15 @@
                         name="name"
                         value="{{ old('name') }}"
                         placeholder="{{ __('Your name') }}"
-                        class="w-full px-4 py-3 border border-cream-200 rounded-xl focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-colors @error('name') border-red-500 @enderror"
+                        class="form-input @error('name') border-red-500 @enderror"
                     >
                     @error('name')
-                        <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                        <p class="form-error">{{ $message }}</p>
                     @enderror
                 </div>
 
                 {{-- Privacy note --}}
-                <div class="mb-6 p-4 bg-teal-50 border border-teal-200 rounded-xl">
+                <div class="info-box-success mb-6">
                     <div class="flex gap-3">
                         <svg class="w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -89,12 +89,9 @@
                 </div>
 
                 {{-- Action buttons --}}
-                <div class="flex items-center justify-end gap-3 pt-4 border-t border-cream-200">
+                <div class="form-actions">
                     @if($list)
-                        <a
-                            href="{{ url('/' . app()->getLocale() . '/view/' . $list->slug) }}"
-                            class="px-5 py-2.5 text-gray-600 hover:text-gray-900 font-medium transition-colors"
-                        >
+                        <a href="{{ url('/' . app()->getLocale() . '/view/' . $list->slug) }}" class="btn-cancel">
                             {{ __('Cancel') }}
                         </a>
                     @endif

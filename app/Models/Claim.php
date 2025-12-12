@@ -69,8 +69,10 @@ class Claim extends Model
 
     public function getClaimerDisplayName(): string
     {
-        if ($this->user) {
-            return $this->user->name;
+        /** @var User|null $user */
+        $user = $this->user;
+        if ($user) {
+            return $user->name;
         }
 
         return $this->claimer_name ?? $this->claimer_email ?? 'Someone';

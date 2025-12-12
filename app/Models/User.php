@@ -64,6 +64,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function defaultList(): ?GiftList
     {
+        /** @var GiftList|null */
         return $this->lists()->where('is_default', true)->first();
     }
 }

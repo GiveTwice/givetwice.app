@@ -61,7 +61,7 @@ class ClaimController extends Controller
             ->where('user_id', $user->id)
             ->first();
 
-        if (!$claim) {
+        if (! $claim) {
             return back()->with('error', __('You have not claimed this gift.'));
         }
 
@@ -95,7 +95,7 @@ class ClaimController extends Controller
     public function storeAnonymous(Request $request, string $locale, Gift $gift): RedirectResponse
     {
         // Rate limiting: 5 attempts per minute per IP
-        $key = 'claim-attempt:' . $request->ip();
+        $key = 'claim-attempt:'.$request->ip();
         if (RateLimiter::tooManyAttempts($key, 5)) {
             return back()->with('error', __('Too many claim attempts. Please try again later.'));
         }
@@ -117,11 +117,13 @@ class ClaimController extends Controller
             ->first();
 
         if ($existingClaim) {
+            /** @var Claim $existingClaim */
             if ($existingClaim->isConfirmed()) {
                 return back()->with('error', __('This gift has already been claimed with this email.'));
             }
             // Resend confirmation email
             Mail::to($validated['email'])->send(new ClaimConfirmationMail($existingClaim));
+
             return back()->with('success', __('A confirmation email has been resent to your email address.'));
         }
 
@@ -136,6 +138,7 @@ class ClaimController extends Controller
         Mail::to($validated['email'])->send(new ClaimConfirmationMail($claim));
 
         // Get the list for the redirect
+        /** @var \App\Models\GiftList|null $list */
         $list = $gift->lists()->first();
 
         return redirect()
@@ -152,13 +155,16 @@ class ClaimController extends Controller
             ->whereNull('confirmed_at')
             ->first();
 
-        if (!$claim) {
+        if (! $claim) {
             return view('claims.invalid-token');
         }
 
         // Check if gift was claimed by someone else in the meantime
-        if ($claim->gift->isClaimed()) {
+        /** @var \App\Models\Gift $gift */
+        $gift = $claim->gift;
+        if ($gift->isClaimed()) {
             $claim->delete();
+
             return view('claims.already-claimed');
         }
 

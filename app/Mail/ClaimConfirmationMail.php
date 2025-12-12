@@ -26,7 +26,7 @@ class ClaimConfirmationMail extends Mailable
 
     public function content(): Content
     {
-        $confirmUrl = url('/' . app()->getLocale() . '/claim/confirm/' . $this->claim->confirmation_token);
+        $confirmUrl = url('/'.app()->getLocale().'/claim/confirm/'.$this->claim->confirmation_token);
 
         return new Content(
             view: 'emails.claim-confirmation',

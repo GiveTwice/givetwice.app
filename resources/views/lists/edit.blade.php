@@ -4,12 +4,12 @@
 
 @section('content')
 {{-- Breadcrumb --}}
-<div class="flex items-center gap-2 text-sm text-gray-500 mb-6">
-    <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="hover:text-coral-600 transition-colors">{{ __('Dashboard') }}</a>
+<div class="breadcrumb">
+    <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="breadcrumb-link">{{ __('Dashboard') }}</a>
     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
     </svg>
-    <a href="{{ url('/' . app()->getLocale() . '/list/' . $list->slug) }}" class="hover:text-coral-600 transition-colors">{{ $list->name }}</a>
+    <a href="{{ url('/' . app()->getLocale() . '/list/' . $list->slug) }}" class="breadcrumb-link">{{ $list->name }}</a>
     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
     </svg>
@@ -25,14 +25,14 @@
 <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
     {{-- Form Section --}}
     <div class="lg:col-span-3">
-        <div class="bg-white rounded-2xl border border-cream-200 p-6">
+        <div class="card">
             <form action="{{ url('/' . app()->getLocale() . '/list/' . $list->slug) }}" method="POST">
                 @csrf
                 @method('PUT')
 
                 {{-- Name --}}
                 <div class="mb-6">
-                    <label for="name" class="block text-gray-700 mb-2 font-medium">
+                    <label for="name" class="form-label">
                         {{ __('Name') }} <span class="text-coral-500">*</span>
                     </label>
                     <input
@@ -42,16 +42,16 @@
                         value="{{ old('name', $list->name) }}"
                         required
                         placeholder="{{ __('e.g., Birthday 2025, Christmas Wishlist') }}"
-                        class="w-full px-4 py-3 border border-cream-200 rounded-xl focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-colors @error('name') border-red-500 @enderror"
+                        class="form-input @error('name') border-red-500 @enderror"
                     >
                     @error('name')
-                        <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                        <p class="form-error">{{ $message }}</p>
                     @enderror
                 </div>
 
                 {{-- Description --}}
                 <div class="mb-6">
-                    <label for="description" class="block text-gray-700 mb-2 font-medium">
+                    <label for="description" class="form-label">
                         {{ __('Description') }}
                     </label>
                     <textarea
@@ -59,16 +59,16 @@
                         name="description"
                         rows="3"
                         placeholder="{{ __('Optional description for your list') }}"
-                        class="w-full px-4 py-3 border border-cream-200 rounded-xl focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-colors resize-none @error('description') border-red-500 @enderror"
+                        class="form-textarea @error('description') border-red-500 @enderror"
                     >{{ old('description', $list->description) }}</textarea>
                     @error('description')
-                        <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                        <p class="form-error">{{ $message }}</p>
                     @enderror
                 </div>
 
                 {{-- Default list info --}}
                 @if($list->is_default)
-                    <div class="mb-6 p-4 bg-teal-50 border border-teal-200 rounded-xl">
+                    <div class="info-box-success mb-6">
                         <div class="flex gap-3">
                             <svg class="w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -82,11 +82,8 @@
                 @endif
 
                 {{-- Action buttons - aligned right --}}
-                <div class="flex items-center justify-end gap-3 pt-4 border-t border-cream-200">
-                    <a
-                        href="{{ url('/' . app()->getLocale() . '/list/' . $list->slug) }}"
-                        class="px-5 py-2.5 text-gray-600 hover:text-gray-900 font-medium transition-colors"
-                    >
+                <div class="form-actions">
+                    <a href="{{ url('/' . app()->getLocale() . '/list/' . $list->slug) }}" class="btn-cancel">
                         {{ __('Cancel') }}
                     </a>
                     <button type="submit" class="btn-primary">
@@ -101,7 +98,7 @@
 
         {{-- Danger Zone --}}
         @unless($list->is_default)
-            <div class="bg-white rounded-2xl border border-red-200 p-6 mt-6">
+            <div class="card border-red-200 mt-6">
                 <h3 class="text-lg font-semibold text-red-600 mb-2">{{ __('Danger Zone') }}</h3>
                 <p class="text-sm text-gray-600 mb-4">{{ __('Once you delete a list, there is no going back. Gifts in this list will not be deleted.') }}</p>
                 <form action="{{ url('/' . app()->getLocale() . '/list/' . $list->slug) }}" method="POST"
@@ -124,7 +121,7 @@
 
     {{-- Info Section --}}
     <div class="lg:col-span-2">
-        <div class="bg-white rounded-2xl border border-cream-200 p-6">
+        <div class="card">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('List Info') }}</h3>
 
             <div class="space-y-3">
@@ -148,7 +145,7 @@
                 @if($list->is_default)
                     <div class="flex items-center justify-between">
                         <span class="text-gray-600">{{ __('Type') }}</span>
-                        <span class="inline-flex items-center gap-1.5 text-sm font-medium text-teal-700 bg-teal-100 px-3 py-1 rounded-full">
+                        <span class="badge badge-success">
                             {{ __('Default') }}
                         </span>
                     </div>

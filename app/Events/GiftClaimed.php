@@ -22,7 +22,7 @@ class GiftClaimed implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('user.' . $this->gift->user_id),
+            new PrivateChannel('user.'.$this->gift->user_id),
         ];
     }
 

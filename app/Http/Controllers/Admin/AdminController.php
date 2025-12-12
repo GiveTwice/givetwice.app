@@ -40,7 +40,7 @@ class AdminController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%");
             });
         }
 
@@ -80,7 +80,7 @@ class AdminController extends Controller
             return back()->with('error', 'You cannot disable your own account.');
         }
 
-        $user->update(['is_admin' => !$user->is_admin]);
+        $user->update(['is_admin' => ! $user->is_admin]);
 
         return back()->with('success', $user->is_admin ? 'User granted admin access.' : 'Admin access revoked.');
     }

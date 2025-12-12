@@ -33,7 +33,8 @@ class GiftController extends Controller
         ]);
 
         // If list_id provided, verify ownership
-        if (!empty($validated['list_id'])) {
+        $list = null;
+        if (! empty($validated['list_id'])) {
             $list = GiftList::where('id', $validated['list_id'])
                 ->where('user_id', $request->user()->id)
                 ->firstOrFail();
@@ -48,12 +49,13 @@ class GiftController extends Controller
         ]);
 
         // Attach to list if specified, otherwise attach to default list
-        if (!empty($validated['list_id'])) {
+        if ($list !== null) {
             $list->gifts()->attach($gift->id, [
                 'sort_order' => $list->gifts()->count(),
                 'added_at' => now(),
             ]);
         } else {
+            /** @var GiftList|null $defaultList */
             $defaultList = $request->user()->lists()->where('is_default', true)->first();
             if ($defaultList) {
                 $defaultList->gifts()->attach($gift->id, [

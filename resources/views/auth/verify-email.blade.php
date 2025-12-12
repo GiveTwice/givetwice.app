@@ -15,7 +15,7 @@
     </div>
 
     @if (session('status') == 'verification-link-sent')
-        <div class="mb-4 p-4 bg-teal-50 border border-teal-200 text-teal-700 rounded-xl">
+        <div class="alert-success">
             <div class="flex items-center">
                 <span class="text-teal-500 mr-2">&#10003;</span>
                 {{ __('A new verification link has been sent to your email address.') }}

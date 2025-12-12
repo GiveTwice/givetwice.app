@@ -43,7 +43,7 @@ class GiftList extends Model
         $counter = 1;
 
         while (static::where('slug', $slug)->exists()) {
-            $slug = $originalSlug . '-' . $counter;
+            $slug = $originalSlug.'-'.$counter;
             $counter++;
         }
 

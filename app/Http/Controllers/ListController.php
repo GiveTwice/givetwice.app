@@ -13,14 +13,14 @@ class ListController extends Controller
     {
         $list = GiftList::where('slug', $slug)->first();
 
-        if (!$list) {
+        if (! $list) {
             abort(404);
         }
 
         $user = $request->user();
 
         // If user is not logged in or not the owner, redirect to public view
-        if (!$user || $list->user_id !== $user->id) {
+        if (! $user || $list->user_id !== $user->id) {
             return redirect()->route('public.list', ['locale' => $locale, 'slug' => $slug]);
         }
 
@@ -44,6 +44,7 @@ class ListController extends Controller
             'description' => ['nullable', 'string', 'max:1000'],
         ]);
 
+        /** @var GiftList $list */
         $list = $request->user()->lists()->create([
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,

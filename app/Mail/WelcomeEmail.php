@@ -29,12 +29,13 @@ class WelcomeEmail extends Mailable
         $locale = $this->user->locale_preference ?? 'en';
 
         // Get the user's default list for the direct link
+        /** @var \App\Models\GiftList|null $defaultList */
         $defaultList = $this->user->lists()->where('is_default', true)->first();
         $wishlistUrl = $defaultList
-            ? url('/' . $locale . '/list/' . $defaultList->slug)
-            : url('/' . $locale . '/dashboard');
+            ? url('/'.$locale.'/list/'.$defaultList->slug)
+            : url('/'.$locale.'/dashboard');
 
-        $faqUrl = url('/' . $locale . '/faq');
+        $faqUrl = url('/'.$locale.'/faq');
 
         return new Content(
             view: 'emails.welcome',

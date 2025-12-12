@@ -26,9 +26,11 @@ class ClaimNotificationMail extends Mailable
 
     public function content(): Content
     {
+        /** @var \App\Models\Gift $gift */
         $gift = $this->claim->gift;
+        /** @var \App\Models\User $owner */
         $owner = $gift->user;
-        $dashboardUrl = url('/' . ($owner->locale_preference ?? 'en') . '/dashboard');
+        $dashboardUrl = url('/'.($owner->locale_preference ?? 'en').'/dashboard');
 
         return new Content(
             view: 'emails.claim-notification',

@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class SocialAuthController extends Controller
 {
@@ -15,7 +15,7 @@ class SocialAuthController extends Controller
         return Socialite::driver('google')->redirect();
     }
 
-    public function handleGoogleCallback(): RedirectResponse
+    public function handleGoogleCallback(): \Illuminate\Http\RedirectResponse
     {
         return $this->handleSocialCallback('google', 'google_id');
     }
@@ -25,12 +25,12 @@ class SocialAuthController extends Controller
         return Socialite::driver('facebook')->redirect();
     }
 
-    public function handleFacebookCallback(): RedirectResponse
+    public function handleFacebookCallback(): \Illuminate\Http\RedirectResponse
     {
         return $this->handleSocialCallback('facebook', 'facebook_id');
     }
 
-    protected function handleSocialCallback(string $provider, string $socialIdField): RedirectResponse
+    protected function handleSocialCallback(string $provider, string $socialIdField): \Illuminate\Http\RedirectResponse
     {
         try {
             $socialUser = Socialite::driver($provider)->user();
@@ -44,6 +44,7 @@ class SocialAuthController extends Controller
 
         if ($user) {
             Auth::login($user, true);
+
             return $this->redirectToDashboard();
         }
 
@@ -58,6 +59,7 @@ class SocialAuthController extends Controller
             ]);
 
             Auth::login($user, true);
+
             return $this->redirectToDashboard();
         }
 
@@ -72,12 +74,14 @@ class SocialAuthController extends Controller
         ]);
 
         Auth::login($user, true);
+
         return $this->redirectToDashboard();
     }
 
-    protected function redirectToDashboard(): RedirectResponse
+    protected function redirectToDashboard(): \Illuminate\Http\RedirectResponse
     {
         $locale = auth()->user()->locale_preference ?? app()->getLocale();
+
         return redirect("/{$locale}/dashboard");
     }
 }

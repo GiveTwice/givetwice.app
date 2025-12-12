@@ -380,5 +380,6 @@
     "Don't forget to actually buy the gift! The list owner is counting on you.": "Vergeet niet om het cadeau ook echt te kopen! De lijsteigenaar rekent op je.",
     "Want to create your own wishlist?": "Wil je je eigen verlanglijst maken?",
     "Don't worry! There might be other gifts available on the list. Go back and choose another one.": "Geen zorgen! Er zijn misschien andere cadeaus beschikbaar op de lijst. Ga terug en kies een andere.",
-    "The link may have expired or already been used. Please try claiming the gift again.": "De link is mogelijk verlopen of al gebruikt. Probeer het cadeau opnieuw af te strepen."
+    "The link may have expired or already been used. Please try claiming the gift again.": "De link is mogelijk verlopen of al gebruikt. Probeer het cadeau opnieuw af te strepen.",
+    "We automatically fetch the product image, description, and price from the URL in the background.": "We halen automatisch de productafbeelding, beschrijving en prijs op van de URL op de achtergrond."
 }

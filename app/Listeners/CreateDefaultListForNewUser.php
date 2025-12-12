@@ -3,12 +3,14 @@
 namespace App\Listeners;
 
 use App\Models\GiftList;
+use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 
 class CreateDefaultListForNewUser
 {
     public function handle(Registered $event): void
     {
+        /** @var User $user */
         $user = $event->user;
 
         // Use the user's locale preference or the current app locale

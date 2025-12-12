@@ -15,7 +15,7 @@
     </div>
 
     @if ($errors->any())
-        <div class="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl">
+        <div class="alert-error">
             <ul class="list-disc list-inside text-sm">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -28,9 +28,8 @@
         @csrf
 
         <div class="mb-6">
-            <label for="password" class="block text-gray-700 mb-2 font-medium">{{ __('Password') }}</label>
-            <input type="password" name="password" id="password" required autofocus
-                   class="w-full px-4 py-3 border border-cream-200 rounded-xl focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-colors">
+            <label for="password" class="form-label">{{ __('Password') }}</label>
+            <input type="password" name="password" id="password" required autofocus class="form-input">
         </div>
 
         <button type="submit" class="w-full bg-coral-500 text-white py-3 px-4 rounded-xl hover:bg-coral-600 font-semibold transition-colors shadow-sm">
