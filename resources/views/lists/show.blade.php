@@ -9,6 +9,19 @@
         ['label' => $list->name]
     ]"
 >
+    {{-- Custom title slot matching dashboard layout --}}
+    <x-slot:titleSlot>
+        <div class="flex items-center gap-3">
+            <h1 class="text-lg font-bold text-gray-900">{{ $list->name }}</h1>
+            @if($list->is_default)
+                <span class="badge badge-success text-xs">{{ __('Default') }}</span>
+            @endif
+        </div>
+        <p class="text-sm text-gray-500 mt-1">
+            {{ trans_choice(':count gift|:count gifts', $gifts->total(), ['count' => $gifts->total()]) }}
+        </p>
+    </x-slot:titleSlot>
+
     <x-slot:actions>
         <x-share-modal :list="$list" />
         <a href="{{ url('/' . app()->getLocale() . '/gifts/create') }}?list={{ $list->id }}" class="btn-primary">
@@ -21,22 +34,6 @@
             {{ __('Edit List') }}
         </a>
     </x-slot:actions>
-
-    {{-- Custom title with badge --}}
-    <div class="-mt-4 mb-6">
-        <div class="flex items-center gap-3 mb-1">
-            <h1 class="text-2xl font-bold text-gray-900">{{ $list->name }}</h1>
-            @if($list->is_default)
-                <span class="badge badge-success text-xs">{{ __('Default') }}</span>
-            @endif
-        </div>
-        @if($list->description)
-            <p class="text-gray-600">{{ $list->description }}</p>
-        @endif
-        <p class="text-sm text-gray-500 mt-2">
-            {{ trans_choice(':count gift|:count gifts', $gifts->total(), ['count' => $gifts->total()]) }}
-        </p>
-    </div>
 
     {{-- Gifts Grid --}}
     @if($gifts->isEmpty())

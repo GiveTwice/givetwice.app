@@ -46,12 +46,17 @@
         {{-- Title row with actions --}}
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                @if($title)
-                    <h1 class="text-2xl font-bold text-gray-900">{{ $title }}</h1>
-                @endif
-                @if($description)
-                    <p class="text-gray-600 mt-1">{{ $description }}</p>
-                @endif
+                @isset($titleSlot)
+                    {{-- Custom title slot for complex headers (title + badge, etc.) --}}
+                    {{ $titleSlot }}
+                @else
+                    @if($title)
+                        <h1 class="text-2xl font-bold text-gray-900">{{ $title }}</h1>
+                    @endif
+                    @if($description)
+                        <p class="text-gray-600 mt-1">{{ $description }}</p>
+                    @endif
+                @endisset
             </div>
 
             @isset($actions)
