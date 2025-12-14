@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\FetchGiftDetailsAction;
+use App\Actions\ProcessGiftImageAction;
 use App\Enums\SupportedCurrency;
 use App\Enums\SupportedLocale;
 use App\Models\Gift;
@@ -44,7 +45,7 @@ class GiftController extends Controller
         $validated = $request->validate([
             'url' => ['required', 'url', 'max:2048'],
             'title' => ['nullable', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:1000'],
+            'description' => ['nullable', 'string', 'max:1500'],
             'price' => ['nullable', 'numeric', 'min:0', 'max:9999999.99'],
             'currency' => ['nullable', 'string', Rule::enum(SupportedCurrency::class)],
             'list_id' => ['nullable', Rule::exists('lists', 'id')->where('user_id', $request->user()->id)],
@@ -99,7 +100,7 @@ class GiftController extends Controller
 
         $validated = $request->validate([
             'title' => ['nullable', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:1000'],
+            'description' => ['nullable', 'string', 'max:1500'],
             'price' => ['nullable', 'numeric', 'min:0', 'max:9999999.99'],
             'currency' => ['nullable', 'string', Rule::enum(SupportedCurrency::class)],
             'url' => ['nullable', 'url', 'max:2048'],
@@ -150,5 +151,30 @@ class GiftController extends Controller
         return redirect()
             ->back()
             ->with('success', __('Gift details refresh has been queued.'));
+    }
+
+    public function uploadImage(Request $request, string $locale, Gift $gift, ProcessGiftImageAction $imageAction): JsonResponse
+    {
+        $this->authorize('update', $gift);
+
+        $validated = $request->validate([
+            'image' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:10240'],
+        ]);
+
+        $success = $imageAction->fromUpload($gift, $validated['image']);
+
+        if (! $success) {
+            return response()->json([
+                'success' => false,
+                'message' => __('Failed to upload image.'),
+            ], 422);
+        }
+
+        $imageAction->dispatchCompletedEvent($gift);
+
+        return response()->json([
+            'success' => true,
+            'message' => __('Image uploaded successfully.'),
+        ]);
     }
 }

@@ -121,6 +121,8 @@ Route::prefix('{locale}')
             Route::post('/gifts/{gift}/refresh', [GiftController::class, 'refreshGiftDetails'])
                 ->middleware('admin')
                 ->name('gifts.refresh');
+            Route::post('/gifts/{gift}/upload-image', [GiftController::class, 'uploadImage'])
+                ->name('gifts.upload-image');
 
             // Claim routes (for registered users)
             Route::post('/gifts/{gift}/claim', [ClaimController::class, 'store'])->name('claim.store');

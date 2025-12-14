@@ -2,7 +2,6 @@
 
 namespace App\Actions;
 
-use App\Events\GiftFetchCompleted;
 use App\Models\Gift;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
@@ -12,7 +11,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 use Mattiasgeniar\ProductInfoFetcher\ProductInfoFetcherClass;
-use Spatie\MediaLibrary\MediaCollections\Exceptions\UnreachableUrl;
 use Throwable;
 
 class FetchGiftDetailsAction implements ShouldQueue
@@ -29,7 +27,7 @@ class FetchGiftDetailsAction implements ShouldQueue
         $this->onQueue('fetch');
     }
 
-    public function handle(): void
+    public function handle(ProcessGiftImageAction $imageAction): void
     {
         $this->gift->update(['fetch_status' => 'fetching']);
 
@@ -40,21 +38,16 @@ class FetchGiftDetailsAction implements ShouldQueue
                 ->setConnectTimeout(10)
                 ->fetchAndParse();
 
-            $originalImageUrl = $product->imageUrl;
-
             $this->gift->update([
                 'title' => $product->name ?: $this->gift->title,
                 'description' => $product->description ?: $this->gift->description,
                 'price_in_cents' => $product->priceInCents,
                 'currency' => $product->priceCurrency ?: $this->gift->currency,
-                'original_image_url' => $originalImageUrl ?: $this->gift->original_image_url,
                 'fetch_status' => 'completed',
                 'fetched_at' => now(),
             ]);
 
-            if ($originalImageUrl) {
-                $this->addImageFromUrl($originalImageUrl);
-            }
+            $this->tryAddImageFromUrls($imageAction, $product->allImageUrls ?? []);
         } catch (ClientException|ServerException|ConnectException $e) {
             Log::warning('Gift fetch failed due to HTTP error', [
                 'gift_id' => $this->gift->id,
@@ -72,43 +65,32 @@ class FetchGiftDetailsAction implements ShouldQueue
                 'fetched_at' => now(),
             ]);
 
-            GiftFetchCompleted::dispatch($this->gift->fresh()->load('lists', 'media'));
+            $imageAction->dispatchCompletedEvent($this->gift);
 
             throw $e;
         }
 
-        GiftFetchCompleted::dispatch($this->gift->fresh()->load('lists', 'media'));
+        $imageAction->dispatchCompletedEvent($this->gift);
     }
 
-    private function addImageFromUrl(string $imageUrl): void
+    /**
+     * Try to add an image from a list of URLs.
+     * Stops at the first successful image download.
+     */
+    private function tryAddImageFromUrls(ProcessGiftImageAction $imageAction, array $imageUrls): void
     {
-        $imageUrl = $this->normalizeUrl($imageUrl);
+        foreach ($imageUrls as $imageUrl) {
+            if (empty($imageUrl)) {
+                continue;
+            }
 
-        try {
-            $this->gift
-                ->addMediaFromUrl($imageUrl)
-                ->toMediaCollection('image');
-        } catch (UnreachableUrl $e) {
-            Log::warning('Failed to download gift image: URL unreachable', [
-                'gift_id' => $this->gift->id,
-                'image_url' => $imageUrl,
-                'error' => $e->getMessage(),
-            ]);
-        } catch (Throwable $e) {
-            Log::warning('Exception downloading gift image', [
-                'gift_id' => $this->gift->id,
-                'image_url' => $imageUrl,
-                'error' => $e->getMessage(),
-            ]);
+            $success = $imageAction->fromUrl($this->gift, $imageUrl);
+
+            if ($success) {
+                $this->gift->update(['original_image_url' => $imageUrl]);
+
+                return;
+            }
         }
-    }
-
-    private function normalizeUrl(string $url): string
-    {
-        if (str_starts_with($url, '//')) {
-            return 'https:'.$url;
-        }
-
-        return $url;
     }
 }

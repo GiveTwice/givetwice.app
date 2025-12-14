@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('url', 2048);
             $table->string('title')->nullable();
-            $table->text('description')->nullable();
+            $table->string('description', 1500)->nullable();
             $table->unsignedBigInteger('price_in_cents')->nullable();
             $table->string('currency', 3)->default('EUR');
             $table->string('original_image_url', 2048)->nullable();
