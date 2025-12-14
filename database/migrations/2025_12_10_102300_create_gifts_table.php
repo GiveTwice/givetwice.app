@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->unsignedBigInteger('price_in_cents')->nullable();
             $table->string('currency', 3)->default('EUR');
-            $table->string('image_url', 2048)->nullable();
+            $table->string('original_image_url', 2048)->nullable();
             $table->enum('fetch_status', ['pending', 'fetching', 'completed', 'failed'])->default('pending');
             $table->timestamp('fetched_at')->nullable();
             $table->softDeletes();

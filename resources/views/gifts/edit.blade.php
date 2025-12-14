@@ -143,7 +143,7 @@
                 gift: {
                     id: {{ $gift->id }},
                     title: @js($gift->title),
-                    image_url: @js($gift->image_url),
+                    image_url_card: @js($gift->getImageUrl('card')),
                     fetch_status: @js($gift->fetch_status),
                     fetched_at: @js($gift->fetched_at?->diffForHumans())
                 },
@@ -172,7 +172,7 @@
                             .listen('.gift.fetch.completed', (e) => {
                                 if (e.gift.id === this.gift.id) {
                                     this.gift.title = e.gift.title;
-                                    this.gift.image_url = e.gift.image_url;
+                                    this.gift.image_url_card = e.gift.image_url_card;
                                     this.gift.fetch_status = e.gift.fetch_status;
                                     this.gift.fetched_at = '{{ __('Just now') }}';
                                 }
@@ -182,9 +182,9 @@
             }"
         >
             {{-- Current Image --}}
-            <div class="bg-cream-50 rounded-xl p-6 mb-6" x-show="gift.image_url" x-cloak>
+            <div class="bg-cream-50 rounded-xl p-6 mb-6" x-show="gift.image_url_card" x-cloak>
                 <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Current Image') }}</h2>
-                <img :src="gift.image_url" :alt="gift.title" class="w-full h-48 object-cover rounded-xl">
+                <img :src="gift.image_url_card" :alt="gift.title" class="w-full h-48 object-cover rounded-xl">
             </div>
 
             {{-- Fetch Status --}}

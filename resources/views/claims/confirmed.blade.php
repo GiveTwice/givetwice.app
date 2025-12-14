@@ -86,8 +86,8 @@
         <div class="flex gap-5 items-start">
             {{-- Gift image --}}
             <div class="flex-shrink-0 w-24 h-24 sm:w-32 sm:h-32 rounded-xl bg-cream-50 border border-cream-200 overflow-hidden">
-                @if($gift->image_url)
-                    <img src="{{ $gift->image_url }}" alt="{{ $gift->title }}" class="w-full h-full object-cover">
+                @if($gift->hasImage())
+                    <img src="{{ $gift->getImageUrl('thumb') }}" alt="{{ $gift->title }}" class="w-full h-full object-cover">
                 @else
                     <div class="w-full h-full flex items-center justify-center text-cream-400">
                         <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -19,9 +19,9 @@
     <div class="flex gap-4 items-start bg-cream-50 rounded-xl p-4 border border-cream-200">
         {{-- Thumbnail --}}
         <div class="w-24 h-24 flex-shrink-0 bg-white rounded-lg overflow-hidden border border-cream-200">
-            @if($gift->image_url)
+            @if($gift->hasImage())
                 <img
-                    src="{{ $gift->image_url }}"
+                    src="{{ $gift->getImageUrl('thumb') }}"
                     alt="{{ $gift->title }}"
                     class="w-full h-full object-cover"
                 >
@@ -62,9 +62,9 @@
     <div class="bg-white rounded-2xl border border-cream-200 overflow-hidden">
         {{-- Image --}}
         <div class="aspect-square bg-cream-50 relative">
-            @if($gift->image_url)
+            @if($gift->hasImage())
                 <img
-                    src="{{ $gift->image_url }}"
+                    src="{{ $gift->getImageUrl('card') }}"
                     alt="{{ $gift->title }}"
                     class="w-full h-full object-cover"
                 >

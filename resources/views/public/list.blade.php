@@ -32,14 +32,14 @@
 
             // Update image
             const imgContainer = card.querySelector('[data-gift-image]');
-            if (imgContainer && gift.image_url) {
+            if (imgContainer && gift.image_url_card) {
                 const placeholder = imgContainer.querySelector('[data-gift-placeholder]');
                 if (placeholder) placeholder.remove();
                 const existingImg = imgContainer.querySelector('img');
                 if (existingImg) existingImg.remove();
 
                 const img = document.createElement('img');
-                img.src = gift.image_url;
+                img.src = gift.image_url_card;
                 img.alt = gift.title || '';
                 img.className = 'w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500';
                 img.loading = 'lazy';
@@ -77,8 +77,8 @@
 
             // Update modal image
             const modalImg = modalWrapper.querySelector('img');
-            if (modalImg && gift.image_url) {
-                modalImg.src = gift.image_url;
+            if (modalImg && gift.image_url_large) {
+                modalImg.src = gift.image_url_large;
                 modalImg.alt = gift.title || '';
             }
 

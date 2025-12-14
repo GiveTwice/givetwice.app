@@ -175,7 +175,7 @@ describe('GiftFetchCompleted event', function () {
             'url' => 'https://example.com/product',
             'price_in_cents' => 1999,
             'currency' => 'EUR',
-            'image_url' => 'https://example.com/image.jpg',
+            'original_image_url' => 'https://example.com/image.jpg',
             'fetch_status' => 'completed',
         ]);
 
@@ -189,7 +189,9 @@ describe('GiftFetchCompleted event', function () {
         expect($payload['gift']['url'])->toBe('https://example.com/product');
         expect($payload['gift']['price_in_cents'])->toBe(1999);
         expect($payload['gift']['currency'])->toBe('EUR');
-        expect($payload['gift']['image_url'])->toBe('https://example.com/image.jpg');
+        expect($payload['gift']['image_url_thumb'])->toBe('https://example.com/image.jpg');
+        expect($payload['gift']['image_url_card'])->toBe('https://example.com/image.jpg');
+        expect($payload['gift']['image_url_large'])->toBe('https://example.com/image.jpg');
         expect($payload['gift']['fetch_status'])->toBe('completed');
         expect($payload['gift']['price_formatted'])->toBe('€ 19.99');
     });

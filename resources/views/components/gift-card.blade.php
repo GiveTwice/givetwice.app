@@ -30,16 +30,17 @@
 >
     {{-- Image Container - Square aspect ratio for product images --}}
     <div class="relative aspect-square bg-cream-100 overflow-hidden" data-gift-image>
-        @if($gift->image_url)
+        @if($gift->hasImage())
             {{--
                 Image handling for various aspect ratios:
                 - object-cover: fills container, crops excess (best for products)
                 - object-position: center ensures the important part is visible
                 - The image scales smoothly on hover for visual feedback
                 - Claimed items get a warm desaturation effect
+                - Uses 'card' conversion (600x600) for optimal grid display
             --}}
             <img
-                src="{{ $gift->image_url }}"
+                src="{{ $gift->getImageUrl('card') }}"
                 alt="{{ $gift->title }}"
                 class="w-full h-full object-cover object-center transition-all duration-500
                     {{ $isClaimedByOthers

@@ -60,6 +60,15 @@ return [
             'report' => false,
         ],
 
+        'gift-images' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/gift-images'),
+            'url' => env('APP_URL').'/storage/gift-images',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+
     ],
 
     /*

@@ -50,7 +50,9 @@ class GiftFetchCompleted implements ShouldBroadcastNow
                 'price_in_cents' => $this->gift->price_in_cents,
                 'price_formatted' => $this->gift->formatPrice(),
                 'currency' => $this->gift->currency,
-                'image_url' => $this->gift->image_url,
+                'image_url_thumb' => $this->gift->getImageUrl('thumb'),
+                'image_url_card' => $this->gift->getImageUrl('card'),
+                'image_url_large' => $this->gift->getImageUrl('large'),
                 'fetch_status' => $this->gift->fetch_status,
             ],
         ];

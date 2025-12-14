@@ -69,9 +69,9 @@
                 {{-- Left: Image --}}
                 <div class="md:w-1/2 bg-cream-50 relative">
                     <div class="aspect-square md:aspect-auto md:h-full flex items-center justify-center p-8">
-                        @if($gift->image_url)
+                        @if($gift->hasImage())
                             <img
-                                src="{{ $gift->image_url }}"
+                                src="{{ $gift->getImageUrl('large') }}"
                                 alt="{{ $gift->title }}"
                                 class="max-w-full max-h-[400px] md:max-h-full object-contain rounded-lg"
                             >
@@ -113,7 +113,7 @@
                             </span>
                             <span class="text-gray-300">&middot;</span>
                         @endif
-                        <span class="text-sm">{{ $addedAgo }} {{ __('added') }}</span>
+                        <span class="text-sm">{{ __('added') }} {{ $addedAgo }}</span>
                     </div>
 
                     {{-- Description --}}

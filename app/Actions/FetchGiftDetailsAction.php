@@ -12,6 +12,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 use Mattiasgeniar\ProductInfoFetcher\ProductInfoFetcherClass;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\UnreachableUrl;
 use Throwable;
 
 class FetchGiftDetailsAction implements ShouldQueue
@@ -39,17 +40,22 @@ class FetchGiftDetailsAction implements ShouldQueue
                 ->setConnectTimeout(10)
                 ->fetchAndParse();
 
+            $originalImageUrl = $product->imageUrl;
+
             $this->gift->update([
                 'title' => $product->name ?: $this->gift->title,
                 'description' => $product->description ?: $this->gift->description,
                 'price_in_cents' => $product->priceInCents,
                 'currency' => $product->priceCurrency ?: $this->gift->currency,
-                'image_url' => $product->imageUrl ?: $this->gift->image_url,
+                'original_image_url' => $originalImageUrl ?: $this->gift->original_image_url,
                 'fetch_status' => 'completed',
                 'fetched_at' => now(),
             ]);
+
+            if ($originalImageUrl) {
+                $this->addImageFromUrl($originalImageUrl);
+            }
         } catch (ClientException|ServerException|ConnectException $e) {
-            // HTTP errors (4xx, 5xx) and connection failures - mark as failed without retrying
             Log::warning('Gift fetch failed due to HTTP error', [
                 'gift_id' => $this->gift->id,
                 'url' => $this->gift->url,
@@ -61,20 +67,37 @@ class FetchGiftDetailsAction implements ShouldQueue
                 'fetched_at' => now(),
             ]);
         } catch (Throwable $e) {
-            // Other unexpected errors - mark as failed and rethrow to allow retries
             $this->gift->update([
                 'fetch_status' => 'failed',
                 'fetched_at' => now(),
             ]);
 
-            // Broadcast failure before rethrowing so UI updates
-            GiftFetchCompleted::dispatch($this->gift->fresh()->load('lists'));
+            GiftFetchCompleted::dispatch($this->gift->fresh()->load('lists', 'media'));
 
             throw $e;
         }
 
-        // Broadcast the result (success or handled failure) so UI can update
-        // Load lists for broadcasting to public list channels
-        GiftFetchCompleted::dispatch($this->gift->fresh()->load('lists'));
+        GiftFetchCompleted::dispatch($this->gift->fresh()->load('lists', 'media'));
+    }
+
+    private function addImageFromUrl(string $imageUrl): void
+    {
+        try {
+            $this->gift
+                ->addMediaFromUrl($imageUrl)
+                ->toMediaCollection('image');
+        } catch (UnreachableUrl $e) {
+            Log::warning('Failed to download gift image: URL unreachable', [
+                'gift_id' => $this->gift->id,
+                'image_url' => $imageUrl,
+                'error' => $e->getMessage(),
+            ]);
+        } catch (Throwable $e) {
+            Log::warning('Exception downloading gift image', [
+                'gift_id' => $this->gift->id,
+                'image_url' => $imageUrl,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 }

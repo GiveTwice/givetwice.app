@@ -22,7 +22,7 @@ class GiftFactory extends Factory
             'description' => fake()->paragraph(),
             'price_in_cents' => fake()->numberBetween(100, 50000),
             'currency' => fake()->randomElement(['EUR', 'USD', 'GBP']),
-            'image_url' => fake()->imageUrl(),
+            'original_image_url' => null,
             'fetch_status' => 'completed',
             'fetched_at' => now(),
         ];
@@ -36,7 +36,6 @@ class GiftFactory extends Factory
             'title' => null,
             'description' => null,
             'price_in_cents' => null,
-            'image_url' => null,
         ]);
     }
 
@@ -53,6 +52,13 @@ class GiftFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'fetch_status' => 'failed',
             'fetched_at' => now(),
+        ]);
+    }
+
+    public function withFallbackImage(string $url = 'https://example.com/image.jpg'): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'original_image_url' => $url,
         ]);
     }
 }

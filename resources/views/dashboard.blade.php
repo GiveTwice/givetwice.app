@@ -20,7 +20,7 @@
 
             // Update image - remove placeholder or existing img, add new img
             const imgContainer = card.querySelector('[data-gift-image]');
-            if (imgContainer && gift.image_url) {
+            if (imgContainer && gift.image_url_card) {
                 // Remove existing placeholder if present
                 const placeholder = imgContainer.querySelector('[data-gift-placeholder]');
                 if (placeholder) {
@@ -33,7 +33,7 @@
                 }
                 // Create and insert new image as first child
                 const img = document.createElement('img');
-                img.src = gift.image_url;
+                img.src = gift.image_url_card;
                 img.alt = gift.title || '';
                 img.className = 'w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500';
                 img.loading = 'lazy';
