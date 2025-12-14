@@ -14,6 +14,11 @@ class GiftList extends Model
 
     protected $table = 'lists';
 
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     protected $fillable = [
         'user_id',
         'name',

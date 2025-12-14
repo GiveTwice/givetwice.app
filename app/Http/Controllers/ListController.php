@@ -9,26 +9,17 @@ use Illuminate\View\View;
 
 class ListController extends Controller
 {
-    public function show(Request $request, string $locale, string $slug): View|RedirectResponse
+    public function show(Request $request, string $locale, GiftList $list): View|RedirectResponse
     {
-        $list = GiftList::where('slug', $slug)->first();
-
-        if (! $list) {
-            abort(404);
-        }
-
         $user = $request->user();
 
-        // If user is not logged in or not the owner, redirect to public view
         if (! $user || $list->user_id !== $user->id) {
-            return redirect()->route('public.list', ['locale' => $locale, 'slug' => $slug]);
+            return redirect()->route('public.list', ['locale' => $locale, 'list' => $list]);
         }
-
-        $gifts = $list->gifts()->paginate(100);
 
         return view('lists.show', [
             'list' => $list,
-            'gifts' => $gifts,
+            'gifts' => $list->gifts()->paginate(100),
         ]);
     }
 
@@ -52,26 +43,22 @@ class ListController extends Controller
         ]);
 
         return redirect()
-            ->route('list.show', ['locale' => app()->getLocale(), 'slug' => $list->slug])
+            ->route('list.show', ['locale' => app()->getLocale(), 'list' => $list])
             ->with('success', __('List created successfully.'));
     }
 
-    public function edit(Request $request, string $locale, string $slug): View
+    public function edit(string $locale, GiftList $list): View
     {
-        $list = GiftList::where('slug', $slug)
-            ->where('user_id', $request->user()->id)
-            ->firstOrFail();
+        $this->authorize('update', $list);
 
         return view('lists.edit', [
             'list' => $list,
         ]);
     }
 
-    public function update(Request $request, string $locale, string $slug): RedirectResponse
+    public function update(Request $request, string $locale, GiftList $list): RedirectResponse
     {
-        $list = GiftList::where('slug', $slug)
-            ->where('user_id', $request->user()->id)
-            ->firstOrFail();
+        $this->authorize('update', $list);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -84,23 +71,14 @@ class ListController extends Controller
         ]);
 
         return redirect()
-            ->route('list.show', ['locale' => app()->getLocale(), 'slug' => $list->slug])
+            ->route('list.show', ['locale' => app()->getLocale(), 'list' => $list])
             ->with('success', __('List updated successfully.'));
     }
 
-    public function destroy(Request $request, string $locale, string $slug): RedirectResponse
+    public function destroy(string $locale, GiftList $list): RedirectResponse
     {
-        $list = GiftList::where('slug', $slug)
-            ->where('user_id', $request->user()->id)
-            ->firstOrFail();
+        $this->authorize('delete', $list);
 
-        if ($list->is_default) {
-            return redirect()
-                ->route('dashboard.locale', ['locale' => app()->getLocale()])
-                ->with('error', __('Cannot delete your default list.'));
-        }
-
-        // Detach all gifts from this list (but don't delete the gifts)
         $list->gifts()->detach();
         $list->delete();
 

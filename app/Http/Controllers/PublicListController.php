@@ -7,11 +7,9 @@ use Illuminate\View\View;
 
 class PublicListController extends Controller
 {
-    public function show(string $locale, string $slug): View
+    public function show(string $locale, GiftList $list): View
     {
-        $list = GiftList::where('slug', $slug)
-            ->with('user:id,name')
-            ->firstOrFail();
+        $list->load('user:id,name');
 
         $gifts = $list->gifts()
             ->whereNull('deleted_at')

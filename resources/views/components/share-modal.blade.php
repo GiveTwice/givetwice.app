@@ -1,7 +1,7 @@
 @props(['list'])
 
 @php
-    $publicUrl = route('public.list', ['locale' => app()->getLocale(), 'slug' => $list->slug]);
+    $publicUrl = route('public.list', ['locale' => app()->getLocale(), 'list' => $list]);
     $shareMessage = __('You can view my wish list here:') . ' ' . $publicUrl;
 @endphp
 

@@ -20,7 +20,6 @@ class GiftController extends Controller
         $lists = $request->user()->lists()->get();
         $defaultList = $lists->firstWhere('is_default', true) ?? $lists->first();
 
-        // Check for list_id query param to pre-select a specific list
         $selectedListId = $request->query('list');
         if ($selectedListId && $lists->contains('id', $selectedListId)) {
             $selectedListId = (int) $selectedListId;
@@ -48,18 +47,9 @@ class GiftController extends Controller
             'description' => ['nullable', 'string', 'max:1000'],
             'price' => ['nullable', 'numeric', 'min:0', 'max:9999999.99'],
             'currency' => ['nullable', 'string', Rule::enum(SupportedCurrency::class)],
-            'list_id' => ['nullable', 'exists:lists,id'],
+            'list_id' => ['nullable', Rule::exists('lists', 'id')->where('user_id', $request->user()->id)],
         ]);
 
-        // If list_id provided, verify ownership
-        $list = null;
-        if (! empty($validated['list_id'])) {
-            $list = GiftList::where('id', $validated['list_id'])
-                ->where('user_id', $request->user()->id)
-                ->firstOrFail();
-        }
-
-        // Convert price from decimal to cents
         $priceInCents = isset($validated['price'])
             ? (int) round($validated['price'] * 100)
             : null;
@@ -73,24 +63,17 @@ class GiftController extends Controller
             'currency' => $validated['currency'] ?? SupportedCurrency::default()->value,
         ]);
 
-        // Attach to list if specified, otherwise attach to default list
+        $list = ! empty($validated['list_id'])
+            ? GiftList::find($validated['list_id'])
+            : $request->user()->lists()->where('is_default', true)->first();
+
         $attachedListId = null;
-        if ($list !== null) {
+        if ($list) {
             $list->gifts()->attach($gift->id, [
                 'sort_order' => $list->gifts()->count(),
                 'added_at' => now(),
             ]);
             $attachedListId = $list->id;
-        } else {
-            /** @var GiftList|null $defaultList */
-            $defaultList = $request->user()->lists()->where('is_default', true)->first();
-            if ($defaultList) {
-                $defaultList->gifts()->attach($gift->id, [
-                    'sort_order' => $defaultList->gifts()->count(),
-                    'added_at' => now(),
-                ]);
-                $attachedListId = $defaultList->id;
-            }
         }
 
         $locale = app()->getLocale();
@@ -101,12 +84,9 @@ class GiftController extends Controller
             ->with('success', __('Gift added successfully! We\'re fetching the details.'));
     }
 
-    public function edit(Request $request, string $locale, Gift $gift): View
+    public function edit(string $locale, Gift $gift): View
     {
-        // Ensure user owns this gift
-        if ($gift->user_id !== $request->user()->id) {
-            abort(404);
-        }
+        $this->authorize('update', $gift);
 
         return view('gifts.edit', [
             'gift' => $gift,
@@ -115,10 +95,7 @@ class GiftController extends Controller
 
     public function update(Request $request, string $locale, Gift $gift): RedirectResponse
     {
-        // Ensure user owns this gift
-        if ($gift->user_id !== $request->user()->id) {
-            abort(404);
-        }
+        $this->authorize('update', $gift);
 
         $validated = $request->validate([
             'title' => ['nullable', 'string', 'max:255'],
@@ -128,7 +105,6 @@ class GiftController extends Controller
             'url' => ['nullable', 'url', 'max:2048'],
         ]);
 
-        // Convert price from decimal to cents (only if provided)
         $priceInCents = isset($validated['price'])
             ? (int) round($validated['price'] * 100)
             : $gift->price_in_cents;
@@ -146,12 +122,9 @@ class GiftController extends Controller
             ->with('success', __('Gift updated successfully.'));
     }
 
-    public function destroy(Request $request, string $locale, Gift $gift): RedirectResponse
+    public function destroy(string $locale, Gift $gift): RedirectResponse
     {
-        // Ensure user owns this gift
-        if ($gift->user_id !== $request->user()->id) {
-            abort(404);
-        }
+        $this->authorize('delete', $gift);
 
         $gift->delete();
 
@@ -160,12 +133,8 @@ class GiftController extends Controller
             ->with('success', __('Gift deleted successfully.'));
     }
 
-    /**
-     * Re-fetch gift details from URL (admin only).
-     */
     public function refreshGiftDetails(Request $request, string $locale, Gift $gift): RedirectResponse|JsonResponse
     {
-        // Reset status and dispatch the fetch action
         $gift->update(['fetch_status' => 'pending']);
 
         FetchGiftDetailsAction::dispatch($gift);

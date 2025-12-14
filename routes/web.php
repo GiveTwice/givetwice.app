@@ -55,10 +55,10 @@ Route::prefix('{locale}')
         })->name('contact');
 
         // Public list view (shareable)
-        Route::get('/view/{slug}', [PublicListController::class, 'show'])->name('public.list');
+        Route::get('/view/{list}', [PublicListController::class, 'show'])->name('public.list');
 
         // List show - handles both authenticated owners and redirects for guests/non-owners
-        Route::get('/list/{slug}', [ListController::class, 'show'])->name('list.show');
+        Route::get('/list/{list}', [ListController::class, 'show'])->name('list.show');
 
         // Anonymous claim routes
         Route::get('/gifts/{gift}/claim', [ClaimController::class, 'showAnonymousForm'])->name('claim.anonymous.form');
@@ -108,9 +108,9 @@ Route::prefix('{locale}')
             // List routes
             Route::get('/lists/create', [ListController::class, 'create'])->name('lists.create');
             Route::post('/lists', [ListController::class, 'store'])->name('lists.store');
-            Route::get('/list/{slug}/edit', [ListController::class, 'edit'])->name('list.edit');
-            Route::put('/list/{slug}', [ListController::class, 'update'])->name('list.update');
-            Route::delete('/list/{slug}', [ListController::class, 'destroy'])->name('list.destroy');
+            Route::get('/list/{list}/edit', [ListController::class, 'edit'])->name('list.edit');
+            Route::put('/list/{list}', [ListController::class, 'update'])->name('list.update');
+            Route::delete('/list/{list}', [ListController::class, 'destroy'])->name('list.destroy');
 
             // Gift routes
             Route::get('/gifts/create', [GiftController::class, 'create'])->name('gifts.create');
