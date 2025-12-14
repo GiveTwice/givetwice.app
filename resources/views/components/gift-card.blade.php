@@ -11,12 +11,19 @@
     $isClaimedByMe = auth()->check() && $gift->claims->where('user_id', auth()->id())->isNotEmpty();
     $isPending = $gift->isPending() || $gift->isFetching();
     $isFailed = $gift->isFetchFailed();
+    // Determine if this is a "claimed by others" state on public page (not by me)
+    $isClaimedByOthers = $showClaimActions && $isClaimed && !$isClaimedByMe && !$isOwner;
 @endphp
 
 <div
-    class="group relative bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-lg hover:border-gray-300 transition-all duration-300 {{ $openModal ? 'cursor-pointer' : '' }}"
+    class="group relative bg-white rounded-2xl overflow-hidden border shadow-sm transition-all duration-300
+        {{ $isClaimedByOthers
+            ? 'border-sunny-200/80 bg-sunny-50/30'
+            : 'border-gray-200 hover:shadow-lg hover:border-gray-300' }}
+        {{ $openModal && !$isClaimedByOthers ? 'cursor-pointer' : '' }}
+        {{ $isClaimedByOthers ? 'cursor-default' : '' }}"
     data-gift-id="{{ $gift->id }}"
-    @if($openModal)
+    @if($openModal && !$isClaimedByOthers)
         x-data
         x-on:click="$dispatch('open-gift-modal-{{ $gift->id }}')"
     @endif
@@ -29,13 +36,21 @@
                 - object-cover: fills container, crops excess (best for products)
                 - object-position: center ensures the important part is visible
                 - The image scales smoothly on hover for visual feedback
+                - Claimed items get a warm desaturation effect
             --}}
             <img
                 src="{{ $gift->image_url }}"
                 alt="{{ $gift->title }}"
-                class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                class="w-full h-full object-cover object-center transition-all duration-500
+                    {{ $isClaimedByOthers
+                        ? 'grayscale-[0.5] brightness-[1.05] sepia-[0.2] saturate-[0.7]'
+                        : 'group-hover:scale-105' }}"
                 loading="lazy"
             >
+            {{-- Warm gradient overlay for claimed items --}}
+            @if($isClaimedByOthers)
+                <div class="absolute inset-0 bg-gradient-to-t from-sunny-200/50 via-sunny-100/25 to-sunny-50/10 pointer-events-none"></div>
+            @endif
         @else
             {{-- Placeholder for missing images --}}
             <div class="w-full h-full flex flex-col items-center justify-center text-cream-400" data-gift-placeholder>
@@ -83,9 +98,14 @@
                 </span>
             </div>
         @elseif($showClaimActions && $isClaimed && !$isOwner)
-            {{-- For public view: Someone else claimed --}}
+            {{-- For public view: Someone else claimed - elegant fulfilled indicator --}}
             <div class="absolute top-3 right-3">
-                <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-sunny-100/95 backdrop-blur-sm text-sunny-700 text-xs font-semibold rounded-full shadow-sm">
+                <span class="inline-flex items-center gap-1.5 pl-2 pr-2.5 py-1 bg-white/95 backdrop-blur-sm text-sunny-700 text-xs font-semibold rounded-full shadow-sm border border-sunny-200/50">
+                    <span class="w-4 h-4 bg-sunny-400 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </span>
                     {{ __('Claimed') }}
                 </span>
             </div>
@@ -113,16 +133,16 @@
     </div>
 
     {{-- Card content - compact --}}
-    <div class="px-3 py-2.5">
+    <div class="px-3 py-2.5 {{ $isClaimedByOthers ? 'bg-sunny-50/40' : '' }}">
         {{-- Title --}}
-        <h3 class="font-semibold text-gray-900 text-sm leading-snug line-clamp-2 min-h-[2.25rem]" title="{{ $gift->title }}" data-gift-title>
+        <h3 class="font-semibold text-sm leading-snug line-clamp-2 min-h-[2.25rem] {{ $isClaimedByOthers ? 'text-gray-500' : 'text-gray-900' }}" title="{{ $gift->title }}" data-gift-title>
             {{ $gift->title ?: __('Untitled gift') }}
         </h3>
 
         {{-- Price --}}
         <div class="mt-1.5 flex items-center justify-between" data-gift-price>
             @if($gift->hasPrice())
-                <span class="text-base font-bold text-coral-600">
+                <span class="text-base font-bold {{ $isClaimedByOthers ? 'text-gray-400' : 'text-coral-600' }}">
                     {{ $gift->formatPrice() }}
                 </span>
             @else
@@ -138,7 +158,10 @@
                     <a href="{{ $gift->url }}"
                        target="_blank"
                        rel="noopener noreferrer"
-                       class="block w-full text-center text-xs bg-cream-100 text-gray-700 px-3 py-2 rounded-lg hover:bg-cream-200 transition-colors font-medium">
+                       class="block w-full text-center text-xs px-3 py-2 rounded-lg transition-colors font-medium
+                           {{ $isClaimedByOthers
+                               ? 'bg-sunny-50/60 text-sunny-600/80 hover:bg-sunny-100/60 border border-sunny-200/40'
+                               : 'bg-cream-100 text-gray-700 hover:bg-cream-200' }}">
                         {{ __('View Product') }}
                     </a>
                 @endif
@@ -155,7 +178,10 @@
                     </form>
                 @elseif($isClaimed)
                     <button type="button" disabled
-                        class="w-full text-xs bg-cream-200 text-cream-500 px-3 py-2 rounded-lg cursor-not-allowed">
+                        class="w-full text-xs bg-sunny-100/80 text-sunny-600/70 px-3 py-2 rounded-lg cursor-not-allowed border border-sunny-200/50 flex items-center justify-center gap-1.5">
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
                         {{ __('Already claimed') }}
                     </button>
                 @else
