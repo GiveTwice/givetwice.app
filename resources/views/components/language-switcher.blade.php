@@ -1,19 +1,8 @@
 @php
+    use App\Enums\SupportedLocale;
+
     $currentLocale = app()->getLocale();
-    $locales = [
-        'en' => [
-            'name' => 'English',
-            'flag' => '🇬🇧',
-        ],
-        'nl' => [
-            'name' => 'Nederlands',
-            'flag' => '🇳🇱',
-        ],
-        'fr' => [
-            'name' => 'Français',
-            'flag' => '🇫🇷',
-        ],
-    ];
+    $currentLocaleEnum = SupportedLocale::tryFrom($currentLocale) ?? SupportedLocale::default();
 
     // Get current route name and parameters
     $currentRoute = request()->route();
@@ -30,8 +19,8 @@
         aria-expanded="false"
         aria-haspopup="true"
     >
-        <span class="text-lg leading-none">{{ $locales[$currentLocale]['flag'] }}</span>
-        <span class="text-gray-700 font-medium text-sm">{{ $locales[$currentLocale]['name'] }}</span>
+        <span class="text-lg leading-none">{{ $currentLocaleEnum->flag() }}</span>
+        <span class="text-gray-700 font-medium text-sm">{{ $currentLocaleEnum->label() }}</span>
         <svg
             class="w-4 h-4 text-gray-500 transition-transform duration-200"
             :class="{ 'rotate-180': open }"
@@ -61,19 +50,19 @@
         {{-- Menu card --}}
         <div class="relative bg-white rounded-2xl shadow-lg border border-cream-200 overflow-hidden">
             <div class="py-2">
-                @foreach ($locales as $code => $locale)
+                @foreach (SupportedLocale::cases() as $locale)
                     @php
-                        $newParams = array_merge($routeParams, ['locale' => $code]);
-                        $url = $routeName ? route($routeName, $newParams) : url("/{$code}");
-                        $isActive = $code === $currentLocale;
+                        $newParams = array_merge($routeParams, ['locale' => $locale->value]);
+                        $url = $routeName ? route($routeName, $newParams) : url("/{$locale->value}");
+                        $isActive = $locale->value === $currentLocale;
                     @endphp
                     <a
                         href="{{ $url }}"
                         class="flex items-center px-4 py-3 hover:bg-cream-50 transition-colors {{ $isActive ? 'bg-cream-50' : '' }}"
                     >
-                        <span class="text-xl mr-3">{{ $locale['flag'] }}</span>
+                        <span class="text-xl mr-3">{{ $locale->flag() }}</span>
                         <span class="font-medium {{ $isActive ? 'text-coral-600' : 'text-gray-700' }}">
-                            {{ $locale['name'] }}
+                            {{ $locale->label() }}
                         </span>
                         @if ($isActive)
                             <span class="ml-auto text-coral-500">

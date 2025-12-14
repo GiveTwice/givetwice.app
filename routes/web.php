@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\SupportedLocale;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\ClaimController;
@@ -24,7 +25,7 @@ Route::get('/dashboard', function () {
 
 // Locale-prefixed routes
 Route::prefix('{locale}')
-    ->where(['locale' => 'en|nl|fr'])
+    ->where(['locale' => SupportedLocale::routePattern()])
     ->middleware('locale')
     ->group(function () {
         // Public routes

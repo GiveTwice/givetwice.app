@@ -1,3 +1,7 @@
+@php
+    use App\Enums\SupportedCurrency;
+@endphp
+
 @extends('layouts.app')
 
 @section('title', __('Edit Gift'))
@@ -85,8 +89,11 @@
                                 aria-label="{{ __('Currency') }}"
                                 class="h-full pl-4 pr-8 py-3 border border-r-0 border-gray-200 rounded-l-xl bg-gray-50 text-gray-700 font-medium focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 focus:z-10 appearance-none cursor-pointer transition-colors hover:bg-gray-100"
                             >
-                                <option value="EUR" {{ old('currency', $gift->currency ?? 'EUR') === 'EUR' ? 'selected' : '' }}>€ EUR</option>
-                                <option value="USD" {{ old('currency', $gift->currency ?? 'EUR') === 'USD' ? 'selected' : '' }}>$ USD</option>
+                                @foreach (SupportedCurrency::cases() as $currency)
+                                    <option value="{{ $currency->value }}" {{ old('currency', $gift->currency ?? SupportedCurrency::default()->value) === $currency->value ? 'selected' : '' }}>
+                                        {{ $currency->displayOption() }}
+                                    </option>
+                                @endforeach
                             </select>
                             <div class="absolute inset-y-0 right-2 flex items-center pointer-events-none">
                                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

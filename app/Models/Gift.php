@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\SupportedCurrency;
 use App\Events\GiftCreated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -53,15 +54,10 @@ class Gift extends Model
 
         $amount = number_format($this->price_in_cents / 100, 2, '.', '');
 
-        $symbols = [
-            'EUR' => '€',
-            'USD' => '$',
-            'GBP' => '£',
-            'JPY' => '¥',
-        ];
-
-        $currencyDisplay = $useSymbol && isset($symbols[$this->currency])
-            ? $symbols[$this->currency]
+        // Try to use enum for symbol, fall back to raw currency code
+        $currency = SupportedCurrency::tryFrom($this->currency);
+        $currencyDisplay = $useSymbol && $currency
+            ? $currency->symbol()
             : $this->currency;
 
         return $currencyDisplay.' '.$amount;

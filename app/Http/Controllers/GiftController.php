@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Actions\FetchGiftDetailsAction;
+use App\Enums\SupportedCurrency;
+use App\Enums\SupportedLocale;
 use App\Models\Gift;
 use App\Models\GiftList;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class GiftController extends Controller
@@ -25,10 +28,8 @@ class GiftController extends Controller
             $selectedListId = $defaultList?->id;
         }
 
-        $defaultCurrency = match (app()->getLocale()) {
-            'en' => 'USD',
-            default => 'EUR',
-        };
+        $locale = SupportedLocale::tryFrom(app()->getLocale()) ?? SupportedLocale::default();
+        $defaultCurrency = $locale->defaultCurrency()->value;
 
         return view('gifts.create', [
             'lists' => $lists,
@@ -46,7 +47,7 @@ class GiftController extends Controller
             'title' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
             'price' => ['nullable', 'numeric', 'min:0', 'max:9999999.99'],
-            'currency' => ['nullable', 'string', 'in:EUR,USD'],
+            'currency' => ['nullable', 'string', Rule::enum(SupportedCurrency::class)],
             'list_id' => ['nullable', 'exists:lists,id'],
         ]);
 
@@ -69,7 +70,7 @@ class GiftController extends Controller
             'title' => $validated['title'] ?? null,
             'description' => $validated['description'] ?? null,
             'price_in_cents' => $priceInCents,
-            'currency' => $validated['currency'] ?? 'EUR',
+            'currency' => $validated['currency'] ?? SupportedCurrency::default()->value,
         ]);
 
         // Attach to list if specified, otherwise attach to default list
@@ -123,7 +124,7 @@ class GiftController extends Controller
             'title' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
             'price' => ['nullable', 'numeric', 'min:0', 'max:9999999.99'],
-            'currency' => ['nullable', 'string', 'in:EUR,USD'],
+            'currency' => ['nullable', 'string', Rule::enum(SupportedCurrency::class)],
             'url' => ['nullable', 'url', 'max:2048'],
         ]);
 
