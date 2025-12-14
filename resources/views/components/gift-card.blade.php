@@ -28,17 +28,9 @@
         x-on:click="$dispatch('open-gift-modal-{{ $gift->id }}')"
     @endif
 >
-    {{-- Image Container - Square aspect ratio for product images --}}
+
     <div class="relative aspect-square bg-cream-100 overflow-hidden" data-gift-image>
         @if($gift->hasImage())
-            {{--
-                Image handling for various aspect ratios:
-                - object-cover: fills container, crops excess (best for products)
-                - object-position: center ensures the important part is visible
-                - The image scales smoothly on hover for visual feedback
-                - Claimed items get a warm desaturation effect
-                - Uses 'card' conversion (600x600) for optimal grid display
-            --}}
             <img
                 src="{{ $gift->getImageUrl('card') }}"
                 alt="{{ $gift->title }}"
@@ -48,12 +40,12 @@
                         : 'group-hover:scale-105' }}"
                 loading="lazy"
             >
-            {{-- Warm gradient overlay for claimed items --}}
+
             @if($isClaimedByOthers)
                 <div class="absolute inset-0 bg-gradient-to-t from-sunny-200/50 via-sunny-100/25 to-sunny-50/10 pointer-events-none"></div>
             @endif
         @else
-            {{-- Placeholder for missing images --}}
+
             <div class="w-full h-full flex flex-col items-center justify-center text-cream-400" data-gift-placeholder>
                 @if($isPending)
                     <div class="relative">
@@ -77,9 +69,8 @@
             </div>
         @endif
 
-        {{-- Status badge overlay --}}
         @if($isClaimed && !$showClaimActions)
-            {{-- For owner view: show claimed status --}}
+
             <div class="absolute top-3 right-3">
                 <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-sunny-100/95 backdrop-blur-sm text-sunny-700 text-xs font-semibold rounded-full shadow-sm">
                     <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
@@ -89,7 +80,7 @@
                 </span>
             </div>
         @elseif($showClaimActions && $isClaimedByMe)
-            {{-- For public view: "You're getting this" badge --}}
+
             <div class="absolute top-3 right-3">
                 <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-teal-100/95 backdrop-blur-sm text-teal-700 text-xs font-semibold rounded-full shadow-sm">
                     <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
@@ -99,7 +90,7 @@
                 </span>
             </div>
         @elseif($showClaimActions && $isClaimed && !$isOwner)
-            {{-- For public view: Someone else claimed - elegant fulfilled indicator --}}
+
             <div class="absolute top-3 right-3">
                 <span class="inline-flex items-center gap-1.5 pl-2 pr-2.5 py-1 bg-white/95 backdrop-blur-sm text-sunny-700 text-xs font-semibold rounded-full shadow-sm border border-sunny-200/50">
                     <span class="w-4 h-4 bg-sunny-400 rounded-full flex items-center justify-center flex-shrink-0">
@@ -122,7 +113,6 @@
             </div>
         @endif
 
-        {{-- Edit overlay for editable cards --}}
         @if($editable)
             <a href="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/edit') }}"
                class="absolute inset-0 bg-gray-900/0 group-hover:bg-gray-900/10 transition-colors duration-300 flex items-center justify-center">
@@ -133,14 +123,12 @@
         @endif
     </div>
 
-    {{-- Card content - compact --}}
     <div class="px-3 py-2.5 {{ $isClaimedByOthers ? 'bg-sunny-50/40' : '' }}">
-        {{-- Title --}}
+
         <h3 class="font-semibold text-sm leading-snug line-clamp-2 min-h-[2.25rem] {{ $isClaimedByOthers ? 'text-gray-500' : 'text-gray-900' }}" title="{{ $gift->title }}" data-gift-title>
             {{ $gift->title ?: __('Untitled gift') }}
         </h3>
 
-        {{-- Price --}}
         <div class="mt-1.5 flex items-center justify-between" data-gift-price>
             @if($gift->hasPrice())
                 <span class="text-base font-bold {{ $isClaimedByOthers ? 'text-gray-400' : 'text-coral-600' }}">
@@ -151,10 +139,9 @@
             @endif
         </div>
 
-        {{-- Claim actions for public view --}}
         @if($showClaimActions && !$isOwner)
             <div class="mt-2.5 space-y-1.5" @if($openModal) x-on:click.stop @endif>
-                {{-- View product link --}}
+
                 @if($gift->url)
                     <a href="{{ $gift->url }}"
                        target="_blank"
@@ -167,7 +154,6 @@
                     </a>
                 @endif
 
-                {{-- Claim/unclaim buttons --}}
                 @if($isClaimedByMe)
                     <form action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/claim') }}" method="POST">
                         @csrf

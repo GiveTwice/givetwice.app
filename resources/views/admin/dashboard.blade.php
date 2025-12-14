@@ -5,7 +5,6 @@
 @section('content')
 <h1 class="text-2xl font-bold text-gray-900 mb-6">Dashboard</h1>
 
-{{-- Stats Grid --}}
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
     <div class="bg-white rounded-lg shadow p-6">
         <h3 class="text-gray-500 text-sm font-medium">Total Users</h3>
@@ -28,7 +27,6 @@
     </div>
 </div>
 
-{{-- Gifts Activity --}}
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
     <div class="bg-white rounded-lg shadow p-6">
         <h3 class="text-gray-500 text-sm font-medium">Gifts Today</h3>
@@ -46,9 +44,8 @@
     </div>
 </div>
 
-{{-- Recent Activity --}}
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    {{-- Recent Users --}}
+
     <div class="bg-white rounded-lg shadow">
         <div class="p-4 border-b">
             <h2 class="font-semibold text-gray-900">Recent Users</h2>
@@ -76,7 +73,6 @@
         </div>
     </div>
 
-    {{-- Recent Gifts --}}
     <div class="bg-white rounded-lg shadow">
         <div class="p-4 border-b">
             <h2 class="font-semibold text-gray-900">Recent Gifts</h2>
@@ -105,7 +101,6 @@
     </div>
 </div>
 
-{{-- Recent Claims --}}
 <div class="mt-6 bg-white rounded-lg shadow">
     <div class="p-4 border-b">
         <h2 class="font-semibold text-gray-900">Recent Claims</h2>

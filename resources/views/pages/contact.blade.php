@@ -3,7 +3,7 @@
 @section('title', __('Contact'))
 
 @section('content')
-{{-- Hero Section --}}
+
 <div class="text-center py-12 lg:py-16">
     <div class="inline-flex items-center justify-center w-16 h-16 bg-coral-100 text-coral-500 rounded-2xl text-3xl mb-6 transform -rotate-3">
         &#9993;
@@ -12,9 +12,8 @@
     <p class="text-xl text-gray-600 max-w-2xl mx-auto">{{ __('Have questions or feedback? We\'d love to hear from you!') }}</p>
 </div>
 
-{{-- Main Content --}}
 <div class="max-w-4xl mx-auto pb-16">
-    {{-- Contact Card --}}
+
     <div class="bg-gradient-to-br from-coral-50 to-sunny-50 rounded-3xl p-8 lg:p-12 mb-12 border border-coral-100">
         <div class="flex flex-col md:flex-row items-center gap-8">
             <div class="flex-shrink-0">
@@ -32,7 +31,6 @@
         </div>
     </div>
 
-    {{-- Response Time --}}
     <div class="bg-white border border-cream-200 rounded-2xl p-6 mb-12 text-center shadow-sm">
         <div class="flex items-center justify-center gap-3">
             <div class="w-10 h-10 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center text-xl">
@@ -42,7 +40,6 @@
         </div>
     </div>
 
-    {{-- Quick Links --}}
     <div class="mb-12">
         <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">{{ __('Quick Links') }}</h2>
         <div class="grid md:grid-cols-3 gap-6">
@@ -72,7 +69,6 @@
         </div>
     </div>
 
-    {{-- Social/Community Section --}}
     <div class="bg-cream-100 rounded-3xl p-8 text-center mb-12">
         <div class="text-4xl mb-4">&#127873;</div>
         <h2 class="text-xl font-bold text-gray-900 mb-2">{{ __('Join Our Community') }}</h2>
@@ -90,7 +86,6 @@
         </div>
     </div>
 
-    {{-- Back to home --}}
     <div class="text-center">
         <a href="{{ route('home', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center text-coral-600 hover:text-coral-700 font-medium">
             <span class="mr-2">&larr;</span> {{ __('Back to Home') }}

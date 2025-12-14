@@ -3,7 +3,7 @@
 @section('title', __('About Us'))
 
 @section('content')
-{{-- Hero Section --}}
+
 <div class="text-center py-12 lg:py-16">
     <div class="inline-flex items-center justify-center w-16 h-16 bg-coral-100 text-coral-500 rounded-2xl text-3xl mb-6 transform rotate-3">
         &#10084;&#65039;
@@ -12,9 +12,8 @@
     <p class="text-xl text-gray-600 max-w-2xl mx-auto">{{ __('Welcome to :app, a wishlist platform with a purpose.', ['app' => config('app.name')]) }}</p>
 </div>
 
-{{-- Main Content --}}
 <div class="max-w-4xl mx-auto">
-    {{-- Our Mission Section --}}
+
     <div class="bg-gradient-to-br from-coral-50 to-sunny-50 rounded-3xl p-8 lg:p-12 mb-12 border border-coral-100">
         <div class="flex flex-col md:flex-row items-center gap-8">
             <div class="flex-shrink-0">
@@ -31,11 +30,10 @@
     </div>
 </div>
 
-{{-- How It Works Section (full width) --}}
 <x-how-it-works :showCta="false" />
 
 <div class="max-w-4xl mx-auto pb-16">
-    {{-- Why We Built This Section --}}
+
     <div class="bg-cream-100 rounded-3xl p-8 lg:p-12 mb-12">
         <h2 class="text-2xl font-bold text-gray-900 mb-6">{{ __('Why We Built This') }}</h2>
         <div class="space-y-4 text-gray-700 leading-relaxed">
@@ -44,7 +42,6 @@
         </div>
     </div>
 
-    {{-- Our Values --}}
     <div class="mb-12">
         <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">{{ __('Our Values') }}</h2>
         <div class="grid md:grid-cols-2 gap-6">
@@ -87,7 +84,6 @@
         </div>
     </div>
 
-    {{-- Charity Highlight --}}
     <div class="bg-gradient-to-r from-coral-50 to-sunny-50 rounded-2xl p-8 text-center border border-coral-100 mb-12">
         <div class="text-4xl mb-4">&#10084;&#65039;</div>
         <h2 class="text-xl font-bold text-gray-900 mb-2">{{ __('Gifting That Gives Back') }}</h2>
@@ -98,7 +94,6 @@
         </div>
     </div>
 
-    {{-- CTA Section --}}
     <div class="text-center">
         <h2 class="text-2xl font-bold text-gray-900 mb-4">{{ __('Ready to get started?') }}</h2>
         <p class="text-gray-600 mb-8">{{ __('Create your first wishlist in minutes. It\'s free!') }}</p>
@@ -113,7 +108,6 @@
         @endguest
     </div>
 
-    {{-- Back to home --}}
     <div class="mt-12 text-center">
         <a href="{{ route('home', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center text-coral-600 hover:text-coral-700 font-medium">
             <span class="mr-2">&larr;</span> {{ __('Back to Home') }}

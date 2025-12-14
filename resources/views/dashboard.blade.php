@@ -3,7 +3,7 @@
 @section('title', __('Dashboard'))
 
 @section('content')
-{{-- Dashboard with real-time gift updates --}}
+
 <div
     x-data="{
         init() {
@@ -67,7 +67,7 @@
 >
 
 @if($isSingleListMode && $defaultList)
-    {{-- SINGLE LIST MODE (90% of users) --}}
+
     <x-app-content
         :title="__('Welcome back, :name!', ['name' => auth()->user()->name])"
     >
@@ -81,7 +81,6 @@
             </a>
         </x-slot:actions>
 
-        {{-- Subheader with list info --}}
         <div class="flex items-center gap-3 mb-6 -mt-2">
             <h2 class="text-lg font-semibold text-gray-700">{{ __('Your Gifts') }}</h2>
             <span class="text-sm text-gray-500 bg-cream-100 px-2.5 py-0.5 rounded-full">
@@ -89,7 +88,6 @@
             </span>
         </div>
 
-        {{-- Gift grid or empty state --}}
         @if($defaultList->gifts->isEmpty())
             <div class="py-12 text-center">
                 <div class="max-w-md mx-auto">
@@ -115,7 +113,6 @@
         @endif
     </x-app-content>
 
-    {{-- Create additional list CTA - outside the main canvas --}}
     <div class="mt-8">
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white/60 backdrop-blur-sm rounded-2xl border border-cream-200/60 p-6">
             <div>
@@ -132,15 +129,15 @@
     </div>
 
 @else
-    {{-- MULTI-LIST MODE --}}
+
     <x-app-content
         :title="__('Welcome back, :name!', ['name' => auth()->user()->name])"
     >
-        {{-- Lists with their gifts --}}
+
         <div class="space-y-0 divide-y divide-gray-100">
         @forelse($lists as $list)
             <section id="list-{{ $list->id }}" class="list-section {{ !$loop->first ? 'pt-8' : '' }} {{ !$loop->last ? 'pb-8' : '' }}">
-                {{-- List header --}}
+
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
                         <div class="flex items-center gap-3">
@@ -167,7 +164,6 @@
                     </div>
                 </div>
 
-                {{-- Gift grid --}}
                 @if($list->gifts->isEmpty())
                     <div class="bg-cream-50 rounded-xl p-8 text-center">
                         <p class="text-gray-500 mb-4">{{ __('No gifts in this list yet.') }}</p>
@@ -215,7 +211,6 @@
         </div>
     </x-app-content>
 
-    {{-- Create new list CTA - outside the main canvas --}}
     @if($lists->isNotEmpty())
         <div class="mt-8">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white/60 backdrop-blur-sm rounded-2xl border border-cream-200/60 p-6">
@@ -234,5 +229,5 @@
     @endif
 @endif
 
-</div>{{-- End real-time updates wrapper --}}
+</div>
 @endsection

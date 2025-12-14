@@ -3,20 +3,19 @@
 @section('title', __('Gift Already Claimed'))
 
 @section('content')
-{{-- Warning Hero Card --}}
+
 <div class="max-w-xl mx-auto">
     <div class="bg-white rounded-2xl border border-cream-200/60 shadow-sm overflow-hidden">
-        {{-- Main content area --}}
+
         <div class="p-6 sm:p-8">
             <div class="flex flex-col items-center text-center">
-                {{-- Warning icon --}}
+
                 <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-sunny-50 to-sunny-100 border border-sunny-200/50 flex items-center justify-center mb-5">
                     <svg class="w-9 h-9 text-sunny-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
                 </div>
 
-                {{-- Message --}}
                 <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
                     {{ __('Gift Already Claimed') }}
                 </h1>
@@ -26,7 +25,6 @@
             </div>
         </div>
 
-        {{-- Info footer --}}
         <div class="px-6 sm:px-8 py-5 bg-cream-50/50 border-t border-cream-100">
             <div class="flex items-start gap-3">
                 <div class="w-8 h-8 bg-cream-200 rounded-full flex items-center justify-center flex-shrink-0">
@@ -42,7 +40,6 @@
         </div>
     </div>
 
-    {{-- Action --}}
     <div class="mt-6 text-center">
         <a href="{{ url('/' . app()->getLocale()) }}" class="btn-primary inline-flex">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

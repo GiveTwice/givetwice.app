@@ -16,13 +16,12 @@
     ]"
 >
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
-        {{-- Form Section --}}
+
         <div class="lg:col-span-3">
             <form method="POST" action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id) }}">
                 @csrf
                 @method('PUT')
 
-                {{-- Product URL --}}
                 <div class="mb-6">
                     <label for="url" class="form-label">
                         {{ __('Product URL') }}
@@ -40,7 +39,6 @@
                     @enderror
                 </div>
 
-                {{-- Title --}}
                 <div class="mb-6">
                     <label for="title" class="form-label">
                         {{ __('Title') }}
@@ -58,7 +56,6 @@
                     @enderror
                 </div>
 
-                {{-- Description --}}
                 <div class="mb-6">
                     <label for="description" class="form-label">
                         {{ __('Description') }}
@@ -75,13 +72,12 @@
                     @enderror
                 </div>
 
-                {{-- Price --}}
                 <div class="mb-6">
                     <label for="price" class="form-label">
                         {{ __('Price') }}
                     </label>
                     <div class="flex">
-                        {{-- Currency selector --}}
+
                         <div class="relative">
                             <select
                                 id="currency"
@@ -101,7 +97,7 @@
                                 </svg>
                             </div>
                         </div>
-                        {{-- Price input --}}
+
                         <input
                             type="number"
                             id="price"
@@ -121,7 +117,6 @@
                     @enderror
                 </div>
 
-                {{-- Action buttons - aligned right --}}
                 <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-100">
                     <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="btn-cancel">
                         {{ __('Cancel') }}
@@ -136,7 +131,6 @@
             </form>
         </div>
 
-        {{-- Info Section with real-time updates --}}
         <div
             class="lg:col-span-2"
             x-data="{
@@ -181,13 +175,12 @@
                 }
             }"
         >
-            {{-- Current Image --}}
+
             <div class="bg-cream-50 rounded-xl p-6 mb-6" x-show="gift.image_url_card" x-cloak>
                 <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Current Image') }}</h2>
                 <img :src="gift.image_url_card" :alt="gift.title" class="w-full h-48 object-cover rounded-xl">
             </div>
 
-            {{-- Fetch Status --}}
             <div class="bg-cream-50 rounded-xl p-6">
                 <h2 class="text-lg font-semibold text-gray-900 mb-3">{{ __('Fetch Status') }}</h2>
                 <p class="text-sm text-gray-500 mb-4">{{ __('We automatically fetch the product image, description, and price from the URL in the background.') }}</p>
@@ -196,24 +189,24 @@
                     <div class="flex items-center justify-between">
                         <span class="text-gray-600">{{ __('Status') }}</span>
                         <div class="flex items-center gap-2">
-                            {{-- Pending --}}
+
                             <span x-show="gift.fetch_status === 'pending'" class="badge badge-warning">
                                 <span class="w-2 h-2 bg-sunny-500 rounded-full"></span>
                                 {{ __('Pending') }}
                             </span>
-                            {{-- Fetching --}}
+
                             <span x-show="gift.fetch_status === 'fetching'" class="badge badge-warning">
                                 <span class="w-2 h-2 bg-sunny-500 rounded-full animate-pulse"></span>
                                 {{ __('Fetching') }}
                             </span>
-                            {{-- Completed --}}
+
                             <span x-show="gift.fetch_status === 'completed'" x-cloak class="badge badge-success">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                 </svg>
                                 {{ __('Completed') }}
                             </span>
-                            {{-- Failed --}}
+
                             <span x-show="gift.fetch_status === 'failed'" x-cloak class="badge badge-danger">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -247,7 +240,6 @@
     </div>
 </x-app-content>
 
-{{-- Danger Zone - outside the main canvas --}}
 <div class="mt-8 bg-white/60 backdrop-blur-sm rounded-2xl border border-red-200/60 p-6" x-data>
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -267,7 +259,6 @@
     </div>
 </div>
 
-{{-- Delete Confirmation Modal --}}
 <x-confirm-modal
     id="delete-gift"
     :title="__('Delete Gift')"

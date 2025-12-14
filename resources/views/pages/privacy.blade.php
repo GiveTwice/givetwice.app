@@ -4,13 +4,12 @@
 
 @section('content')
 <div class="max-w-3xl mx-auto py-12 lg:py-16">
-    {{-- Header --}}
+
     <div class="mb-10">
         <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">{{ __('Privacy Policy for :app', ['app' => config('app.name')]) }}</h1>
         <p class="text-gray-500">{{ __('Last updated:') }} {{ now()->format('F j, Y') }}</p>
     </div>
 
-    {{-- Content --}}
     <div class="bg-white border border-cream-200 rounded-2xl p-6 lg:p-10 shadow-sm">
         <div class="prose prose-gray max-w-none">
             <section class="mb-8">
@@ -70,7 +69,6 @@
         </div>
     </div>
 
-    {{-- Back to home --}}
     <div class="mt-10 text-center">
         <a href="{{ route('home', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center text-coral-600 hover:text-coral-700 font-medium">
             <span class="mr-2">&larr;</span> {{ __('Back to Home') }}

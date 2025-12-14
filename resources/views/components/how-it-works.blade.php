@@ -6,7 +6,7 @@
         <p class="text-center text-gray-600 mb-12">{{ __('Three simple steps to perfect gift-giving') }}</p>
 
         <div class="grid md:grid-cols-3 gap-8 relative">
-            {{-- Step 1: Create --}}
+
             <div class="text-center relative">
                 <div class="w-16 h-16 bg-coral-100 text-coral-600 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4 hiw-step-1-icon">
                     &#127873;
@@ -14,7 +14,6 @@
                 <h3 class="font-bold text-xl mb-2 text-gray-900">1. {{ __('Create') }}</h3>
                 <p class="text-gray-600">{{ __('Add gifts from any online store by pasting a product URL. We\'ll fetch the details automatically.') }}</p>
 
-                {{-- Arrow to Step 2 (visible on md+) --}}
                 <div class="hidden md:block absolute top-8 -right-4 translate-x-1/2 hiw-arrow-1-2">
                     <svg class="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -22,7 +21,6 @@
                 </div>
             </div>
 
-            {{-- Step 2: Share --}}
             <div class="text-center relative">
                 <div class="w-16 h-16 bg-sunny-200 text-sunny-700 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4 hiw-step-2-icon">
                     &#128140;
@@ -30,7 +28,6 @@
                 <h3 class="font-bold text-xl mb-2 text-gray-900">2. {{ __('Share') }}</h3>
                 <p class="text-gray-600">{{ __('Send your wishlist link to friends and family via email, chat, or social media.') }}</p>
 
-                {{-- Arrow to Step 3 (visible on md+) --}}
                 <div class="hidden md:block absolute top-8 -right-4 translate-x-1/2 hiw-arrow-2-3">
                     <svg class="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -38,7 +35,6 @@
                 </div>
             </div>
 
-            {{-- Step 3: Receive --}}
             <div class="text-center">
                 <div class="w-16 h-16 bg-teal-100 text-teal-600 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4 hiw-step-3-icon">
                     &#10003;

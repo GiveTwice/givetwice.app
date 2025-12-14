@@ -12,12 +12,11 @@
     ]"
 >
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
-        {{-- Form Section --}}
+
         <div class="lg:col-span-3">
             <form action="{{ url('/' . app()->getLocale() . '/lists') }}" method="POST">
                 @csrf
 
-                {{-- Name --}}
                 <div class="mb-6">
                     <label for="name" class="form-label">
                         {{ __('Name') }} <span class="text-coral-500">*</span>
@@ -36,7 +35,6 @@
                     @enderror
                 </div>
 
-                {{-- Description --}}
                 <div class="mb-6">
                     <label for="description" class="form-label">
                         {{ __('Description') }}
@@ -53,7 +51,6 @@
                     @enderror
                 </div>
 
-                {{-- Action buttons - aligned right --}}
                 <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-100">
                     <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="btn-cancel">
                         {{ __('Cancel') }}
@@ -68,7 +65,6 @@
             </form>
         </div>
 
-        {{-- Info Section --}}
         <div class="lg:col-span-2">
             <div class="bg-cream-50 rounded-xl p-6">
                 <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('About Lists') }}</h2>

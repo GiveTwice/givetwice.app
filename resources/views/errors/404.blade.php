@@ -4,16 +4,15 @@
 
 @section('content')
 <div class="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-    {{-- Broken Heart SVG - Heart with arrow through it --}}
+
     <div class="mb-8 relative">
         <svg class="w-40 h-40 md:w-52 md:h-52" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-            {{-- Heart shape with coral gradient matching brand --}}
+
             <path
                 d="M60 100C60 100 15 70 15 40C15 25 27 15 42 15C52 15 58 22 60 28C62 22 68 15 78 15C93 15 105 25 105 40C105 70 60 100 60 100Z"
                 fill="url(#heartGradient)"
             />
 
-            {{-- Heart highlight for depth --}}
             <path
                 d="M42 20C32 20 22 28 22 42C22 48 25 55 30 62"
                 stroke="url(#highlightGradient)"
@@ -23,7 +22,6 @@
                 opacity="0.4"
             />
 
-            {{-- Crack in the heart --}}
             <path
                 d="M60 28L55 45L65 55L55 70L60 100"
                 stroke="#b91c1c"
@@ -34,7 +32,6 @@
                 opacity="0.6"
             />
 
-            {{-- Arrow shaft --}}
             <line
                 x1="10"
                 y1="75"
@@ -45,19 +42,16 @@
                 stroke-linecap="round"
             />
 
-            {{-- Arrow head --}}
             <polygon
                 points="110,35 95,30 100,45"
                 fill="#9ca3af"
             />
 
-            {{-- Arrow fletching --}}
             <polygon
                 points="10,75 20,82 20,68"
                 fill="#9ca3af"
             />
 
-            {{-- Gradient definitions --}}
             <defs>
                 <linearGradient id="heartGradient" x1="15" y1="15" x2="90" y2="100" gradientUnits="userSpaceOnUse">
                     <stop offset="0%" stop-color="#ff6b6b" />
@@ -71,25 +65,20 @@
             </defs>
         </svg>
 
-        {{-- Floating broken pieces for extra effect --}}
         <div class="absolute -top-2 -right-2 w-4 h-4 bg-red-300 rounded-full opacity-60 animate-pulse"></div>
         <div class="absolute top-4 -left-4 w-3 h-3 bg-red-400 rounded-full opacity-40 animate-pulse" style="animation-delay: 0.5s"></div>
     </div>
 
-    {{-- Error Code --}}
     <p class="text-coral-400 font-semibold text-lg mb-2">404</p>
 
-    {{-- Main Message --}}
     <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
         {{ __("Oops! This page got lost") }}
     </h1>
 
-    {{-- Sub Message --}}
     <p class="text-gray-600 text-lg mb-8 max-w-md">
         {{ __("We looked everywhere, but couldn't find what you're looking for. Maybe the link is broken, or the page has moved.") }}
     </p>
 
-    {{-- CTAs --}}
     <div class="flex flex-col sm:flex-row gap-4">
         <a href="{{ url('/' . app()->getLocale()) }}" class="btn-secondary">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -118,7 +107,6 @@
         @endauth
     </div>
 
-    {{-- Friendly footer note --}}
     <p class="mt-12 text-sm text-gray-400">
         {{ __("If you think this is a mistake, please") }}
         <a href="{{ route('contact', ['locale' => app()->getLocale()]) }}" class="text-coral-500 hover:text-coral-600 underline">{{ __('contact us') }}</a>.

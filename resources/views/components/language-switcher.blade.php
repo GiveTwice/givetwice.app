@@ -11,7 +11,7 @@
 @endphp
 
 <div class="relative" x-data="{ open: false }" @click.outside="open = false">
-    {{-- Dropdown Trigger --}}
+
     <button
         @click="open = !open"
         type="button"
@@ -32,7 +32,6 @@
         </svg>
     </button>
 
-    {{-- Dropdown Menu --}}
     <div
         x-show="open"
         x-transition:enter="transition ease-out duration-200"
@@ -44,10 +43,9 @@
         class="absolute right-0 mt-2 w-48 origin-top-right z-50"
         style="display: none;"
     >
-        {{-- Speech bubble pointer --}}
+
         <div class="absolute -top-2 right-4 w-4 h-4 bg-white border-l border-t border-cream-200 transform rotate-45"></div>
 
-        {{-- Menu card --}}
         <div class="relative bg-white rounded-2xl shadow-lg border border-cream-200 overflow-hidden">
             <div class="py-2">
                 @foreach (SupportedLocale::cases() as $locale)

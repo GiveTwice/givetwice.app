@@ -15,9 +15,9 @@
 @endphp
 
 @if($variant === 'compact')
-    {{-- Compact horizontal layout (for confirmation pages) --}}
+
     <div class="flex gap-4 items-start bg-cream-50 rounded-xl p-4 border border-cream-200">
-        {{-- Thumbnail --}}
+
         <div class="w-24 h-24 flex-shrink-0 bg-white rounded-lg overflow-hidden border border-cream-200">
             @if($gift->hasImage())
                 <img
@@ -34,7 +34,6 @@
             @endif
         </div>
 
-        {{-- Info --}}
         <div class="flex-1 min-w-0">
             <h2 class="font-bold text-gray-900 mb-1">{{ $gift->title ?: __('Untitled gift') }}</h2>
             @if($gift->hasPrice())
@@ -58,9 +57,9 @@
         </div>
     </div>
 @else
-    {{-- Vertical layout (for sidebars, claim forms) --}}
+
     <div class="bg-white rounded-2xl border border-cream-200 overflow-hidden">
-        {{-- Image --}}
+
         <div class="aspect-square bg-cream-50 relative">
             @if($gift->hasImage())
                 <img
@@ -78,7 +77,6 @@
             @endif
         </div>
 
-        {{-- Details --}}
         <div class="p-5">
             <h2 class="text-lg font-bold text-gray-900 mb-2">{{ $gift->title ?: __('Untitled gift') }}</h2>
 

@@ -16,12 +16,11 @@
     ]"
 >
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
-        {{-- Form Section --}}
+
         <div class="lg:col-span-3">
             <form method="POST" action="{{ url('/' . app()->getLocale() . '/gifts') }}">
                 @csrf
 
-                {{-- Product URL --}}
                 <div class="mb-6">
                     <label for="url" class="form-label">
                         {{ __('Product URL') }} <span class="text-coral-500">*</span>
@@ -41,7 +40,6 @@
                     @enderror
                 </div>
 
-                {{-- List selection - only show if user has multiple lists --}}
                 @if(!$isSingleListMode)
                     <div class="mb-6">
                         <label for="list_id" class="form-label">
@@ -57,7 +55,6 @@
                     </div>
                 @endif
 
-                {{-- Optional details --}}
                 <details class="mb-6 group" @if($errors->hasAny(['title', 'description', 'price', 'currency'])) open @endif>
                     <summary class="cursor-pointer text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors flex items-center gap-2">
                         <svg class="w-4 h-4 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -105,7 +102,7 @@
                                 {{ __('Price') }}
                             </label>
                             <div class="flex">
-                                {{-- Currency selector --}}
+
                                 <div class="relative">
                                     <select
                                         id="currency"
@@ -125,7 +122,7 @@
                                         </svg>
                                     </div>
                                 </div>
-                                {{-- Price input --}}
+
                                 <input
                                     type="number"
                                     id="price"
@@ -147,7 +144,6 @@
                     </div>
                 </details>
 
-                {{-- Action buttons - aligned right --}}
                 <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-100">
                     <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="btn-cancel">
                         {{ __('Cancel') }}
@@ -162,13 +158,12 @@
             </form>
         </div>
 
-        {{-- Helper Section --}}
         <div class="lg:col-span-2">
             <div class="bg-cream-50 rounded-xl p-6">
                 <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('How do I find a product URL?') }}</h2>
 
                 <div class="space-y-4">
-                    {{-- Step 1 --}}
+
                     <div class="flex gap-3">
                         <div class="icon-circle bg-coral-100 text-coral-600 text-sm font-semibold">1</div>
                         <div>
@@ -177,7 +172,6 @@
                         </div>
                     </div>
 
-                    {{-- Step 2 --}}
                     <div class="flex gap-3">
                         <div class="icon-circle bg-teal-100 text-teal-600 text-sm font-semibold">2</div>
                         <div>
@@ -186,7 +180,6 @@
                         </div>
                     </div>
 
-                    {{-- Step 3 --}}
                     <div class="flex gap-3">
                         <div class="icon-circle bg-sunny-200 text-sunny-700 text-sm font-semibold">3</div>
                         <div>
@@ -196,7 +189,6 @@
                     </div>
                 </div>
 
-                {{-- Supported stores info --}}
                 <div class="mt-6 pt-4 border-t border-cream-200">
                     <div class="flex items-center gap-3 text-sm">
                         <div class="icon-circle bg-teal-100 text-teal-600">

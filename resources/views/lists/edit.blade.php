@@ -13,13 +13,12 @@
     ]"
 >
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
-        {{-- Form Section --}}
+
         <div class="lg:col-span-3">
             <form action="{{ url('/' . app()->getLocale() . '/list/' . $list->slug) }}" method="POST">
                 @csrf
                 @method('PUT')
 
-                {{-- Name --}}
                 <div class="mb-6">
                     <label for="name" class="form-label">
                         {{ __('Name') }} <span class="text-coral-500">*</span>
@@ -38,7 +37,6 @@
                     @enderror
                 </div>
 
-                {{-- Description --}}
                 <div class="mb-6">
                     <label for="description" class="form-label">
                         {{ __('Description') }}
@@ -55,7 +53,6 @@
                     @enderror
                 </div>
 
-                {{-- Default list info --}}
                 @if($list->is_default)
                     <div class="bg-teal-50 border border-teal-100 rounded-xl p-4 mb-6">
                         <div class="flex gap-3">
@@ -70,7 +67,6 @@
                     </div>
                 @endif
 
-                {{-- Action buttons - aligned right --}}
                 <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-100">
                     <a href="{{ url('/' . app()->getLocale() . '/list/' . $list->slug) }}" class="btn-cancel">
                         {{ __('Cancel') }}
@@ -85,7 +81,6 @@
             </form>
         </div>
 
-        {{-- Info Section --}}
         <div class="lg:col-span-2">
             <div class="bg-cream-50 rounded-xl p-6">
                 <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('List Info') }}</h2>
@@ -122,7 +117,6 @@
     </div>
 </x-app-content>
 
-{{-- Danger Zone - outside the main canvas --}}
 @unless($list->is_default)
     <div class="mt-8 bg-white/60 backdrop-blur-sm rounded-2xl border border-red-200/60 p-6" x-data>
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -143,7 +137,6 @@
         </div>
     </div>
 
-    {{-- Delete Confirmation Modal --}}
     <x-confirm-modal
         id="delete-list"
         :title="__('Delete List')"

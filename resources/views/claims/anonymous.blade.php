@@ -12,12 +12,12 @@
 @endphp
 
 @section('content')
-{{-- Context Hero Card --}}
+
 <div class="mb-6 bg-white rounded-2xl border border-cream-200/60 shadow-sm overflow-hidden">
-    {{-- Main content area --}}
+
     <div class="p-5 sm:p-6">
         <div class="flex items-start gap-4 sm:gap-5">
-            {{-- Gift image or placeholder --}}
+
             <div class="flex-shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-xl bg-cream-50 border border-cream-200 overflow-hidden">
                 @if($gift->hasImage())
                     <img src="{{ $gift->getImageUrl('thumb') }}" alt="{{ $gift->title }}" class="w-full h-full object-cover">
@@ -30,7 +30,6 @@
                 @endif
             </div>
 
-            {{-- Gift info --}}
             <div class="flex-1 min-w-0">
                 @if($list)
                     <a href="{{ url('/' . app()->getLocale() . '/view/' . $list->slug) }}" class="text-coral-500 text-xs sm:text-sm tracking-wide uppercase font-medium hover:text-coral-600 transition-colors">
@@ -52,7 +51,6 @@
                 @endif
             </div>
 
-            {{-- Step indicator --}}
             <div class="flex-shrink-0 hidden sm:block">
                 <div class="flex items-center gap-1.5 px-3 py-1.5 bg-teal-500 rounded-full">
                     <span class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center text-xs font-bold text-white">2</span>
@@ -62,7 +60,6 @@
         </div>
     </div>
 
-    {{-- Step progress footer --}}
     <div class="px-5 sm:px-6 py-3 bg-cream-50/50 border-t border-cream-100">
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-3 text-sm">
@@ -87,21 +84,19 @@
     </div>
 </div>
 
-{{-- Claim Form Card --}}
 <div class="bg-white rounded-2xl shadow-sm border border-cream-200/60 overflow-hidden">
-    {{-- Section header --}}
+
     <div class="px-6 py-5 border-b border-gray-100">
         <h2 class="text-xl font-bold text-gray-900">{{ __('Confirm your claim') }}</h2>
         <p class="text-gray-500 text-sm mt-1">{{ __('Enter your email and we\'ll send you a confirmation link.') }}</p>
     </div>
 
-    {{-- Form --}}
     <div class="p-6">
         <form action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/claim-anonymous') }}" method="POST">
             @csrf
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {{-- Email --}}
+
                 <div>
                     <label for="email" class="form-label">
                         {{ __('Email') }} <span class="text-coral-500">*</span>
@@ -121,7 +116,6 @@
                     @enderror
                 </div>
 
-                {{-- Name (optional) --}}
                 <div>
                     <label for="name" class="form-label">
                         {{ __('Name') }} <span class="text-gray-400 font-normal">({{ __('optional') }})</span>
@@ -140,7 +134,6 @@
                 </div>
             </div>
 
-            {{-- Privacy assurance --}}
             <div class="mt-6 flex items-start gap-3 p-4 bg-teal-50 rounded-xl border border-teal-100">
                 <div class="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center flex-shrink-0">
                     <svg class="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,7 +146,6 @@
                 </div>
             </div>
 
-            {{-- Action buttons --}}
             <div class="mt-6 flex items-center justify-between gap-4 pt-6 border-t border-gray-100">
                 @if($list)
                     <a href="{{ url('/' . app()->getLocale() . '/view/' . $list->slug) }}" class="btn-cancel">
@@ -173,7 +165,6 @@
     </div>
 </div>
 
-{{-- Login prompt --}}
 <div class="mt-6 text-center">
     <p class="text-gray-500 text-sm">
         {{ __('Already have an account?') }}

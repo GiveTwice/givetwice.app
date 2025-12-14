@@ -7,7 +7,6 @@
     <h1 class="text-2xl font-bold text-gray-900">Users</h1>
 </div>
 
-{{-- Search and Filter --}}
 <div class="bg-white rounded-lg shadow p-4 mb-6">
     <form action="{{ route('admin.users') }}" method="GET" class="flex flex-wrap gap-4">
         <div class="flex-1 min-w-64">
@@ -36,7 +35,6 @@
     </form>
 </div>
 
-{{-- Users Table --}}
 <div class="bg-white rounded-lg shadow overflow-hidden">
     <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
@@ -107,7 +105,6 @@
     </table>
 </div>
 
-{{-- Pagination --}}
 @if($users->hasPages())
     <div class="mt-4">
         {{ $users->links() }}

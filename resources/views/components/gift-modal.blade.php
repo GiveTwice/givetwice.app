@@ -19,14 +19,13 @@
     $addedAgo = $gift->created_at->diffForHumans();
 @endphp
 
-{{-- Modal backdrop and container --}}
 <div
     x-data="{ open: false }"
     x-on:open-gift-modal-{{ $gift->id }}.window="open = true"
     x-on:keydown.escape.window="open = false"
     x-cloak
 >
-    {{-- Backdrop --}}
+
     <div
         x-show="open"
         x-transition:enter="transition ease-out duration-300"
@@ -39,7 +38,6 @@
         x-on:click="open = false"
     ></div>
 
-    {{-- Modal panel --}}
     <div
         x-show="open"
         x-transition:enter="transition ease-out duration-300"
@@ -54,7 +52,7 @@
             class="relative bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden pointer-events-auto"
             x-on:click.stop
         >
-            {{-- Close button --}}
+
             <button
                 x-on:click="open = false"
                 class="absolute top-3 right-3 z-10 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
@@ -66,7 +64,7 @@
             </button>
 
             <div class="flex flex-col md:flex-row">
-                {{-- Left: Image --}}
+
                 <div class="md:w-1/2 bg-cream-50 relative">
                     <div class="aspect-square md:aspect-auto md:h-full flex items-center justify-center p-8">
                         @if($gift->hasImage())
@@ -85,7 +83,6 @@
                         @endif
                     </div>
 
-                    {{-- Image navigation arrows (for future multiple images) --}}
                     <button class="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-white/80 hover:bg-white rounded-full shadow-md text-gray-600 hover:text-gray-900 transition-all opacity-0 pointer-events-none">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -98,14 +95,12 @@
                     </button>
                 </div>
 
-                {{-- Right: Details --}}
                 <div class="md:w-1/2 p-6 md:p-8 flex flex-col overflow-y-auto max-h-[50vh] md:max-h-[90vh]">
-                    {{-- Title --}}
+
                     <h2 class="text-2xl md:text-3xl font-bold text-coral-600 leading-tight mb-3">
                         {{ $gift->title ?: __('Untitled gift') }}
                     </h2>
 
-                    {{-- Price and meta --}}
                     <div class="flex items-center gap-3 text-gray-500 mb-6">
                         @if($gift->hasPrice())
                             <span class="text-xl font-bold text-gray-900">
@@ -116,13 +111,11 @@
                         <span class="text-sm">{{ __('added') }} {{ $addedAgo }}</span>
                     </div>
 
-                    {{-- Description --}}
                     @if($gift->description)
                         <div class="mb-6 text-gray-600 leading-relaxed prose prose-sm max-w-none">
                             <p class="whitespace-pre-line">{{ $gift->description }}</p>
                         </div>
 
-                        {{-- Show more link (for long descriptions) --}}
                         @if(strlen($gift->description) > 300)
                             <button class="text-coral-600 hover:text-coral-700 text-sm font-medium mb-6 self-start">
                                 ...{{ __('more') }}
@@ -134,13 +127,11 @@
                         </div>
                     @endif
 
-                    {{-- Spacer to push buttons to bottom --}}
                     <div class="flex-1"></div>
 
-                    {{-- Action buttons --}}
                     @unless($isOwner)
                         <div class="space-y-3 mt-4">
-                            {{-- Claim button --}}
+
                             @if($isClaimedByMe)
                                 <form action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/claim') }}" method="POST">
                                     @csrf
@@ -184,7 +175,6 @@
                                 @endauth
                             @endif
 
-                            {{-- View on site button --}}
                             @if($gift->url && $siteName)
                                 <a href="{{ $gift->url }}"
                                    target="_blank"
@@ -198,7 +188,6 @@
                             @endif
                         </div>
 
-                        {{-- Hint text --}}
                         @unless($isClaimed)
                             <p class="mt-4 text-sm text-gray-500 flex items-center gap-2">
                                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -210,7 +199,7 @@
                             </p>
                         @endunless
                     @else
-                        {{-- Owner view - Edit button first, View on site at bottom --}}
+
                         <div class="space-y-3 mt-4">
                             <a href="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/edit') }}"
                                class="w-full inline-flex items-center justify-center gap-2 bg-cream-100 text-gray-700 px-5 py-3 rounded-xl hover:bg-cream-200 transition-colors font-medium">

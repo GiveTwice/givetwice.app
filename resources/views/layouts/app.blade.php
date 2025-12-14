@@ -32,7 +32,6 @@
                     </a>
                 </div>
 
-                {{-- Desktop Navigation --}}
                 <div class="hidden md:flex items-center space-x-6">
                     <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="text-gray-600 hover:text-gray-900 transition-colors">{{ __('How It Works') }}</a>
                     <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="text-gray-600 hover:text-gray-900 transition-colors">{{ __('About') }}</a>
@@ -53,7 +52,6 @@
                     <x-language-switcher />
                 </div>
 
-                {{-- Mobile menu button --}}
                 <div class="md:hidden flex items-center">
                     <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="text-gray-600 hover:text-gray-900">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -63,7 +61,6 @@
                 </div>
             </div>
 
-            {{-- Mobile menu --}}
             <div id="mobile-menu" class="hidden md:hidden pb-4">
                 <div class="space-y-2">
                     <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('How It Works') }}</a>
@@ -91,7 +88,6 @@
         </nav>
     </header>
 
-    {{-- Toast Notifications --}}
     <div class="fixed top-20 right-4 z-50 flex flex-col gap-3">
         @if (session('success'))
             <div
@@ -163,7 +159,7 @@
     <footer class="bg-white border-t border-cream-200 mt-16">
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-4 gap-8 mb-8">
-                {{-- Brand --}}
+
                 <div class="md:col-span-1">
                     <a href="{{ url('/') }}" class="flex items-center space-x-2 mb-4">
                         <span class="text-2xl">&#10084;&#65039;</span>
@@ -172,7 +168,6 @@
                     <p class="text-gray-500 text-sm">{{ __('Create and share wishlists. All affiliate revenue goes to charity.') }}</p>
                 </div>
 
-                {{-- Links --}}
                 <div>
                     <h4 class="font-semibold text-gray-900 mb-4">{{ __('Product') }}</h4>
                     <ul class="space-y-2 text-sm">

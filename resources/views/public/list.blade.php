@@ -9,7 +9,7 @@
 @endphp
 
 @section('content')
-{{-- Real-time updates wrapper --}}
+
 <div
     x-data="{
         availableCount: {{ $availableGifts }},
@@ -130,17 +130,15 @@
     }"
 >
 
-{{-- Unified Hero Card --}}
 <div class="mb-6 bg-white rounded-2xl border border-cream-200/60 shadow-sm overflow-hidden">
-    {{-- Main content area --}}
+
     <div class="p-5 sm:p-6">
         <div class="flex items-start gap-4 sm:gap-5">
-            {{-- Gift emoji --}}
+
             <div class="flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-gradient-to-br from-coral-50 to-sunny-50 border border-coral-100/50 flex items-center justify-center">
                 <span class="text-2xl sm:text-3xl">&#127873;</span>
             </div>
 
-            {{-- List info --}}
             <div class="flex-1 min-w-0">
                 <p class="text-coral-500 text-xs sm:text-sm tracking-wide uppercase font-medium">
                     {{ __('Wishlist from') }}
@@ -154,7 +152,6 @@
                 @endif
             </div>
 
-            {{-- Stats (reactive with Alpine.js) --}}
             <div class="flex flex-col items-end gap-1.5 flex-shrink-0">
                 <div class="flex items-center gap-1.5 px-3 py-1.5 bg-teal-500 rounded-full">
                     <span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
@@ -170,11 +167,10 @@
         </div>
     </div>
 
-    {{-- Integrated explainer footer - only for non-owners --}}
     @unless($isOwner)
         <div class="px-5 sm:px-6 py-4 bg-cream-50/50 border-t border-cream-100">
             <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
-                {{-- Steps first (the "how") --}}
+
                 <div class="flex items-center gap-3 text-sm">
                     <span class="flex items-center gap-1.5">
                         <span class="w-6 h-6 bg-coral-100 text-coral-600 rounded-full flex items-center justify-center text-xs font-bold shadow-sm">1</span>
@@ -191,9 +187,9 @@
                         <span class="text-gray-600 font-medium">{{ __('Gift') }}</span>
                     </span>
                 </div>
-                {{-- Divider --}}
+
                 <div class="hidden sm:block w-px h-4 bg-gray-200"></div>
-                {{-- Privacy note (the "why") --}}
+
                 <p class="text-gray-400 text-sm">
                     {{ __(':name won\'t see who claimed what.', ['name' => $list->user->name]) }}
                 </p>
@@ -201,7 +197,6 @@
         </div>
     @endunless
 
-    {{-- Owner preview notice --}}
     @if($isOwner)
         <div class="px-5 sm:px-6 py-3 bg-sunny-50/80 border-t border-sunny-100">
             <div class="flex items-center justify-between gap-4">
@@ -221,9 +216,8 @@
     @endif
 </div>
 
-{{-- Gifts Section --}}
 <div class="bg-white rounded-2xl shadow-sm border border-cream-200/60 overflow-hidden">
-    {{-- Section header --}}
+
     <div class="px-6 py-5 border-b border-gray-100">
         <div class="flex items-center justify-between">
             <h2 class="text-xl font-bold text-gray-900">{{ __('Gift Ideas') }}</h2>
@@ -233,7 +227,6 @@
         </div>
     </div>
 
-    {{-- Gifts Grid --}}
     <div class="p-6">
         @if($gifts->isEmpty())
             <div class="py-12 text-center">
@@ -250,7 +243,6 @@
                 @endforeach
             </div>
 
-            {{-- Gift detail modals --}}
             @foreach($gifts as $gift)
                 <x-gift-modal :gift="$gift" :isOwner="$isOwner" />
             @endforeach
@@ -264,16 +256,15 @@
     </div>
 </div>
 
-{{-- Charity Mission & CTA Section --}}
 <div class="mt-16 relative overflow-hidden">
-    {{-- Background with layered effect --}}
+
     <div class="absolute inset-0 bg-gradient-to-br from-coral-500 to-coral-600 rounded-2xl"></div>
     <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iNCIvPjwvZz48L2c+PC9zdmc+')] opacity-50"></div>
 
     <div class="relative px-6 sm:px-10 py-10 sm:py-12">
         <div class="max-w-3xl mx-auto">
             <div class="flex flex-col lg:flex-row lg:items-center gap-8">
-                {{-- Mission content --}}
+
                 <div class="flex-1 text-center lg:text-left">
                     <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/20 rounded-full text-white/90 text-sm font-medium mb-4">
                         <span>&#10084;&#65039;</span>
@@ -283,7 +274,6 @@
                     <p class="text-coral-100 text-lg">{{ __('When you buy gifts through our links, we donate the affiliate commission to charity. No extra cost to you, just extra good in the world.') }}</p>
                 </div>
 
-                {{-- CTA --}}
                 <div class="flex-shrink-0 text-center lg:text-left">
                     @guest
                         <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-coral-600 rounded-xl hover:bg-coral-50 font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
@@ -307,7 +297,6 @@
     </div>
 </div>
 
-{{-- Trust indicators --}}
 <div class="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-sm text-gray-500">
     <div class="flex items-center gap-2">
         <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -329,5 +318,5 @@
     </div>
 </div>
 
-</div>{{-- End real-time updates wrapper --}}
+</div>
 @endsection

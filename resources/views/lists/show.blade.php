@@ -9,7 +9,7 @@
         ['label' => $list->name]
     ]"
 >
-    {{-- Custom title slot matching dashboard layout --}}
+
     <x-slot:titleSlot>
         <div class="flex items-center gap-3">
             <h1 class="text-lg font-bold text-gray-900">{{ $list->name }}</h1>
@@ -35,7 +35,6 @@
         </a>
     </x-slot:actions>
 
-    {{-- Gifts Grid --}}
     @if($gifts->isEmpty())
         <div class="py-12 text-center">
             <div class="max-w-md mx-auto">

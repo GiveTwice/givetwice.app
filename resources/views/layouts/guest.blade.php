@@ -44,7 +44,6 @@
         </nav>
     </header>
 
-    {{-- Toast Notifications --}}
     <div class="fixed top-20 right-4 z-50 flex flex-col gap-3">
         @if (session('status'))
             <div

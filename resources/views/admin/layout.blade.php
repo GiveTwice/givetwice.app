@@ -11,7 +11,7 @@
 </head>
 <body class="min-h-screen bg-gray-100">
     <div class="flex">
-        {{-- Sidebar --}}
+
         <aside class="w-64 bg-gray-800 min-h-screen fixed">
             <div class="p-4">
                 <h1 class="text-white text-xl font-bold">Admin Panel</h1>
@@ -49,7 +49,6 @@
             </div>
         </aside>
 
-        {{-- Main content --}}
         <main class="ml-64 flex-1 p-8">
             @if (session('success'))
                 <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">

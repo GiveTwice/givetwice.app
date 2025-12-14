@@ -8,7 +8,7 @@
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    {{-- User Info Card --}}
+
     <div class="lg:col-span-1">
         <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-center mb-4">
@@ -86,9 +86,8 @@
         </div>
     </div>
 
-    {{-- User's Lists and Gifts --}}
     <div class="lg:col-span-2 space-y-6">
-        {{-- Lists --}}
+
         <div class="bg-white rounded-lg shadow">
             <div class="p-4 border-b">
                 <h2 class="font-semibold text-gray-900">Lists ({{ $user->lists->count() }})</h2>
@@ -117,7 +116,6 @@
             </div>
         </div>
 
-        {{-- Recent Gifts --}}
         <div class="bg-white rounded-lg shadow">
             <div class="p-4 border-b">
                 <h2 class="font-semibold text-gray-900">Recent Gifts</h2>

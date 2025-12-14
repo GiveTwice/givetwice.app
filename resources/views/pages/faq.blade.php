@@ -3,7 +3,7 @@
 @section('title', __('FAQ'))
 
 @section('content')
-{{-- Hero Section --}}
+
 <div class="text-center py-12 lg:py-16">
     <div class="inline-flex items-center justify-center w-16 h-16 bg-sunny-100 text-sunny-600 rounded-2xl text-3xl mb-6 transform -rotate-3">
         &#10067;
@@ -12,10 +12,9 @@
     <p class="text-xl text-gray-600 max-w-2xl mx-auto">{{ __('Everything you need to know about creating and sharing wishlists') }}</p>
 </div>
 
-{{-- FAQ Cards --}}
 <div class="max-w-3xl mx-auto pb-16">
     <div class="space-y-4">
-        {{-- Question 1 --}}
+
         <div class="bg-white border border-cream-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
             <div class="flex items-start gap-4">
                 <div class="flex-shrink-0 w-10 h-10 bg-coral-100 text-coral-500 rounded-xl flex items-center justify-center font-bold">
@@ -28,7 +27,6 @@
             </div>
         </div>
 
-        {{-- Question 2 --}}
         <div class="bg-white border border-cream-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
             <div class="flex items-start gap-4">
                 <div class="flex-shrink-0 w-10 h-10 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center font-bold">
@@ -41,7 +39,6 @@
             </div>
         </div>
 
-        {{-- Question 3 --}}
         <div class="bg-white border border-cream-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
             <div class="flex items-start gap-4">
                 <div class="flex-shrink-0 w-10 h-10 bg-sunny-100 text-sunny-600 rounded-xl flex items-center justify-center font-bold">
@@ -54,7 +51,6 @@
             </div>
         </div>
 
-        {{-- Question 4 --}}
         <div class="bg-white border border-cream-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
             <div class="flex items-start gap-4">
                 <div class="flex-shrink-0 w-10 h-10 bg-coral-100 text-coral-500 rounded-xl flex items-center justify-center font-bold">
@@ -67,7 +63,6 @@
             </div>
         </div>
 
-        {{-- Question 5 --}}
         <div class="bg-white border border-cream-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
             <div class="flex items-start gap-4">
                 <div class="flex-shrink-0 w-10 h-10 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center font-bold">
@@ -80,7 +75,6 @@
             </div>
         </div>
 
-        {{-- Question 6 --}}
         <div class="bg-white border border-cream-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
             <div class="flex items-start gap-4">
                 <div class="flex-shrink-0 w-10 h-10 bg-sunny-100 text-sunny-600 rounded-xl flex items-center justify-center font-bold">
@@ -93,7 +87,6 @@
             </div>
         </div>
 
-        {{-- Question 7 - New --}}
         <div class="bg-white border border-cream-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
             <div class="flex items-start gap-4">
                 <div class="flex-shrink-0 w-10 h-10 bg-coral-100 text-coral-500 rounded-xl flex items-center justify-center font-bold">
@@ -106,7 +99,6 @@
             </div>
         </div>
 
-        {{-- Question 8 - New --}}
         <div class="bg-white border border-cream-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
             <div class="flex items-start gap-4">
                 <div class="flex-shrink-0 w-10 h-10 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center font-bold">
@@ -120,7 +112,6 @@
         </div>
     </div>
 
-    {{-- Still have questions? --}}
     <div class="mt-12 bg-gradient-to-r from-coral-50 to-sunny-50 rounded-2xl p-8 text-center border border-coral-100">
         <div class="text-3xl mb-4">&#128172;</div>
         <h2 class="text-xl font-bold text-gray-900 mb-2">{{ __('Still have questions?') }}</h2>
@@ -130,7 +121,6 @@
         </a>
     </div>
 
-    {{-- Back to home --}}
     <div class="mt-12 text-center">
         <a href="{{ route('home', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center text-coral-600 hover:text-coral-700 font-medium">
             <span class="mr-2">&larr;</span> {{ __('Back to Home') }}

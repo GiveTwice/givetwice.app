@@ -13,7 +13,7 @@
     x-on:keydown.escape.window="open = false"
     x-cloak
 >
-    {{-- Backdrop --}}
+
     <div
         x-show="open"
         x-transition:enter="transition ease-out duration-200"
@@ -26,7 +26,6 @@
         x-on:click="open = false"
     ></div>
 
-    {{-- Modal panel --}}
     <div
         x-show="open"
         x-transition:enter="transition ease-out duration-200"
@@ -41,10 +40,10 @@
             class="relative bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
             x-on:click.stop
         >
-            {{-- Header with icon --}}
+
             <div class="p-6 pb-0">
                 <div class="flex items-start gap-4">
-                    {{-- Warning icon --}}
+
                     <div class="flex-shrink-0 w-12 h-12 rounded-full {{ $destructive ? 'bg-red-100' : 'bg-sunny-100' }} flex items-center justify-center">
                         @if($destructive)
                             <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -57,7 +56,6 @@
                         @endif
                     </div>
 
-                    {{-- Title and message --}}
                     <div class="flex-1">
                         <h3 class="text-lg font-semibold text-gray-900">
                             {{ $title }}
@@ -69,7 +67,6 @@
                 </div>
             </div>
 
-            {{-- Actions --}}
             <div class="p-6 flex items-center justify-end gap-3">
                 <button
                     type="button"
@@ -79,7 +76,6 @@
                     {{ $cancelText }}
                 </button>
 
-                {{-- Slot for the form/action --}}
                 {{ $slot }}
             </div>
         </div>
