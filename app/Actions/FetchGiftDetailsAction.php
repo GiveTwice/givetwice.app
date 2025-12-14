@@ -82,6 +82,8 @@ class FetchGiftDetailsAction implements ShouldQueue
 
     private function addImageFromUrl(string $imageUrl): void
     {
+        $imageUrl = $this->normalizeUrl($imageUrl);
+
         try {
             $this->gift
                 ->addMediaFromUrl($imageUrl)
@@ -99,5 +101,14 @@ class FetchGiftDetailsAction implements ShouldQueue
                 'error' => $e->getMessage(),
             ]);
         }
+    }
+
+    private function normalizeUrl(string $url): string
+    {
+        if (str_starts_with($url, '//')) {
+            return 'https:'.$url;
+        }
+
+        return $url;
     }
 }

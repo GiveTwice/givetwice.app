@@ -65,12 +65,12 @@ class Gift extends Model implements HasMedia
         $this->addMediaConversion('card')
             ->fit(Fit::Max, 600, 600)
             ->performOnCollections('image')
-            ->withResponsiveImages();
+            ->nonQueued();
 
         $this->addMediaConversion('large')
             ->fit(Fit::Max, 1000, 1000)
             ->performOnCollections('image')
-            ->withResponsiveImages();
+            ->nonQueued();
     }
 
     public function formatPrice(bool $useSymbol = true): ?string
