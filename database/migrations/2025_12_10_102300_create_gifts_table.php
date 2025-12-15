@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('original_image_url', 2048)->nullable();
             $table->enum('fetch_status', ['pending', 'fetching', 'completed', 'failed'])->default('pending');
             $table->timestamp('fetched_at')->nullable();
+            $table->decimal('rating', 2, 1)->nullable();
+            $table->unsignedInteger('review_count')->nullable();
             $table->softDeletes();
             $table->timestamps();
 

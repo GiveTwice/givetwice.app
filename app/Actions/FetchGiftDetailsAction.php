@@ -45,6 +45,8 @@ class FetchGiftDetailsAction implements ShouldQueue
                 'currency' => $product->priceCurrency ?: $this->gift->currency,
                 'fetch_status' => 'completed',
                 'fetched_at' => now(),
+                'rating' => $product->rating,
+                'review_count' => $product->reviewCount,
             ]);
 
             $this->tryAddImageFromUrls($imageAction, $product->allImageUrls ?? []);

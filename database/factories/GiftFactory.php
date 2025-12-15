@@ -25,6 +25,8 @@ class GiftFactory extends Factory
             'original_image_url' => null,
             'fetch_status' => 'completed',
             'fetched_at' => now(),
+            'rating' => null,
+            'review_count' => null,
         ];
     }
 

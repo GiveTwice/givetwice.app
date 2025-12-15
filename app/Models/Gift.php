@@ -37,6 +37,8 @@ class Gift extends Model implements HasMedia
         'original_image_url',
         'fetch_status',
         'fetched_at',
+        'rating',
+        'review_count',
     ];
 
     protected function casts(): array
@@ -44,6 +46,8 @@ class Gift extends Model implements HasMedia
         return [
             'price_in_cents' => 'integer',
             'fetched_at' => 'datetime',
+            'rating' => 'decimal:1',
+            'review_count' => 'integer',
         ];
     }
 
