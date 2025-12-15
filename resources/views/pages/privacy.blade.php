@@ -7,7 +7,7 @@
 
     <div class="mb-10">
         <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">{{ __('Privacy Policy for :app', ['app' => config('app.name')]) }}</h1>
-        <p class="text-gray-500">{{ __('Last updated:') }} {{ now()->format('F j, Y') }}</p>
+        <p class="text-gray-500">{{ __('Last updated:') }} December 15, 2025</p>
     </div>
 
     <div class="bg-white border border-cream-200 rounded-2xl p-6 lg:p-10 shadow-sm">
@@ -16,10 +16,13 @@
                 <h2 class="text-lg font-semibold text-gray-900 mb-3">1. Information We Collect</h2>
                 <p class="text-gray-600 leading-relaxed mb-3">We collect information you provide directly to us, such as when you create an account, create a wishlist, or contact us for support.</p>
                 <ul class="list-disc pl-6 space-y-1 text-gray-600">
-                    <li>Account information (name, email address)</li>
-                    <li>Wishlist content (product URLs, titles, descriptions)</li>
-                    <li>Claim information (email address for anonymous claims)</li>
+                    <li>Account information (name, email address, profile picture)</li>
+                    <li>Wishlist content (product URLs, titles, descriptions, prices, images)</li>
+                    <li>Claim information (name and email address for gift claims)</li>
+                    <li>Preferences (language and currency settings)</li>
+                    <li>Social login identifiers (if you choose to sign in with Google or Facebook)</li>
                 </ul>
+                <p class="text-gray-600 leading-relaxed mt-3">Note: Social login via Google or Facebook is entirely optional. You can always create an account using just your email address.</p>
             </section>
 
             <section class="mb-8">
@@ -29,7 +32,9 @@
                     <li>Provide, maintain, and improve our services</li>
                     <li>Send you technical notices and support messages</li>
                     <li>Respond to your comments and questions</li>
+                    <li>Analyze anonymized, aggregated data about claimed gifts (such as which retail platforms are most popular) to identify affiliate program opportunities — this helps us maximize charitable donations</li>
                 </ul>
+                <p class="text-gray-600 leading-relaxed mt-3">When analyzing gift claim data for affiliate program purposes, we only use anonymized information (e.g., domain names of gift URLs) and never associate this data with individual users.</p>
             </section>
 
             <section class="mb-8">
@@ -40,6 +45,8 @@
                     <li>To comply with legal obligations</li>
                     <li>To protect our rights and safety</li>
                 </ul>
+                <p class="text-gray-600 leading-relaxed mt-3"><strong>Gift Claims:</strong> When someone claims a gift from your wishlist, you will receive their name and email address so you can coordinate the gift-giving. Similarly, if you claim a gift, your name and email will be shared with the wishlist owner.</p>
+                <p class="text-gray-600 leading-relaxed mt-3"><strong>Third-Party Services:</strong> If you choose to sign in using Google or Facebook, their respective privacy policies apply to the data they collect during authentication. We only receive your basic profile information (name, email, profile picture) from these services.</p>
             </section>
 
             <section class="mb-8">
