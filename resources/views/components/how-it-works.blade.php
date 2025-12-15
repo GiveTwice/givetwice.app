@@ -15,9 +15,7 @@
                 <p class="text-gray-600">{{ __('Add gifts from any online store by pasting a product URL. We\'ll fetch the details automatically.') }}</p>
 
                 <div class="hidden md:block absolute top-8 -right-4 translate-x-1/2 hiw-arrow-1-2">
-                    <svg class="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
+                    <x-icons.arrow-right class="w-8 h-8 text-gray-300" />
                 </div>
             </div>
 
@@ -29,9 +27,7 @@
                 <p class="text-gray-600">{{ __('Send your wishlist link to friends and family via email, chat, or social media.') }}</p>
 
                 <div class="hidden md:block absolute top-8 -right-4 translate-x-1/2 hiw-arrow-2-3">
-                    <svg class="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
+                    <x-icons.arrow-right class="w-8 h-8 text-gray-300" />
                 </div>
             </div>
 

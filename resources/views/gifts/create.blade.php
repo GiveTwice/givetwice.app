@@ -57,9 +57,7 @@
 
                 <details class="mb-6 group" @if($errors->hasAny(['title', 'description', 'price', 'currency'])) open @endif>
                     <summary class="cursor-pointer text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors flex items-center gap-2">
-                        <svg class="w-4 h-4 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
+                        <x-icons.chevron-right class="w-4 h-4 transition-transform group-open:rotate-90" />
                         {{ __('Optional: Add details manually') }}
                     </summary>
 
@@ -117,9 +115,7 @@
                                         @endforeach
                                     </select>
                                     <div class="absolute inset-y-0 right-2 flex items-center pointer-events-none">
-                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                        </svg>
+                                        <x-icons.chevron-down class="w-4 h-4 text-gray-400" />
                                     </div>
                                 </div>
 
@@ -149,9 +145,7 @@
                         {{ __('Cancel') }}
                     </a>
                     <button type="submit" class="btn-primary">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
+                        <x-icons.plus class="w-5 h-5" />
                         {{ __('Add Gift') }}
                     </button>
                 </div>
@@ -192,9 +186,7 @@
                 <div class="mt-6 pt-4 border-t border-cream-200">
                     <div class="flex items-center gap-3 text-sm">
                         <div class="icon-circle bg-teal-100 text-teal-600">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <x-icons.checkmark class="w-4 h-4" />
                         </div>
                         <p class="text-gray-600">{{ __('Works with any online store!') }}</p>
                     </div>

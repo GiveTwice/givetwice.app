@@ -74,9 +74,7 @@
         <x-slot:actions>
             <x-share-modal :list="$defaultList" />
             <a href="{{ url('/' . app()->getLocale() . '/gifts/create') }}?list={{ $defaultList->id }}" class="btn-primary">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
+                <x-icons.plus class="w-5 h-5" />
                 {{ __('Add a Gift') }}
             </a>
         </x-slot:actions>
@@ -97,9 +95,7 @@
                     <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ __('No gifts yet') }}</h3>
                     <p class="text-gray-500 mb-6">{{ __('Start building your wishlist by adding gifts from any online store.') }}</p>
                     <a href="{{ url('/' . app()->getLocale() . '/gifts/create') }}?list={{ $defaultList->id }}" class="btn-primary">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
+                        <x-icons.plus class="w-5 h-5" />
                         {{ __('Add Your First Gift') }}
                     </a>
                 </div>
@@ -120,9 +116,7 @@
                 <p class="text-sm text-gray-500 mt-1">{{ __('You can create additional lists for different occasions or recipients.') }}</p>
             </div>
             <a href="{{ url('/' . app()->getLocale() . '/lists/create') }}" class="btn-secondary whitespace-nowrap">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
+                <x-icons.plus class="w-4 h-4" />
                 {{ __('Create Another List') }}
             </a>
         </div>
@@ -156,9 +150,7 @@
                     <div class="flex items-center gap-2">
                         <x-share-modal :list="$list" />
                         <a href="{{ url('/' . app()->getLocale() . '/gifts/create') }}?list={{ $list->id }}" class="btn-primary">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                            </svg>
+                            <x-icons.plus class="w-5 h-5" />
                             {{ __('Add a Gift') }}
                         </a>
                     </div>
@@ -168,9 +160,7 @@
                     <div class="bg-cream-50 rounded-xl p-8 text-center">
                         <p class="text-gray-500 mb-4">{{ __('No gifts in this list yet.') }}</p>
                         <a href="{{ url('/' . app()->getLocale() . '/gifts/create') }}?list={{ $list->id }}" class="btn-link">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                            </svg>
+                            <x-icons.plus class="w-4 h-4" />
                             {{ __('Add your first gift') }}
                         </a>
                     </div>
@@ -186,9 +176,7 @@
                             <a href="{{ url('/' . app()->getLocale() . '/list/' . $list->slug) }}"
                                class="inline-flex items-center gap-2 text-coral-600 hover:text-coral-700 font-medium">
                                 {{ __('View all :count gifts', ['count' => $list->gifts_count]) }}
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                </svg>
+                                <x-icons.chevron-right class="w-4 h-4" />
                             </a>
                         </div>
                     @endif
@@ -219,9 +207,7 @@
                     <p class="text-sm text-gray-500 mt-1">{{ __('Create lists for different occasions or recipients.') }}</p>
                 </div>
                 <a href="{{ url('/' . app()->getLocale() . '/lists/create') }}" class="btn-secondary whitespace-nowrap">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
+                    <x-icons.plus class="w-4 h-4" />
                     {{ __('Create List') }}
                 </a>
             </div>

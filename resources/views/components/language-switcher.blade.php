@@ -21,15 +21,9 @@
     >
         <span class="text-lg leading-none">{{ $currentLocaleEnum->flag() }}</span>
         <span class="text-gray-700 font-medium text-sm">{{ $currentLocaleEnum->label() }}</span>
-        <svg
-            class="w-4 h-4 text-gray-500 transition-transform duration-200"
-            :class="{ 'rotate-180': open }"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-        >
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
+        <span :class="{ 'rotate-180': open }" class="transition-transform duration-200">
+            <x-icons.chevron-down class="w-4 h-4 text-gray-500" />
+        </span>
     </button>
 
     <div
@@ -64,9 +58,7 @@
                         </span>
                         @if ($isActive)
                             <span class="ml-auto text-coral-500">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                                </svg>
+                                <x-icons.check-circle-filled class="w-5 h-5" />
                             </span>
                         @endif
                     </a>

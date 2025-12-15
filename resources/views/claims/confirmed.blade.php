@@ -19,9 +19,7 @@
         <div class="flex items-start gap-4 sm:gap-5">
 
             <div class="flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 flex items-center justify-center">
-                <svg class="w-8 h-8 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
+                <x-icons.checkmark class="w-8 h-8 text-teal-500" />
             </div>
 
             <div class="flex-1 min-w-0">
@@ -38,9 +36,7 @@
 
             <div class="flex-shrink-0 hidden sm:block">
                 <div class="flex items-center gap-1.5 px-3 py-1.5 bg-teal-500 rounded-full">
-                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
+                    <x-icons.checkmark class="w-4 h-4 text-white" />
                     <span class="text-sm font-medium text-white">{{ __('Done') }}</span>
                 </div>
             </div>
@@ -51,18 +47,18 @@
         <div class="flex items-center gap-3 text-sm">
             <span class="flex items-center gap-1.5">
                 <span class="w-6 h-6 bg-teal-100 text-teal-500 rounded-full flex items-center justify-center text-xs font-bold">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                    <x-icons.checkmark class="w-3.5 h-3.5" />
                 </span>
                 <span class="text-gray-400 font-medium">{{ __('Browse') }}</span>
             </span>
-            <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+            <x-icons.chevron-right class="w-4 h-4 text-gray-300" />
             <span class="flex items-center gap-1.5">
                 <span class="w-6 h-6 bg-teal-100 text-teal-500 rounded-full flex items-center justify-center text-xs font-bold">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                    <x-icons.checkmark class="w-3.5 h-3.5" />
                 </span>
                 <span class="text-gray-400 font-medium">{{ __('Claim') }}</span>
             </span>
-            <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+            <x-icons.chevron-right class="w-4 h-4 text-gray-300" />
             <span class="flex items-center gap-1.5">
                 <span class="w-6 h-6 bg-sunny-400 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-sm">3</span>
                 <span class="text-gray-900 font-semibold">{{ __('Gift') }}</span>
@@ -85,9 +81,7 @@
                     <img src="{{ $gift->getImageUrl('thumb') }}" alt="{{ $gift->title }}" class="w-full h-full object-cover">
                 @else
                     <div class="w-full h-full flex items-center justify-center text-cream-400">
-                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
+                        <x-icons.image-placeholder class="w-10 h-10" />
                     </div>
                 @endif
             </div>
@@ -107,9 +101,7 @@
                         rel="noopener noreferrer"
                         class="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors font-medium text-sm"
                     >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                        </svg>
+                        <x-icons.external-link class="w-4 h-4" />
                         @if($siteName)
                             {{ __('Buy on :site', ['site' => $siteName]) }}
                         @else
@@ -122,9 +114,7 @@
 
         <div class="mt-6 flex items-start gap-3 p-4 bg-sunny-50 rounded-xl border border-sunny-200">
             <div class="w-8 h-8 bg-sunny-100 rounded-full flex items-center justify-center flex-shrink-0">
-                <svg class="w-4 h-4 text-sunny-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <x-icons.clock class="w-4 h-4 text-sunny-600" />
             </div>
             <div>
                 <p class="text-sm font-medium text-sunny-800">{{ __('Don\'t forget to buy the gift!') }}</p>
@@ -150,17 +140,13 @@
             @guest
                 <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-coral-600 rounded-xl hover:bg-coral-50 font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
                     <span>{{ __('Create Your Wishlist') }}</span>
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
+                    <x-icons.arrow-right class="w-5 h-5" />
                 </a>
                 <p class="mt-3 text-coral-200 text-sm">{{ __('Free forever. Share with anyone.') }}</p>
             @else
                 <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-coral-600 rounded-xl hover:bg-coral-50 font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
                     <span>{{ __('Go to My Wishlists') }}</span>
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
+                    <x-icons.arrow-right class="w-5 h-5" />
                 </a>
             @endguest
         </div>

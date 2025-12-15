@@ -49,21 +49,15 @@
             <div class="w-full h-full flex flex-col items-center justify-center text-cream-400" data-gift-placeholder>
                 @if($isPending)
                     <div class="relative">
-                        <svg class="w-12 h-12 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
+                        <x-icons.image-placeholder class="w-12 h-12 animate-pulse" />
                         <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-sunny-400 rounded-full animate-bounce"></div>
                     </div>
                     <span class="mt-2 text-sm font-medium">{{ __('Loading...') }}</span>
                 @elseif($isFailed)
-                    <svg class="w-12 h-12 text-coral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
+                    <x-icons.warning class="w-12 h-12 text-coral-300" />
                     <span class="mt-2 text-sm font-medium text-coral-400">{{ __('Failed') }}</span>
                 @else
-                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
+                    <x-icons.image-placeholder class="w-12 h-12" />
                     <span class="mt-2 text-sm font-medium">{{ __('No image') }}</span>
                 @endif
             </div>
@@ -73,9 +67,7 @@
 
             <div class="absolute top-3 right-3">
                 <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-sunny-100/95 backdrop-blur-sm text-sunny-700 text-xs font-semibold rounded-full shadow-sm">
-                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                    </svg>
+                    <x-icons.check-circle-filled class="w-3 h-3" />
                     {{ __('Claimed') }}
                 </span>
             </div>
@@ -83,9 +75,7 @@
 
             <div class="absolute top-3 right-3">
                 <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-teal-100/95 backdrop-blur-sm text-teal-700 text-xs font-semibold rounded-full shadow-sm">
-                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                    </svg>
+                    <x-icons.checkmark class="w-3 h-3" />
                     {{ __("You're getting this") }}
                 </span>
             </div>
@@ -94,9 +84,7 @@
             <div class="absolute top-3 right-3">
                 <span class="inline-flex items-center gap-1.5 pl-2 pr-2.5 py-1 bg-white/95 backdrop-blur-sm text-sunny-700 text-xs font-semibold rounded-full shadow-sm border border-sunny-200/50">
                     <span class="w-4 h-4 bg-sunny-400 rounded-full flex items-center justify-center flex-shrink-0">
-                        <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                        </svg>
+                        <x-icons.checkmark class="w-2.5 h-2.5 text-white" stroke-width="3" />
                     </span>
                     {{ __('Claimed') }}
                 </span>
@@ -104,10 +92,7 @@
         @elseif($isPending)
             <div class="absolute top-3 right-3" data-gift-badge>
                 <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-sunny-100/95 backdrop-blur-sm text-sunny-700 text-xs font-semibold rounded-full shadow-sm">
-                    <svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
+                    <x-icons.spinner class="w-3 h-3 animate-spin" />
                     {{ __('Fetching') }}
                 </span>
             </div>
@@ -166,9 +151,7 @@
                 @elseif($isClaimed)
                     <button type="button" disabled
                         class="w-full text-xs bg-sunny-100/80 text-sunny-600/70 px-3 py-2 rounded-lg cursor-not-allowed border border-sunny-200/50 flex items-center justify-center gap-1.5">
-                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                        </svg>
+                        <x-icons.check-circle-filled class="w-3 h-3" />
                         {{ __('Already claimed') }}
                     </button>
                 @else

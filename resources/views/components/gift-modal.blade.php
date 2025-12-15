@@ -58,9 +58,7 @@
                 class="absolute top-3 right-3 z-10 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
                 aria-label="{{ __('Close') }}"
             >
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <x-icons.close class="w-6 h-6" />
             </button>
 
             <div class="flex flex-col md:flex-row">
@@ -75,23 +73,17 @@
                             >
                         @else
                             <div class="w-full h-64 md:h-full flex flex-col items-center justify-center text-cream-400">
-                                <svg class="w-24 h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
+                                <x-icons.image-placeholder class="w-24 h-24" />
                                 <span class="mt-4 text-lg font-medium">{{ __('No image') }}</span>
                             </div>
                         @endif
                     </div>
 
                     <button class="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-white/80 hover:bg-white rounded-full shadow-md text-gray-600 hover:text-gray-900 transition-all opacity-0 pointer-events-none">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                        </svg>
+                        <x-icons.chevron-left class="w-5 h-5" />
                     </button>
                     <button class="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-white/80 hover:bg-white rounded-full shadow-md text-gray-600 hover:text-gray-900 transition-all opacity-0 pointer-events-none">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
+                        <x-icons.chevron-right class="w-5 h-5" />
                     </button>
                 </div>
 
@@ -130,9 +122,7 @@
 
                                     {{-- Full stars --}}
                                     @for($i = 0; $i < $fullStars; $i++)
-                                        <svg class="w-4 h-4 text-sunny-400" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                                        </svg>
+                                        <x-icons.star class="w-4 h-4 text-sunny-400" />
                                     @endfor
 
                                     {{-- Half star --}}
@@ -150,9 +140,7 @@
 
                                     {{-- Empty stars --}}
                                     @for($i = 0; $i < $emptyStars; $i++)
-                                        <svg class="w-4 h-4 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                                        </svg>
+                                        <x-icons.star class="w-4 h-4 text-gray-300" />
                                     @endfor
                                 </div>
 
@@ -182,9 +170,7 @@
                                     >
                                         <span class="flex items-center gap-1 bg-white/80 px-2 py-0.5 rounded">
                                             {{ __('Show more') }}
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                            </svg>
+                                            <x-icons.chevron-down class="w-4 h-4" />
                                         </span>
                                     </button>
                                 @endif
@@ -207,9 +193,7 @@
                                     class="mt-2 text-coral-600 hover:text-coral-700 text-sm font-medium transition-colors flex items-center gap-1"
                                 >
                                     {{ __('Show less') }}
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
-                                    </svg>
+                                    <x-icons.chevron-up class="w-4 h-4" />
                                 </button>
                             </div>
                         </div>
@@ -230,18 +214,14 @@
                                     @method('DELETE')
                                     <button type="submit"
                                         class="w-full inline-flex items-center justify-center gap-2 bg-sunny-200 text-sunny-800 px-5 py-3 rounded-xl hover:bg-sunny-300 transition-colors font-medium">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                        </svg>
+                                        <x-icons.checkmark class="w-5 h-5" />
                                         {{ __('Claimed - Click to unclaim') }}
                                     </button>
                                 </form>
                             @elseif($isClaimed)
                                 <button type="button" disabled
                                     class="w-full inline-flex items-center justify-center gap-2 bg-cream-200 text-cream-500 px-5 py-3 rounded-xl cursor-not-allowed">
-                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                    </svg>
+                                    <x-icons.check-circle-filled class="w-5 h-5" />
                                     {{ __('Already claimed by someone') }}
                                 </button>
                             @else
@@ -250,18 +230,14 @@
                                         @csrf
                                         <button type="submit"
                                             class="w-full inline-flex items-center justify-center gap-2 bg-sunny-200 text-sunny-800 px-5 py-3 rounded-xl hover:bg-sunny-300 transition-colors font-medium shadow-sm hover:shadow">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                            </svg>
+                                            <x-icons.checkmark class="w-5 h-5" />
                                             {{ __('Claim gift') }}
                                         </button>
                                     </form>
                                 @else
                                     <a href="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/claim') }}"
                                        class="w-full inline-flex items-center justify-center gap-2 bg-sunny-200 text-sunny-800 px-5 py-3 rounded-xl hover:bg-sunny-300 transition-colors font-medium shadow-sm hover:shadow">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                        </svg>
+                                        <x-icons.checkmark class="w-5 h-5" />
                                         {{ __('Claim gift') }}
                                     </a>
                                 @endauth
@@ -272,9 +248,7 @@
                                    target="_blank"
                                    rel="noopener noreferrer"
                                    class="w-full inline-flex items-center justify-center gap-2 bg-teal-500 text-white px-5 py-3 rounded-xl hover:bg-teal-600 transition-colors font-medium">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                                    </svg>
+                                    <x-icons.shopping-cart class="w-5 h-5" />
                                     {{ __('View on :site', ['site' => $siteName]) }}
                                 </a>
                             @endif
@@ -282,9 +256,7 @@
 
                         @unless($isClaimed)
                             <p class="mt-4 text-sm text-gray-500 flex items-center gap-2">
-                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
+                                <x-icons.info-circle class="w-4 h-4 text-gray-400" />
                                 {{ __('Giving this gift?') }}
                                 <a href="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/claim') }}" class="text-coral-600 hover:text-coral-700 hover:underline font-medium">{{ __('Claim it') }}</a>
                                 {{ __('to prevent duplicates.') }}
@@ -295,9 +267,7 @@
                         <div class="space-y-3 mt-4">
                             <a href="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/edit') }}"
                                class="w-full inline-flex items-center justify-center gap-2 bg-cream-100 text-gray-700 px-5 py-3 rounded-xl hover:bg-cream-200 transition-colors font-medium">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                </svg>
+                                <x-icons.edit class="w-5 h-5" />
                                 {{ __('Edit gift') }}
                             </a>
 
@@ -306,9 +276,7 @@
                                    target="_blank"
                                    rel="noopener noreferrer"
                                    class="w-full inline-flex items-center justify-center gap-2 bg-teal-500 text-white px-5 py-3 rounded-xl hover:bg-teal-600 transition-colors font-medium">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                                    </svg>
+                                    <x-icons.shopping-cart class="w-5 h-5" />
                                     {{ __('View on :site', ['site' => $siteName]) }}
                                 </a>
                             @endif

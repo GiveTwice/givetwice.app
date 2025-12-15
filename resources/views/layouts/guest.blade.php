@@ -59,15 +59,11 @@
                 class="p-4 bg-white border border-teal-200 text-teal-800 rounded-xl shadow-lg flex items-center gap-3 max-w-sm"
             >
                 <span class="flex-shrink-0 w-6 h-6 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
+                    <x-icons.checkmark class="w-4 h-4" />
                 </span>
                 <span class="text-sm">{{ session('status') }}</span>
                 <button x-on:click="show = false" class="flex-shrink-0 text-gray-400 hover:text-gray-600">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    <x-icons.close class="w-4 h-4" />
                 </button>
             </div>
         @endif

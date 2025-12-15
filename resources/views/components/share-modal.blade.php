@@ -26,9 +26,7 @@
 }">
     <!-- Share Button -->
     <button @click="open = true" class="btn-share">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-        </svg>
+        <x-icons.share class="w-5 h-5" />
         {{ __('Share') }}
     </button>
 
@@ -64,9 +62,7 @@
             <div class="flex justify-between items-start mb-4">
                 <h2 class="text-xl font-bold text-gray-900">{{ __('Share Your Wishlist') }}</h2>
                 <button @click="open = false" class="text-gray-400 hover:text-gray-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    <x-icons.close class="w-6 h-6" />
                 </button>
             </div>
 
@@ -112,9 +108,7 @@
                         class="px-3 py-2 bg-sunny-200 text-sunny-800 rounded-lg hover:bg-sunny-300 transition-colors flex items-center gap-1.5 whitespace-nowrap font-medium"
                     >
                         {{ __('View') }}
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                        </svg>
+                        <x-icons.external-link class="w-3.5 h-3.5" />
                     </a>
                     <button
                         @click="copyToClipboard('{{ $publicUrl }}', 'url')"
@@ -122,17 +116,13 @@
                     >
                         <template x-if="!copiedUrl">
                             <span class="flex items-center gap-1.5">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                </svg>
+                                <x-icons.copy class="w-4 h-4" />
                                 {{ __('Copy') }}
                             </span>
                         </template>
                         <template x-if="copiedUrl">
                             <span class="flex items-center gap-1.5 text-white">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                </svg>
+                                <x-icons.checkmark class="w-4 h-4" />
                                 {{ __('Copied!') }}
                             </span>
                         </template>
@@ -156,17 +146,13 @@
                     >
                         <template x-if="!copiedMessage">
                             <span class="flex items-center gap-1.5">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                </svg>
+                                <x-icons.copy class="w-4 h-4" />
                                 {{ __('Copy') }}
                             </span>
                         </template>
                         <template x-if="copiedMessage">
                             <span class="flex items-center gap-1.5 text-white">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                </svg>
+                                <x-icons.checkmark class="w-4 h-4" />
                                 {{ __('Copied!') }}
                             </span>
                         </template>
@@ -196,9 +182,7 @@
             x-transition:leave-end="opacity-0 -translate-y-4"
             class="fixed top-6 left-1/2 -translate-x-1/2 z-[60] px-5 py-3 bg-teal-500 text-white rounded-xl shadow-xl flex items-center gap-2"
         >
-            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+            <x-icons.check-circle class="w-5 h-5 flex-shrink-0" />
             <span class="font-medium whitespace-nowrap">{{ __('Copied to clipboard!') }}</span>
         </div>
     </div>

@@ -56,9 +56,7 @@
                         {{ __('Cancel') }}
                     </a>
                     <button type="submit" class="btn-primary">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
+                        <x-icons.plus class="w-5 h-5" />
                         {{ __('Create List') }}
                     </button>
                 </div>
@@ -96,9 +94,7 @@
 
                     <div class="flex gap-3">
                         <div class="icon-circle bg-teal-100 text-teal-600">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <x-icons.checkmark class="w-4 h-4" />
                         </div>
                         <div>
                             <p class="text-gray-700 font-medium">{{ __('Keep it simple') }}</p>

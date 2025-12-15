@@ -97,9 +97,7 @@
                                 @endforeach
                             </select>
                             <div class="absolute inset-y-0 right-2 flex items-center pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                </svg>
+                                <x-icons.chevron-down class="w-4 h-4 text-gray-400" />
                             </div>
                         </div>
 
@@ -127,9 +125,7 @@
                         {{ __('Cancel') }}
                     </a>
                     <button type="submit" class="btn-primary">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
+                        <x-icons.checkmark class="w-5 h-5" />
                         {{ __('Save Changes') }}
                     </button>
                 </div>
@@ -160,9 +156,7 @@
                     <template x-if="!gift.image_url_card">
                         <div class="w-full h-full bg-cream-100 flex items-center justify-center">
                             <div class="text-center text-gray-400">
-                                <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
+                                <x-icons.image-placeholder class="w-12 h-12 mx-auto mb-2" />
                                 <p class="text-sm">{{ __('No image yet') }}</p>
                             </div>
                         </div>
@@ -171,9 +165,7 @@
                     <div class="absolute inset-0 bg-gray-900/0 group-hover:bg-gray-900/20 transition-colors duration-300 flex items-center justify-center"
                          x-show="!uploading">
                         <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/95 backdrop-blur-sm text-gray-700 px-4 py-2 rounded-full text-sm font-medium shadow-lg inline-flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
+                            <x-icons.image-placeholder class="w-4 h-4" />
                             {{ __('Upload image') }}
                         </span>
                     </div>
@@ -181,10 +173,7 @@
                     <div class="absolute inset-0 bg-gray-900/40 flex items-center justify-center"
                          x-show="uploading" x-cloak>
                         <span class="bg-white/95 backdrop-blur-sm text-gray-700 px-4 py-2 rounded-full text-sm font-medium shadow-lg inline-flex items-center gap-2">
-                            <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
+                            <x-icons.spinner class="w-4 h-4 animate-spin" />
                             {{ __('Uploading...') }}
                         </span>
                     </div>
@@ -213,16 +202,12 @@
                             </span>
 
                             <span x-show="gift.fetch_status === 'completed'" x-cloak class="badge badge-success">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                </svg>
+                                <x-icons.checkmark class="w-4 h-4" />
                                 {{ __('Completed') }}
                             </span>
 
                             <span x-show="gift.fetch_status === 'failed'" x-cloak class="badge badge-danger">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
+                                <x-icons.close class="w-4 h-4" />
                                 {{ __('Failed') }}
                             </span>
 
@@ -234,9 +219,7 @@
                                     title="{{ __('Re-fetch details') }}"
                                     class="p-1.5 text-gray-400 hover:text-coral-600 hover:bg-white rounded-lg transition-colors disabled:opacity-50"
                                 >
-                                    <svg class="w-4 h-4" :class="{ 'animate-spin': refreshing }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                                    </svg>
+                                    <x-icons.refresh class="w-4 h-4" :class="{ 'animate-spin': refreshing }" />
                                 </button>
                             @endif
                         </div>
@@ -263,9 +246,7 @@
             x-on:click="$dispatch('open-confirm-delete-gift')"
             class="inline-flex items-center gap-2 bg-red-600 text-white px-5 py-2.5 rounded-xl hover:bg-red-700 transition-colors font-medium whitespace-nowrap"
         >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
+            <x-icons.trash class="w-5 h-5" />
             {{ __('Delete Gift') }}
         </button>
     </div>
@@ -284,9 +265,7 @@
             type="submit"
             class="inline-flex items-center gap-2 bg-red-600 text-white px-4 py-2.5 rounded-xl hover:bg-red-700 transition-colors font-medium"
         >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
+            <x-icons.trash class="w-5 h-5" />
             {{ __('Delete Gift') }}
         </button>
     </form>

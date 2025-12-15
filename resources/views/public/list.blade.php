@@ -176,12 +176,12 @@
                         <span class="w-6 h-6 bg-coral-100 text-coral-600 rounded-full flex items-center justify-center text-xs font-bold shadow-sm">1</span>
                         <span class="text-gray-600 font-medium">{{ __('Browse') }}</span>
                     </span>
-                    <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                    <x-icons.chevron-right class="w-4 h-4 text-gray-300" />
                     <span class="flex items-center gap-1.5">
                         <span class="w-6 h-6 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center text-xs font-bold shadow-sm">2</span>
                         <span class="text-gray-600 font-medium">{{ __('Claim') }}</span>
                     </span>
-                    <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                    <x-icons.chevron-right class="w-4 h-4 text-gray-300" />
                     <span class="flex items-center gap-1.5">
                         <span class="w-6 h-6 bg-sunny-200 text-sunny-700 rounded-full flex items-center justify-center text-xs font-bold shadow-sm">3</span>
                         <span class="text-gray-600 font-medium">{{ __('Gift') }}</span>
@@ -201,10 +201,7 @@
         <div class="px-5 sm:px-6 py-3 bg-sunny-50/80 border-t border-sunny-100">
             <div class="flex items-center justify-between gap-4">
                 <div class="flex items-center gap-2">
-                    <svg class="w-4 h-4 text-sunny-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
+                    <x-icons.eye class="w-4 h-4 text-sunny-600" />
                     <span class="text-sunny-800 text-sm font-medium">{{ __('Preview Mode') }}</span>
                     <span class="text-sunny-700 text-sm hidden sm:inline">— {{ __('This is how others will see your wishlist.') }}</span>
                 </div>
@@ -278,17 +275,13 @@
                     @guest
                         <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-coral-600 rounded-xl hover:bg-coral-50 font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
                             <span>{{ __('Create Your Wishlist') }}</span>
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                            </svg>
+                            <x-icons.arrow-right class="w-5 h-5" />
                         </a>
                         <p class="mt-3 text-coral-200 text-sm">{{ __('Free forever. Share with anyone.') }}</p>
                     @else
                         <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-coral-600 rounded-xl hover:bg-coral-50 font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
                             <span>{{ __('Go to My Wishlists') }}</span>
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                            </svg>
+                            <x-icons.arrow-right class="w-5 h-5" />
                         </a>
                     @endguest
                 </div>
@@ -299,21 +292,15 @@
 
 <div class="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-sm text-gray-500">
     <div class="flex items-center gap-2">
-        <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-        </svg>
+        <x-icons.shield-check class="w-5 h-5 text-teal-500" />
         <span>{{ __('Privacy protected') }}</span>
     </div>
     <div class="flex items-center gap-2">
-        <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
+        <x-icons.dollar-circle class="w-5 h-5 text-teal-500" />
         <span>{{ __('100% free to use') }}</span>
     </div>
     <div class="flex items-center gap-2">
-        <svg class="w-5 h-5 text-coral-500" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-        </svg>
+        <x-icons.heart class="w-5 h-5 text-coral-500" />
         <span>{{ __('Supports charity') }}</span>
     </div>
 </div>

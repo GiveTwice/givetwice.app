@@ -56,9 +56,7 @@
                 @if($list->is_default)
                     <div class="bg-teal-50 border border-teal-100 rounded-xl p-4 mb-6">
                         <div class="flex gap-3">
-                            <svg class="w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                            <x-icons.info-circle class="w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" />
                             <div class="text-sm">
                                 <p class="font-medium text-teal-800">{{ __('This is your default list') }}</p>
                                 <p class="text-teal-700">{{ __('New gifts will be added here automatically.') }}</p>
@@ -72,9 +70,7 @@
                         {{ __('Cancel') }}
                     </a>
                     <button type="submit" class="btn-primary">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
+                        <x-icons.checkmark class="w-5 h-5" />
                         {{ __('Save Changes') }}
                     </button>
                 </div>
@@ -97,9 +93,7 @@
                            target="_blank"
                            class="text-sm text-coral-600 hover:text-coral-700 hover:underline break-all bg-white px-3 py-2 rounded-lg flex items-center gap-2 border border-cream-200">
                             <span class="flex-1">{{ url('/' . app()->getLocale() . '/view/' . $list->slug) }}</span>
-                            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
+                            <x-icons.external-link class="w-4 h-4 flex-shrink-0" />
                         </a>
                     </div>
 
@@ -129,9 +123,7 @@
                 x-on:click="$dispatch('open-confirm-delete-list')"
                 class="inline-flex items-center gap-2 bg-red-600 text-white px-5 py-2.5 rounded-xl hover:bg-red-700 transition-colors font-medium whitespace-nowrap"
             >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
+                <x-icons.trash class="w-5 h-5" />
                 {{ __('Delete List') }}
             </button>
         </div>
@@ -150,9 +142,7 @@
                 type="submit"
                 class="inline-flex items-center gap-2 bg-red-600 text-white px-4 py-2.5 rounded-xl hover:bg-red-700 transition-colors font-medium"
             >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
+                <x-icons.trash class="w-5 h-5" />
                 {{ __('Delete List') }}
             </button>
         </form>

@@ -28,9 +28,7 @@
         <div class="px-6 sm:px-8 py-5 bg-cream-50/50 border-t border-cream-100">
             <div class="flex items-start gap-3">
                 <div class="w-8 h-8 bg-cream-200 rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                    <x-icons.info-circle class="w-4 h-4 text-gray-500" />
                 </div>
                 <div>
                     <p class="text-sm font-medium text-gray-700">{{ __('What happened?') }}</p>
@@ -42,9 +40,7 @@
 
     <div class="mt-6 text-center">
         <a href="{{ url('/' . app()->getLocale()) }}" class="btn-primary inline-flex">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
+            <x-icons.home class="w-5 h-5" />
             {{ __('Go to Homepage') }}
         </a>
     </div>
