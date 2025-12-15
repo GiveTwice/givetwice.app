@@ -169,15 +169,50 @@
                     <p class="text-sm text-gray-400 mb-6">{{ __('Added') }} {{ $addedAgo }}</p>
 
                     @if($gift->description)
-                        <div class="mb-6 text-gray-600 leading-relaxed prose prose-sm max-w-none">
-                            <p class="whitespace-pre-line">{{ $gift->description }}</p>
-                        </div>
+                        <div x-data="{ expanded: false }" class="mb-6">
+                            {{-- Collapsed state: max 6 lines with fade --}}
+                            <div x-show="!expanded" class="relative">
+                                <p class="text-gray-600 leading-relaxed whitespace-pre-line line-clamp-6">{{ $gift->description }}</p>
+                                {{-- Fade overlay - only shown if text is long enough to be truncated --}}
+                                @if(substr_count($gift->description, "\n") >= 5 || strlen($gift->description) > 350)
+                                    <div class="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white via-white/90 to-transparent pointer-events-none"></div>
+                                    <button
+                                        @click="expanded = true"
+                                        class="absolute bottom-0 left-0 right-0 h-12 flex items-end justify-center pb-0.5 text-coral-600 hover:text-coral-700 text-sm font-medium transition-colors cursor-pointer"
+                                    >
+                                        <span class="flex items-center gap-1 bg-white/80 px-2 py-0.5 rounded">
+                                            {{ __('Show more') }}
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </span>
+                                    </button>
+                                @endif
+                            </div>
 
-                        @if(strlen($gift->description) > 300)
-                            <button class="text-coral-600 hover:text-coral-700 text-sm font-medium mb-6 self-start">
-                                ...{{ __('more') }}
-                            </button>
-                        @endif
+                            {{-- Expanded state: scrollable container --}}
+                            <div
+                                x-show="expanded"
+                                x-cloak
+                                x-transition:enter="transition ease-out duration-200"
+                                x-transition:enter-start="opacity-0"
+                                x-transition:enter-end="opacity-100"
+                                class="relative"
+                            >
+                                <div class="max-h-48 overflow-y-auto pr-2 scrollbar-subtle">
+                                    <p class="text-gray-600 leading-relaxed whitespace-pre-line">{{ $gift->description }}</p>
+                                </div>
+                                <button
+                                    @click="expanded = false"
+                                    class="mt-2 text-coral-600 hover:text-coral-700 text-sm font-medium transition-colors flex items-center gap-1"
+                                >
+                                    {{ __('Show less') }}
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
                     @else
                         <div class="mb-6 text-gray-400 italic">
                             {{ __('No description available') }}

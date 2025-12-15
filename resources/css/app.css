@@ -575,3 +575,31 @@
         transform: translateX(4px);
     }
 }
+
+/* ============================================
+   Custom Scrollbar Styling
+   Subtle, cream-themed scrollbar for content areas
+   ============================================ */
+
+.scrollbar-subtle {
+    scrollbar-width: thin;
+    scrollbar-color: oklch(0.93 0.04 70) oklch(0.98 0.02 80);
+}
+
+.scrollbar-subtle::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollbar-subtle::-webkit-scrollbar-track {
+    background: oklch(0.98 0.02 80);
+    border-radius: 3px;
+}
+
+.scrollbar-subtle::-webkit-scrollbar-thumb {
+    background: oklch(0.93 0.04 70);
+    border-radius: 3px;
+}
+
+.scrollbar-subtle::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.88 0.06 65);
+}
