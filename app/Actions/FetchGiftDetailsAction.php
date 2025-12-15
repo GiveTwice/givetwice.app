@@ -10,7 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
-use Mattiasgeniar\ProductInfoFetcher\ProductInfoFetcherClass;
+use Mattiasgeniar\ProductInfoFetcher\ProductInfoFetcher;
 use Throwable;
 
 class FetchGiftDetailsAction implements ShouldQueue
@@ -32,7 +32,7 @@ class FetchGiftDetailsAction implements ShouldQueue
         $this->gift->update(['fetch_status' => 'fetching']);
 
         try {
-            $product = (new ProductInfoFetcherClass($this->gift->url))
+            $product = (new ProductInfoFetcher($this->gift->url))
                 ->setUserAgent('GiftWithLove/1.0 (Wishlist Service; +https://giftwith.love) Mozilla/5.0 (compatible)')
                 ->setTimeout(15)
                 ->setConnectTimeout(10)
