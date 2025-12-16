@@ -14,10 +14,6 @@ class CreatePendingClaimAction
 {
     public function execute(Gift $gift, string $email, ?string $name = null): Claim
     {
-        if ($gift->isClaimed()) {
-            throw new AlreadyClaimedException;
-        }
-
         $existingClaim = $gift->claims()
             ->where('claimer_email', $email)
             ->first();
@@ -30,6 +26,10 @@ class CreatePendingClaimAction
 
             Mail::to($email)->send(new ClaimConfirmationMail($existingClaim));
             throw new ConfirmationResentException;
+        }
+
+        if ($gift->isClaimed()) {
+            throw new AlreadyClaimedException;
         }
 
         $claim = Claim::create([

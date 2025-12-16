@@ -3,6 +3,7 @@
 use App\Actions\CreatePendingClaimAction;
 use App\Exceptions\Claim\AlreadyClaimedException;
 use App\Exceptions\Claim\ConfirmationResentException;
+use App\Exceptions\Claim\EmailAlreadyClaimedException;
 use App\Mail\ClaimConfirmationMail;
 use App\Models\Claim;
 use App\Models\Gift;
@@ -81,7 +82,7 @@ describe('CreatePendingClaimAction', function () {
                 ->toThrow(AlreadyClaimedException::class);
         });
 
-        it('throws AlreadyClaimedException even when same email tries to claim again', function () {
+        it('throws EmailAlreadyClaimedException when same email tries to claim again', function () {
             $owner = User::factory()->create();
             $gift = Gift::factory()->create(['user_id' => $owner->id]);
 
@@ -94,7 +95,7 @@ describe('CreatePendingClaimAction', function () {
             $action = new CreatePendingClaimAction;
 
             expect(fn () => $action->execute($gift, 'claimer@example.com'))
-                ->toThrow(AlreadyClaimedException::class);
+                ->toThrow(EmailAlreadyClaimedException::class);
         });
     });
 
