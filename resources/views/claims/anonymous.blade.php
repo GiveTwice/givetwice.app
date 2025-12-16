@@ -9,7 +9,7 @@
     <div class="p-5 sm:p-6">
         <div class="flex items-start gap-4 sm:gap-5">
 
-            <div class="flex-shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-xl bg-cream-50 border border-cream-200 overflow-hidden">
+            <div class="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-cream-50 border border-cream-200 overflow-hidden">
                 @if($gift->hasImage())
                     <img src="{{ $gift->getImageUrl('thumb') }}" alt="{{ $gift->title }}" class="w-full h-full object-cover">
                 @else
