@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\ClaimGiftAction;
 use App\Actions\ConfirmClaimAction;
 use App\Actions\CreatePendingClaimAction;
-use App\Exceptions\ClaimException;
+use App\Exceptions\Claim\ClaimException;
 use App\Models\Gift;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,7 +17,7 @@ class ClaimController extends Controller
     public function store(Request $request, string $locale, Gift $gift, ClaimGiftAction $action): RedirectResponse
     {
         try {
-            $claim = $action->execute($gift, $request->user(), $request->input('notes'));
+            $claim = $action->execute($gift, $request->user());
         } catch (ClaimException $e) {
             return back()->with('error', $e->getMessage());
         }

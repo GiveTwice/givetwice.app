@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 class Claim extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'gift_id',
         'user_id',
@@ -18,7 +19,6 @@ class Claim extends Model
         'claimer_name',
         'confirmation_token',
         'confirmed_at',
-        'notes',
     ];
 
     protected function casts(): array

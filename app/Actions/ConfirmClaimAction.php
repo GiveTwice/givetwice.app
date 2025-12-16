@@ -2,7 +2,8 @@
 
 namespace App\Actions;
 
-use App\Exceptions\ClaimException;
+use App\Exceptions\Claim\AlreadyClaimedException;
+use App\Exceptions\Claim\InvalidTokenException;
 use App\Models\Claim;
 
 class ConfirmClaimAction
@@ -14,16 +15,15 @@ class ConfirmClaimAction
             ->first();
 
         if (! $claim) {
-            throw ClaimException::invalidToken();
+            throw new InvalidTokenException;
         }
 
         /** @var \App\Models\Gift $gift */
         $gift = $claim->gift;
 
-        // Race condition: gift may have been claimed while confirmation email was pending
         if ($gift->isClaimed()) {
             $claim->delete();
-            throw ClaimException::alreadyClaimed();
+            throw new AlreadyClaimedException;
         }
 
         $claim->confirm();

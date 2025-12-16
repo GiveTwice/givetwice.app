@@ -2,7 +2,9 @@
 
 namespace App\Actions;
 
-use App\Exceptions\ClaimException;
+use App\Exceptions\Claim\AlreadyClaimedException;
+use App\Exceptions\Claim\ConfirmationResentException;
+use App\Exceptions\Claim\EmailAlreadyClaimedException;
 use App\Mail\ClaimConfirmationMail;
 use App\Models\Claim;
 use App\Models\Gift;
@@ -13,7 +15,7 @@ class CreatePendingClaimAction
     public function execute(Gift $gift, string $email, ?string $name = null): Claim
     {
         if ($gift->isClaimed()) {
-            throw ClaimException::alreadyClaimed();
+            throw new AlreadyClaimedException;
         }
 
         $existingClaim = $gift->claims()
@@ -23,11 +25,11 @@ class CreatePendingClaimAction
         if ($existingClaim) {
             /** @var Claim $existingClaim */
             if ($existingClaim->isConfirmed()) {
-                throw ClaimException::emailAlreadyClaimed();
+                throw new EmailAlreadyClaimedException;
             }
 
             Mail::to($email)->send(new ClaimConfirmationMail($existingClaim));
-            throw ClaimException::confirmationResent();
+            throw new ConfirmationResentException;
         }
 
         $claim = Claim::create([

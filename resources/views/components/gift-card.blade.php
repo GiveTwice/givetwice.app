@@ -25,6 +25,9 @@
     @if($openModal && !$isUnavailable)
         x-data
         x-on:click="$dispatch('open-gift-modal-{{ $gift->id }}')"
+    @elseif($isClaimedByMe)
+        x-data
+        x-on:click="window.location.href = '{{ route('claim.confirmed', ['locale' => app()->getLocale(), 'gift' => $gift]) }}'"
     @endif
 >
 
@@ -131,7 +134,7 @@
         </div>
 
         @if($showClaimActions && !$isOwner)
-            <div class="mt-2.5 space-y-1.5" @if($openModal) x-on:click.stop @endif>
+            <div class="mt-2.5 space-y-1.5" @if($openModal || $isClaimedByMe) x-on:click.stop @endif>
 
                 @if($isClaimedByMe)
                     <form action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/claim') }}" method="POST">

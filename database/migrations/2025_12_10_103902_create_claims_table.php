@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('claimer_name')->nullable();
             $table->string('confirmation_token', 64)->nullable()->unique();
             $table->timestamp('confirmed_at')->nullable();
-            $table->text('notes')->nullable();
             $table->timestamps();
 
             $table->index('gift_id');

@@ -24,7 +24,6 @@ class ClaimFactory extends Factory
             'claimer_name' => null,
             'confirmation_token' => null,
             'confirmed_at' => now(),
-            'notes' => fake()->optional()->sentence(),
         ];
     }
 
