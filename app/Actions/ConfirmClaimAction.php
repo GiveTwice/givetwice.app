@@ -5,6 +5,8 @@ namespace App\Actions;
 use App\Exceptions\Claim\AlreadyClaimedException;
 use App\Exceptions\Claim\InvalidTokenException;
 use App\Models\Claim;
+use App\Models\Gift;
+use Illuminate\Support\Facades\DB;
 
 class ConfirmClaimAction
 {
@@ -18,16 +20,24 @@ class ConfirmClaimAction
             throw new InvalidTokenException;
         }
 
-        /** @var \App\Models\Gift $gift */
-        $gift = $claim->gift;
+        $result = DB::transaction(function () use ($claim) {
+            $lockedGift = Gift::lockForUpdate()->find($claim->gift_id);
 
-        if ($gift->isClaimed()) {
-            $claim->delete();
+            if ($lockedGift->isClaimed()) {
+                $claim->delete();
+
+                return null;
+            }
+
+            $claim->confirm();
+
+            return $claim;
+        });
+
+        if ($result === null) {
             throw new AlreadyClaimedException;
         }
 
-        $claim->confirm();
-
-        return $claim;
+        return $result;
     }
 }

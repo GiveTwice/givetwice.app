@@ -8,6 +8,7 @@ use App\Exceptions\Claim\EmailAlreadyClaimedException;
 use App\Mail\ClaimConfirmationMail;
 use App\Models\Claim;
 use App\Models\Gift;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class CreatePendingClaimAction
@@ -19,7 +20,6 @@ class CreatePendingClaimAction
             ->first();
 
         if ($existingClaim) {
-            /** @var Claim $existingClaim */
             if ($existingClaim->isConfirmed()) {
                 throw new EmailAlreadyClaimedException;
             }
@@ -28,18 +28,22 @@ class CreatePendingClaimAction
             throw new ConfirmationResentException;
         }
 
-        if ($gift->isClaimed()) {
-            throw new AlreadyClaimedException;
-        }
+        return DB::transaction(function () use ($gift, $email, $name) {
+            $lockedGift = Gift::lockForUpdate()->find($gift->id);
 
-        $claim = Claim::create([
-            'gift_id' => $gift->id,
-            'claimer_email' => $email,
-            'claimer_name' => $name,
-        ]);
+            if ($lockedGift->isClaimed()) {
+                throw new AlreadyClaimedException;
+            }
 
-        Mail::to($email)->send(new ClaimConfirmationMail($claim));
+            $claim = Claim::create([
+                'gift_id' => $lockedGift->id,
+                'claimer_email' => $email,
+                'claimer_name' => $name,
+            ]);
 
-        return $claim;
+            Mail::to($email)->send(new ClaimConfirmationMail($claim));
+
+            return $claim;
+        });
     }
 }

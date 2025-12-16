@@ -9,6 +9,7 @@ use App\Exceptions\Claim\UserAlreadyClaimedException;
 use App\Models\Claim;
 use App\Models\Gift;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class ClaimGiftAction
 {
@@ -18,24 +19,28 @@ class ClaimGiftAction
             throw new CannotClaimOwnGiftException;
         }
 
-        if ($gift->isClaimed()) {
-            throw new AlreadyClaimedException;
-        }
+        return DB::transaction(function () use ($gift, $user) {
+            $lockedGift = Gift::lockForUpdate()->find($gift->id);
 
-        $existingClaim = $gift->claims()->where('user_id', $user->id)->first();
-        if ($existingClaim) {
-            throw new UserAlreadyClaimedException;
-        }
+            if ($lockedGift->isClaimed()) {
+                throw new AlreadyClaimedException;
+            }
 
-        $claim = Claim::create([
-            'gift_id' => $gift->id,
-            'user_id' => $user->id,
-            'confirmed_at' => now(),
-        ]);
+            $existingClaim = $lockedGift->claims()->where('user_id', $user->id)->first();
+            if ($existingClaim) {
+                throw new UserAlreadyClaimedException;
+            }
 
-        $gift->load('lists');
-        event(new GiftClaimed($gift, $claim));
+            $claim = Claim::create([
+                'gift_id' => $lockedGift->id,
+                'user_id' => $user->id,
+                'confirmed_at' => now(),
+            ]);
 
-        return $claim;
+            $lockedGift->load('lists');
+            event(new GiftClaimed($lockedGift, $claim));
+
+            return $claim;
+        });
     }
 }
