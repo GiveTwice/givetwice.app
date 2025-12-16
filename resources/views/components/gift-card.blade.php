@@ -12,17 +12,17 @@
     $isPending = $gift->isPending() || $gift->isFetching();
     $isFailed = $gift->isFetchFailed();
     $isClaimedByOthers = $showClaimActions && $isClaimed && !$isClaimedByMe && !$isOwner;
+    $isUnavailable = $isClaimedByOthers || ($showClaimActions && $isClaimedByMe);
 @endphp
 
 <div
-    class="group relative bg-white rounded-2xl overflow-hidden border shadow-sm transition-all duration-300
-        {{ $isClaimedByOthers
-            ? 'border-sunny-200/80 bg-sunny-50/30'
-            : 'border-gray-200 hover:shadow-lg hover:border-gray-300' }}
-        {{ ($openModal && !$isClaimedByOthers) || $isClaimedByMe ? 'cursor-pointer' : '' }}
-        {{ $isClaimedByOthers ? 'cursor-default' : '' }}"
+    class="gift-card
+        {{ $isClaimedByOthers ? 'gift-card-claimed-others' : '' }}
+        {{ $showClaimActions && $isClaimedByMe ? 'gift-card-claimed-mine' : '' }}
+        {{ !$isUnavailable ? 'gift-card-default' : '' }}
+        {{ ($openModal && !$isUnavailable) || $isClaimedByMe ? 'cursor-pointer' : '' }}"
     data-gift-id="{{ $gift->id }}"
-    @if($openModal && !$isClaimedByOthers && !$isClaimedByMe)
+    @if($openModal && !$isUnavailable)
         x-data
         x-on:click="$dispatch('open-gift-modal-{{ $gift->id }}')"
     @endif
@@ -34,14 +34,14 @@
                 src="{{ $gift->getImageUrl('card') }}"
                 alt="{{ $gift->title }}"
                 class="w-full h-full object-cover object-center transition-all duration-500
-                    {{ $isClaimedByOthers
-                        ? 'grayscale-[0.6] brightness-[1.1] sepia-[0.15] saturate-[0.5] blur-[2px] scale-[1.02]'
-                        : 'group-hover:scale-105' }}"
+                    {{ $isUnavailable ? 'gift-card-image-unavailable' : 'group-hover:scale-105' }}"
                 loading="lazy"
             >
 
             @if($isClaimedByOthers)
-                <div class="absolute inset-0 bg-gradient-to-t from-sunny-200/70 via-sunny-100/50 to-sunny-50/30 pointer-events-none"></div>
+                <div class="gift-card-overlay-sunny"></div>
+            @elseif($showClaimActions && $isClaimedByMe)
+                <div class="gift-card-overlay-teal"></div>
             @endif
         @else
 
@@ -99,30 +99,30 @@
 
         @if($editable)
             <a href="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/edit') }}"
-               class="absolute inset-0 bg-gray-900/0 group-hover:bg-gray-900/10 transition-colors duration-300 flex items-center justify-center">
-                <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/95 backdrop-blur-sm text-gray-700 px-4 py-2 rounded-full text-sm font-medium shadow-lg">
+               class="gift-card-hover-overlay gift-card-hover-overlay-gray">
+                <span class="gift-card-hover-label text-gray-700">
                     {{ __('Edit') }}
                 </span>
             </a>
         @elseif($isClaimedByMe)
             <a href="{{ route('claim.confirmed', ['locale' => app()->getLocale(), 'gift' => $gift]) }}"
-               class="absolute inset-0 bg-teal-900/0 group-hover:bg-teal-900/10 transition-colors duration-300 flex items-center justify-center">
-                <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/95 backdrop-blur-sm text-teal-700 px-4 py-2 rounded-full text-sm font-medium shadow-lg">
+               class="gift-card-hover-overlay gift-card-hover-overlay-teal">
+                <span class="gift-card-hover-label text-teal-700">
                     {{ __("You're getting this") }}
                 </span>
             </a>
         @endif
     </div>
 
-    <div class="px-3 py-2.5 {{ $isClaimedByOthers ? 'bg-sunny-50/40' : '' }}">
+    <div class="px-3 py-2.5 {{ $isClaimedByOthers ? 'gift-card-content-sunny' : '' }} {{ $showClaimActions && $isClaimedByMe ? 'gift-card-content-teal' : '' }}">
 
-        <h3 class="font-semibold text-sm leading-snug line-clamp-2 min-h-[2.25rem] {{ $isClaimedByOthers ? 'text-gray-500' : 'text-gray-900' }}" title="{{ $gift->title }}" data-gift-title>
+        <h3 class="font-semibold text-sm leading-snug line-clamp-2 min-h-[2.25rem] {{ $isUnavailable ? 'gift-card-title-muted' : 'text-gray-900' }}" title="{{ $gift->title }}" data-gift-title>
             {{ $gift->title ?: __('Untitled gift') }}
         </h3>
 
         <div class="mt-1.5 flex items-center justify-between" data-gift-price>
             @if($gift->hasPrice())
-                <span class="text-base font-bold {{ $isClaimedByOthers ? 'text-gray-400' : 'text-coral-600' }}">
+                <span class="text-base font-bold {{ $isUnavailable ? 'gift-card-price-muted' : 'text-coral-600' }}">
                     {{ $gift->formatPrice() }}
                 </span>
             @else
@@ -173,7 +173,7 @@
                        target="_blank"
                        rel="noopener noreferrer"
                        class="w-full text-center text-xs px-3 py-2 rounded-lg transition-colors font-medium flex items-center justify-center gap-1.5
-                           {{ $isClaimedByOthers
+                           {{ $isUnavailable
                                ? 'bg-teal-400/60 text-white/80 hover:bg-teal-500/60'
                                : 'bg-teal-500 text-white hover:bg-teal-600' }}">
                         <x-icons.shopping-cart class="w-3 h-3" />

@@ -577,6 +577,77 @@
 }
 
 /* ============================================
+   Gift Card Component Classes
+   States: default, claimed-by-others (sunny), claimed-by-me (teal)
+   ============================================ */
+
+/* Gift card container */
+.gift-card {
+    @apply group relative bg-white rounded-2xl overflow-hidden border shadow-sm transition-all duration-300;
+}
+
+.gift-card-default {
+    @apply border-gray-200 hover:shadow-lg hover:border-gray-300;
+}
+
+.gift-card-claimed-others {
+    @apply border-sunny-200/80 bg-sunny-50/30 cursor-default;
+}
+
+.gift-card-claimed-mine {
+    @apply border-teal-200/80 bg-teal-50/30 cursor-pointer;
+}
+
+/* Gift card image - unavailable state (blurred/faded) */
+.gift-card-image-unavailable {
+    @apply grayscale-[0.6] brightness-[1.1] sepia-[0.15] saturate-[0.5] blur-[2px] scale-[1.02];
+}
+
+/* Gift card overlay gradients */
+.gift-card-overlay-sunny {
+    @apply absolute inset-0 bg-gradient-to-t from-sunny-200/70 via-sunny-100/50 to-sunny-50/30 pointer-events-none;
+}
+
+.gift-card-overlay-teal {
+    @apply absolute inset-0 bg-gradient-to-t from-teal-200/70 via-teal-100/50 to-teal-50/30 pointer-events-none;
+}
+
+/* Gift card content area backgrounds */
+.gift-card-content-sunny {
+    @apply bg-sunny-50/40;
+}
+
+.gift-card-content-teal {
+    @apply bg-teal-50/40;
+}
+
+/* Gift card text - muted for unavailable items */
+.gift-card-title-muted {
+    @apply text-gray-500;
+}
+
+.gift-card-price-muted {
+    @apply text-gray-400;
+}
+
+/* Gift card clickable overlay on hover */
+.gift-card-hover-overlay {
+    @apply absolute inset-0 transition-colors duration-300 flex items-center justify-center;
+}
+
+.gift-card-hover-overlay-gray {
+    @apply bg-gray-900/0 group-hover:bg-gray-900/10;
+}
+
+.gift-card-hover-overlay-teal {
+    @apply bg-teal-900/0 group-hover:bg-teal-900/10;
+}
+
+.gift-card-hover-label {
+    @apply opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium shadow-lg;
+}
+
+/* ============================================
    Custom Scrollbar Styling
    Subtle, cream-themed scrollbar for content areas
    ============================================ */
