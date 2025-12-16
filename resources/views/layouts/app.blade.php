@@ -67,14 +67,32 @@
                     <div class="border-t border-cream-200 my-2"></div>
 
                     @auth
+                        @php
+                            $mobileUser = auth()->user();
+                            $mobileHasImage = $mobileUser->hasProfileImage();
+                            $mobileImageUrl = $mobileUser->getProfileImageUrl('thumb');
+                            $mobileInitials = $mobileUser->getInitials();
+                        @endphp
                         {{-- User info --}}
-                        <div class="px-3 py-3 flex items-center gap-3">
-                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-coral-100 to-coral-200 flex items-center justify-center overflow-hidden">
-                                @if(auth()->user()->avatar)
-                                    <img src="{{ auth()->user()->avatar }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
-                                @else
-                                    <span class="text-coral-600 font-semibold text-sm">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
-                                @endif
+                        <div
+                            class="px-3 py-3 flex items-center gap-3"
+                            x-data="{
+                                hasImage: @js($mobileHasImage),
+                                imageUrl: @js($mobileImageUrl),
+                                initials: @js($mobileInitials)
+                            }"
+                            @profile-image-updated.window="hasImage = $event.detail.hasImage; imageUrl = $event.detail.imageUrl; initials = $event.detail.initials"
+                        >
+                            <div
+                                class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center overflow-hidden"
+                                :class="hasImage ? 'ring-2 ring-cream-200' : 'bg-gradient-to-br from-coral-400 to-coral-500'"
+                            >
+                                <template x-if="hasImage">
+                                    <img :src="imageUrl" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
+                                </template>
+                                <template x-if="!hasImage">
+                                    <span class="text-white font-bold text-sm tracking-tight" x-text="initials"></span>
+                                </template>
                             </div>
                             <div class="flex-1 min-w-0">
                                 <p class="text-sm font-semibold text-gray-900 truncate">{{ auth()->user()->name }}</p>

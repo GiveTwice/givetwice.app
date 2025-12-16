@@ -14,13 +14,108 @@
     <div class="space-y-8">
 
         {{-- Profile Information --}}
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8" x-data="profileSettings()">
             <div>
                 <h2 class="text-lg font-semibold text-gray-900">{{ __('Profile information') }}</h2>
-                <p class="mt-1 text-sm text-gray-600">{{ __("Update your account's profile information.") }}</p>
+                <p class="mt-1 text-sm text-gray-600">{{ __("Update your account's profile information and photo.") }}</p>
             </div>
 
             <div class="lg:col-span-2">
+                {{-- Profile Image Section --}}
+                <div class="mb-8 pb-8 border-b border-gray-100">
+                    <label class="form-label mb-4">{{ __('Profile photo') }}</label>
+
+                    <div class="flex items-start gap-6">
+                        {{-- Avatar Upload Area --}}
+                        <div class="relative flex-shrink-0">
+                            <input
+                                type="file"
+                                id="profile-image-upload"
+                                accept="image/jpeg,image/png,image/jpg,image/gif,image/webp"
+                                class="hidden"
+                                x-ref="imageInput"
+                                x-on:change="uploadImage($event)"
+                            >
+
+                            <div
+                                class="group relative w-24 h-24 rounded-full overflow-hidden cursor-pointer ring-4 ring-cream-100 transition-all duration-300 hover:ring-coral-200"
+                                x-on:click="$refs.imageInput.click()"
+                            >
+                                {{-- Avatar Image or Initials --}}
+                                <template x-if="imageUrl">
+                                    <img
+                                        :src="imageUrl"
+                                        :alt="'{{ auth()->user()->name }}'"
+                                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    >
+                                </template>
+
+                                <template x-if="!imageUrl">
+                                    <div class="w-full h-full bg-gradient-to-br from-coral-400 to-coral-500 flex items-center justify-center">
+                                        <span class="text-white text-2xl font-bold tracking-tight">{{ auth()->user()->getInitials() }}</span>
+                                    </div>
+                                </template>
+
+                                {{-- Hover Overlay --}}
+                                <div
+                                    class="absolute inset-0 bg-gray-900/0 group-hover:bg-gray-900/40 transition-all duration-300 flex items-center justify-center"
+                                    x-show="!uploading"
+                                >
+                                    <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white">
+                                        <x-icons.image-placeholder class="w-6 h-6 mx-auto" />
+                                    </div>
+                                </div>
+
+                                {{-- Upload Spinner --}}
+                                <div
+                                    class="absolute inset-0 bg-gray-900/50 flex items-center justify-center"
+                                    x-show="uploading"
+                                    x-cloak
+                                >
+                                    <x-icons.spinner class="w-6 h-6 text-white animate-spin" />
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Upload Instructions & Actions --}}
+                        <div class="flex-1 pt-1">
+                            <p class="text-sm text-gray-600 mb-3">
+                                {{ __('Click the avatar to upload a new photo. JPG, PNG or GIF. Max 5MB.') }}
+                            </p>
+
+                            <div class="flex items-center gap-3">
+                                <button
+                                    type="button"
+                                    x-on:click="$refs.imageInput.click()"
+                                    :disabled="uploading"
+                                    class="text-sm font-medium text-coral-600 hover:text-coral-700 disabled:opacity-50"
+                                >
+                                    {{ __('Upload photo') }}
+                                </button>
+
+                                <template x-if="hasImage">
+                                    <button
+                                        type="button"
+                                        x-on:click="deleteImage()"
+                                        :disabled="deleting"
+                                        class="text-sm font-medium text-gray-500 hover:text-red-600 disabled:opacity-50 transition-colors"
+                                    >
+                                        <span x-show="!deleting">{{ __('Remove') }}</span>
+                                        <span x-show="deleting" class="flex items-center gap-1">
+                                            <x-icons.spinner class="w-3 h-3 animate-spin" />
+                                            {{ __('Removing...') }}
+                                        </span>
+                                    </button>
+                                </template>
+                            </div>
+
+                            {{-- Error Message --}}
+                            <p x-show="error" x-text="error" class="form-error mt-2" x-cloak></p>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Profile Form --}}
                 <form method="POST" action="{{ route('settings.profile.update', ['locale' => app()->getLocale()]) }}">
                     @csrf
                     @method('PUT')
@@ -639,6 +734,82 @@
 
 @push('scripts')
 <script>
+function profileSettings() {
+    return {
+        imageUrl: @js(auth()->user()->getProfileImageUrl('medium')),
+        hasImage: @js(auth()->user()->hasProfileImage()),
+        uploading: false,
+        deleting: false,
+        error: null,
+
+        async uploadImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            this.uploading = true;
+            this.error = null;
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const response = await fetch('{{ route('settings.profile.image.upload', ['locale' => app()->getLocale()]) }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    this.error = data.message || '{{ __('Failed to upload image.') }}';
+                } else {
+                    this.imageUrl = data.image_url;
+                    this.hasImage = true;
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                this.error = '{{ __('Failed to upload image.') }}';
+            } finally {
+                this.uploading = false;
+                event.target.value = '';
+            }
+        },
+
+        async deleteImage() {
+            this.deleting = true;
+            this.error = null;
+
+            try {
+                const response = await fetch('{{ route('settings.profile.image.delete', ['locale' => app()->getLocale()]) }}', {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    this.error = data.message || '{{ __('Failed to delete image.') }}';
+                } else {
+                    this.imageUrl = null;
+                    this.hasImage = false;
+                }
+            } catch (error) {
+                console.error('Delete error:', error);
+                this.error = '{{ __('Failed to delete image.') }}';
+            } finally {
+                this.deleting = false;
+            }
+        }
+    }
+}
+
 function twoFactorAuth() {
     return {
         enabling: false,

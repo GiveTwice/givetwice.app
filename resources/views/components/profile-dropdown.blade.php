@@ -1,24 +1,60 @@
 @props(['user'])
 
-<div class="relative" x-data="{ open: false }" @click.outside="open = false">
+@php
+    $profileImageUrl = $user->getProfileImageUrl('thumb');
+    $hasProfileImage = $user->hasProfileImage();
+    $initials = $user->getInitials();
+@endphp
+
+<div
+    class="relative"
+    x-data="{
+        open: false,
+        hasImage: @js($hasProfileImage),
+        imageUrl: @js($profileImageUrl),
+        initials: @js($initials),
+        init() {
+            if (window.Echo) {
+                window.Echo.private('user.{{ $user->id }}')
+                    .listen('.profile.image.updated', (e) => {
+                        this.hasImage = e.user.has_profile_image;
+                        this.imageUrl = e.user.profile_image_thumb;
+                        this.initials = e.user.initials;
+
+                        // Dispatch window event for other components (mobile menu)
+                        window.dispatchEvent(new CustomEvent('profile-image-updated', {
+                            detail: {
+                                hasImage: e.user.has_profile_image,
+                                imageUrl: e.user.profile_image_thumb,
+                                initials: e.user.initials
+                            }
+                        }));
+                    });
+            }
+        }
+    }"
+    @click.outside="open = false"
+>
     {{-- Profile trigger button --}}
     <button
         @click="open = !open"
         type="button"
-        class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-cream-100 to-cream-200 border-2 border-cream-200 hover:border-coral-300 hover:from-coral-50 hover:to-cream-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-coral-300 focus:ring-offset-2 overflow-hidden group"
+        class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-cream-200 hover:border-coral-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-coral-300 focus:ring-offset-2 overflow-hidden group"
+        :class="hasImage ? '' : 'bg-gradient-to-br from-coral-400 to-coral-500'"
         aria-expanded="false"
         aria-haspopup="true"
         aria-label="{{ __('User menu') }}"
     >
-        @if($user->avatar)
+        <template x-if="hasImage">
             <img
-                src="{{ $user->avatar }}"
+                :src="imageUrl"
                 alt="{{ $user->name }}"
                 class="w-full h-full object-cover"
             >
-        @else
-            <x-icons.user-circle class="w-6 h-6 text-gray-500 group-hover:text-coral-500 transition-colors" />
-        @endif
+        </template>
+        <template x-if="!hasImage">
+            <span class="text-white font-bold text-sm tracking-tight" x-text="initials"></span>
+        </template>
     </button>
 
     {{-- Dropdown panel --}}
@@ -40,18 +76,20 @@
             {{-- User info header --}}
             <div class="px-5 py-5 bg-gradient-to-br from-cream-50 to-white border-b border-cream-100">
                 <div class="flex items-center gap-4">
-                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-coral-100 to-coral-200 flex items-center justify-center overflow-hidden">
-                        @if($user->avatar)
+                    <div
+                        class="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center overflow-hidden"
+                        :class="hasImage ? 'ring-2 ring-cream-200' : 'bg-gradient-to-br from-coral-400 to-coral-500'"
+                    >
+                        <template x-if="hasImage">
                             <img
-                                src="{{ $user->avatar }}"
+                                :src="imageUrl"
                                 alt="{{ $user->name }}"
                                 class="w-full h-full object-cover"
                             >
-                        @else
-                            <span class="text-coral-600 font-semibold text-sm">
-                                {{ strtoupper(substr($user->name, 0, 1)) }}
-                            </span>
-                        @endif
+                        </template>
+                        <template x-if="!hasImage">
+                            <span class="text-white font-bold text-lg tracking-tight" x-text="initials"></span>
+                        </template>
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-semibold text-gray-900 truncate">{{ $user->name }}</p>

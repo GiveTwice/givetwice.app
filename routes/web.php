@@ -143,6 +143,12 @@ Route::prefix('{locale}')
             // Settings routes
             Route::get('/settings', [SettingsController::class, 'show'])->name('settings');
             Route::put('/settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile.update');
+            Route::post('/settings/profile/image', [SettingsController::class, 'uploadProfileImage'])
+                ->middleware('throttle:10,1')
+                ->name('settings.profile.image.upload');
+            Route::delete('/settings/profile/image', [SettingsController::class, 'deleteProfileImage'])
+                ->middleware('throttle:10,1')
+                ->name('settings.profile.image.delete');
             Route::put('/settings/password', [SettingsController::class, 'updatePassword'])
                 ->middleware('throttle:6,1')
                 ->name('settings.password.update');

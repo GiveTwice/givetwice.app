@@ -8,10 +8,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Spatie\Image\Enums\Fit;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements HasMedia, MustVerifyEmail
 {
-    use HasFactory, Notifiable, TwoFactorAuthenticatable;
+    use HasFactory, InteractsWithMedia, Notifiable, TwoFactorAuthenticatable;
 
     protected $fillable = [
         'name',
@@ -67,5 +71,53 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         /** @var GiftList|null */
         return $this->lists()->where('is_default', true)->first();
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('profile')
+            ->singleFile()
+            ->useFallbackUrl($this->avatar ?? '')
+            ->withResponsiveImages();
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+            ->fit(Fit::Crop, 96, 96)
+            ->performOnCollections('profile')
+            ->nonQueued();
+
+        $this->addMediaConversion('medium')
+            ->fit(Fit::Crop, 256, 256)
+            ->performOnCollections('profile')
+            ->nonQueued();
+    }
+
+    public function getProfileImageUrl(?string $conversion = null): ?string
+    {
+        $media = $this->getFirstMedia('profile');
+
+        if ($media) {
+            return $conversion ? $media->getUrl($conversion) : $media->getUrl();
+        }
+
+        return $this->avatar;
+    }
+
+    public function hasProfileImage(): bool
+    {
+        return $this->hasMedia('profile') || $this->avatar;
+    }
+
+    public function getInitials(): string
+    {
+        $words = explode(' ', trim($this->name));
+
+        if (count($words) >= 2) {
+            return strtoupper(mb_substr($words[0], 0, 1).mb_substr(end($words), 0, 1));
+        }
+
+        return strtoupper(mb_substr($this->name, 0, 2));
     }
 }

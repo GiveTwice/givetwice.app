@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Actions\DeleteAccountAction;
+use App\Actions\DeleteUserProfileImageAction;
 use App\Actions\UpdatePasswordAction;
+use App\Actions\UploadUserProfileImageAction;
+use App\Events\ProfileImageUpdated;
 use App\Rules\MatchesUserEmail;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -36,6 +40,56 @@ class SettingsController extends Controller
         ]);
 
         return back()->with('status', 'profile-updated');
+    }
+
+    public function uploadProfileImage(Request $request, UploadUserProfileImageAction $action): JsonResponse
+    {
+        $validated = $request->validate([
+            'image' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:5120'],
+        ], [
+            'image.max' => __('The image must not be larger than 5MB.'),
+        ]);
+
+        $user = $request->user();
+        $action->execute($user, $validated['image']);
+
+        $user->refresh();
+
+        if (! $user->hasMedia('profile')) {
+            return response()->json([
+                'success' => false,
+                'message' => __('Failed to upload image.'),
+            ], 422);
+        }
+
+        ProfileImageUpdated::dispatch($user);
+
+        return response()->json([
+            'success' => true,
+            'message' => __('Profile image uploaded successfully.'),
+            'image_url' => $user->getProfileImageUrl('medium'),
+        ]);
+    }
+
+    public function deleteProfileImage(Request $request, DeleteUserProfileImageAction $action): JsonResponse
+    {
+        $user = $request->user();
+
+        if (! $user->hasProfileImage()) {
+            return response()->json([
+                'success' => false,
+                'message' => __('No profile image to delete.'),
+            ], 422);
+        }
+
+        $action->execute($user);
+
+        ProfileImageUpdated::dispatch($user->fresh());
+
+        return response()->json([
+            'success' => true,
+            'message' => __('Profile image deleted successfully.'),
+        ]);
     }
 
     public function updatePassword(Request $request, UpdatePasswordAction $action): RedirectResponse

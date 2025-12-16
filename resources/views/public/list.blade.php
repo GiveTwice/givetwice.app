@@ -6,6 +6,9 @@
     $isOwner = auth()->check() && auth()->id() === $list->user_id;
     $availableGifts = $gifts->filter(fn($gift) => $gift->claims->isEmpty())->count();
     $claimedGifts = $gifts->total() - $availableGifts;
+    $listOwner = $list->user;
+    $ownerHasAvatar = $listOwner->hasProfileImage();
+    $ownerAvatarUrl = $listOwner->getProfileImageUrl('medium');
 @endphp
 
 @section('content')
@@ -135,9 +138,19 @@
     <div class="p-5 sm:p-6">
         <div class="flex items-start gap-4 sm:gap-5">
 
-            <div class="flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-gradient-to-br from-coral-50 to-sunny-50 border border-coral-100/50 flex items-center justify-center">
-                <span class="text-2xl sm:text-3xl">&#127873;</span>
-            </div>
+            @if($ownerHasAvatar)
+                <div class="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden ring-2 ring-coral-200 ring-offset-2 ring-offset-white shadow-md">
+                    <img
+                        src="{{ $ownerAvatarUrl }}"
+                        alt="{{ $listOwner->name }}"
+                        class="w-full h-full object-cover"
+                    >
+                </div>
+            @else
+                <div class="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-coral-50 to-sunny-50 border border-coral-100/50 flex items-center justify-center">
+                    <span class="text-3xl sm:text-4xl">&#127873;</span>
+                </div>
+            @endif
 
             <div class="flex-1 min-w-0">
                 <p class="text-coral-500 text-xs sm:text-sm tracking-wide uppercase font-medium">
