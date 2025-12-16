@@ -168,4 +168,16 @@ class Gift extends Model implements HasMedia
     {
         return $this->hasMedia('image') || $this->original_image_url;
     }
+
+    public function siteName(): ?string
+    {
+        if (! $this->url) {
+            return null;
+        }
+
+        $parsedUrl = parse_url($this->url);
+        $host = $parsedUrl['host'] ?? '';
+
+        return preg_replace('/^www\./', '', $host) ?: null;
+    }
 }

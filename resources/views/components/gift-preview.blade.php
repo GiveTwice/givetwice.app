@@ -5,15 +5,6 @@
     'showLink' => true,
 ])
 
-@php
-    $siteName = '';
-    if ($gift->url) {
-        $parsedUrl = parse_url($gift->url);
-        $host = $parsedUrl['host'] ?? '';
-        $siteName = preg_replace('/^www\./', '', $host);
-    }
-@endphp
-
 @if($variant === 'compact')
 
     <div class="flex gap-4 items-start bg-cream-50 rounded-xl p-4 border border-cream-200">
@@ -39,7 +30,7 @@
                     {{ $gift->formatPrice() }}
                 </p>
             @endif
-            @if($showLink && $gift->url && $siteName)
+            @if($showLink && $gift->siteName())
                 <a
                     href="{{ $gift->url }}"
                     target="_blank"
@@ -47,7 +38,7 @@
                     class="inline-flex items-center gap-1.5 text-sm text-teal-600 hover:text-teal-700 font-medium"
                 >
                     <x-icons.external-link class="w-4 h-4" />
-                    {{ __('View on :site', ['site' => $siteName]) }}
+                    {{ __('View on :site', ['site' => $gift->siteName()]) }}
                 </a>
             @endif
         </div>
@@ -84,7 +75,7 @@
                 <p class="text-gray-600 text-sm mb-4 line-clamp-3">{{ $gift->description }}</p>
             @endif
 
-            @if($showLink && $gift->url && $siteName)
+            @if($showLink && $gift->siteName())
                 <a
                     href="{{ $gift->url }}"
                     target="_blank"
@@ -92,7 +83,7 @@
                     class="inline-flex items-center gap-2 text-sm text-teal-600 hover:text-teal-700 font-medium"
                 >
                     <x-icons.external-link class="w-4 h-4" />
-                    {{ __('View on :site', ['site' => $siteName]) }}
+                    {{ __('View on :site', ['site' => $gift->siteName()]) }}
                 </a>
             @endif
         </div>

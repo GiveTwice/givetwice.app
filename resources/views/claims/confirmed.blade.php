@@ -2,15 +2,6 @@
 
 @section('title', __('Claim Confirmed'))
 
-@php
-    $siteName = '';
-    if ($gift->url) {
-        $parsedUrl = parse_url($gift->url);
-        $host = $parsedUrl['host'] ?? '';
-        $siteName = preg_replace('/^www\./', '', $host);
-    }
-@endphp
-
 @section('content')
 
 <div class="mb-6 bg-white rounded-2xl border border-cream-200/60 shadow-sm overflow-hidden">
@@ -102,8 +93,8 @@
                         class="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors font-medium text-sm"
                     >
                         <x-icons.external-link class="w-4 h-4" />
-                        @if($siteName)
-                            {{ __('Buy on :site', ['site' => $siteName]) }}
+                        @if($gift->siteName())
+                            {{ __('Buy on :site', ['site' => $gift->siteName()]) }}
                         @else
                             {{ __('Buy this gift') }}
                         @endif

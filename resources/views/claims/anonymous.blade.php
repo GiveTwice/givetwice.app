@@ -2,15 +2,6 @@
 
 @section('title', __('Claim Gift'))
 
-@php
-    $siteName = '';
-    if ($gift->url) {
-        $parsedUrl = parse_url($gift->url);
-        $host = $parsedUrl['host'] ?? '';
-        $siteName = preg_replace('/^www\./', '', $host);
-    }
-@endphp
-
 @section('content')
 
 <div class="mb-6 bg-white rounded-2xl border border-cream-200/60 shadow-sm overflow-hidden">
@@ -44,8 +35,8 @@
                 @if($gift->hasPrice())
                     <p class="text-coral-600 font-bold mt-1">{{ $gift->formatPrice() }}</p>
                 @endif
-                @if($siteName)
-                    <p class="text-gray-400 text-sm mt-1">{{ $siteName }}</p>
+                @if($gift->siteName())
+                    <p class="text-gray-400 text-sm mt-1">{{ $gift->siteName() }}</p>
                 @endif
             </div>
 

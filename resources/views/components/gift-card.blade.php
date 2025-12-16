@@ -11,7 +11,6 @@
     $isClaimedByMe = auth()->check() && $gift->claims->where('user_id', auth()->id())->isNotEmpty();
     $isPending = $gift->isPending() || $gift->isFetching();
     $isFailed = $gift->isFetchFailed();
-    // Determine if this is a "claimed by others" state on public page (not by me)
     $isClaimedByOthers = $showClaimActions && $isClaimed && !$isClaimedByMe && !$isOwner;
 @endphp
 
@@ -127,24 +126,13 @@
         @if($showClaimActions && !$isOwner)
             <div class="mt-2.5 space-y-1.5" @if($openModal) x-on:click.stop @endif>
 
-                @if($gift->url)
-                    <a href="{{ $gift->url }}"
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       class="block w-full text-center text-xs px-3 py-2 rounded-lg transition-colors font-medium
-                           {{ $isClaimedByOthers
-                               ? 'bg-sunny-50/60 text-sunny-600/80 hover:bg-sunny-100/60 border border-sunny-200/40'
-                               : 'bg-cream-100 text-gray-700 hover:bg-cream-200' }}">
-                        {{ __('View Product') }}
-                    </a>
-                @endif
-
                 @if($isClaimedByMe)
                     <form action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/claim') }}" method="POST">
                         @csrf
                         @method('DELETE')
                         <button type="submit"
-                            class="w-full text-xs bg-coral-100 text-coral-700 px-3 py-2 rounded-lg hover:bg-coral-200 transition-colors font-medium">
+                            class="w-full text-xs bg-sunny-200 text-sunny-800 px-3 py-2 rounded-lg hover:bg-sunny-300 transition-colors font-medium flex items-center justify-center gap-1.5">
+                            <x-icons.checkmark class="w-3 h-3" />
                             {{ __('Unclaim') }}
                         </button>
                     </form>
@@ -159,16 +147,31 @@
                         <form action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/claim') }}" method="POST">
                             @csrf
                             <button type="submit"
-                                class="w-full text-xs bg-teal-500 text-white px-3 py-2 rounded-lg hover:bg-teal-600 transition-colors font-medium shadow-sm hover:shadow">
-                                {{ __("I'll get this!") }}
+                                class="w-full text-xs bg-sunny-200 text-sunny-800 px-3 py-2 rounded-lg hover:bg-sunny-300 transition-colors font-medium shadow-sm hover:shadow flex items-center justify-center gap-1.5">
+                                <x-icons.checkmark class="w-3 h-3" />
+                                {{ __('Claim gift') }}
                             </button>
                         </form>
                     @else
                         <a href="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/claim') }}"
-                           class="block w-full text-center text-xs bg-teal-500 text-white px-3 py-2 rounded-lg hover:bg-teal-600 transition-colors font-medium shadow-sm hover:shadow">
-                            {{ __("I'll get this!") }}
+                           class="w-full text-center text-xs bg-sunny-200 text-sunny-800 px-3 py-2 rounded-lg hover:bg-sunny-300 transition-colors font-medium shadow-sm hover:shadow flex items-center justify-center gap-1.5">
+                            <x-icons.checkmark class="w-3 h-3" />
+                            {{ __('Claim gift') }}
                         </a>
                     @endauth
+                @endif
+
+                @if($gift->siteName())
+                    <a href="{{ $gift->url }}"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="w-full text-center text-xs px-3 py-2 rounded-lg transition-colors font-medium flex items-center justify-center gap-1.5
+                           {{ $isClaimedByOthers
+                               ? 'bg-teal-400/60 text-white/80 hover:bg-teal-500/60'
+                               : 'bg-teal-500 text-white hover:bg-teal-600' }}">
+                        <x-icons.shopping-cart class="w-3 h-3" />
+                        {{ __('View on :site', ['site' => $gift->siteName()]) }}
+                    </a>
                 @endif
             </div>
         @endif
