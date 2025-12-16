@@ -19,6 +19,9 @@ class PublicListController extends Controller
             ->with(['claims' => function ($query) {
                 $query->whereNotNull('confirmed_at');
             }])
+            ->reorder()
+            ->orderBy('claims_count')
+            ->orderBy('title')
             ->paginate(100);
 
         return view('public.list', [
