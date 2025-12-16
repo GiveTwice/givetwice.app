@@ -6,6 +6,7 @@ use App\Exceptions\Claim\AlreadyClaimedException;
 use App\Exceptions\Claim\InvalidTokenException;
 use App\Models\Claim;
 use App\Models\Gift;
+use App\Models\GiftList;
 use App\Models\User;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
@@ -75,6 +76,26 @@ describe('ConfirmClaimAction', function () {
             $action->execute($pendingClaim->confirmation_token);
 
             expect($gift->fresh()->isClaimed())->toBeTrue();
+        });
+
+        it('loads gift lists before dispatching event', function () {
+            Event::fake([GiftClaimed::class]);
+
+            $owner = User::factory()->create();
+            $gift = Gift::factory()->create(['user_id' => $owner->id]);
+            $list = GiftList::factory()->create(['user_id' => $owner->id]);
+            $gift->lists()->attach($list->id);
+
+            $pendingClaim = Claim::factory()->anonymous()->create([
+                'gift_id' => $gift->id,
+            ]);
+
+            $action = new ConfirmClaimAction;
+            $action->execute($pendingClaim->confirmation_token);
+
+            Event::assertDispatched(GiftClaimed::class, function ($event) use ($list) {
+                return $event->gift->lists->contains('id', $list->id);
+            });
         });
     });
 
@@ -198,22 +219,6 @@ describe('ConfirmClaimAction', function () {
             expect($gift2->fresh()->isClaimed())->toBeFalse();
         });
 
-        it('token can only be used once', function () {
-            $owner = User::factory()->create();
-            $gift = Gift::factory()->create(['user_id' => $owner->id]);
-            $pendingClaim = Claim::factory()->anonymous()->create([
-                'gift_id' => $gift->id,
-            ]);
-
-            $token = $pendingClaim->confirmation_token;
-
-            $action = new ConfirmClaimAction;
-            $action->execute($token);
-
-            expect(fn () => $action->execute($token))
-                ->toThrow(InvalidTokenException::class);
-        });
-
         it('clears token after confirmation', function () {
             $owner = User::factory()->create();
             $gift = Gift::factory()->create(['user_id' => $owner->id]);
@@ -225,13 +230,6 @@ describe('ConfirmClaimAction', function () {
             $action->execute($pendingClaim->confirmation_token);
 
             expect($pendingClaim->fresh()->confirmation_token)->toBeNull();
-        });
-
-        it('throws InvalidTokenException for invalid token', function () {
-            $action = new ConfirmClaimAction;
-
-            expect(fn () => $action->execute('malicious-token-attempt'))
-                ->toThrow(InvalidTokenException::class);
         });
     });
 

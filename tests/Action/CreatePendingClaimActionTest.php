@@ -42,6 +42,26 @@ describe('CreatePendingClaimAction', function () {
             expect($claim->claimer_name)->toBe('John Doe');
         });
 
+        it('accepts null name', function () {
+            $owner = User::factory()->create();
+            $gift = Gift::factory()->create(['user_id' => $owner->id]);
+
+            $action = new CreatePendingClaimAction;
+            $claim = $action->execute($gift, 'claimer@example.com', null);
+
+            expect($claim->claimer_name)->toBeNull();
+        });
+
+        it('stores empty string name as provided', function () {
+            $owner = User::factory()->create();
+            $gift = Gift::factory()->create(['user_id' => $owner->id]);
+
+            $action = new CreatePendingClaimAction;
+            $claim = $action->execute($gift, 'claimer@example.com', '');
+
+            expect($claim->claimer_name)->toBe('');
+        });
+
         it('generates a confirmation token', function () {
             $owner = User::factory()->create();
             $gift = Gift::factory()->create(['user_id' => $owner->id]);

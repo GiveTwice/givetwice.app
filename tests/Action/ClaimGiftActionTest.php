@@ -65,6 +65,17 @@ describe('ClaimGiftAction', function () {
                 return $event->gift->lists->contains('id', $list->id);
             });
         });
+
+        it('creates claim with confirmed_at set immediately', function () {
+            $owner = User::factory()->create();
+            $claimer = User::factory()->create();
+            $gift = Gift::factory()->create(['user_id' => $owner->id]);
+
+            $action = new ClaimGiftAction;
+            $claim = $action->execute($gift, $claimer);
+
+            expect($claim->isConfirmed())->toBeTrue();
+        });
     });
 
     describe('validation', function () {
@@ -143,17 +154,6 @@ describe('ClaimGiftAction', function () {
             }
 
             expect(Claim::count())->toBe(0);
-        });
-
-        it('creates claim with confirmed_at set immediately', function () {
-            $owner = User::factory()->create();
-            $claimer = User::factory()->create();
-            $gift = Gift::factory()->create(['user_id' => $owner->id]);
-
-            $action = new ClaimGiftAction;
-            $claim = $action->execute($gift, $claimer);
-
-            expect($claim->isConfirmed())->toBeTrue();
         });
     });
 
