@@ -33,11 +33,7 @@ class FetchGiftDetailsAction implements ShouldQueue
         $this->gift->update(['fetch_status' => 'fetching']);
 
         try {
-            $product = (new ProductInfoFetcher($this->gift->url))
-                ->setUserAgent('GiveTwice/1.0 (Wishlist Service; +https://givetwice.com) Mozilla/5.0 (compatible)')
-                ->setTimeout(15)
-                ->setConnectTimeout(10)
-                ->fetchAndParse();
+            $product = $this->createFetcher()->fetchAndParse();
 
             $description = $product->description
                 ? Str::limit($product->description, 1497, '...')
@@ -99,5 +95,13 @@ class FetchGiftDetailsAction implements ShouldQueue
                 return;
             }
         }
+    }
+
+    protected function createFetcher(): ProductInfoFetcher
+    {
+        return (new ProductInfoFetcher($this->gift->url))
+            ->setUserAgent('GiveTwice/1.0 (Wishlist Service; +https://givetwice.com) Mozilla/5.0 (compatible)')
+            ->setTimeout(15)
+            ->setConnectTimeout(10);
     }
 }
