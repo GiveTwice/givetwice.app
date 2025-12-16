@@ -37,25 +37,12 @@ class GiftList extends Model
 
     protected static function booted(): void
     {
-        static::creating(function (GiftList $list) {
-            if (empty($list->slug)) {
-                $list->slug = static::generateUniqueSlug($list->name);
+        static::created(function (GiftList $list) {
+            if (empty($list->slug) || ! str_starts_with($list->slug, $list->id.'-')) {
+                $list->slug = $list->id.'-'.Str::slug($list->name);
+                $list->saveQuietly();
             }
         });
-    }
-
-    public static function generateUniqueSlug(string $name): string
-    {
-        $slug = Str::slug($name);
-        $originalSlug = $slug;
-        $counter = 1;
-
-        while (static::where('slug', $slug)->exists()) {
-            $slug = $originalSlug.'-'.$counter;
-            $counter++;
-        }
-
-        return $slug;
     }
 
     public function user(): BelongsTo
