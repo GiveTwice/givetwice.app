@@ -6,16 +6,6 @@
 @php
     $isClaimed = $gift->claims_count > 0 || $gift->claims->isNotEmpty();
     $isClaimedByMe = auth()->check() && $gift->claims->where('user_id', auth()->id())->isNotEmpty();
-
-    // Extract domain name from URL (without www prefix)
-    $siteName = '';
-    if ($gift->url) {
-        $parsedUrl = parse_url($gift->url);
-        $host = $parsedUrl['host'] ?? '';
-        $siteName = preg_replace('/^www\./', '', $host);
-    }
-
-    // Format "added ago" text
     $addedAgo = $gift->created_at->diffForHumans();
 @endphp
 
@@ -243,13 +233,13 @@
                                 @endauth
                             @endif
 
-                            @if($gift->url && $siteName)
+                            @if($gift->siteName())
                                 <a href="{{ $gift->url }}"
                                    target="_blank"
                                    rel="noopener noreferrer"
                                    class="w-full inline-flex items-center justify-center gap-2 bg-teal-500 text-white px-5 py-3 rounded-xl hover:bg-teal-600 transition-colors font-medium">
                                     <x-icons.shopping-cart class="w-5 h-5" />
-                                    {{ __('View on :site', ['site' => $siteName]) }}
+                                    {{ __('View on :site', ['site' => $gift->siteName()]) }}
                                 </a>
                             @endif
                         </div>
@@ -271,13 +261,13 @@
                                 {{ __('Edit gift') }}
                             </a>
 
-                            @if($gift->url && $siteName)
+                            @if($gift->siteName())
                                 <a href="{{ $gift->url }}"
                                    target="_blank"
                                    rel="noopener noreferrer"
                                    class="w-full inline-flex items-center justify-center gap-2 bg-teal-500 text-white px-5 py-3 rounded-xl hover:bg-teal-600 transition-colors font-medium">
                                     <x-icons.shopping-cart class="w-5 h-5" />
-                                    {{ __('View on :site', ['site' => $siteName]) }}
+                                    {{ __('View on :site', ['site' => $gift->siteName()]) }}
                                 </a>
                             @endif
                         </div>
