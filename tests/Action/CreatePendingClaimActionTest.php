@@ -2,7 +2,6 @@
 
 use App\Actions\CreatePendingClaimAction;
 use App\Exceptions\Claim\AlreadyClaimedException;
-use App\Exceptions\Claim\ClaimException;
 use App\Exceptions\Claim\ConfirmationResentException;
 use App\Mail\ClaimConfirmationMail;
 use App\Models\Claim;
@@ -67,7 +66,7 @@ describe('CreatePendingClaimAction', function () {
     });
 
     describe('validation', function () {
-        it('throws exception when gift is already claimed', function () {
+        it('throws AlreadyClaimedException when gift is already claimed', function () {
             $owner = User::factory()->create();
             $gift = Gift::factory()->create(['user_id' => $owner->id]);
 
@@ -82,19 +81,19 @@ describe('CreatePendingClaimAction', function () {
                 ->toThrow(AlreadyClaimedException::class);
         });
 
-        it('throws AlreadyClaimedException when gift has any confirmed claim', function () {
+        it('throws AlreadyClaimedException even when same email tries to claim again', function () {
             $owner = User::factory()->create();
             $gift = Gift::factory()->create(['user_id' => $owner->id]);
 
             Claim::factory()->create([
                 'gift_id' => $gift->id,
-                'claimer_email' => 'first@example.com',
+                'claimer_email' => 'claimer@example.com',
                 'confirmed_at' => now(),
             ]);
 
             $action = new CreatePendingClaimAction;
 
-            expect(fn () => $action->execute($gift, 'second@example.com'))
+            expect(fn () => $action->execute($gift, 'claimer@example.com'))
                 ->toThrow(AlreadyClaimedException::class);
         });
     });
@@ -174,7 +173,7 @@ describe('CreatePendingClaimAction', function () {
 
             try {
                 $action->execute($gift, 'attacker@example.com');
-            } catch (ClaimException) {
+            } catch (AlreadyClaimedException) {
             }
 
             Mail::assertNothingSent();
@@ -195,7 +194,7 @@ describe('CreatePendingClaimAction', function () {
 
             try {
                 $action->execute($gift, 'attacker@example.com');
-            } catch (ClaimException) {
+            } catch (AlreadyClaimedException) {
             }
 
             expect(Claim::count())->toBe($initialCount);
@@ -210,6 +209,18 @@ describe('CreatePendingClaimAction', function () {
 
             expect($claim->isConfirmed())->toBeFalse();
             expect($gift->fresh()->isClaimed())->toBeFalse();
+        });
+
+        it('allows different emails to create pending claims for same gift', function () {
+            $owner = User::factory()->create();
+            $gift = Gift::factory()->create(['user_id' => $owner->id]);
+
+            $action = new CreatePendingClaimAction;
+            $claim1 = $action->execute($gift, 'first@example.com');
+            $claim2 = $action->execute($gift, 'second@example.com');
+
+            expect($claim1->id)->not->toBe($claim2->id);
+            expect(Claim::where('gift_id', $gift->id)->count())->toBe(2);
         });
     });
 
