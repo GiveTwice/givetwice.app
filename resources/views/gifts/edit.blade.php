@@ -235,41 +235,14 @@
     </div>
 </x-app-content>
 
-<div class="mt-8 bg-white/60 backdrop-blur-sm rounded-2xl border border-red-200/60 p-6" x-data>
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-            <h2 class="text-lg font-semibold text-red-600">{{ __('Danger Zone') }}</h2>
-            <p class="text-sm text-gray-600 mt-1">{{ __('Once you delete a gift, there is no going back.') }}</p>
-        </div>
-        <button
-            type="button"
-            x-on:click="$dispatch('open-confirm-delete-gift')"
-            class="inline-flex items-center gap-2 bg-red-600 text-white px-5 py-2.5 rounded-xl hover:bg-red-700 transition-colors font-medium whitespace-nowrap"
-        >
-            <x-icons.trash class="w-5 h-5" />
-            {{ __('Delete Gift') }}
-        </button>
-    </div>
-</div>
-
-<x-confirm-modal
+<x-danger-zone
     id="delete-gift"
-    :title="__('Delete Gift')"
-    :message="__('Are you sure you want to delete this gift? This action cannot be undone.')"
-    :confirmText="__('Delete Gift')"
->
-    <form method="POST" action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id) }}">
-        @csrf
-        @method('DELETE')
-        <button
-            type="submit"
-            class="inline-flex items-center gap-2 bg-red-600 text-white px-4 py-2.5 rounded-xl hover:bg-red-700 transition-colors font-medium"
-        >
-            <x-icons.trash class="w-5 h-5" />
-            {{ __('Delete Gift') }}
-        </button>
-    </form>
-</x-confirm-modal>
+    :description="__('Once you delete a gift, there is no going back.')"
+    :buttonText="__('Delete Gift')"
+    :modalTitle="__('Delete Gift')"
+    :modalMessage="__('Are you sure you want to delete this gift? This action cannot be undone.')"
+    :action="url('/' . app()->getLocale() . '/gifts/' . $gift->id)"
+/>
 
 <script>
     function giftEdit() {
