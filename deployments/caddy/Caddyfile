@@ -1,0 +1,122 @@
+# GiveTwice Production Caddyfile for FrankenPHP + Laravel Octane
+# Caddy 2 syntax (FrankenPHP is built on Caddy 2)
+#
+# Usage:
+#   php artisan octane:start --server=frankenphp --host=0.0.0.0 --port=443 \
+#       --caddyfile=deployments/caddy/Caddyfile --https
+#
+# Or run FrankenPHP directly:
+#   frankenphp run --config deployments/caddy/Caddyfile
+
+# Global options
+{
+    # Enable FrankenPHP
+    frankenphp {
+        # Worker mode: boot Laravel once, handle multiple requests
+        worker {
+            file public/index.php
+            num {$FRANKENPHP_WORKERS:auto}
+            watch
+        }
+
+        # PHP thread configuration (default: 2x CPU cores)
+        # Uncomment to customize:
+        # num_threads 16
+        # max_threads 32
+    }
+
+    # Admin API (for graceful restarts, metrics)
+    # Disable in production if not needed, or restrict to localhost
+    admin localhost:2019
+
+    # Enable HTTP/3 (QUIC) - automatic with HTTPS
+    servers {
+        protocols h1 h2 h3
+    }
+
+    # Production: use Let's Encrypt
+    # Staging: uncomment for testing without rate limits
+    # acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+
+    # Email for Let's Encrypt notifications (optional but recommended)
+    email admin@givetwice.app
+}
+
+# Redirect www to non-www (both HTTP and HTTPS)
+www.givetwice.app {
+    redir https://givetwice.app{uri} permanent
+}
+
+# Main site configuration
+givetwice.app {
+    # Document root
+    root * public/
+
+    # Compression: zstd > brotli > gzip (in order of preference)
+    encode zstd br gzip
+
+    # Security headers
+    header {
+        # Prevent clickjacking
+        X-Frame-Options "SAMEORIGIN"
+        # Prevent MIME type sniffing
+        X-Content-Type-Options "nosniff"
+        # Enable XSS filter
+        X-XSS-Protection "1; mode=block"
+        # Referrer policy
+        Referrer-Policy "strict-origin-when-cross-origin"
+        # HSTS (enable after confirming HTTPS works)
+        # Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        # Remove server identification
+        -Server
+    }
+
+    # Static assets: serve directly with aggressive caching
+    @static {
+        path *.css *.js *.ico *.gif *.jpg *.jpeg *.png *.svg *.webp *.avif
+        path *.woff *.woff2 *.ttf *.eot *.otf
+        path *.mp4 *.webm *.ogg *.mp3 *.wav
+        path *.pdf *.zip *.tar *.gz
+    }
+    handle @static {
+        header Cache-Control "public, max-age=31536000, immutable"
+        file_server
+    }
+
+    # Build assets (Vite): immutable cache headers
+    @build {
+        path /build/*
+    }
+    handle @build {
+        header Cache-Control "public, max-age=31536000, immutable"
+        file_server
+    }
+
+    # Favicon and robots.txt: shorter cache
+    @shortcache {
+        path /favicon.ico /robots.txt /sitemap.xml
+    }
+    handle @shortcache {
+        header Cache-Control "public, max-age=86400"
+        file_server
+    }
+
+    # PHP handling via FrankenPHP
+    php_server {
+        # Laravel's front controller pattern
+        try_files {path} index.php
+        # Don't follow symlinks for root (security)
+        resolve_root_symlink false
+    }
+
+    # Logging
+    log {
+        output file /var/log/caddy/givetwice-access.log {
+            roll_size 100mb
+            roll_keep 5
+            roll_keep_for 720h
+        }
+        format json
+        level INFO
+    }
+}
