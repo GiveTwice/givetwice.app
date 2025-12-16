@@ -4,6 +4,7 @@ namespace App\Actions;
 
 use App\Events\GiftFetchCompleted;
 use App\Models\Gift;
+use Illuminate\Broadcasting\BroadcastException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\UnreachableUrl;
@@ -58,7 +59,11 @@ class ProcessGiftImageAction
 
     public function dispatchCompletedEvent(Gift $gift): void
     {
-        GiftFetchCompleted::dispatch($gift->fresh()->load('lists', 'media'));
+        try {
+            GiftFetchCompleted::dispatch($gift->fresh()->load('lists', 'media'));
+        } catch (BroadcastException) {
+            // Silently ignore - WebSocket server may be unavailable
+        }
     }
 
     private function normalizeUrl(string $url): string

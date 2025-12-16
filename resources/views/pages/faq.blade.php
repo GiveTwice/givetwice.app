@@ -22,7 +22,7 @@
                 </div>
                 <div>
                     <h3 class="font-semibold text-lg text-gray-900 mb-2">{{ __('What is :app?', ['app' => config('app.name')]) }}</h3>
-                    <p class="text-gray-600 leading-relaxed">{{ __(':app is a free wishlist platform that lets you create and share gift lists with friends and family. When someone buys a gift through our links, we donate the affiliate commission to charity.', ['app' => config('app.name')]) }}</p>
+                    <p class="text-gray-600 leading-relaxed">{{ __(':app is a free wishlist platform that lets you create and share gift lists with friends and family. When someone buys a gift through our links, we donate 100% of our affiliate profits to charity.', ['app' => config('app.name')]) }}</p>
                 </div>
             </div>
         </div>
@@ -70,7 +70,7 @@
                 </div>
                 <div>
                     <h3 class="font-semibold text-lg text-gray-900 mb-2">{{ __('Is it really free?') }}</h3>
-                    <p class="text-gray-600 leading-relaxed">{{ __('Yes! :app is completely free to use. We sustain ourselves through affiliate partnerships, and all that revenue goes to charity.', ['app' => config('app.name')]) }}</p>
+                    <p class="text-gray-600 leading-relaxed">{{ __('Yes! :app is completely free to use. We sustain ourselves through affiliate partnerships. After covering minimal operating costs, 100% of profits go to charity.', ['app' => config('app.name')]) }}</p>
                 </div>
             </div>
         </div>

@@ -12,7 +12,7 @@
 
     <div style="text-align: center; margin-top: 24px; padding: 16px;">
         <p style="color: #9ca3af; font-size: 13px; margin: 0;">
-            {{ __('All affiliate revenue goes to charity.') }}
+            {{ __('All affiliate profits go to charity.') }}
         </p>
         <p style="color: #E8614D; font-size: 12px; margin: 10px 0 0 0; font-weight: 500; letter-spacing: 0.5px;">
             {{ config('app.name') }}

@@ -13,6 +13,7 @@
     ],
     "require": {
         "php": "^8.2",
+        "jenssegers/agent": "^2.6",
         "laravel-lang/lang": "^15.26",
         "laravel/fortify": "^1.32",
         "laravel/framework": "^12.0",

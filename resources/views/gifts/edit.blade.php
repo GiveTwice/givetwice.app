@@ -219,7 +219,7 @@
                                     title="{{ __('Re-fetch details') }}"
                                     class="p-1.5 text-gray-400 hover:text-coral-600 hover:bg-white rounded-lg transition-colors disabled:opacity-50"
                                 >
-                                    <x-icons.refresh class="w-4 h-4" :class="{ 'animate-spin': refreshing }" />
+                                    <x-icons.refresh class="w-4 h-4" x-bind:class="{ 'animate-spin': refreshing }" />
                                 </button>
                             @endif
                         </div>

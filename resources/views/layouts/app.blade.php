@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'GiftWithLove') }} - @yield('title', 'Home')</title>
+    <title>{{ config('app.name', 'GiveTwice') }} - @yield('title', 'Home')</title>
 
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -28,7 +28,7 @@
                 <div class="flex items-center">
                     <a href="{{ url('/') }}" class="flex items-center space-x-2">
                         <span class="text-2xl">&#10084;&#65039;</span>
-                        <span class="text-xl font-bold text-gray-900">Gift<span class="text-coral-500">WithLove</span></span>
+                        <span class="text-xl font-bold text-gray-900">Give<span class="text-coral-500">Twice</span></span>
                     </a>
                 </div>
 
@@ -40,16 +40,16 @@
 
                     @auth
                         <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="text-gray-600 hover:text-gray-900 transition-colors">{{ __('Dashboard') }}</a>
-                        <form method="POST" action="{{ url('/logout') }}" class="inline">
-                            @csrf
-                            <button type="submit" class="text-gray-600 hover:text-gray-900 transition-colors">{{ __('Logout') }}</button>
-                        </form>
                     @else
                         <a href="{{ url('/' . app()->getLocale() . '/login') }}" class="text-gray-600 hover:text-gray-900 transition-colors">{{ __('Login') }}</a>
-                        <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="px-5 py-2 bg-coral-500 text-white rounded-full hover:bg-coral-600 font-medium transition-colors">{{ __('Sign Up') }}</a>
+                        <x-nav-button href="{{ url('/' . app()->getLocale() . '/register') }}">{{ __('Sign Up') }}</x-nav-button>
                     @endauth
 
                     <x-language-switcher />
+
+                    @auth
+                        <x-profile-dropdown :user="auth()->user()" />
+                    @endauth
                 </div>
 
                 <div class="md:hidden flex items-center">
@@ -67,10 +67,37 @@
                     <div class="border-t border-cream-200 my-2"></div>
 
                     @auth
-                        <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('Dashboard') }}</a>
+                        {{-- User info --}}
+                        <div class="px-3 py-3 flex items-center gap-3">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-coral-100 to-coral-200 flex items-center justify-center overflow-hidden">
+                                @if(auth()->user()->avatar)
+                                    <img src="{{ auth()->user()->avatar }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
+                                @else
+                                    <span class="text-coral-600 font-semibold text-sm">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                                @endif
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-semibold text-gray-900 truncate">{{ auth()->user()->name }}</p>
+                                <p class="text-xs text-gray-500 truncate">{{ auth()->user()->email }}</p>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-cream-200 my-2"></div>
+
+                        <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">
+                            <x-icons.home class="w-5 h-5" />
+                            <span>{{ __('Dashboard') }}</span>
+                        </a>
+                        <a href="{{ url('/' . app()->getLocale() . '/settings') }}" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">
+                            <x-icons.settings class="w-5 h-5" />
+                            <span>{{ __('Settings') }}</span>
+                        </a>
                         <form method="POST" action="{{ url('/logout') }}">
                             @csrf
-                            <button type="submit" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('Logout') }}</button>
+                            <button type="submit" class="flex items-center gap-3 w-full px-3 py-2 text-gray-600 hover:text-red-700 hover:bg-red-50 rounded-lg">
+                                <x-icons.logout class="w-5 h-5" />
+                                <span>{{ __('Log out') }}</span>
+                            </button>
                         </form>
                     @else
                         <a href="{{ url('/' . app()->getLocale() . '/login') }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('Login') }}</a>
@@ -153,9 +180,9 @@
                 <div class="md:col-span-1">
                     <a href="{{ url('/') }}" class="flex items-center space-x-2 mb-4">
                         <span class="text-2xl">&#10084;&#65039;</span>
-                        <span class="text-xl font-bold text-gray-900">Gift<span class="text-coral-500">WithLove</span></span>
+                        <span class="text-xl font-bold text-gray-900">Give<span class="text-coral-500">Twice</span></span>
                     </a>
-                    <p class="text-gray-500 text-sm">{{ __('Create and share wishlists. All affiliate revenue goes to charity.') }}</p>
+                    <p class="text-gray-500 text-sm">{{ __('Create and share wishlists. All affiliate profits go to charity.') }}</p>
                 </div>
 
                 <div>
@@ -179,20 +206,23 @@
                     <ul class="space-y-2 text-sm">
                         <li><a href="{{ route('privacy', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('Privacy Policy') }}</a></li>
                         <li><a href="{{ route('terms', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('Terms of Service') }}</a></li>
+                        <li><a href="{{ route('transparency', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('Transparency') }}</a></li>
                     </ul>
                 </div>
             </div>
 
             <div class="border-t border-cream-200 pt-8 flex flex-col md:flex-row justify-between items-center">
                 <p class="text-gray-500 text-sm mb-4 md:mb-0">
-                    &copy; {{ date('Y') }} GiftWithLove. {{ __('All rights reserved.') }}
+                    &copy; {{ date('Y') }} GiveTwice. {{ __('All rights reserved.') }}
                 </p>
                 <div class="flex items-center space-x-2 text-sm">
                     <span class="text-coral-500">&#10084;</span>
-                    <span class="text-gray-600">{{ __('All affiliate revenue goes to charity') }}</span>
+                    <span class="text-gray-600">{{ __('All affiliate profits go to charity') }}</span>
                 </div>
             </div>
         </div>
     </footer>
+
+    @stack('scripts')
 </body>
 </html>

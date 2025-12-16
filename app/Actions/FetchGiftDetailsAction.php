@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Mattiasgeniar\ProductInfoFetcher\ProductInfoFetcher;
 use Throwable;
 
@@ -33,14 +34,18 @@ class FetchGiftDetailsAction implements ShouldQueue
 
         try {
             $product = (new ProductInfoFetcher($this->gift->url))
-                ->setUserAgent('GiftWithLove/1.0 (Wishlist Service; +https://giftwith.love) Mozilla/5.0 (compatible)')
+                ->setUserAgent('GiveTwice/1.0 (Wishlist Service; +https://givetwice.com) Mozilla/5.0 (compatible)')
                 ->setTimeout(15)
                 ->setConnectTimeout(10)
                 ->fetchAndParse();
 
+            $description = $product->description
+                ? Str::limit($product->description, 1497, '...')
+                : $this->gift->description;
+
             $this->gift->update([
                 'title' => $product->name ?: $this->gift->title,
-                'description' => $product->description ?: $this->gift->description,
+                'description' => $description,
                 'price_in_cents' => $product->priceInCents,
                 'currency' => $product->priceCurrency ?: $this->gift->currency,
                 'fetch_status' => 'completed',

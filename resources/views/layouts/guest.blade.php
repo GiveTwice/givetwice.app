@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'GiftWithLove') }} - @yield('title', 'Welcome')</title>
+    <title>{{ config('app.name', 'GiveTwice') }} - @yield('title', 'Welcome')</title>
 
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -29,14 +29,14 @@
                     <a href="{{ url('/' . app()->getLocale()) }}" class="flex items-center space-x-2">
                         <span class="text-coral-500 text-2xl">&#10084;</span>
                         <span class="text-xl font-semibold">
-                            <span class="text-gray-900">Gift</span><span class="text-coral-500">WithLove</span>
+                            <span class="text-gray-900">Give</span><span class="text-coral-500">Twice</span>
                         </span>
                     </a>
                 </div>
 
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-6">
                     <a href="{{ url('/' . app()->getLocale() . '/login') }}" class="text-gray-600 hover:text-coral-600 transition-colors">{{ __('Login') }}</a>
-                    <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="px-4 py-2 bg-coral-500 text-white rounded-full hover:bg-coral-600 font-medium text-sm transition-colors">{{ __('Sign Up') }}</a>
+                    <x-nav-button href="{{ url('/' . app()->getLocale() . '/register') }}">{{ __('Sign Up') }}</x-nav-button>
 
                     <x-language-switcher />
                 </div>
@@ -79,7 +79,7 @@
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
             <p class="text-center text-gray-500 text-sm flex items-center justify-center">
                 <span class="text-coral-500 mr-2">&#10084;</span>
-                {{ __('All affiliate revenue goes to charity.') }}
+                {{ __('All affiliate profits go to charity.') }}
             </p>
         </div>
     </footer>

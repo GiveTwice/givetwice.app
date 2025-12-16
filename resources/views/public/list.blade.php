@@ -268,7 +268,7 @@
                         {{ __('Gifting That Gives Back') }}
                     </div>
                     <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{{ __('Every gift makes a difference') }}</h2>
-                    <p class="text-coral-100 text-lg">{{ __('When you buy gifts through our links, we donate the affiliate commission to charity. No extra cost to you, just extra good in the world.') }}</p>
+                    <p class="text-coral-100 text-lg">{{ __('When you buy gifts through our links, we donate 100% of our affiliate profits to charity. No extra cost to you, just extra good in the world.') }}</p>
                 </div>
 
                 <div class="flex-shrink-0 text-center lg:text-left">

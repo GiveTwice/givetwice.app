@@ -62,8 +62,9 @@
             </section>
 
             <section class="mb-8">
-                <h2 class="text-lg font-semibold text-gray-900 mb-3">7. Affiliate Links</h2>
-                <p class="text-gray-600 leading-relaxed mb-3">Our service may contain affiliate links. When you make a purchase through these links, we may receive a commission. All affiliate revenue is donated to charity.</p>
+                <h2 class="text-lg font-semibold text-gray-900 mb-3">7. Affiliate links and charitable donations</h2>
+                <p class="text-gray-600 leading-relaxed mb-3">Our service may contain affiliate links. When you make a purchase through these links, we may receive a commission from the retailer at no additional cost to you.</p>
+                <p class="text-gray-600 leading-relaxed mb-3">We donate 100% of our affiliate profits to charity. "Profits" means the affiliate revenue remaining after we cover essential operating costs (server infrastructure, required software subscriptions, and any legal expenses). We operate as lean as possible to maximize charitable impact, and our team donates their time to build and maintain this service.</p>
                 <p class="text-gray-600 leading-relaxed">To maximize charitable donations, we periodically analyze anonymized gift claim data (without any user information) to identify which retail platforms are most popular. This helps us determine which affiliate programs to join.</p>
             </section>
 

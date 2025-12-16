@@ -9,25 +9,25 @@
 
         <div class="text-left">
             <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-                {{ __('Give with') }} <span class="text-coral-500">{{ __('Love') }}</span>,<br>
-                {{ __('Receive with Joy') }}
+                {{ __('Every Gift') }}<br>
+                {{ __('Gives') }} <span class="text-coral-500">{{ __('Twice') }}</span>
             </h1>
             <p class="text-xl text-gray-600 mb-8 max-w-lg">
-                {{ __('Create wishlists for any occasion. Share with family and friends. Add gifts from any online store.') }}
+                {{ __('Create wishlists your loved ones will love. When they buy, charity wins too — at no extra cost to anyone.') }}
             </p>
 
             <ul class="space-y-3 mb-8">
                 <li class="flex items-center text-gray-700">
                     <span class="text-teal-500 mr-3">&#10003;</span>
-                    {{ __('Add items from any online store') }}
+                    {{ __('Your loved one gets exactly what they wished for') }}
                 </li>
                 <li class="flex items-center text-gray-700">
                     <span class="text-teal-500 mr-3">&#10003;</span>
-                    {{ __('Friends claim gifts secretly - no duplicates!') }}
+                    {{ __('Charity receives 100% of our affiliate profits') }}
                 </li>
                 <li class="flex items-center text-gray-700">
                     <span class="text-teal-500 mr-3">&#10003;</span>
-                    {{ __('100% free - all revenue goes to charity') }} <span class="ml-1">&#10084;&#65039;</span>
+                    {{ __('Add gifts from any store · Secret claims · Always free') }}
                 </li>
             </ul>
 
@@ -133,12 +133,12 @@
             <div class="flex items-center gap-4">
                 <div class="text-4xl">&#10084;&#65039;</div>
                 <div>
-                    <p class="font-semibold text-gray-900">{{ __('Gifting That Gives Back') }}</p>
-                    <p class="text-gray-600">{{ __('All affiliate revenue goes to charity') }}</p>
+                    <p class="font-semibold text-gray-900">{{ __('One gift. Two smiles.') }}</p>
+                    <p class="text-gray-600">{{ __('Your purchase powers donations — automatically.') }}</p>
                 </div>
             </div>
             <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center px-5 py-2 bg-white text-gray-700 rounded-full hover:bg-gray-50 font-medium transition-colors border border-gray-200">
-                {{ __('Learn More') }} <span class="ml-2">&rarr;</span>
+                {{ __('How it works') }} <span class="ml-2">&rarr;</span>
             </a>
         </div>
     </div>
@@ -148,22 +148,46 @@
 <x-how-it-works />
 
 <div class="py-16 px-4">
-    <div class="max-w-3xl mx-auto">
-        <div class="bg-gradient-to-br from-coral-50 to-sunny-50 rounded-3xl p-8 lg:p-12 text-center border border-coral-100">
-            <div class="text-5xl mb-6">&#10084;&#65039;</div>
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">{{ __('Gifting That Gives Back') }}</h2>
-            <p class="text-lg text-gray-600 mb-6">
-                {{ __('We believe gift-giving should spread joy everywhere. That\'s why we donate 100% of our affiliate commissions to charity.') }}
-            </p>
-            <p class="text-lg text-gray-600 mb-8">
-                {{ __('Every gift on your wishlist has the potential to help someone in need.') }}
-            </p>
+    <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold text-gray-900 mb-3 text-center">{{ __('Why "Twice"?') }}</h2>
+        <p class="text-lg text-gray-600 mb-10 text-center max-w-2xl mx-auto">{{ __('When someone buys from your wishlist, stores pay us a commission. We donate all of it.') }}</p>
 
-            <div class="inline-flex items-center px-6 py-3 bg-white rounded-full shadow-sm border border-coral-200">
-                <span class="text-coral-500 mr-2">&#10084;</span>
-                <span class="text-gray-800 font-medium">{{ __('All affiliate revenue goes to charity') }}</span>
+        <div class="relative">
+            {{-- Connection line (desktop) --}}
+            <div class="hidden lg:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-0.5 bg-gradient-to-r from-coral-300 to-teal-300"></div>
+
+            <div class="grid md:grid-cols-2 gap-6 lg:gap-16">
+                {{-- First give: To your loved one --}}
+                <div class="relative bg-gradient-to-br from-coral-50 to-coral-100/50 rounded-2xl p-6 lg:p-8 border border-coral-200/60">
+                    <div class="absolute -top-3 -left-1 bg-coral-500 text-white text-xs font-bold px-3 py-1 rounded-full">{{ __('GIVE #1') }}</div>
+                    <div class="flex items-start gap-6">
+                        <div class="flex-shrink-0 w-14 h-14 bg-white rounded-xl shadow-sm flex items-center justify-center text-3xl">
+                            &#127873;
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-900 text-lg mb-1">{{ __('Your loved one') }}</h3>
+                            <p class="text-gray-600">{{ __('Gets exactly what they wished for. No duplicates, no guessing.') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Second give: To charity --}}
+                <div class="relative bg-gradient-to-br from-teal-50 to-teal-100/50 rounded-2xl p-6 lg:p-8 border border-teal-200/60">
+                    <div class="absolute -top-3 -left-1 bg-teal-500 text-white text-xs font-bold px-3 py-1 rounded-full">{{ __('GIVE #2') }}</div>
+                    <div class="flex items-start gap-6">
+                        <div class="flex-shrink-0 w-14 h-14 bg-white rounded-xl shadow-sm flex items-center justify-center text-3xl">
+                            &#10084;&#65039;
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-900 text-lg mb-1">{{ __('Those in need') }}</h3>
+                            <p class="text-gray-600">{{ __('100% of our affiliate profits go straight to charity.') }}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <p class="text-center text-gray-500 mt-8 text-sm">{{ __('No extra cost to you or the gift-giver. Just extra impact.') }}</p>
     </div>
 </div>
 
@@ -191,7 +215,7 @@
                         <p class="text-sm text-gray-500">{{ __('Gift enthusiast') }}</p>
                     </div>
                 </div>
-                <p class="text-gray-600">"{{ __('So easy to use, and knowing our purchases help charity makes it even better.') }}"</p>
+                <p class="text-gray-600">"{{ __('Love the \'give twice\' concept — every birthday gift now helps charity too. No extra cost!') }}"</p>
             </div>
 
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-cream-200">
@@ -209,8 +233,8 @@
 </div>
 
 <div class="py-20 px-4 text-center">
-    <h2 class="text-3xl font-bold text-gray-900 mb-4">{{ __('Ready to Create Your Wishlist?') }}</h2>
-    <p class="text-xl text-gray-600 mb-8 max-w-xl mx-auto">{{ __('Join thousands of happy gift-givers. It only takes a minute to get started.') }}</p>
+    <h2 class="text-3xl font-bold text-gray-900 mb-4">{{ __('Ready to Give Twice?') }}</h2>
+    <p class="text-xl text-gray-600 mb-8 max-w-xl mx-auto">{{ __('Start your wishlist in seconds. Every gift makes a double impact.') }}</p>
     @guest
         <a href="{{ route('register', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center px-10 py-4 bg-coral-500 text-white rounded-full hover:bg-coral-600 font-bold text-xl transition-colors shadow-lg hover:shadow-xl">
             {{ __('Create Your Wishlist') }} <span class="ml-2">&#127873;</span>

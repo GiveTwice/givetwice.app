@@ -135,7 +135,7 @@
                 {{ __('Create Your Own') }}
             </div>
             <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{{ __('Want your own wishlist?') }}</h2>
-            <p class="text-coral-100 text-lg mb-6">{{ __('Create a free wishlist and share it with friends and family. All affiliate revenue goes to charity!') }}</p>
+            <p class="text-coral-100 text-lg mb-6">{{ __('Create a free wishlist and share it with friends and family. All affiliate profits go to charity!') }}</p>
 
             @guest
                 <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-coral-600 rounded-xl hover:bg-coral-50 font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">

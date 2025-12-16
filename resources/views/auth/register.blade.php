@@ -79,7 +79,7 @@
     <div class="mt-6 pt-6 border-t border-cream-200">
         <p class="text-center text-sm text-gray-500 flex items-center justify-center">
             <span class="text-coral-500 mr-2">&#10084;</span>
-            {{ __('All affiliate revenue goes to charity') }}
+            {{ __('All affiliate profits go to charity') }}
         </p>
     </div>
 </div>

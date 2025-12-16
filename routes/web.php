@@ -8,20 +8,28 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GiftController;
 use App\Http\Controllers\ListController;
 use App\Http\Controllers\PublicListController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Support\Facades\Route;
 
 // Redirect root to detected locale
 Route::get('/', function () {
     $locale = SetLocale::detectBrowserLocale(request());
+
     return redirect("/{$locale}", 302);
 });
 
 // Redirect /dashboard to locale-prefixed dashboard
 Route::get('/dashboard', function () {
     $locale = auth()->user()?->locale_preference ?? app()->getLocale();
+
     return redirect("/{$locale}/dashboard");
 })->middleware('auth')->name('dashboard');
+
+// Two-factor authentication challenge (no locale prefix - matches Fortify's POST route)
+Route::get('/two-factor-challenge', function () {
+    return view('auth.two-factor-challenge');
+})->middleware('web')->name('two-factor.login');
 
 // Locale-prefixed routes
 Route::prefix('{locale}')
@@ -49,6 +57,10 @@ Route::prefix('{locale}')
         Route::get('/terms', function () {
             return view('pages.terms');
         })->name('terms');
+
+        Route::get('/transparency', function () {
+            return view('pages.transparency');
+        })->name('transparency');
 
         Route::get('/contact', function () {
             return view('pages.contact');
@@ -127,6 +139,22 @@ Route::prefix('{locale}')
             // Claim routes (for registered users)
             Route::post('/gifts/{gift}/claim', [ClaimController::class, 'store'])->name('claim.store');
             Route::delete('/gifts/{gift}/claim', [ClaimController::class, 'destroy'])->name('claim.destroy');
+
+            // Settings routes
+            Route::get('/settings', [SettingsController::class, 'show'])->name('settings');
+            Route::put('/settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile.update');
+            Route::put('/settings/password', [SettingsController::class, 'updatePassword'])
+                ->middleware('throttle:6,1')
+                ->name('settings.password.update');
+            Route::delete('/settings/sessions/{session}', [SettingsController::class, 'destroySession'])
+                ->middleware('throttle:10,1')
+                ->name('settings.sessions.destroy');
+            Route::delete('/settings/sessions', [SettingsController::class, 'destroyAllSessions'])
+                ->middleware('throttle:6,1')
+                ->name('settings.sessions.destroy-all');
+            Route::delete('/settings/account', [SettingsController::class, 'destroyAccount'])
+                ->middleware('throttle:3,10')
+                ->name('settings.account.destroy');
         });
     });
 
