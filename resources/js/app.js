@@ -1,6 +1,34 @@
 import './bootstrap';
 
 import Alpine from 'alpinejs';
+import JSConfetti from 'js-confetti';
+
+// Initialize confetti (creates canvas once)
+const jsConfetti = new JSConfetti();
+
+// Celebration confetti for claim confirmations
+window.triggerClaimConfetti = async () => {
+    // First burst: emojis (hearts, rainbows, gifts)
+    await jsConfetti.addConfetti({
+        emojis: ['❤️', '💕', '🌈', '🎁', '✨'],
+        emojiSize: 50,
+        confettiNumber: 30,
+    });
+
+    // Second burst: brand colors
+    jsConfetti.addConfetti({
+        confettiColors: [
+            '#E8614D', // coral-400
+            '#D44B3B', // coral-500
+            '#F5C840', // sunny-400
+            '#3DB9A0', // teal-400
+            '#2EADA0', // teal-500
+            '#FF85A1', // coral-200
+        ],
+        confettiRadius: 6,
+        confettiNumber: 150,
+    });
+};
 
 window.Alpine = Alpine;
 

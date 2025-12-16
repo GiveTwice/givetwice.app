@@ -44,8 +44,21 @@ class GiftController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        $targetList = $request->list_id
+            ? $request->user()->lists()->find($request->list_id)
+            : $request->user()->lists()->where('is_default', true)->first();
+
         $validated = $request->validate([
-            'url' => ['required', 'url', 'max:2048'],
+            'url' => [
+                'required',
+                'url',
+                'max:2048',
+                function ($attribute, $value, $fail) use ($targetList) {
+                    if ($targetList && $targetList->gifts()->where('url', $value)->exists()) {
+                        $fail(__("You've already added this gift to this list."));
+                    }
+                },
+            ],
             'title' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1500'],
             'price' => ['nullable', 'numeric', 'min:0', 'max:9999999.99'],
@@ -66,23 +79,17 @@ class GiftController extends Controller
             'currency' => $validated['currency'] ?? SupportedCurrency::default()->value,
         ]);
 
-        $list = ! empty($validated['list_id'])
-            ? GiftList::find($validated['list_id'])
-            : $request->user()->lists()->where('is_default', true)->first();
-
-        $attachedListId = null;
-        if ($list) {
-            $list->gifts()->attach($gift->id, [
-                'sort_order' => $list->gifts()->count(),
+        if ($targetList) {
+            $targetList->gifts()->attach($gift->id, [
+                'sort_order' => $targetList->gifts()->count(),
                 'added_at' => now(),
             ]);
-            $attachedListId = $list->id;
 
-            GiftAddedToList::dispatch($gift, $list);
+            GiftAddedToList::dispatch($gift, $targetList);
         }
 
         $locale = app()->getLocale();
-        $anchor = $attachedListId ? "#list-{$attachedListId}" : '';
+        $anchor = $targetList ? "#list-{$targetList->id}" : '';
 
         return redirect()
             ->to("/{$locale}/dashboard{$anchor}")
@@ -102,12 +109,32 @@ class GiftController extends Controller
     {
         $this->authorize('update', $gift);
 
+        $giftListIds = $gift->lists()->pluck('lists.id');
+
         $validated = $request->validate([
             'title' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1500'],
             'price' => ['nullable', 'numeric', 'min:0', 'max:9999999.99'],
             'currency' => ['nullable', 'string', Rule::enum(SupportedCurrency::class)],
-            'url' => ['nullable', 'url', 'max:2048'],
+            'url' => [
+                'nullable',
+                'url',
+                'max:2048',
+                function ($attribute, $value, $fail) use ($gift, $giftListIds) {
+                    if ($value === $gift->url) {
+                        return;
+                    }
+
+                    $conflictExists = Gift::where('url', $value)
+                        ->where('id', '!=', $gift->id)
+                        ->whereHas('lists', fn ($q) => $q->whereIn('lists.id', $giftListIds))
+                        ->exists();
+
+                    if ($conflictExists) {
+                        $fail(__("You've already added this gift to this list."));
+                    }
+                },
+            ],
         ]);
 
         $priceInCents = isset($validated['price'])
@@ -140,6 +167,8 @@ class GiftController extends Controller
 
     public function refreshGiftDetails(Request $request, string $locale, Gift $gift): RedirectResponse|JsonResponse
     {
+        $this->authorize('update', $gift);
+
         $gift->update(['fetch_status' => 'pending']);
 
         FetchGiftDetailsAction::dispatch($gift);

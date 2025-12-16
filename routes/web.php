@@ -72,10 +72,11 @@ Route::prefix('{locale}')
         // List show - handles both authenticated owners and redirects for guests/non-owners
         Route::get('/list/{list}', [ListController::class, 'show'])->name('list.show');
 
-        // Anonymous claim routes
+        // Claim routes (guest + authenticated)
         Route::get('/gifts/{gift}/claim', [ClaimController::class, 'showAnonymousForm'])->name('claim.anonymous.form');
         Route::post('/gifts/{gift}/claim-anonymous', [ClaimController::class, 'storeAnonymous'])->name('claim.anonymous.store');
         Route::get('/claim/confirm/{token}', [ClaimController::class, 'confirm'])->name('claim.confirm');
+        Route::get('/gifts/{gift}/claimed/{token?}', [ClaimController::class, 'showConfirmed'])->name('claim.confirmed');
 
         // Gift card HTML (for real-time updates on public lists)
         Route::get('/view/{list}/gifts/{gift}/card', [GiftController::class, 'cardHtml'])->name('gifts.card-html');

@@ -623,5 +623,13 @@
     "Confirm your password": "Confirmez votre mot de passe",
     "For your security, please confirm your password before enabling two-factor authentication.": "Pour votre sécurité, veuillez confirmer votre mot de passe avant d'activer l'authentification à deux facteurs.",
     "Continue": "Continuer",
-    "Verifying...": "Vérification..."
+    "Verifying...": "Vérification...",
+    "You've already added this gift to this list.": "Vous avez déjà ajouté ce cadeau à cette liste.",
+    "You're all set!": "Vous êtes prêt !",
+    "This gift is now marked as claimed. No duplicates here!": "Ce cadeau est maintenant réservé. Plus de doublons !",
+    "Time to buy the gift!": "C'est le moment d'acheter le cadeau !",
+    "We don't purchase gifts for you. Head to the store and complete your order.": "Nous n'achetons pas les cadeaux pour vous. Rendez-vous dans la boutique et finalisez votre commande.",
+    "Back to wishlist": "Retour à la liste de souhaits",
+    "Invalid Link": "Lien invalide",
+    "Claim Confirmed": "Réservation confirmée"
 }

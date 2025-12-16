@@ -69,6 +69,7 @@
     "Charities supported": "Charities supported",
     "Check back after our launch in early 2026 for our first transparency report.": "Check back after our launch in early 2026 for our first transparency report.",
     "Check our FAQ": "Check our FAQ",
+    "Claim Confirmed": "Claim Confirmed",
     "Claim Confirmed!": "Claim Confirmed!",
     "Claim Gift": "Claim Gift",
     "Claim gift": "Claim gift",
@@ -623,5 +624,12 @@
     "Confirm your password": "Confirm your password",
     "For your security, please confirm your password before enabling two-factor authentication.": "For your security, please confirm your password before enabling two-factor authentication.",
     "Continue": "Continue",
-    "Verifying...": "Verifying..."
+    "Verifying...": "Verifying...",
+    "You've already added this gift to this list.": "You've already added this gift to this list.",
+    "You're all set!": "You're all set!",
+    "This gift is now marked as claimed. No duplicates here!": "This gift is now marked as claimed. No duplicates here!",
+    "Time to buy the gift!": "Time to buy the gift!",
+    "We don't purchase gifts for you. Head to the store and complete your order.": "We don't purchase gifts for you. Head to the store and complete your order.",
+    "Back to wishlist": "Back to wishlist",
+    "Invalid Link": "Invalid Link"
 }

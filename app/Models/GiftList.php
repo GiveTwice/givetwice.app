@@ -37,8 +37,14 @@ class GiftList extends Model
 
     protected static function booted(): void
     {
+        static::creating(function (GiftList $list) {
+            if (empty($list->slug)) {
+                $list->slug = Str::uuid()->toString();
+            }
+        });
+
         static::created(function (GiftList $list) {
-            if (empty($list->slug) || ! str_starts_with($list->slug, $list->id.'-')) {
+            if (! str_starts_with($list->slug, $list->id.'-')) {
                 $list->slug = $list->id.'-'.Str::slug($list->name);
                 $list->saveQuietly();
             }

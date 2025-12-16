@@ -629,5 +629,13 @@
     "Confirm your password": "Bevestig je wachtwoord",
     "For your security, please confirm your password before enabling two-factor authentication.": "Voor je veiligheid, bevestig je wachtwoord voordat je tweefactorauthenticatie inschakelt.",
     "Continue": "Doorgaan",
-    "Verifying...": "Verifiëren..."
+    "Verifying...": "Verifiëren...",
+    "You've already added this gift to this list.": "Je hebt dit cadeau al aan deze lijst toegevoegd.",
+    "You're all set!": "Helemaal klaar!",
+    "This gift is now marked as claimed. No duplicates here!": "Dit cadeau is nu geclaimd. Geen dubbele cadeaus meer!",
+    "Time to buy the gift!": "Tijd om het cadeau te kopen!",
+    "We don't purchase gifts for you. Head to the store and complete your order.": "Wij kopen geen cadeaus voor je. Ga naar de winkel en rond je bestelling af.",
+    "Back to wishlist": "Terug naar verlanglijst",
+    "Invalid Link": "Ongeldige link",
+    "Claim Confirmed": "Claim bevestigd"
 }

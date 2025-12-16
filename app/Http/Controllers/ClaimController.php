@@ -17,12 +17,50 @@ class ClaimController extends Controller
     public function store(Request $request, string $locale, Gift $gift, ClaimGiftAction $action): RedirectResponse
     {
         try {
-            $action->execute($gift, $request->user(), $request->input('notes'));
+            $claim = $action->execute($gift, $request->user(), $request->input('notes'));
         } catch (ClaimException $e) {
             return back()->with('error', $e->getMessage());
         }
 
-        return back()->with('success', __('Gift claimed! The owner won\'t see who claimed it.'));
+        return redirect()->route('claim.confirmed', [
+            'locale' => $locale,
+            'gift' => $gift,
+        ]);
+    }
+
+    public function showConfirmed(Request $request, string $locale, Gift $gift, ?string $token = null): View|RedirectResponse
+    {
+        $claim = null;
+
+        if ($token) {
+            $claim = $gift->claims()
+                ->where('confirmation_token', $token)
+                ->whereNotNull('confirmed_at')
+                ->first();
+        } elseif ($request->user()) {
+            $claim = $gift->claims()
+                ->where('user_id', $request->user()->id)
+                ->whereNotNull('confirmed_at')
+                ->first();
+        }
+
+        $list = $gift->lists()->first();
+
+        if (! $claim) {
+            if (! $list) {
+                return redirect()->route('home', ['locale' => $locale])
+                    ->with('error', __('You have not claimed this gift.'));
+            }
+
+            return redirect()->route('public.list', ['locale' => $locale, 'list' => $list])
+                ->with('error', __('You have not claimed this gift.'));
+        }
+
+        return view('claims.confirmed', [
+            'claim' => $claim,
+            'gift' => $gift,
+            'list' => $list,
+        ]);
     }
 
     public function destroy(Request $request, string $locale, Gift $gift): RedirectResponse
@@ -88,7 +126,7 @@ class ClaimController extends Controller
             ->with('success', __('Please check your email to confirm your claim.'));
     }
 
-    public function confirm(string $locale, string $token, ConfirmClaimAction $action): View
+    public function confirm(string $locale, string $token, ConfirmClaimAction $action): View|RedirectResponse
     {
         try {
             $claim = $action->execute($token);
@@ -96,9 +134,10 @@ class ClaimController extends Controller
             return view('claims.invalid-token');
         }
 
-        return view('claims.confirmed', [
-            'claim' => $claim,
+        return redirect()->route('claim.confirmed', [
+            'locale' => $locale,
             'gift' => $claim->gift,
+            'token' => $claim->confirmation_token,
         ]);
     }
 }

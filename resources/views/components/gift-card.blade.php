@@ -19,10 +19,10 @@
         {{ $isClaimedByOthers
             ? 'border-sunny-200/80 bg-sunny-50/30'
             : 'border-gray-200 hover:shadow-lg hover:border-gray-300' }}
-        {{ $openModal && !$isClaimedByOthers ? 'cursor-pointer' : '' }}
+        {{ ($openModal && !$isClaimedByOthers) || $isClaimedByMe ? 'cursor-pointer' : '' }}
         {{ $isClaimedByOthers ? 'cursor-default' : '' }}"
     data-gift-id="{{ $gift->id }}"
-    @if($openModal && !$isClaimedByOthers)
+    @if($openModal && !$isClaimedByOthers && !$isClaimedByMe)
         x-data
         x-on:click="$dispatch('open-gift-modal-{{ $gift->id }}')"
     @endif
@@ -35,13 +35,13 @@
                 alt="{{ $gift->title }}"
                 class="w-full h-full object-cover object-center transition-all duration-500
                     {{ $isClaimedByOthers
-                        ? 'grayscale-[0.5] brightness-[1.05] sepia-[0.2] saturate-[0.7]'
+                        ? 'grayscale-[0.6] brightness-[1.1] sepia-[0.15] saturate-[0.5] blur-[2px] scale-[1.02]'
                         : 'group-hover:scale-105' }}"
                 loading="lazy"
             >
 
             @if($isClaimedByOthers)
-                <div class="absolute inset-0 bg-gradient-to-t from-sunny-200/50 via-sunny-100/25 to-sunny-50/10 pointer-events-none"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-sunny-200/70 via-sunny-100/50 to-sunny-50/30 pointer-events-none"></div>
             @endif
         @else
 
@@ -102,6 +102,13 @@
                class="absolute inset-0 bg-gray-900/0 group-hover:bg-gray-900/10 transition-colors duration-300 flex items-center justify-center">
                 <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/95 backdrop-blur-sm text-gray-700 px-4 py-2 rounded-full text-sm font-medium shadow-lg">
                     {{ __('Edit') }}
+                </span>
+            </a>
+        @elseif($isClaimedByMe)
+            <a href="{{ route('claim.confirmed', ['locale' => app()->getLocale(), 'gift' => $gift]) }}"
+               class="absolute inset-0 bg-teal-900/0 group-hover:bg-teal-900/10 transition-colors duration-300 flex items-center justify-center">
+                <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/95 backdrop-blur-sm text-teal-700 px-4 py-2 rounded-full text-sm font-medium shadow-lg">
+                    {{ __("You're getting this") }}
                 </span>
             </a>
         @endif
