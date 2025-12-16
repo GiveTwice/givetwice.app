@@ -4,8 +4,8 @@
 
 @php
     $isOwner = auth()->check() && auth()->id() === $list->user_id;
-    $availableGifts = $gifts->filter(fn($gift) => $gift->claims->isEmpty())->count();
-    $claimedGifts = $gifts->total() - $availableGifts;
+    $availableGifts = (int) $gifts->filter(fn($gift) => $gift->claims->isEmpty())->count();
+    $claimedGifts = (int) max(0, $gifts->total() - $availableGifts);
     $listOwner = $list->user;
     $ownerHasAvatar = $listOwner->hasProfileImage();
     $ownerAvatarUrl = $listOwner->getProfileImageUrl('medium');
@@ -14,123 +14,17 @@
 @section('content')
 
 <div
-    x-data="{
+    x-data="publicList({
+        slug: '{{ $list->slug }}',
+        locale: '{{ app()->getLocale() }}',
         availableCount: {{ $availableGifts }},
         claimedCount: {{ $claimedGifts }},
-        init() {
-            if (window.Echo) {
-                // Subscribe to public list channel (no auth required)
-                window.Echo.channel('list.{{ $list->slug }}')
-                    .listen('.gift.fetch.completed', (e) => {
-                        this.updateGiftCard(e.gift);
-                    })
-                    .listen('.gift.claimed', (e) => {
-                        this.markGiftAsClaimed(e.gift.id);
-                    });
-            }
-        },
-        updateGiftCard(gift) {
-            const card = document.querySelector(`[data-gift-id='${gift.id}']`);
-            if (!card) return;
-
-            // Update image
-            const imgContainer = card.querySelector('[data-gift-image]');
-            if (imgContainer && gift.image_url_card) {
-                const placeholder = imgContainer.querySelector('[data-gift-placeholder]');
-                if (placeholder) placeholder.remove();
-                const existingImg = imgContainer.querySelector('img');
-                if (existingImg) existingImg.remove();
-
-                const img = document.createElement('img');
-                img.src = gift.image_url_card;
-                img.alt = gift.title || '';
-                img.className = 'w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500';
-                img.loading = 'lazy';
-                imgContainer.insertBefore(img, imgContainer.firstChild);
-            }
-
-            // Remove fetching badge
-            const badge = card.querySelector('[data-gift-badge]');
-            if (badge) badge.remove();
-
-            // Update title
-            const titleEl = card.querySelector('[data-gift-title]');
-            if (titleEl) {
-                titleEl.textContent = gift.title || '{{ __('Untitled gift') }}';
-                titleEl.title = gift.title || '';
-            }
-
-            // Update price
-            const priceContainer = card.querySelector('[data-gift-price]');
-            if (priceContainer && gift.price_formatted) {
-                priceContainer.replaceChildren();
-                const priceSpan = document.createElement('span');
-                priceSpan.className = 'text-base font-bold text-coral-600';
-                priceSpan.textContent = gift.price_formatted;
-                priceContainer.appendChild(priceSpan);
-            }
-
-            // Update modal if exists
-            this.updateGiftModal(gift);
-        },
-        updateGiftModal(gift) {
-            // Find the modal component for this gift
-            const modalWrapper = document.querySelector(`[x-on\\:open-gift-modal-${gift.id}\\.window]`);
-            if (!modalWrapper) return;
-
-            // Update modal image
-            const modalImg = modalWrapper.querySelector('img');
-            if (modalImg && gift.image_url_large) {
-                modalImg.src = gift.image_url_large;
-                modalImg.alt = gift.title || '';
-            }
-
-            // Update modal title
-            const modalTitle = modalWrapper.querySelector('h2');
-            if (modalTitle) {
-                modalTitle.textContent = gift.title || '{{ __('Untitled gift') }}';
-            }
-        },
-        markGiftAsClaimed(giftId) {
-            const card = document.querySelector(`[data-gift-id='${giftId}']`);
-            if (!card) return;
-
-            // Update stats
-            this.availableCount = Math.max(0, this.availableCount - 1);
-            this.claimedCount++;
-
-            // Add claimed badge if not exists
-            const imgContainer = card.querySelector('[data-gift-image]');
-            if (imgContainer && !imgContainer.querySelector('.claimed-badge')) {
-                const badgeWrapper = document.createElement('div');
-                badgeWrapper.className = 'absolute top-3 right-3 claimed-badge';
-                const badgeSpan = document.createElement('span');
-                badgeSpan.className = 'inline-flex items-center gap-1 px-2.5 py-1 bg-sunny-100/95 backdrop-blur-sm text-sunny-700 text-xs font-semibold rounded-full shadow-sm';
-                badgeSpan.textContent = '{{ __('Claimed') }}';
-                badgeWrapper.appendChild(badgeSpan);
-                imgContainer.appendChild(badgeWrapper);
-            }
-
-            // Disable claim button
-            const claimForm = card.querySelector('form[action*=\"/claim\"]');
-            const claimLink = card.querySelector('a[href*=\"/claim\"]');
-            if (claimForm) {
-                const disabledBtn = document.createElement('button');
-                disabledBtn.type = 'button';
-                disabledBtn.disabled = true;
-                disabledBtn.className = 'w-full text-xs bg-cream-200 text-cream-500 px-3 py-2 rounded-lg cursor-not-allowed';
-                disabledBtn.textContent = '{{ __('Already claimed') }}';
-                claimForm.replaceWith(disabledBtn);
-            } else if (claimLink) {
-                const disabledBtn = document.createElement('button');
-                disabledBtn.type = 'button';
-                disabledBtn.disabled = true;
-                disabledBtn.className = 'w-full text-xs bg-cream-200 text-cream-500 px-3 py-2 rounded-lg cursor-not-allowed';
-                disabledBtn.textContent = '{{ __('Already claimed') }}';
-                claimLink.replaceWith(disabledBtn);
-            }
+        translations: {
+            untitledGift: '{{ __('Untitled gift') }}',
+            claimed: '{{ __('Claimed') }}',
+            alreadyClaimed: '{{ __('Already claimed') }}'
         }
-    }"
+    })"
 >
 
 <div class="mb-6 bg-white rounded-2xl border border-cream-200/60 shadow-sm overflow-hidden">
@@ -239,15 +133,16 @@
 
     <div class="p-6">
         @if($gifts->isEmpty())
-            <div class="py-12 text-center">
+            <div class="py-12 text-center" data-empty-state>
                 <div class="w-20 h-20 bg-cream-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <span class="text-4xl">&#127873;</span>
                 </div>
                 <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ __('No gifts yet') }}</h3>
                 <p class="text-gray-500">{{ __(':name hasn\'t added any gifts to this list yet.', ['name' => $list->user->name]) }}</p>
             </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 hidden" data-gift-grid></div>
         @else
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4" data-gift-grid>
                 @foreach($gifts as $gift)
                     <x-gift-card :gift="$gift" :showClaimActions="true" :isOwner="$isOwner" :openModal="true" />
                 @endforeach

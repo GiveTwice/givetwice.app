@@ -6,11 +6,13 @@ use App\Actions\FetchGiftDetailsAction;
 use App\Actions\ProcessGiftImageAction;
 use App\Enums\SupportedCurrency;
 use App\Enums\SupportedLocale;
+use App\Events\GiftAddedToList;
 use App\Models\Gift;
 use App\Models\GiftList;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -75,6 +77,8 @@ class GiftController extends Controller
                 'added_at' => now(),
             ]);
             $attachedListId = $list->id;
+
+            GiftAddedToList::dispatch($gift, $list);
         }
 
         $locale = app()->getLocale();
@@ -176,5 +180,25 @@ class GiftController extends Controller
             'success' => true,
             'message' => __('Image uploaded successfully.'),
         ]);
+    }
+
+    public function cardHtml(string $locale, GiftList $list, Gift $gift): Response
+    {
+        // Verify the gift belongs to this list
+        if (! $list->gifts()->where('gifts.id', $gift->id)->exists()) {
+            abort(404);
+        }
+
+        $gift->loadCount('claims');
+
+        $html = view('components.gift-card', [
+            'gift' => $gift,
+            'editable' => false,
+            'showClaimActions' => true,
+            'isOwner' => false,
+            'openModal' => true,
+        ])->render();
+
+        return response($html)->header('Content-Type', 'text/html');
     }
 }

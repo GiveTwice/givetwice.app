@@ -77,6 +77,9 @@ Route::prefix('{locale}')
         Route::post('/gifts/{gift}/claim-anonymous', [ClaimController::class, 'storeAnonymous'])->name('claim.anonymous.store');
         Route::get('/claim/confirm/{token}', [ClaimController::class, 'confirm'])->name('claim.confirm');
 
+        // Gift card HTML (for real-time updates on public lists)
+        Route::get('/view/{list}/gifts/{gift}/card', [GiftController::class, 'cardHtml'])->name('gifts.card-html');
+
         // Auth view routes (GET only - POST handled by Fortify)
         Route::middleware('guest')->group(function () {
             Route::get('/login', function () {
