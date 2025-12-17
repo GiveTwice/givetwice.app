@@ -243,7 +243,7 @@
                 </div>
 
                 <div>
-                    <h4 class="font-semibold text-gray-900 mb-4">{{ __('Product') }}</h4>
+                    <p class="font-semibold text-gray-900 mb-4">{{ __('Product') }}</p>
                     <ul class="space-y-2 text-sm">
                         <li><a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('How It Works') }}</a></li>
                         <li><a href="{{ route('register', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('Create Wishlist') }}</a></li>
@@ -251,7 +251,7 @@
                 </div>
 
                 <div>
-                    <h4 class="font-semibold text-gray-900 mb-4">{{ __('Company') }}</h4>
+                    <p class="font-semibold text-gray-900 mb-4">{{ __('Company') }}</p>
                     <ul class="space-y-2 text-sm">
                         <li><a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('About') }}</a></li>
                         <li><a href="{{ route('contact', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('Contact') }}</a></li>
@@ -259,7 +259,7 @@
                 </div>
 
                 <div>
-                    <h4 class="font-semibold text-gray-900 mb-4">{{ __('Legal') }}</h4>
+                    <p class="font-semibold text-gray-900 mb-4">{{ __('Legal') }}</p>
                     <ul class="space-y-2 text-sm">
                         <li><a href="{{ route('privacy', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('Privacy Policy') }}</a></li>
                         <li><a href="{{ route('terms', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('Terms of Service') }}</a></li>

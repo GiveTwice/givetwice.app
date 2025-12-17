@@ -36,7 +36,7 @@
             <span
                 class="
                     absolute {{ $sizeClasses['badge'] }}
-                    bg-violet-500
+                    bg-violet-600
                     text-white font-semibold uppercase tracking-wide
                     rounded-full
                     shadow-sm

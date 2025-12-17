@@ -223,7 +223,7 @@
 
                 {{-- Second give: To charity --}}
                 <div class="relative bg-gradient-to-br from-teal-50 to-teal-100/50 rounded-2xl p-6 lg:p-8 border border-teal-200/60">
-                    <div class="absolute -top-3 -left-1 bg-teal-500 text-white text-xs font-bold px-3 py-1 rounded-full">{{ __('GIVE #2') }}</div>
+                    <div class="absolute -top-3 -left-1 bg-teal-700 text-white text-xs font-bold px-3 py-1 rounded-full">{{ __('GIVE #2') }}</div>
                     <div class="flex items-start gap-6">
                         <div class="flex-shrink-0 w-14 h-14 bg-white rounded-xl shadow-sm flex items-center justify-center text-3xl">
                             &#10084;&#65039;
