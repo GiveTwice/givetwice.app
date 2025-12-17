@@ -76,10 +76,23 @@
 
     <footer class="bg-white border-t border-cream-200 mt-12">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            <p class="text-center text-gray-500 text-sm flex items-center justify-center">
-                <span class="text-coral-500 mr-2">&#10084;</span>
-                {{ __('All affiliate profits go to charity.') }}
-            </p>
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                <p class="text-gray-500 text-sm">
+                    &copy; {{ date('Y') }} GiveTwice. {{ __('All rights reserved.') }}
+                </p>
+                <div class="flex items-center gap-4">
+                    <a href="https://github.com/GiveTwice" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-gray-600 transition-colors" aria-label="GitHub">
+                        <x-icons.github class="w-5 h-5" />
+                    </a>
+                    <a href="https://x.com/GiveTwiceApp" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-gray-600 transition-colors" aria-label="X (Twitter)">
+                        <x-icons.x-twitter class="w-5 h-5" />
+                    </a>
+                </div>
+                <p class="text-gray-500 text-sm flex items-center">
+                    <span class="text-coral-500 mr-2">&#10084;</span>
+                    {{ __('All affiliate profits go to charity.') }}
+                </p>
+            </div>
         </div>
     </footer>
 </body>

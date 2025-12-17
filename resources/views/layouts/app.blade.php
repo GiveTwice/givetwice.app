@@ -232,10 +232,18 @@
                 </div>
             </div>
 
-            <div class="border-t border-cream-200 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-gray-500 text-sm mb-4 md:mb-0">
+            <div class="border-t border-cream-200 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-gray-500 text-sm">
                     &copy; {{ date('Y') }} GiveTwice. {{ __('All rights reserved.') }}
                 </p>
+                <div class="flex items-center gap-4">
+                    <a href="https://github.com/GiveTwice" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-gray-600 transition-colors" aria-label="GitHub">
+                        <x-icons.github class="w-5 h-5" />
+                    </a>
+                    <a href="https://x.com/GiveTwiceApp" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-gray-600 transition-colors" aria-label="X (Twitter)">
+                        <x-icons.x-twitter class="w-5 h-5" />
+                    </a>
+                </div>
                 <div class="flex items-center space-x-2 text-sm">
                     <span class="text-coral-500">&#10084;</span>
                     <span class="text-gray-600">{{ __('All affiliate profits go to charity') }}</span>
