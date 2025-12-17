@@ -2,6 +2,8 @@
 
 @section('title', __('Two-factor authentication'))
 
+@section('robots', 'noindex, nofollow')
+
 @section('content')
 <div class="bg-white p-8 rounded-2xl shadow-sm border border-cream-200" x-data="{ useRecoveryCode: false }">
     <div class="text-center mb-6">

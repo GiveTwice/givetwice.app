@@ -2,6 +2,8 @@
 
 @section('title', __('FAQ'))
 
+@section('description', __('meta.faq'))
+
 @section('content')
 
 <div class="text-center py-12 lg:py-16">

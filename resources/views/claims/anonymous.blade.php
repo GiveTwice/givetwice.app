@@ -2,6 +2,8 @@
 
 @section('title', __('Claim Gift'))
 
+@section('robots', 'noindex, nofollow')
+
 @section('content')
 
 <div class="mb-6 bg-white rounded-2xl border border-cream-200/60 shadow-sm overflow-hidden">

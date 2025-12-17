@@ -2,6 +2,8 @@
 
 @section('title', $list->name)
 
+@section('robots', 'noindex, nofollow')
+
 @section('content')
 <x-app-content
     :breadcrumbs="[

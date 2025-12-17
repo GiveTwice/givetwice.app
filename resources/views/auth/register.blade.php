@@ -2,6 +2,10 @@
 
 @section('title', __('Register'))
 
+@section('description', __('meta.register'))
+
+@section('robots', 'noindex, nofollow')
+
 @section('content')
 @if(config('app.allow_registration'))
     {{-- Normal registration form --}}

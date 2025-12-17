@@ -7,6 +7,19 @@
 
     <title>{{ config('app.name', 'GiveTwice') }} - @yield('title', 'Welcome')</title>
 
+    <!-- Meta description -->
+    @hasSection('description')
+        <meta name="description" content="@yield('description')">
+    @endif
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ url()->current() }}">
+
+    <!-- Robots meta -->
+    @hasSection('robots')
+        <meta name="robots" content="@yield('robots')">
+    @endif
+
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">

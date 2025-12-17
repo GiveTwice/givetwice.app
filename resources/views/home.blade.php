@@ -2,6 +2,8 @@
 
 @section('title', __('Home'))
 
+@section('description', __('meta.home'))
+
 @section('content')
 
 <div class="relative overflow-hidden">

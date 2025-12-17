@@ -6,6 +6,8 @@
 
 @section('title', __('Add Gift'))
 
+@section('robots', 'noindex, nofollow')
+
 @section('content')
 <x-app-content
     :title="__('Add Gift')"

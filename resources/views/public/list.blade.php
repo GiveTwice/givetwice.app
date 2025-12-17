@@ -2,6 +2,8 @@
 
 @section('title', $list->name . ' - ' . $list->user->name)
 
+@section('robots', 'noindex, nofollow')
+
 @php
     $isOwner = auth()->check() && auth()->id() === $list->user_id;
     $availableGifts = (int) $gifts->filter(fn($gift) => $gift->claims->isEmpty())->count();

@@ -2,6 +2,8 @@
 
 @section('title', __('Dashboard'))
 
+@section('robots', 'noindex, nofollow')
+
 @section('content')
 
 <div

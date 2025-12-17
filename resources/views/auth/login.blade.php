@@ -2,6 +2,10 @@
 
 @section('title', __('Login'))
 
+@section('description', __('meta.login'))
+
+@section('robots', 'noindex, nofollow')
+
 @section('content')
 <div class="bg-white p-8 rounded-2xl shadow-sm border border-cream-200">
     <div class="text-center mb-6">
