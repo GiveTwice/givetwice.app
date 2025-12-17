@@ -13,7 +13,10 @@
     # Admin API (for graceful restarts, metrics)
     admin localhost:2019
 
-    # Disable HTTP/3 - Cloudflare handles this at the edge
+    # Skip installing internal CA to system trust store (not needed for Cloudflare origin)
+    skip_install_trust
+
+    # Cloudflare handles HTTP/3 at the edge
     servers {
         protocols h1 h2
     }
