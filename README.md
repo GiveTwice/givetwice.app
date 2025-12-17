@@ -1,4 +1,6 @@
-# GiveTwice
+# GiveTwice.app
+
+URL: [https://givetwice.app](https://givetwice.app)
 
 A wishlist and gift list app where all affiliate revenue goes to charity. Create wishlists, share them with friends and family, and feel good knowing that every purchase supports a good cause.
 
