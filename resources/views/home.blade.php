@@ -304,3 +304,30 @@
     @endguest
 </div>
 @endsection
+
+@push('scripts')
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "GiveTwice",
+    "url": "{{ config('app.url') }}",
+    "logo": "{{ asset('android-chrome-512x512.png') }}",
+    "description": "{{ __('A wishlist platform where every gift makes a double impact.') }}",
+    "sameAs": [
+        "https://github.com/GiveTwice",
+        "https://x.com/GiveTwiceApp"
+    ]
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "GiveTwice",
+    "url": "{{ config('app.url') }}",
+    "description": "{{ __('meta.home') }}",
+    "inLanguage": ["en", "nl", "fr"]
+}
+</script>
+@endpush
