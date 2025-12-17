@@ -32,7 +32,12 @@ class AppServiceProvider extends ServiceProvider
     {
         Model::preventLazyLoading(! $this->app->isProduction());
 
-        Health::checks([
+        $this->registerHealthChecks();
+    }
+
+    private function registerHealthChecks(): void
+    {
+        $checks = [
             UsedDiskSpaceCheck::new()
                 ->warnWhenUsedSpaceIsAbovePercentage(70)
                 ->failWhenUsedSpaceIsAbovePercentage(90),
@@ -40,11 +45,16 @@ class AppServiceProvider extends ServiceProvider
             RedisCheck::new(),
             HorizonCheck::new(),
             CacheCheck::new(),
-            DebugModeCheck::new(),
-            EnvironmentCheck::new(),
-            OptimizedAppCheck::new(),
             SecurityAdvisoriesCheck::new()
                 ->cacheResultsForMinutes(60),
-        ]);
+        ];
+
+        if ($this->app->isProduction()) {
+            $checks[] = DebugModeCheck::new();
+            $checks[] = EnvironmentCheck::new();
+            $checks[] = OptimizedAppCheck::new();
+        }
+
+        Health::checks($checks);
     }
 }
