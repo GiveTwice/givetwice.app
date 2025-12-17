@@ -48,6 +48,16 @@ enum SupportedLocale: string
         return $this->value;
     }
 
+    // Open Graph locale format (e.g., en_US, nl_NL, fr_FR)
+    public function ogLocale(): string
+    {
+        return match ($this) {
+            self::English => 'en_US',
+            self::Dutch => 'nl_NL',
+            self::French => 'fr_FR',
+        };
+    }
+
     public static function values(): array
     {
         return array_column(self::cases(), 'value');
