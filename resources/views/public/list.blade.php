@@ -181,11 +181,19 @@
 
                 <div class="flex-shrink-0 text-center lg:text-left">
                     @guest
-                        <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-coral-600 rounded-xl hover:bg-coral-50 font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-                            <span>{{ __('Create Your Wishlist') }}</span>
-                            <x-icons.arrow-right class="w-5 h-5" />
-                        </a>
-                        <p class="mt-3 text-coral-200 text-sm">{{ __('Free forever. Share with anyone.') }}</p>
+                        @if(config('app.allow_registration'))
+                            <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-coral-600 rounded-xl hover:bg-coral-50 font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+                                <span>{{ __('Create Your Wishlist') }}</span>
+                                <x-icons.arrow-right class="w-5 h-5" />
+                            </a>
+                            <p class="mt-3 text-coral-200 text-sm">{{ __('Free forever. Share with anyone.') }}</p>
+                        @else
+                            <a href="{{ url('/' . app()->getLocale() . '/contact') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-coral-600 rounded-xl hover:bg-coral-50 font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+                                <span>{{ __('Get in touch') }}</span>
+                                <x-icons.arrow-right class="w-5 h-5" />
+                            </a>
+                            <p class="mt-3 text-coral-200 text-sm">{{ __('Launching soon') }}</p>
+                        @endif
                     @else
                         <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-coral-600 rounded-xl hover:bg-coral-50 font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
                             <span>{{ __('Go to My Wishlists') }}</span>

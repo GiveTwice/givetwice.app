@@ -63,7 +63,12 @@ class SocialAuthController extends Controller
             return $this->redirectToDashboard();
         }
 
-        // Create new user
+        // Create new user (only if registration is allowed)
+        if (! config('app.allow_registration')) {
+            return redirect()->route('home', ['locale' => app()->getLocale()])
+                ->with('error', __('Registration is currently disabled.'));
+        }
+
         $user = User::create([
             'name' => $socialUser->getName(),
             'email' => $socialUser->getEmail(),

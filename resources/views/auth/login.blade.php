@@ -74,11 +74,13 @@
         </div>
     </div>
 
-    <div class="mt-6 text-center">
-        <span class="text-gray-600">{{ __("Don't have an account?") }}</span>
-        <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="text-coral-600 hover:text-coral-700 font-medium ml-1">
-            {{ __('Sign Up') }}
-        </a>
-    </div>
+    @if(config('app.allow_registration'))
+        <div class="mt-6 text-center">
+            <span class="text-gray-600">{{ __("Don't have an account?") }}</span>
+            <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="text-coral-600 hover:text-coral-700 font-medium ml-1">
+                {{ __('Sign Up') }}
+            </a>
+        </div>
+    @endif
 </div>
 @endsection

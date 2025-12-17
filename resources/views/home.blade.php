@@ -33,9 +33,16 @@
 
             <div>
                 @guest
-                    <a href="{{ route('register', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center justify-center px-8 py-3 bg-coral-500 text-white rounded-full hover:bg-coral-600 font-semibold text-lg transition-colors shadow-md hover:shadow-lg">
-                        {{ __('Start My Wishlist') }} <span class="ml-2">&#127873;</span>
-                    </a>
+                    @if(config('app.allow_registration'))
+                        <a href="{{ route('register', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center justify-center px-8 py-3 bg-coral-500 text-white rounded-full hover:bg-coral-600 font-semibold text-lg transition-colors shadow-md hover:shadow-lg">
+                            {{ __('Start My Wishlist') }} <span class="ml-2">&#127873;</span>
+                        </a>
+                    @else
+                        <a href="{{ route('contact', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center justify-center px-8 py-3 bg-coral-500 text-white rounded-full hover:bg-coral-600 font-semibold text-lg transition-colors shadow-md hover:shadow-lg">
+                            {{ __('Get in touch') }}
+                        </a>
+                        <p class="mt-3 text-gray-500 text-sm">{{ __('Launching soon') }}</p>
+                    @endif
                 @else
                     <a href="{{ route('dashboard.locale', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center justify-center px-8 py-3 bg-coral-500 text-white rounded-full hover:bg-coral-600 font-semibold text-lg transition-colors shadow-md hover:shadow-lg">
                         {{ __('Go to My Wishlists') }} <span class="ml-2">&#127873;</span>
@@ -277,10 +284,17 @@
     <h2 class="text-3xl font-bold text-gray-900 mb-4">{{ __('Ready to Give Twice?') }}</h2>
     <p class="text-xl text-gray-600 mb-8 max-w-xl mx-auto">{{ __('Start your wishlist in seconds. Every gift makes a double impact.') }}</p>
     @guest
-        <a href="{{ route('register', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center px-10 py-4 bg-coral-500 text-white rounded-full hover:bg-coral-600 font-bold text-xl transition-colors shadow-lg hover:shadow-xl">
-            {{ __('Create Your Wishlist') }} <span class="ml-2">&#127873;</span>
-        </a>
-        <p class="mt-4 text-gray-500">{{ __('Free forever. No credit card required.') }}</p>
+        @if(config('app.allow_registration'))
+            <a href="{{ route('register', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center px-10 py-4 bg-coral-500 text-white rounded-full hover:bg-coral-600 font-bold text-xl transition-colors shadow-lg hover:shadow-xl">
+                {{ __('Create Your Wishlist') }} <span class="ml-2">&#127873;</span>
+            </a>
+            <p class="mt-4 text-gray-500">{{ __('Free forever. No credit card required.') }}</p>
+        @else
+            <a href="{{ route('contact', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center px-10 py-4 bg-coral-500 text-white rounded-full hover:bg-coral-600 font-bold text-xl transition-colors shadow-lg hover:shadow-xl">
+                {{ __('Get in touch') }}
+            </a>
+            <p class="mt-4 text-gray-500">{{ __('Launching soon') }}</p>
+        @endif
     @else
         <a href="{{ route('dashboard.locale', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center px-10 py-4 bg-coral-500 text-white rounded-full hover:bg-coral-600 font-bold text-xl transition-colors shadow-lg hover:shadow-xl">
             {{ __('Go to My Wishlists') }} <span class="ml-2">&#127873;</span>

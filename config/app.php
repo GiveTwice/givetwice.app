@@ -123,4 +123,16 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Registration Control
+    |--------------------------------------------------------------------------
+    |
+    | This option controls whether new user registrations are allowed. Set to
+    | false during soft launch phases to prevent new signups while testing.
+    |
+    */
+
+    'allow_registration' => env('ALLOW_REGISTRATION', true),
+
 ];

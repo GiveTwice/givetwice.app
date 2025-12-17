@@ -33,7 +33,9 @@
 
                 <div class="flex items-center space-x-6">
                     <a href="{{ url('/' . app()->getLocale() . '/login') }}" class="text-gray-600 hover:text-coral-600 transition-colors">{{ __('Login') }}</a>
-                    <x-nav-button href="{{ url('/' . app()->getLocale() . '/register') }}">{{ __('Sign Up') }}</x-nav-button>
+                    @if(config('app.allow_registration'))
+                        <x-nav-button href="{{ url('/' . app()->getLocale() . '/register') }}">{{ __('Sign Up') }}</x-nav-button>
+                    @endif
 
                     <x-language-switcher />
                 </div>
