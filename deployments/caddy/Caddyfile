@@ -13,26 +13,24 @@
     # Admin API (for graceful restarts, metrics)
     admin localhost:2019
 
-    # Enable HTTP/3 (QUIC) - automatic with HTTPS
+    # Disable HTTP/3 - Cloudflare handles this at the edge
     servers {
-        protocols h1 h2 h3
+        protocols h1 h2
     }
-
-    # Production: use Let's Encrypt
-    # Staging: uncomment for testing without rate limits
-    # acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
-
-    # Email for Let's Encrypt notifications (optional but recommended)
-    email admin@givetwice.app
 }
 
 # Redirect www to non-www (both HTTP and HTTPS)
 www.givetwice.app {
+    tls internal
     redir https://givetwice.app{uri} permanent
 }
 
 # Main site configuration
 givetwice.app {
+    # Self-signed cert - Cloudflare handles public TLS
+    # Set Cloudflare SSL/TLS mode to "Full" (not "Full (Strict)")
+    tls internal
+
     # Document root
     root * /home/givetwice/givetwice.app/current/public
 
