@@ -159,8 +159,8 @@
 
     cd {{ $currentDir }}
 
-    # Reload Octane workers
-    php artisan octane:reload || true
+    # Restart Octane workers
+    sudo /usr/bin/systemctl restart givetwice-octane.service
 
     # Restart Horizon and Reverb via supervisor
     sudo /usr/bin/supervisorctl restart all
