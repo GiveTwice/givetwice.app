@@ -17,10 +17,14 @@ Artisan::command('inspire', function () {
 */
 
 // Run health checks every minute (results stored for Oh Dear polling)
-Schedule::command('health:check')->everyMinute();
+Schedule::command('health:check')
+    ->everyMinute()
+    ->monitorName('Health Check');
 
 // Capture Horizon queue metrics for the dashboard
-Schedule::command('horizon:snapshot')->everyFiveMinutes();
+Schedule::command('horizon:snapshot')
+    ->everyFiveMinutes()
+    ->monitorName('Horizon Snapshot');
 
 // Prune old health check results (keeps 5 days by default)
 Schedule::command('model:prune', ['--model' => HealthCheckResultHistoryItem::class])
@@ -31,3 +35,8 @@ Schedule::command('model:prune', ['--model' => HealthCheckResultHistoryItem::cla
 Schedule::command('model:prune', ['--model' => MonitoredScheduledTaskLogItem::class])
     ->daily()
     ->monitorName('Prune Schedule Monitor Logs');
+
+// Regenerate sitemap weekly (also generated on deploy)
+Schedule::command('sitemap:generate')
+    ->weekly()
+    ->monitorName('Generate Sitemap');

@@ -155,6 +155,9 @@
 
     # Sync scheduled tasks with Oh Dear
     php artisan schedule-monitor:sync
+
+    # Generate sitemap
+    php artisan sitemap:generate
 @endtask
 
 @task('restartServices', ['on' => 'remote'])
@@ -200,6 +203,9 @@
 
     # Sync scheduled tasks with Oh Dear
     php artisan schedule-monitor:sync
+
+    # Generate sitemap
+    php artisan sitemap:generate
 
     php artisan octane:reload || true
     sudo /usr/bin/supervisorctl restart all
