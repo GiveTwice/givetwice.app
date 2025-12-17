@@ -23,13 +23,13 @@
     };
 @endphp
 
-<span class="group/logo relative inline-flex items-center {{ $sizeClasses['container'] }}">
+<a href="{{ url('/' . app()->getLocale()) }}" class="group/logo relative inline-flex items-center {{ $sizeClasses['container'] }}">
     {{-- Heart emoji --}}
     <span class="{{ $sizeClasses['heart'] }} text-coral-500">&#10084;</span>
 
     {{-- Brand name with relative positioning for badge anchor --}}
     <span class="relative {{ $sizeClasses['text'] }} font-bold">
-        <span class="text-gray-900">Give</span><span class="text-coral-500">Twice</span>
+        <span class="text-gray-900 group-hover/logo:text-coral-500 transition-colors duration-300">Give</span><span class="text-coral-500 group-hover/logo:text-gray-900 transition-colors duration-300">Twice</span>
 
         @if($showBeta)
             {{-- Beta badge - anchored to top-right of text, playful tilt --}}
@@ -50,4 +50,4 @@
             </span>
         @endif
     </span>
-</span>
+</a>

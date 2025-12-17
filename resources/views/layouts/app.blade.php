@@ -27,9 +27,7 @@
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
-                    <a href="{{ url('/') }}" class="flex items-center">
-                        <x-logo />
-                    </a>
+                    <x-logo />
                 </div>
 
                 <div class="hidden md:flex items-center space-x-6">
@@ -200,10 +198,8 @@
             <div class="grid md:grid-cols-4 gap-8 mb-8">
 
                 <div class="md:col-span-1">
-                    <a href="{{ url('/') }}" class="inline-flex mb-4">
-                        <x-logo />
-                    </a>
-                    <p class="text-gray-500 text-sm">{{ __('Create and share wishlists. All affiliate profits go to charity.') }}</p>
+                    <x-logo />
+                    <p class="text-gray-500 text-sm mt-4">{{ __('Create and share wishlists. All affiliate profits go to charity.') }}</p>
                 </div>
 
                 <div>
