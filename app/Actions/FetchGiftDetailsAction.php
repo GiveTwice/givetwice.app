@@ -18,9 +18,10 @@ class FetchGiftDetailsAction implements ShouldQueue
 {
     use Dispatchable, Queueable;
 
-    public int $tries = 3;
+    public int $tries = 4;
 
-    public int $backoff = 60;
+    /** @var array<int, int> */
+    public array $backoff = [5, 30, 60];
 
     public function __construct(
         public readonly Gift $gift
@@ -63,17 +64,33 @@ class FetchGiftDetailsAction implements ShouldQueue
                 'fetched_at' => now(),
             ]);
         } catch (Throwable $e) {
-            $this->gift->update([
-                'fetch_status' => 'failed',
-                'fetched_at' => now(),
+            Log::error('Gift fetch failed due to unexpected error', [
+                'gift_id' => $this->gift->id,
+                'url' => $this->gift->url,
+                'error' => $e->getMessage(),
+                'attempt' => $this->attempts(),
             ]);
-
-            $imageAction->dispatchCompletedEvent($this->gift);
 
             throw $e;
         }
 
         $imageAction->dispatchCompletedEvent($this->gift);
+    }
+
+    public function failed(?Throwable $exception): void
+    {
+        Log::error('Gift fetch permanently failed after all retries', [
+            'gift_id' => $this->gift->id,
+            'url' => $this->gift->url,
+            'error' => $exception?->getMessage(),
+        ]);
+
+        $this->gift->update([
+            'fetch_status' => 'failed',
+            'fetched_at' => now(),
+        ]);
+
+        app(ProcessGiftImageAction::class)->dispatchCompletedEvent($this->gift);
     }
 
     /**

@@ -98,8 +98,8 @@ class ClaimController extends Controller
         Gift $gift,
         CreatePendingClaimAction $action
     ): RedirectResponse {
-        // 5 attempts per minute per IP
-        $rateLimitKey = 'claim-attempt:'.$request->ip();
+        // 5 attempts per minute per IP per gift
+        $rateLimitKey = 'claim-attempt:'.$request->ip().':'.$gift->id;
         if (RateLimiter::tooManyAttempts($rateLimitKey, 5)) {
             return back()->with('error', __('Too many claim attempts. Please try again later.'));
         }

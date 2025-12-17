@@ -39,14 +39,8 @@ class GiftList extends Model
     {
         static::creating(function (GiftList $list) {
             if (empty($list->slug)) {
-                $list->slug = Str::uuid()->toString();
-            }
-        });
-
-        static::created(function (GiftList $list) {
-            if (! str_starts_with($list->slug, $list->id.'-')) {
-                $list->slug = $list->id.'-'.Str::slug($list->name);
-                $list->saveQuietly();
+                $baseSlug = Str::slug($list->name) ?: 'list';
+                $list->slug = $baseSlug.'-'.Str::random(8);
             }
         });
     }

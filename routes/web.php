@@ -175,5 +175,5 @@ Route::prefix('admin')
         Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard');
         Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
         Route::get('/users/{user}', [AdminController::class, 'showUser'])->name('admin.users.show');
-        Route::post('/users/{user}/toggle-admin', [AdminController::class, 'toggleUserStatus'])->name('admin.users.toggle-admin');
+        Route::post('/users/{user}/toggle-admin', [AdminController::class, 'toggleAdminStatus'])->name('admin.users.toggle-admin');
     });

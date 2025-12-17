@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Events\GiftClaimed;
 use App\Exceptions\Claim\AlreadyClaimedException;
 use App\Exceptions\Claim\InvalidTokenException;
 use App\Models\Claim;
@@ -29,15 +30,18 @@ class ConfirmClaimAction
                 return null;
             }
 
+            $lockedGift->load('lists');
             $claim->confirm();
 
-            return $claim;
+            return ['claim' => $claim, 'gift' => $lockedGift];
         });
 
         if ($result === null) {
             throw new AlreadyClaimedException;
         }
 
-        return $result;
+        event(new GiftClaimed($result['gift'], $result['claim']));
+
+        return $result['claim'];
     }
 }

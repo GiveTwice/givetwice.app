@@ -48,13 +48,19 @@ class GiftController extends Controller
             ? $request->user()->lists()->find($request->list_id)
             : $request->user()->lists()->where('is_default', true)->first();
 
+        if (! $targetList) {
+            return back()
+                ->withInput()
+                ->withErrors(['list_id' => __('No valid list found. Please create a list first.')]);
+        }
+
         $validated = $request->validate([
             'url' => [
                 'required',
                 'url',
                 'max:2048',
                 function ($attribute, $value, $fail) use ($targetList) {
-                    if ($targetList && $targetList->gifts()->where('url', $value)->exists()) {
+                    if ($targetList->gifts()->where('url', $value)->exists()) {
                         $fail(__("You've already added this gift to this list."));
                     }
                 },
@@ -79,17 +85,15 @@ class GiftController extends Controller
             'currency' => $validated['currency'] ?? SupportedCurrency::default()->value,
         ]);
 
-        if ($targetList) {
-            $targetList->gifts()->attach($gift->id, [
-                'sort_order' => $targetList->gifts()->count(),
-                'added_at' => now(),
-            ]);
+        $targetList->gifts()->attach($gift->id, [
+            'sort_order' => $targetList->gifts()->count(),
+            'added_at' => now(),
+        ]);
 
-            GiftAddedToList::dispatch($gift, $targetList);
-        }
+        GiftAddedToList::dispatch($gift, $targetList);
 
         $locale = app()->getLocale();
-        $anchor = $targetList ? "#list-{$targetList->id}" : '';
+        $anchor = "#list-{$targetList->id}";
 
         return redirect()
             ->to("/{$locale}/dashboard{$anchor}")

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Events\GiftClaimed;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -68,13 +67,6 @@ class Claim extends Model
             'confirmed_at' => now(),
             'confirmation_token' => null,
         ]);
-
-        // Broadcast the claim event for real-time updates
-        // Load the gift with its lists for broadcasting to all list channels
-        $gift = $this->gift()->with('lists')->first();
-        if ($gift) {
-            event(new GiftClaimed($gift, $this));
-        }
     }
 
     public function getClaimerDisplayName(): string

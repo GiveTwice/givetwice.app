@@ -1,5 +1,6 @@
 <?php
 
+use App\Actions\ConfirmClaimAction;
 use App\Events\GiftClaimed;
 use App\Events\GiftCreated;
 use App\Events\GiftFetchCompleted;
@@ -50,7 +51,8 @@ describe('GiftClaimed event', function () {
             'claimer_name' => 'Test User',
         ]);
 
-        $claim->confirm();
+        $action = new ConfirmClaimAction;
+        $action->execute($claim->confirmation_token);
 
         Event::assertDispatched(GiftClaimed::class, function ($event) use ($gift, $claim) {
             return $event->gift->id === $gift->id && $event->claim->id === $claim->id;

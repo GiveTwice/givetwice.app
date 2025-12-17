@@ -7,6 +7,7 @@ use App\Models\Claim;
 use App\Models\Gift;
 use App\Models\GiftList;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -74,10 +75,10 @@ class AdminController extends Controller
         return view('admin.user-show', compact('user'));
     }
 
-    public function toggleUserStatus(User $user): \Illuminate\Http\RedirectResponse
+    public function toggleAdminStatus(User $user): RedirectResponse
     {
         if ($user->id === auth()->id()) {
-            return back()->with('error', 'You cannot disable your own account.');
+            return back()->with('error', 'You cannot change your own admin status.');
         }
 
         $user->update(['is_admin' => ! $user->is_admin]);
