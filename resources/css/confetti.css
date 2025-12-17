@@ -1,0 +1,239 @@
+/* ============================================
+   Claim Confirmation - Confetti Animation
+   Lightweight hybrid system: JS generates particles
+   with random CSS variables, CSS handles animation
+
+   Uses linear timing with physics baked into keyframes
+   for buttery-smooth parabolic arcs
+   ============================================ */
+
+.confetti-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 50;
+}
+
+.confetti-particle {
+    position: absolute;
+    opacity: 0;
+    will-change: transform, opacity;
+}
+
+.confetti-emoji {
+    font-size: clamp(20px, 4vw, 28px);
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.12));
+}
+
+.confetti-dot {
+    border-radius: 50%;
+    box-shadow: 0 1px 3px var(--shadow-color, rgba(0,0,0,0.15));
+}
+
+.confetti-particle {
+    left: calc(var(--start-x) * 1vw);
+    top: calc(var(--start-y) * 1vh);
+    animation: confetti-arc var(--duration) linear var(--delay) forwards;
+}
+
+/*
+   Parabolic arc with physics baked in:
+   - X moves linearly (constant horizontal velocity)
+   - Y follows parabola: starts fast upward, slows at peak, accelerates downward
+   - More keyframes = smoother interpolation
+*/
+@keyframes confetti-arc {
+    0% {
+        opacity: 0;
+        transform: translate(0, 0) rotate(0deg) scale(0.5);
+    }
+    3% {
+        opacity: 1;
+        transform:
+            translate(
+                calc(var(--peak-x) * 0.06vw),
+                calc(var(--peak-y) * 0.17vh)
+            )
+            rotate(calc(var(--rotation) * 0.03deg))
+            scale(0.8);
+    }
+    6% {
+        opacity: 1;
+        transform:
+            translate(
+                calc(var(--peak-x) * 0.12vw),
+                calc(var(--peak-y) * 0.32vh)
+            )
+            rotate(calc(var(--rotation) * 0.06deg))
+            scale(0.9);
+    }
+    10% {
+        opacity: 1;
+        transform:
+            translate(
+                calc(var(--peak-x) * 0.2vw),
+                calc(var(--peak-y) * 0.51vh)
+            )
+            rotate(calc(var(--rotation) * 0.1deg))
+            scale(0.95);
+    }
+    15% {
+        opacity: 1;
+        transform:
+            translate(
+                calc(var(--peak-x) * 0.3vw),
+                calc(var(--peak-y) * 0.7vh)
+            )
+            rotate(calc(var(--rotation) * 0.15deg))
+            scale(1);
+    }
+    20% {
+        opacity: 1;
+        transform:
+            translate(
+                calc(var(--peak-x) * 0.4vw),
+                calc(var(--peak-y) * 0.84vh)
+            )
+            rotate(calc(var(--rotation) * 0.2deg))
+            scale(1);
+    }
+    26% {
+        opacity: 1;
+        transform:
+            translate(
+                calc(var(--peak-x) * 0.52vw),
+                calc(var(--peak-y) * 0.94vh)
+            )
+            rotate(calc(var(--rotation) * 0.26deg))
+            scale(1);
+    }
+    32% {
+        opacity: 1;
+        transform:
+            translate(
+                calc(var(--peak-x) * 0.64vw),
+                calc(var(--peak-y) * 0.99vh)
+            )
+            rotate(calc(var(--rotation) * 0.32deg))
+            scale(1);
+    }
+    /* Peak of arc */
+    38% {
+        opacity: 1;
+        transform:
+            translate(
+                calc(var(--peak-x) * 0.76vw),
+                calc(var(--peak-y) * 1vh)
+            )
+            rotate(calc(var(--rotation) * 0.38deg))
+            scale(1);
+    }
+    44% {
+        opacity: 1;
+        transform:
+            translate(
+                calc(var(--peak-x) * 0.88vw),
+                calc(var(--peak-y) * 0.97vh)
+            )
+            rotate(calc(var(--rotation) * 0.44deg))
+            scale(0.98);
+    }
+    50% {
+        opacity: 1;
+        transform:
+            translate(
+                calc(var(--peak-x) * 1vw),
+                calc(var(--peak-y) * 0.9vh)
+            )
+            rotate(calc(var(--rotation) * 0.5deg))
+            scale(0.95);
+    }
+    /* Descent - accelerating */
+    56% {
+        opacity: 1;
+        transform:
+            translate(
+                calc((var(--peak-x) * 1.06 + var(--end-x) * 0.06) * 1vw),
+                calc(var(--peak-y) * 0.78vh)
+            )
+            rotate(calc(var(--rotation) * 0.56deg))
+            scale(0.92);
+    }
+    62% {
+        opacity: 0.95;
+        transform:
+            translate(
+                calc((var(--peak-x) * 0.88 + var(--end-x) * 0.18) * 1vw),
+                calc((var(--peak-y) * 0.6 + var(--end-y) * 0.08) * 1vh)
+            )
+            rotate(calc(var(--rotation) * 0.62deg))
+            scale(0.88);
+    }
+    68% {
+        opacity: 0.9;
+        transform:
+            translate(
+                calc((var(--peak-x) * 0.68 + var(--end-x) * 0.32) * 1vw),
+                calc((var(--peak-y) * 0.38 + var(--end-y) * 0.22) * 1vh)
+            )
+            rotate(calc(var(--rotation) * 0.68deg))
+            scale(0.82);
+    }
+    74% {
+        opacity: 0.8;
+        transform:
+            translate(
+                calc((var(--peak-x) * 0.48 + var(--end-x) * 0.48) * 1vw),
+                calc((var(--peak-y) * 0.14 + var(--end-y) * 0.4) * 1vh)
+            )
+            rotate(calc(var(--rotation) * 0.74deg))
+            scale(0.75);
+    }
+    80% {
+        opacity: 0.65;
+        transform:
+            translate(
+                calc((var(--peak-x) * 0.28 + var(--end-x) * 0.65) * 1vw),
+                calc(var(--end-y) * 0.58vh)
+            )
+            rotate(calc(var(--rotation) * 0.8deg))
+            scale(0.68);
+    }
+    86% {
+        opacity: 0.45;
+        transform:
+            translate(
+                calc((var(--peak-x) * 0.12 + var(--end-x) * 0.82) * 1vw),
+                calc(var(--end-y) * 0.76vh)
+            )
+            rotate(calc(var(--rotation) * 0.86deg))
+            scale(0.6);
+    }
+    92% {
+        opacity: 0.25;
+        transform:
+            translate(
+                calc(var(--end-x) * 0.94vw),
+                calc(var(--end-y) * 0.9vh)
+            )
+            rotate(calc(var(--rotation) * 0.92deg))
+            scale(0.52);
+    }
+    100% {
+        opacity: 0;
+        transform:
+            translate(
+                calc(var(--end-x) * 1vw),
+                calc(var(--end-y) * 1vh)
+            )
+            rotate(calc(var(--rotation) * 1deg))
+            scale(0.4);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .confetti-container {
+        display: none;
+    }
+}

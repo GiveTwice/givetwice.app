@@ -20,6 +20,7 @@
     <x-hreflang-tags />
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('styles')
 </head>
 <body class="min-h-screen bg-gradient-warm flex flex-col">
     <header class="bg-white border-b border-cream-200">

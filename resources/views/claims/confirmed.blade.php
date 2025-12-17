@@ -2,9 +2,17 @@
 
 @section('title', __('Claim Confirmed'))
 
+@push('styles')
+    @vite('resources/css/confetti.css')
+@endpush
+
+@push('scripts')
+    @vite('resources/js/confetti.js')
+@endpush
+
 @section('content')
 
-<div class="max-w-2xl mx-auto" x-data x-init="setTimeout(() => window.triggerClaimConfetti?.(), 300)">
+<div class="max-w-2xl mx-auto">
 
     <div class="text-center mb-8">
         <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-teal-100 to-teal-200 mb-4">
@@ -18,14 +26,14 @@
         </p>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-sm border border-cream-200/60 overflow-hidden">
+    <div class="bg-white rounded-2xl shadow-sm border border-cream-400 overflow-hidden highlight-sunny-pulse">
 
         <div class="p-6 sm:p-8">
             <div class="flex flex-col sm:flex-row gap-5 items-center sm:items-start">
 
                 <div class="flex-shrink-0 w-32 h-32 sm:w-40 sm:h-40 rounded-2xl bg-cream-50 border border-cream-200 overflow-hidden">
                     @if($gift->hasImage())
-                        <img src="{{ $gift->getImageUrl('card') }}" alt="{{ $gift->title }}" class="w-full h-full object-cover">
+                        <img src="{{ $gift->getImageUrl('thumb') }}" alt="{{ $gift->title }}" class="w-full h-full object-cover">
                     @else
                         <div class="w-full h-full flex items-center justify-center text-cream-400">
                             <x-icons.image-placeholder class="w-12 h-12" />

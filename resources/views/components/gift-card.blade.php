@@ -16,7 +16,7 @@
 @endphp
 
 <div
-    class="gift-card
+    class="gift-card group
         {{ $isClaimedByOthers ? 'gift-card-claimed-others' : '' }}
         {{ $showClaimActions && $isClaimedByMe ? 'gift-card-claimed-mine' : '' }}
         {{ !$isUnavailable ? 'gift-card-default' : '' }}
