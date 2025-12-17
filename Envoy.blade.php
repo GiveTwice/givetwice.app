@@ -152,6 +152,9 @@
     php artisan route:cache
     php artisan view:cache
     php artisan event:cache
+
+    # Sync scheduled tasks with Oh Dear
+    php artisan schedule-monitor:sync
 @endtask
 
 @task('restartServices', ['on' => 'remote'])
@@ -194,6 +197,9 @@
     php artisan route:cache
     php artisan view:cache
     php artisan event:cache
+
+    # Sync scheduled tasks with Oh Dear
+    php artisan schedule-monitor:sync
 
     php artisan octane:reload || true
     sudo /usr/bin/supervisorctl restart all
