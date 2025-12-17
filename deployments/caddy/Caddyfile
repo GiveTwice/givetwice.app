@@ -13,16 +13,8 @@
     # Enable FrankenPHP
     frankenphp {
         # Worker mode: boot Laravel once, handle multiple requests
-        worker {
-            file public/index.php
-            num {$FRANKENPHP_WORKERS:auto}
-            watch
-        }
-
-        # PHP thread configuration (default: 2x CPU cores)
-        # Uncomment to customize:
-        # num_threads 16
-        # max_threads 32
+        # Default: 2 workers per CPU core
+        worker /home/givetwice/givetwice.app/current/public/index.php
     }
 
     # Admin API (for graceful restarts, metrics)
@@ -50,7 +42,7 @@ www.givetwice.app {
 # Main site configuration
 givetwice.app {
     # Document root
-    root * public/
+    root * /home/givetwice/givetwice.app/current/public
 
     # Compression: zstd > brotli > gzip (in order of preference)
     encode zstd br gzip
