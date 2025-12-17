@@ -80,7 +80,7 @@ Laravel Reverb provides WebSocket connections. When a gift is fetched or claimed
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/givetwice.app.git
+git clone https://github.com/GiveTwice/givetwice.app.git
 cd givetwice.app
 
 # Install dependencies
