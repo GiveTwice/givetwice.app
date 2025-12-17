@@ -20,6 +20,10 @@ pest()->extend(Tests\TestCase::class)
     ->in('Action');
 
 pest()->extend(Tests\TestCase::class)
+    ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+    ->in('Listener');
+
+pest()->extend(Tests\TestCase::class)
     ->in('Unit');
 
 /*
