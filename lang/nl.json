@@ -645,5 +645,9 @@
     "Want early access?": "Wil je vroege toegang?",
     "Reach out and let us know why you want to try GiveTwice early.": "Neem contact op en laat ons weten waarom je GiveTwice eerder wilt proberen.",
     "Get in touch": "Neem contact op",
-    "Registration is currently disabled.": "Registratie is momenteel uitgeschakeld."
+    "Registration is currently disabled.": "Registratie is momenteel uitgeschakeld.",
+    "Fully open source": "Volledig open source",
+    "GiveTwice is completely open source. Every line of code is publicly available for anyone to inspect, verify, and contribute to. No secrets, no hidden logic — just honest software that does exactly what we say it does.": "GiveTwice is volledig open source. Elke regel code is publiekelijk beschikbaar voor iedereen om te inspecteren, verifiëren en aan bij te dragen. Geen geheimen, geen verborgen logica — gewoon eerlijke software die precies doet wat we zeggen.",
+    "This is our ultimate form of transparency. You don't have to take our word for how the app works — you can see for yourself.": "Dit is onze ultieme vorm van transparantie. Je hoeft ons niet op ons woord te geloven over hoe de app werkt — je kunt het zelf zien.",
+    "View our code on GitHub": "Bekijk onze code op GitHub"
 }

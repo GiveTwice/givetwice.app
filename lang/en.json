@@ -639,5 +639,9 @@
     "Want early access?": "Want early access?",
     "Reach out and let us know why you want to try GiveTwice early.": "Reach out and let us know why you want to try GiveTwice early.",
     "Get in touch": "Get in touch",
-    "Registration is currently disabled.": "Registration is currently disabled."
+    "Registration is currently disabled.": "Registration is currently disabled.",
+    "Fully open source": "Fully open source",
+    "GiveTwice is completely open source. Every line of code is publicly available for anyone to inspect, verify, and contribute to. No secrets, no hidden logic — just honest software that does exactly what we say it does.": "GiveTwice is completely open source. Every line of code is publicly available for anyone to inspect, verify, and contribute to. No secrets, no hidden logic — just honest software that does exactly what we say it does.",
+    "This is our ultimate form of transparency. You don't have to take our word for how the app works — you can see for yourself.": "This is our ultimate form of transparency. You don't have to take our word for how the app works — you can see for yourself.",
+    "View our code on GitHub": "View our code on GitHub"
 }

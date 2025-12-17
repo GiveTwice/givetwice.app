@@ -639,5 +639,9 @@
     "Want early access?": "Vous voulez un accès anticipé ?",
     "Reach out and let us know why you want to try GiveTwice early.": "Contactez-nous et dites-nous pourquoi vous souhaitez essayer GiveTwice en avant-première.",
     "Get in touch": "Nous contacter",
-    "Registration is currently disabled.": "L'inscription est actuellement désactivée."
+    "Registration is currently disabled.": "L'inscription est actuellement désactivée.",
+    "Fully open source": "Entièrement open source",
+    "GiveTwice is completely open source. Every line of code is publicly available for anyone to inspect, verify, and contribute to. No secrets, no hidden logic — just honest software that does exactly what we say it does.": "GiveTwice est entièrement open source. Chaque ligne de code est accessible au public pour que chacun puisse l'inspecter, le vérifier et y contribuer. Pas de secrets, pas de logique cachée — juste un logiciel honnête qui fait exactement ce que nous disons.",
+    "This is our ultimate form of transparency. You don't have to take our word for how the app works — you can see for yourself.": "C'est notre forme ultime de transparence. Vous n'avez pas à nous croire sur parole concernant le fonctionnement de l'application — vous pouvez le constater par vous-même.",
+    "View our code on GitHub": "Voir notre code sur GitHub"
 }

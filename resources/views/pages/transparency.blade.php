@@ -77,6 +77,25 @@
         </div>
     </div>
 
+    {{-- Open Source --}}
+    <div class="bg-white border border-cream-200 rounded-2xl p-6 lg:p-8 shadow-sm mb-8">
+        <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-10 h-10 bg-gray-100 text-gray-700 rounded-xl flex items-center justify-center">
+                <x-icons.github class="w-5 h-5" />
+            </div>
+            <div>
+                <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ __('Fully open source') }}</h2>
+                <p class="text-gray-600 leading-relaxed mb-4">{{ __('GiveTwice is completely open source. Every line of code is publicly available for anyone to inspect, verify, and contribute to. No secrets, no hidden logic — just honest software that does exactly what we say it does.') }}</p>
+                <p class="text-gray-600 leading-relaxed mb-4">{{ __('This is our ultimate form of transparency. You don\'t have to take our word for how the app works — you can see for yourself.') }}</p>
+                <a href="https://github.com/GiveTwice" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-gray-900 hover:text-coral-600 font-medium transition-colors">
+                    <x-icons.github class="w-4 h-4" />
+                    {{ __('View our code on GitHub') }}
+                    <x-icons.external-link class="w-4 h-4" />
+                </a>
+            </div>
+        </div>
+    </div>
+
     {{-- Coming Soon Notice --}}
     <div class="bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200 rounded-2xl p-6 lg:p-8 text-center">
         <div class="text-3xl mb-3">&#128202;</div>
