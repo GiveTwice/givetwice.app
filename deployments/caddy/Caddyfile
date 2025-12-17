@@ -86,6 +86,17 @@ givetwice.app {
         file_server
     }
 
+    # Laravel Reverb WebSocket proxy
+    # /app - WebSocket connections (Laravel Echo clients)
+    # /apps - API requests (broadcasting from backend)
+    @reverb {
+        path /app/*
+        path /apps/*
+    }
+    handle @reverb {
+        reverse_proxy localhost:6001
+    }
+
     # PHP handling via FrankenPHP
     php_server {
         # Laravel's front controller pattern
