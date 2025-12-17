@@ -10,15 +10,7 @@
 
 # Global options
 {
-    # Enable FrankenPHP
-    frankenphp {
-        # Worker mode: boot Laravel once, handle multiple requests
-        # Default: 2 workers per CPU core
-        worker /home/givetwice/givetwice.app/current/public/index.php
-    }
-
     # Admin API (for graceful restarts, metrics)
-    # Disable in production if not needed, or restrict to localhost
     admin localhost:2019
 
     # Enable HTTP/3 (QUIC) - automatic with HTTPS
