@@ -163,7 +163,7 @@
     cd {{ $currentDir }}
 
     # Restart Octane workers
-    sudo /usr/bin/systemctl restart givetwice-octane.service
+    sudo /usr/bin/systemctl restart givetwice-octane
 
     # Restart Horizon and Reverb via supervisor
     sudo /usr/bin/supervisorctl restart all
