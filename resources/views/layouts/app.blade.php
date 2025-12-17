@@ -93,8 +93,8 @@
                 </div>
 
                 <div class="md:hidden flex items-center">
-                    <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="text-gray-600 hover:text-gray-900">
-                        <x-icons.menu class="h-6 w-6" />
+                    <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="text-gray-600 hover:text-gray-900" aria-label="{{ __('Toggle navigation') }}">
+                        <x-icons.menu class="h-6 w-6" aria-hidden="true" />
                     </button>
                 </div>
             </div>

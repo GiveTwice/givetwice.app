@@ -308,8 +308,8 @@
 @push('scripts')
 <script type="application/ld+json">
 {
-    "@context": "https://schema.org",
-    "@type": "Organization",
+    "@@context": "https://schema.org",
+    "@@type": "Organization",
     "name": "GiveTwice",
     "url": "{{ config('app.url') }}",
     "logo": "{{ asset('android-chrome-512x512.png') }}",
@@ -322,8 +322,8 @@
 </script>
 <script type="application/ld+json">
 {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
+    "@@context": "https://schema.org",
+    "@@type": "WebSite",
     "name": "GiveTwice",
     "url": "{{ config('app.url') }}",
     "description": "{{ __('meta.home') }}",
