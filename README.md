@@ -1,59 +1,203 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# GiveTwice
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A wishlist and gift list app where all affiliate revenue goes to charity. Create wishlists, share them with friends and family, and feel good knowing that every purchase supports a good cause.
 
-## About Laravel
+## Philosophy
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+GiveTwice is built on a simple idea: **gifting that gives back**. When someone buys a gift from your wishlist through an affiliate link, the revenue doesn't go to us - it goes directly to charity. You get exactly what you want, your loved ones know they're making you happy, and together you're making a difference.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Tech stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Backend:** Laravel 12, PHP 8.4, MySQL
+- **Frontend:** Blade templates, Tailwind CSS v4, Alpine.js
+- **App server:** Laravel Octane + FrankenPHP (high-performance)
+- **Queue:** Laravel Horizon + Redis
+- **WebSockets:** Laravel Reverb (real-time updates)
+- **Auth:** Laravel Fortify + Socialite (Google/Facebook OAuth)
 
-## Learning Laravel
+## Architecture overview
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### Multi-language routing
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+All user-facing routes are prefixed with `/{locale}` (en, nl, fr). The root `/` redirects to the user's detected browser locale. Auth POST routes (handled by Fortify) have no locale prefix.
 
-## Laravel Sponsors
+### Data models
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```
+User
+ ├── has many: Gifts (items they want)
+ ├── has many: GiftLists (organized collections)
+ └── has many: Claims (gifts they've claimed for others)
 
-### Premium Partners
+Gift
+ ├── belongs to: User
+ ├── belongs to many: GiftLists
+ └── has many: Claims
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+GiftList
+ ├── belongs to: User
+ └── belongs to many: Gifts
+
+Claim
+ ├── belongs to: Gift
+ └── belongs to: User (nullable, supports anonymous claims)
+```
+
+### Event-driven architecture
+
+GiveTwice uses Laravel events to decouple core workflows:
+
+| Event | Trigger | Listeners |
+|-------|---------|-----------|
+| `GiftCreated` | User adds a gift | Dispatches `FetchGiftDetailsAction` to queue |
+| `GiftFetchCompleted` | Product details fetched | Broadcasts to user via WebSocket |
+| `GiftClaimed` | Someone claims a gift | Broadcasts to list owner via WebSocket |
+
+### Action pattern
+
+Business logic lives in single-responsibility Action classes (`app/Actions/`):
+
+- `FetchGiftDetailsAction` - Fetches product title, image, price from URL (queued)
+- `ClaimGiftAction` - Registered user claims a gift
+- `CreatePendingClaimAction` - Anonymous user starts claim (sends confirmation email)
+- `ConfirmClaimAction` - Anonymous user confirms via email token
+
+### Real-time updates
+
+Laravel Reverb provides WebSocket connections. When a gift is fetched or claimed, the frontend updates instantly without page refresh. Private channels ensure users only see their own updates.
+
+## Getting started
+
+### Prerequisites
+
+- PHP 8.4+
+- Composer
+- Node.js 18+
+- MySQL
+- Redis
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/your-org/givetwice.app.git
+cd givetwice.app
+
+# Install dependencies
+composer install
+npm install
+
+# Configure environment
+cp .env.example .env
+php artisan key:generate
+
+# Set up database
+# Update .env with your MySQL credentials (default: gifting_app, root, no password)
+php artisan migrate --seed
+
+# Build assets
+npm run build
+```
+
+### Development
+
+```bash
+# Start all services (recommended)
+composer dev
+
+# Or start individually:
+php artisan octane:start --watch  # App server with hot reload
+php artisan horizon               # Queue workers
+php artisan reverb:start          # WebSocket server
+npm run dev                       # Vite dev server
+```
+
+### Test users
+
+| Email | Password | Admin |
+|-------|----------|-------|
+| m@ttias.be | localdevelopment | Yes |
+| john@doe.tld | localdevelopment | No |
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Code style
 
-## Code of Conduct
+Run Laravel Pint after modifying PHP files:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+./vendor/bin/pint path/to/file.php
+```
 
-## Security Vulnerabilities
+### Testing
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+We use [Pest](https://pestphp.com/) for testing:
+
+```bash
+./vendor/bin/pest
+```
+
+Write tests in Pest's functional syntax:
+
+```php
+it('creates a gift for the authenticated user', function () {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)
+        ->post(route('gifts.store', 'en'), [
+            'url' => 'https://example.com/product',
+        ]);
+
+    expect($user->gifts)->toHaveCount(1);
+});
+```
+
+### Translations
+
+All user-facing text uses `__()` for translations. When adding new strings:
+
+1. Add the English string to `lang/en.json`
+2. Add translations to `lang/nl.json` and `lang/fr.json` etc
+
+### Adding a new language
+
+1. Add the locale to `app/Enums/SupportedLocale.php`
+2. Run `php artisan lang:add <locale>`
+3. Copy `lang/en.json` to `lang/<locale>.json` and translate
+
+### Key directories
+
+```
+app/
+├── Actions/        # Single-responsibility business logic
+├── Enums/          # SupportedLocale, SupportedCurrency
+├── Events/         # Domain events (GiftCreated, GiftClaimed)
+├── Http/Controllers/
+├── Models/
+└── Policies/       # Authorization rules
+
+resources/
+├── css/app.css     # Tailwind config + custom component classes
+├── views/
+│   ├── components/ # Blade components
+│   ├── layouts/    # App and guest layouts
+│   └── ...
+└── js/
+
+lang/
+├── en.json         # App translations
+├── nl.json
+└── fr.json
+```
+
+## What's next
+
+Features on the roadmap:
+
+- **Affiliate integration** - Connect with affiliate networks to track purchases and route revenue to charity (PRIORITY)
+- **Friend system** - Connect with friends to see their wishlists and get notified about updates
+- **Notification emails** - Email claimer with confirmation of claim, receive emails when friends update their wishlists
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
