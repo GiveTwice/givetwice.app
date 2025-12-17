@@ -3,6 +3,7 @@
 namespace App\Actions;
 
 use App\Models\Gift;
+use GiveTwice\ProductInfoFetcher\ProductInfoFetcher;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\ServerException;
@@ -11,7 +12,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Mattiasgeniar\ProductInfoFetcher\ProductInfoFetcher;
 use Throwable;
 
 class FetchGiftDetailsAction implements ShouldQueue

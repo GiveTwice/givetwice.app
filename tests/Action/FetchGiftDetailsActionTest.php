@@ -5,13 +5,13 @@ use App\Actions\ProcessGiftImageAction;
 use App\Events\GiftFetchCompleted;
 use App\Models\Gift;
 use App\Models\User;
+use GiveTwice\ProductInfoFetcher\ProductInfoFetcher;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
-use Mattiasgeniar\ProductInfoFetcher\ProductInfoFetcher;
 
 beforeEach(function () {
     Queue::fake();

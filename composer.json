@@ -5,12 +5,6 @@
     "description": "The skeleton application for the Laravel framework.",
     "keywords": ["laravel", "framework"],
     "license": "MIT",
-    "repositories": [
-        {
-            "type": "path",
-            "url": "/Users/mattias/Projects/Repos/product-info-fetcher"
-        }
-    ],
     "require": {
         "php": "^8.2",
         "jenssegers/agent": "^2.6",
@@ -22,7 +16,7 @@
         "laravel/reverb": "^1.6",
         "laravel/socialite": "^5.24",
         "laravel/tinker": "^2.10.1",
-        "mattiasgeniar/product-info-fetcher": "@dev",
+        "givetwice/product-info-fetcher": "^0.1",
         "spatie/laravel-medialibrary": "^11.17",
         "symfony/http-client": "^8.0",
         "symfony/postmark-mailer": "^8.0"
@@ -30,6 +24,7 @@
     "require-dev": {
         "fakerphp/faker": "^1.23",
         "larastan/larastan": "^3.8",
+        "laravel/envoy": "^2.10",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",
         "laravel/sail": "^1.41",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f43d7067907d617678297607d4613d3e",
+    "content-hash": "ba234075ad3d984843a6dfa847665318",
     "packages": [
         {
             "name": "archtechx/enums",
@@ -1281,6 +1281,64 @@
                 }
             ],
             "time": "2025-12-03T09:33:47+00:00"
+        },
+        {
+            "name": "givetwice/product-info-fetcher",
+            "version": "0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/GiveTwice/product-info-fetcher.git",
+                "reference": "8e3591f613f8e257cfa52e93337f7669459abd86"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/GiveTwice/product-info-fetcher/zipball/8e3591f613f8e257cfa52e93337f7669459abd86",
+                "reference": "8e3591f613f8e257cfa52e93337f7669459abd86",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.9",
+                "php": "^8.4"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "pestphp/pest": "^4.0",
+                "spatie/ray": "^1.28"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "GiveTwice\\ProductInfoFetcher\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mattias Geniar",
+                    "email": "m@ttias.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "When given a product URL, will return structured data of that product, including name, description, price, etc",
+            "homepage": "https://github.com/GiveTwice/product-info-fetcher",
+            "keywords": [
+                "givetwice",
+                "product-info-fetcher"
+            ],
+            "support": {
+                "issues": "https://github.com/GiveTwice/product-info-fetcher/issues",
+                "source": "https://github.com/GiveTwice/product-info-fetcher/tree/0.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/GiveTwice",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-12-17T13:30:30+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -4057,65 +4115,6 @@
                 }
             ],
             "time": "2025-12-10T09:58:31+00:00"
-        },
-        {
-            "name": "mattiasgeniar/product-info-fetcher",
-            "version": "dev-main",
-            "dist": {
-                "type": "path",
-                "url": "/Users/mattias/Projects/Repos/product-info-fetcher",
-                "reference": "8e0b028aa2edd503e67d7233e0d510ddc5f29905"
-            },
-            "require": {
-                "guzzlehttp/guzzle": "^7.9",
-                "php": "^8.4"
-            },
-            "require-dev": {
-                "laravel/pint": "^1.0",
-                "pestphp/pest": "^4.0",
-                "spatie/ray": "^1.28"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Mattiasgeniar\\ProductInfoFetcher\\": "src"
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "Mattiasgeniar\\ProductInfoFetcher\\Tests\\": "tests"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "vendor/bin/pest --no-coverage"
-                ],
-                "test-coverage": [
-                    "vendor/bin/pest --coverage"
-                ],
-                "format": [
-                    "vendor/bin/pint"
-                ]
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Mattias Geniar",
-                    "email": "m@ttias.be",
-                    "role": "Developer"
-                }
-            ],
-            "description": "When given a product URL, will return structured data of that product, including name, description, price, etc",
-            "homepage": "https://github.com/mattiasgeniar/product-info-fetcher",
-            "keywords": [
-                "mattiasgeniar",
-                "product-info-fetcher"
-            ],
-            "transport-options": {
-                "relative": false
-            }
         },
         {
             "name": "mobiledetect/mobiledetectlib",
@@ -10536,6 +10535,69 @@
             "time": "2025-10-27T23:09:14+00:00"
         },
         {
+            "name": "laravel/envoy",
+            "version": "v2.10.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/envoy.git",
+                "reference": "819a519e3d86b056c7aa3bd5d0801952a6fc14fd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/envoy/zipball/819a519e3d86b056c7aa3bd5d0801952a6fc14fd",
+                "reference": "819a519e3d86b056c7aa3bd5d0801952a6fc14fd",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.0|^7.0",
+                "illuminate/support": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
+                "php": "^7.2|^8.0",
+                "symfony/console": "^4.3|^5.0|^6.0|^7.0",
+                "symfony/process": "^4.3|^5.0|^6.0|^7.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "^8.0|^9.0|^10.4"
+            },
+            "suggest": {
+                "ext-posix": "Required to determine the System user on Unix systems."
+            },
+            "bin": [
+                "bin/envoy"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Envoy\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "Elegant SSH tasks for PHP.",
+            "keywords": [
+                "laravel",
+                "ssh"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel/envoy/issues",
+                "source": "https://github.com/laravel/envoy/tree/v2.10.2"
+            },
+            "time": "2025-01-28T15:47:18+00:00"
+        },
+        {
             "name": "laravel/pail",
             "version": "v1.2.4",
             "source": {
@@ -13431,9 +13493,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "mattiasgeniar/product-info-fetcher": 20
-    },
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
