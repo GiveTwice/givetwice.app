@@ -20,6 +20,33 @@
         <meta name="robots" content="@yield('robots')">
     @endif
 
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="{{ config('app.name', 'GiveTwice') }} - @yield('title', 'Welcome')">
+    @hasSection('description')
+        <meta property="og:description" content="@yield('description')">
+    @endif
+    <meta property="og:image" content="{{ asset('images/og-image.png') }}">
+    <meta property="og:site_name" content="{{ config('app.name', 'GiveTwice') }}">
+    @php $currentLocale = \App\Enums\SupportedLocale::tryFrom(app()->getLocale()); @endphp
+    @if($currentLocale)
+        <meta property="og:locale" content="{{ $currentLocale->ogLocale() }}">
+        @foreach(\App\Enums\SupportedLocale::cases() as $locale)
+            @if($locale !== $currentLocale)
+                <meta property="og:locale:alternate" content="{{ $locale->ogLocale() }}">
+            @endif
+        @endforeach
+    @endif
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ config('app.name', 'GiveTwice') }} - @yield('title', 'Welcome')">
+    @hasSection('description')
+        <meta name="twitter:description" content="@yield('description')">
+    @endif
+    <meta name="twitter:image" content="{{ asset('images/og-image.png') }}">
+
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
