@@ -25,7 +25,6 @@ class GiftList extends Model
         'description',
         'slug',
         'is_default',
-        'cover_image',
     ];
 
     protected function casts(): array

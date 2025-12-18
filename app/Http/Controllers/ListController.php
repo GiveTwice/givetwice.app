@@ -19,7 +19,7 @@ class ListController extends Controller
 
         return view('lists.show', [
             'list' => $list,
-            'gifts' => $list->gifts()->paginate(100),
+            'gifts' => $list->gifts()->with('claims')->paginate(100),
         ]);
     }
 
