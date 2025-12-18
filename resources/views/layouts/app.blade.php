@@ -7,6 +7,46 @@
 
     <title>{{ config('app.name', 'GiveTwice') }} - @yield('title', 'Home')</title>
 
+    <!-- Meta description -->
+    @hasSection('description')
+        <meta name="description" content="@yield('description')">
+    @endif
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ url()->current() }}">
+
+    <!-- Robots meta -->
+    @hasSection('robots')
+        <meta name="robots" content="@yield('robots')">
+    @endif
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="{{ config('app.name', 'GiveTwice') }} - @yield('title', 'Home')">
+    @hasSection('description')
+        <meta property="og:description" content="@yield('description')">
+    @endif
+    <meta property="og:image" content="{{ asset('images/og-image.png') }}">
+    <meta property="og:site_name" content="{{ config('app.name', 'GiveTwice') }}">
+    @php $currentLocale = \App\Enums\SupportedLocale::tryFrom(app()->getLocale()); @endphp
+    @if($currentLocale)
+        <meta property="og:locale" content="{{ $currentLocale->ogLocale() }}">
+        @foreach(\App\Enums\SupportedLocale::cases() as $locale)
+            @if($locale !== $currentLocale)
+                <meta property="og:locale:alternate" content="{{ $locale->ogLocale() }}">
+            @endif
+        @endforeach
+    @endif
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ config('app.name', 'GiveTwice') }} - @yield('title', 'Home')">
+    @hasSection('description')
+        <meta name="twitter:description" content="@yield('description')">
+    @endif
+    <meta name="twitter:image" content="{{ asset('images/og-image.png') }}">
+
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -53,8 +93,8 @@
                 </div>
 
                 <div class="md:hidden flex items-center">
-                    <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="text-gray-600 hover:text-gray-900">
-                        <x-icons.menu class="h-6 w-6" />
+                    <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="text-gray-600 hover:text-gray-900" aria-label="{{ __('Toggle navigation') }}">
+                        <x-icons.menu class="h-6 w-6" aria-hidden="true" />
                     </button>
                 </div>
             </div>
@@ -203,7 +243,7 @@
                 </div>
 
                 <div>
-                    <h4 class="font-semibold text-gray-900 mb-4">{{ __('Product') }}</h4>
+                    <p class="font-semibold text-gray-900 mb-4">{{ __('Product') }}</p>
                     <ul class="space-y-2 text-sm">
                         <li><a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('How It Works') }}</a></li>
                         <li><a href="{{ route('register', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('Create Wishlist') }}</a></li>
@@ -211,7 +251,7 @@
                 </div>
 
                 <div>
-                    <h4 class="font-semibold text-gray-900 mb-4">{{ __('Company') }}</h4>
+                    <p class="font-semibold text-gray-900 mb-4">{{ __('Company') }}</p>
                     <ul class="space-y-2 text-sm">
                         <li><a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('About') }}</a></li>
                         <li><a href="{{ route('contact', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('Contact') }}</a></li>
@@ -219,7 +259,7 @@
                 </div>
 
                 <div>
-                    <h4 class="font-semibold text-gray-900 mb-4">{{ __('Legal') }}</h4>
+                    <p class="font-semibold text-gray-900 mb-4">{{ __('Legal') }}</p>
                     <ul class="space-y-2 text-sm">
                         <li><a href="{{ route('privacy', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('Privacy Policy') }}</a></li>
                         <li><a href="{{ route('terms', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('Terms of Service') }}</a></li>

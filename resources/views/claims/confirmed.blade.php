@@ -2,6 +2,8 @@
 
 @section('title', __('Claim Confirmed'))
 
+@section('robots', 'noindex, nofollow')
+
 @push('styles')
     @vite('resources/css/confetti.css')
 @endpush

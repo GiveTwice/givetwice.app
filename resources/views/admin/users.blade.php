@@ -52,7 +52,7 @@
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center">
                             @if($user->avatar)
-                                <img src="{{ $user->avatar }}" alt="" class="w-10 h-10 rounded-full mr-3">
+                                <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="w-10 h-10 rounded-full mr-3">
                             @else
                                 <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
                                     <span class="text-gray-500 font-medium">{{ substr($user->name, 0, 1) }}</span>

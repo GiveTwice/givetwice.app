@@ -2,6 +2,8 @@
 
 @section('title', __('Gift Already Claimed'))
 
+@section('robots', 'noindex, nofollow')
+
 @section('content')
 
 <div class="max-w-xl mx-auto">

@@ -2,6 +2,8 @@
 
 @section('title', __('About Us'))
 
+@section('description', __('meta.about'))
+
 @section('content')
 
 <div class="text-center py-12 lg:py-16">

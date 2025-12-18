@@ -2,6 +2,8 @@
 
 @section('title', __('Create List'))
 
+@section('robots', 'noindex, nofollow')
+
 @section('content')
 <x-app-content
     :title="__('Create List')"

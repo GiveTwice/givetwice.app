@@ -2,6 +2,10 @@
 
 @section('title', __('Register'))
 
+@section('description', __('meta.register'))
+
+@section('robots', 'noindex, nofollow')
+
 @section('content')
 @if(config('app.allow_registration'))
     {{-- Normal registration form --}}
@@ -60,12 +64,12 @@
             <div class="mt-4 grid grid-cols-2 gap-3">
                 <a href="{{ route('auth.google', ['locale' => app()->getLocale()]) }}"
                    class="flex items-center justify-center px-4 py-3 border border-cream-200 rounded-xl hover:bg-cream-50 hover:border-cream-300 transition-colors">
-                    <img src="/icons/logo-google.svg" alt="" class="w-5 h-5 mr-2">
+                    <img src="/icons/logo-google.svg" alt="Google" class="w-5 h-5 mr-2">
                     {{ __('Google') }}
                 </a>
                 <a href="{{ route('auth.facebook', ['locale' => app()->getLocale()]) }}"
                    class="flex items-center justify-center px-4 py-3 border border-cream-200 rounded-xl hover:bg-cream-50 hover:border-cream-300 transition-colors">
-                    <img src="/icons/logo-facebook.svg" alt="" class="w-5 h-5 mr-2">
+                    <img src="/icons/logo-facebook.svg" alt="Facebook" class="w-5 h-5 mr-2">
                     {{ __('Facebook') }}
                 </a>
             </div>

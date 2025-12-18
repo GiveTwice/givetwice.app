@@ -177,3 +177,10 @@ Route::prefix('admin')
         Route::get('/users/{user}', [AdminController::class, 'showUser'])->name('admin.users.show');
         Route::post('/users/{user}/toggle-admin', [AdminController::class, 'toggleAdminStatus'])->name('admin.users.toggle-admin');
     });
+
+// Development-only routes
+if (app()->environment('local')) {
+    Route::get('/dev/og-image', function () {
+        return view('dev.og-image');
+    })->name('dev.og-image');
+}

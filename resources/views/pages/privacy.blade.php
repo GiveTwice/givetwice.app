@@ -2,6 +2,8 @@
 
 @section('title', __('Privacy Policy'))
 
+@section('description', __('meta.privacy'))
+
 @section('content')
 <div class="max-w-3xl mx-auto py-12 lg:py-16">
 

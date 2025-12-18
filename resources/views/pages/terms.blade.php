@@ -2,6 +2,8 @@
 
 @section('title', __('Terms of Service'))
 
+@section('description', __('meta.terms'))
+
 @section('content')
 <div class="max-w-3xl mx-auto py-12 lg:py-16">
 

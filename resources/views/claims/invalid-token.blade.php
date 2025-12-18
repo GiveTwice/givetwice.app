@@ -2,6 +2,8 @@
 
 @section('title', __('Invalid Link'))
 
+@section('robots', 'noindex, nofollow')
+
 @section('content')
 
 <div class="max-w-xl mx-auto">
