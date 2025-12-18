@@ -15,6 +15,7 @@ class CreatePendingClaimAction
 {
     public function execute(Gift $gift, string $email, ?string $name = null): Claim
     {
+        /** @var Claim|null $existingClaim */
         $existingClaim = $gift->claims()
             ->where('claimer_email', $email)
             ->first();

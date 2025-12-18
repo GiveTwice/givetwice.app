@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Models\Gift;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -11,9 +12,10 @@ class DeleteAccountAction
     {
         $userId = $user->id;
 
-        $user->gifts->each(function ($gift) {
+        foreach ($user->gifts as $gift) {
+            /** @var Gift $gift */
             $gift->clearMediaCollection('image');
-        });
+        }
 
         $user->delete();
 
