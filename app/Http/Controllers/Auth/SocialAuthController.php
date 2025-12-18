@@ -53,10 +53,17 @@ class SocialAuthController extends Controller
 
         if ($user) {
             // Link social account to existing user
-            $user->update([
+            $updateData = [
                 $socialIdField => $socialUser->getId(),
                 'avatar' => $socialUser->getAvatar(),
-            ]);
+            ];
+
+            // Social auth implies email is verified (provider verified it)
+            if (! $user->email_verified_at) {
+                $updateData['email_verified_at'] = now();
+            }
+
+            $user->update($updateData);
 
             Auth::login($user, true);
 
