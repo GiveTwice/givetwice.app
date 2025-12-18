@@ -13,8 +13,10 @@ use Illuminate\Support\Facades\Mail;
 
 class CreatePendingClaimAction
 {
-    public function execute(Gift $gift, string $email, ?string $name = null): Claim
+    public function execute(Gift $gift, string $email, ?string $name = null, ?string $locale = null): Claim
     {
+        $locale ??= app()->getLocale();
+
         /** @var Claim|null $existingClaim */
         $existingClaim = $gift->claims()
             ->where('claimer_email', $email)
@@ -25,11 +27,11 @@ class CreatePendingClaimAction
                 throw new EmailAlreadyClaimedException;
             }
 
-            Mail::to($email)->send(new ClaimConfirmationMail($existingClaim));
+            Mail::to($email)->send(new ClaimConfirmationMail($existingClaim, $locale));
             throw new ConfirmationResentException;
         }
 
-        return DB::transaction(function () use ($gift, $email, $name) {
+        return DB::transaction(function () use ($gift, $email, $name, $locale) {
             $lockedGift = Gift::lockForUpdate()->find($gift->id);
 
             if ($lockedGift->isClaimed()) {
@@ -42,7 +44,7 @@ class CreatePendingClaimAction
                 'claimer_name' => $name,
             ]);
 
-            Mail::to($email)->send(new ClaimConfirmationMail($claim));
+            Mail::to($email)->send(new ClaimConfirmationMail($claim, $locale));
 
             return $claim;
         });

@@ -14,7 +14,8 @@ class ClaimConfirmationMail extends Mailable
     use Queueable, SerializesModels;
 
     public function __construct(
-        public Claim $claim
+        public Claim $claim,
+        public string $locale = 'en'
     ) {}
 
     public function envelope(): Envelope
@@ -26,7 +27,7 @@ class ClaimConfirmationMail extends Mailable
 
     public function content(): Content
     {
-        $confirmUrl = url('/'.app()->getLocale().'/claim/confirm/'.$this->claim->confirmation_token);
+        $confirmUrl = url('/'.$this->locale.'/claim/confirm/'.$this->claim->confirmation_token);
 
         return new Content(
             view: 'emails.claim-confirmation',
