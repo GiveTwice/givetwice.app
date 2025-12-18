@@ -13,7 +13,7 @@
         <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-center mb-4">
                 @if($user->avatar)
-                    <img src="{{ $user->avatar }}" alt="" class="w-16 h-16 rounded-full mr-4">
+                    <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="w-16 h-16 rounded-full mr-4">
                 @else
                     <div class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center mr-4">
                         <span class="text-gray-500 text-2xl font-medium">{{ substr($user->name, 0, 1) }}</span>
