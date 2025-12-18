@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->redirectGuestsTo(function ($request) {
             $locale = $request->route('locale') ?? app()->getLocale();
+
             return route('login', ['locale' => $locale]);
         });
     })
