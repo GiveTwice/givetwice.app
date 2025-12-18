@@ -8,7 +8,7 @@
     </x-slot:instructions>
 
     <x-slot:styles>
-        /* Canvas size */
+        /* OG Image canvas - fixed dimensions for screenshot */
         .canvas {
             width: 1200px;
             height: 630px;
@@ -16,7 +16,7 @@
             overflow: hidden;
         }
 
-        /* Decorative circles */
+        /* Decorative circles - use Tailwind color tokens */
         .deco-circle {
             position: absolute;
             border-radius: 50%;
@@ -26,7 +26,7 @@
         .deco-circle-1 {
             width: 500px;
             height: 500px;
-            background: radial-gradient(circle, oklch(0.94 0.11 95 / 0.6) 0%, transparent 70%);
+            background: radial-gradient(circle, theme(colors.sunny.200 / 60%) 0%, transparent 70%);
             top: -150px;
             right: -100px;
         }
@@ -34,7 +34,7 @@
         .deco-circle-2 {
             width: 400px;
             height: 400px;
-            background: radial-gradient(circle, oklch(0.94 0.05 175 / 0.4) 0%, transparent 70%);
+            background: radial-gradient(circle, theme(colors.teal.100 / 40%) 0%, transparent 70%);
             bottom: -120px;
             left: -80px;
         }
@@ -42,7 +42,7 @@
         .deco-circle-3 {
             width: 200px;
             height: 200px;
-            background: radial-gradient(circle, oklch(0.94 0.04 25 / 0.5) 0%, transparent 70%);
+            background: radial-gradient(circle, theme(colors.coral.100 / 50%) 0%, transparent 70%);
             top: 60%;
             right: 15%;
         }
@@ -58,7 +58,6 @@
         .gift-2 { bottom: 100px; right: 200px; transform: rotate(10deg); font-size: 36px; }
         .gift-3 { top: 180px; right: 280px; transform: rotate(5deg); font-size: 32px; opacity: 0.1; }
 
-        /* Main content */
         .content {
             position: relative;
             z-index: 10;
@@ -69,7 +68,6 @@
             padding: 80px 100px;
         }
 
-        /* Logo section */
         .logo {
             display: flex;
             align-items: center;
@@ -89,44 +87,28 @@
             letter-spacing: -0.02em;
         }
 
-        /* Small inline heart for badges */
-        .badge .heart-svg-inline {
-            width: 18px;
-            height: 18px;
-            vertical-align: middle;
-            margin-right: 4px;
-        }
-
-        /* Tagline */
         .tagline {
             font-size: 42px;
             font-weight: 600;
-            color: var(--gray-700);
             line-height: 1.3;
             max-width: 700px;
             margin-bottom: 32px;
         }
 
-        .tagline-highlight {
-            color: var(--coral-500);
-        }
-
-        /* Subtitle */
         .subtitle {
             font-size: 24px;
-            color: var(--gray-500);
             max-width: 600px;
             line-height: 1.5;
         }
 
-        /* Badges */
         .badges {
             display: flex;
             gap: 16px;
             margin-top: 48px;
         }
 
-        .badge {
+        /* Badge base - OG-specific sizing (larger than app badges) */
+        .og-badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -136,33 +118,22 @@
             font-weight: 600;
         }
 
-        .badge-coral {
-            background: var(--coral-100);
-            color: oklch(0.50 0.16 25);
+        .og-badge .heart-svg-inline {
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+            margin-right: 4px;
         }
 
-        .badge-teal {
-            background: var(--teal-100);
-            color: oklch(0.48 0.10 175);
-        }
-
-        .badge-sunny {
-            background: var(--sunny-100);
-            color: oklch(0.58 0.14 70);
-        }
-
-        /* Domain */
         .domain {
             position: absolute;
             bottom: 40px;
             right: 60px;
             font-size: 22px;
             font-weight: 600;
-            color: var(--gray-400);
             letter-spacing: 0.02em;
         }
 
-        /* Visual card */
         .visual-card {
             position: absolute;
             right: 80px;
@@ -174,7 +145,7 @@
             padding: 28px;
             box-shadow:
                 0 25px 50px -12px rgba(0, 0, 0, 0.15),
-                0 0 0 1px oklch(0.93 0.04 70 / 0.5);
+                0 0 0 1px theme(colors.cream.300 / 50%);
         }
 
         .visual-card-header {
@@ -188,23 +159,12 @@
             font-size: 32px;
         }
 
-        .visual-card-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--gray-900);
-        }
-
-        .visual-card-subtitle {
-            font-size: 13px;
-            color: var(--gray-400);
-        }
-
         .visual-item {
             display: flex;
             align-items: center;
             gap: 12px;
             padding: 12px 0;
-            border-bottom: 1px solid oklch(0.96 0.03 75);
+            border-bottom: 1px solid theme(colors.cream.200);
         }
 
         .visual-item:last-child {
@@ -221,41 +181,20 @@
             font-size: 22px;
         }
 
-        .visual-item-emoji-1 { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
-        .visual-item-emoji-2 { background: linear-gradient(135deg, #fef3c7, #fde68a); }
-        .visual-item-emoji-3 { background: linear-gradient(135deg, #d1fae5, #a7f3d0); }
+        .visual-item-emoji-1 { background: linear-gradient(135deg, theme(colors.blue.100), theme(colors.blue.200)); }
+        .visual-item-emoji-2 { background: linear-gradient(135deg, theme(colors.amber.100), theme(colors.amber.200)); }
+        .visual-item-emoji-3 { background: linear-gradient(135deg, theme(colors.emerald.100), theme(colors.emerald.200)); }
 
         .visual-item-text {
             flex: 1;
         }
 
-        .visual-item-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--gray-700);
-        }
-
-        .visual-item-price {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--coral-500);
-        }
-
-        .visual-item-badge {
+        /* Item badge - OG-specific sizing */
+        .og-item-badge {
             font-size: 11px;
             font-weight: 600;
             padding: 4px 10px;
             border-radius: 100px;
-        }
-
-        .item-badge-available {
-            background: var(--teal-100);
-            color: oklch(0.48 0.10 175);
-        }
-
-        .item-badge-claimed {
-            background: var(--sunny-100);
-            color: oklch(0.58 0.14 70);
         }
     </x-slot:styles>
 
@@ -281,21 +220,21 @@
                 </div>
 
                 {{-- Tagline --}}
-                <h1 class="tagline">
+                <h1 class="tagline text-gray-700">
                     Your wishlist.<br>
-                    <span class="tagline-highlight">Good done quietly.</span>
+                    <span class="text-coral-500">Good done quietly.</span>
                 </h1>
 
                 {{-- Subtitle --}}
-                <p class="subtitle">
+                <p class="subtitle text-gray-500">
                     Share it with friends and family. When they buy, we donate to charity. Simple as that.
                 </p>
 
-                {{-- Badges --}}
+                {{-- Badges - using Tailwind color classes --}}
                 <div class="badges">
-                    <span class="badge badge-coral">&#127873; No duplicate gifts</span>
-                    <span class="badge badge-teal"><x-heart-icon class="heart-svg-inline" /> 100% to charity</span>
-                    <span class="badge badge-sunny">&#10003; Free to use</span>
+                    <span class="og-badge bg-coral-100 text-coral-700">&#127873; No duplicate gifts</span>
+                    <span class="og-badge bg-teal-100 text-teal-700"><x-heart-icon class="heart-svg-inline" /> 100% to charity</span>
+                    <span class="og-badge bg-sunny-100 text-sunny-700">&#10003; Free to use</span>
                 </div>
             </div>
 
@@ -304,37 +243,37 @@
                 <div class="visual-card-header">
                     <span class="visual-card-icon">&#127873;</span>
                     <div>
-                        <div class="visual-card-title">Birthday wishlist</div>
-                        <div class="visual-card-subtitle">3 gift ideas</div>
+                        <div class="text-lg font-bold text-gray-900">Birthday wishlist</div>
+                        <div class="text-sm text-gray-400">3 gift ideas</div>
                     </div>
                 </div>
                 <div class="visual-item">
                     <div class="visual-item-emoji visual-item-emoji-1">&#127911;</div>
                     <div class="visual-item-text">
-                        <div class="visual-item-name">Headphones</div>
-                        <div class="visual-item-price">€ 79</div>
+                        <div class="text-sm font-semibold text-gray-700">Headphones</div>
+                        <div class="text-sm font-bold text-coral-500">€ 79</div>
                     </div>
-                    <span class="visual-item-badge item-badge-available">Available</span>
+                    <span class="og-item-badge bg-teal-100 text-teal-700">Available</span>
                 </div>
                 <div class="visual-item">
                     <div class="visual-item-emoji visual-item-emoji-2">&#129507;</div>
                     <div class="visual-item-text">
-                        <div class="visual-item-name">Cozy Blanket</div>
-                        <div class="visual-item-price">€ 45</div>
+                        <div class="text-sm font-semibold text-gray-700">Cozy Blanket</div>
+                        <div class="text-sm font-bold text-coral-500">€ 45</div>
                     </div>
-                    <span class="visual-item-badge item-badge-claimed">Claimed</span>
+                    <span class="og-item-badge bg-sunny-100 text-sunny-700">Claimed</span>
                 </div>
                 <div class="visual-item">
                     <div class="visual-item-emoji visual-item-emoji-3">&#128218;</div>
                     <div class="visual-item-text">
-                        <div class="visual-item-name">Book Set</div>
-                        <div class="visual-item-price">€ 32</div>
+                        <div class="text-sm font-semibold text-gray-700">Book Set</div>
+                        <div class="text-sm font-bold text-coral-500">€ 32</div>
                     </div>
-                    <span class="visual-item-badge item-badge-available">Available</span>
+                    <span class="og-item-badge bg-teal-100 text-teal-700">Available</span>
                 </div>
             </div>
 
         {{-- Domain --}}
-        <div class="domain">givetwice.app</div>
+        <div class="domain text-gray-400">givetwice.app</div>
     </div>
 </x-dev.layouts.base>
