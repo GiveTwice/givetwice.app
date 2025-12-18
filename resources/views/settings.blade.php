@@ -642,13 +642,14 @@
     :title="__('Delete account')"
     :message="__('Are you sure you want to delete your account? All of your data will be permanently removed. This action cannot be undone.')"
     :confirmText="__('Delete account')"
+    :customButtons="true"
 >
-    <form method="POST" action="{{ route('settings.account.destroy', ['locale' => app()->getLocale()]) }}" class="w-full">
+    <form method="POST" action="{{ route('settings.account.destroy', ['locale' => app()->getLocale()]) }}">
         @csrf
         @method('DELETE')
 
         @if(auth()->user()->password)
-            <div class="mb-4">
+            <div class="mb-6">
                 <label for="delete_password" class="form-label">
                     {{ __('Enter your password to confirm') }}
                 </label>
@@ -665,7 +666,7 @@
                 @enderror
             </div>
         @else
-            <div class="mb-4">
+            <div class="mb-6">
                 <label for="delete_email" class="form-label">
                     {{ __('Enter your email to confirm') }}
                 </label>
@@ -683,13 +684,22 @@
             </div>
         @endif
 
-        <button
-            type="submit"
-            class="inline-flex items-center gap-2 bg-red-600 text-white px-4 py-2.5 rounded-xl hover:bg-red-700 transition-colors font-medium w-full justify-center"
-        >
-            <x-icons.trash class="w-5 h-5" />
-            {{ __('Delete account') }}
-        </button>
+        <div class="flex items-center justify-end gap-3">
+            <button
+                type="button"
+                x-on:click="open = false"
+                class="px-4 py-2.5 text-gray-700 font-medium hover:bg-gray-100 rounded-xl transition-colors"
+            >
+                {{ __('Cancel') }}
+            </button>
+            <button
+                type="submit"
+                class="inline-flex items-center gap-2 bg-red-600 text-white px-4 py-2.5 rounded-xl hover:bg-red-700 transition-colors font-medium"
+            >
+                <x-icons.trash class="w-5 h-5" />
+                {{ __('Delete account') }}
+            </button>
+        </div>
     </form>
 </x-confirm-modal>
 

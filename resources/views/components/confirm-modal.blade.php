@@ -5,6 +5,7 @@
     'confirmText' => __('Delete'),
     'cancelText' => __('Cancel'),
     'destructive' => true,
+    'customButtons' => false,
 ])
 
 <div
@@ -63,14 +64,16 @@
                 </div>
             </div>
 
-            <div class="p-6 flex items-center justify-end gap-3">
-                <button
-                    type="button"
-                    x-on:click="open = false"
-                    class="px-4 py-2.5 text-gray-700 font-medium hover:bg-gray-100 rounded-xl transition-colors"
-                >
-                    {{ $cancelText }}
-                </button>
+            <div class="p-6 @if(!$customButtons) flex items-center justify-end gap-3 @endif">
+                @unless($customButtons)
+                    <button
+                        type="button"
+                        x-on:click="open = false"
+                        class="px-4 py-2.5 text-gray-700 font-medium hover:bg-gray-100 rounded-xl transition-colors"
+                    >
+                        {{ $cancelText }}
+                    </button>
+                @endunless
 
                 {{ $slot }}
             </div>
