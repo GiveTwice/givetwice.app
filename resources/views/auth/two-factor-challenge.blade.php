@@ -5,7 +5,7 @@
 @section('robots', 'noindex, nofollow')
 
 @section('content')
-<div class="bg-white p-8 rounded-2xl shadow-sm border border-cream-200" x-data="{ useRecoveryCode: false }">
+<div class="bg-white p-8 sm:p-10 rounded-2xl shadow-sm border border-cream-200" x-data="{ useRecoveryCode: false }">
     <div class="text-center mb-6">
         <div class="inline-flex items-center justify-center w-14 h-14 bg-teal-100 text-teal-600 rounded-2xl mb-4">
             <x-icons.shield-check class="w-7 h-7" />
@@ -16,12 +16,19 @@
     </div>
 
     @if ($errors->any())
-        <div class="alert-error mb-6">
-            <ul class="list-disc list-inside text-sm">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+        <div class="alert-error mb-6 text-sm">
+            @if ($errors->count() === 1)
+                {{ $errors->first() }}
+            @else
+                <ul class="space-y-1">
+                    @foreach ($errors->all() as $error)
+                        <li class="flex items-start gap-2">
+                            <span class="text-red-400 mt-0.5">&times;</span>
+                            <span>{{ $error }}</span>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
         </div>
     @endif
 
