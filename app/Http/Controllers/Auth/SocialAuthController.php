@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -84,6 +85,8 @@ class SocialAuthController extends Controller
             'email_verified_at' => now(),
             'locale_preference' => app()->getLocale(),
         ]);
+
+        event(new Registered($user));
 
         Auth::login($user, true);
 
