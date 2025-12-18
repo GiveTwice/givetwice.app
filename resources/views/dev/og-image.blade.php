@@ -1,82 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OG Image Preview - GiveTwice</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<x-dev.layouts.base>
+    <x-slot:title>OG Image Preview</x-slot:title>
 
-        body {
-            font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #f5f5f5;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-        }
+    <x-slot:dimensions>1200 × 630</x-slot:dimensions>
 
-        .instructions {
-            margin-bottom: 24px;
-            text-align: center;
-            color: #666;
-            font-size: 14px;
-        }
+    <x-slot:instructions>
+        Screenshot the canvas. Save as <code>public/images/og-image.png</code>
+    </x-slot:instructions>
 
-        .instructions code {
-            background: #e5e5e5;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-family: monospace;
-        }
-
-        /* Screenshot guide border */
-        .og-wrapper {
-            position: relative;
-            background: white;
-            padding: 2px;
-            border: 2px dashed #999;
-            border-radius: 4px;
-        }
-
-        .og-wrapper::before {
-            content: '1200 × 630';
-            position: absolute;
-            top: -28px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 12px;
-            color: #666;
-            font-family: monospace;
-            background: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-        }
-
-        /* The actual OG image canvas */
-        .og-image {
+    <x-slot:styles>
+        /* Canvas size */
+        .canvas {
             width: 1200px;
             height: 630px;
             position: relative;
             overflow: hidden;
-            background: linear-gradient(
-                135deg,
-                oklch(0.99 0.01 80) 0%,
-                oklch(0.97 0.03 70) 40%,
-                oklch(0.96 0.04 50) 100%
-            );
         }
 
-        /* Decorative elements */
+        /* Decorative circles */
         .deco-circle {
             position: absolute;
             border-radius: 50%;
@@ -107,7 +47,7 @@
             right: 15%;
         }
 
-        /* Gift icons floating */
+        /* Floating gift icons */
         .gift-icon {
             position: absolute;
             font-size: 48px;
@@ -118,7 +58,7 @@
         .gift-2 { bottom: 100px; right: 200px; transform: rotate(10deg); font-size: 36px; }
         .gift-3 { top: 180px; right: 280px; transform: rotate(5deg); font-size: 32px; opacity: 0.1; }
 
-        /* Main content area */
+        /* Main content */
         .content {
             position: relative;
             z-index: 10;
@@ -137,10 +77,10 @@
             margin-bottom: 40px;
         }
 
-        .logo-heart {
-            font-size: 72px;
-            color: oklch(0.57 0.19 25);
-            line-height: 1;
+        .logo .heart-svg {
+            width: 72px;
+            height: 72px;
+            flex-shrink: 0;
         }
 
         .logo-text {
@@ -149,37 +89,37 @@
             letter-spacing: -0.02em;
         }
 
-        .logo-give {
-            color: #111827;
-        }
-
-        .logo-twice {
-            color: oklch(0.57 0.19 25);
+        /* Small inline heart for badges */
+        .badge .heart-svg-inline {
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+            margin-right: 4px;
         }
 
         /* Tagline */
         .tagline {
             font-size: 42px;
             font-weight: 600;
-            color: #374151;
+            color: var(--gray-700);
             line-height: 1.3;
             max-width: 700px;
             margin-bottom: 32px;
         }
 
         .tagline-highlight {
-            color: oklch(0.57 0.19 25);
+            color: var(--coral-500);
         }
 
         /* Subtitle */
         .subtitle {
             font-size: 24px;
-            color: #6b7280;
+            color: var(--gray-500);
             max-width: 600px;
             line-height: 1.5;
         }
 
-        /* Badge row */
+        /* Badges */
         .badges {
             display: flex;
             gap: 16px;
@@ -197,32 +137,32 @@
         }
 
         .badge-coral {
-            background: oklch(0.94 0.04 25);
+            background: var(--coral-100);
             color: oklch(0.50 0.16 25);
         }
 
         .badge-teal {
-            background: oklch(0.94 0.05 175);
+            background: var(--teal-100);
             color: oklch(0.48 0.10 175);
         }
 
         .badge-sunny {
-            background: oklch(0.97 0.05 95);
+            background: var(--sunny-100);
             color: oklch(0.58 0.14 70);
         }
 
-        /* Domain hint */
+        /* Domain */
         .domain {
             position: absolute;
             bottom: 40px;
             right: 60px;
             font-size: 22px;
             font-weight: 600;
-            color: #9ca3af;
+            color: var(--gray-400);
             letter-spacing: 0.02em;
         }
 
-        /* Right side visual element */
+        /* Visual card */
         .visual-card {
             position: absolute;
             right: 80px;
@@ -251,12 +191,12 @@
         .visual-card-title {
             font-size: 18px;
             font-weight: 700;
-            color: #111827;
+            color: var(--gray-900);
         }
 
         .visual-card-subtitle {
             font-size: 13px;
-            color: #9ca3af;
+            color: var(--gray-400);
         }
 
         .visual-item {
@@ -292,13 +232,13 @@
         .visual-item-name {
             font-size: 14px;
             font-weight: 600;
-            color: #374151;
+            color: var(--gray-700);
         }
 
         .visual-item-price {
             font-size: 13px;
             font-weight: 700;
-            color: oklch(0.57 0.19 25);
+            color: var(--coral-500);
         }
 
         .visual-item-badge {
@@ -308,63 +248,58 @@
             border-radius: 100px;
         }
 
-        .badge-available {
-            background: oklch(0.94 0.05 175);
+        .item-badge-available {
+            background: var(--teal-100);
             color: oklch(0.48 0.10 175);
         }
 
-        .badge-claimed {
-            background: oklch(0.97 0.05 95);
+        .item-badge-claimed {
+            background: var(--sunny-100);
             color: oklch(0.58 0.14 70);
         }
-    </style>
-</head>
-<body>
-    <div class="instructions">
-        Screenshot the area inside the dashed border. Save as <code>public/images/og-image.png</code>
-    </div>
+    </x-slot:styles>
 
-    <div class="og-wrapper">
-        <div class="og-image">
-            <!-- Decorative circles -->
+    <div class="canvas bg-gradient-warm">
+            {{-- Decorative circles --}}
             <div class="deco-circle deco-circle-1"></div>
             <div class="deco-circle deco-circle-2"></div>
             <div class="deco-circle deco-circle-3"></div>
 
-            <!-- Floating gift icons -->
+            {{-- Floating gift icons --}}
             <span class="gift-icon gift-1">&#127873;</span>
             <span class="gift-icon gift-2">&#127873;</span>
             <span class="gift-icon gift-3">&#127873;</span>
 
-            <!-- Main content -->
+            {{-- Main content --}}
             <div class="content">
-                <!-- Logo -->
+                {{-- Logo --}}
                 <div class="logo">
-                    <span class="logo-heart">&#10084;</span>
+                    <x-heart-icon class="heart-svg" />
                     <span class="logo-text">
-                        <span class="logo-give">Give</span><span class="logo-twice">Twice</span>
+                        <span class="text-gray-900">Give</span><span class="text-coral-500">Twice</span>
                     </span>
                 </div>
 
-                <!-- Tagline -->
+                {{-- Tagline --}}
                 <h1 class="tagline">
-                    Every gift gives <span class="tagline-highlight">twice</span>
+                    Your wishlist.<br>
+                    <span class="tagline-highlight">Good done quietly.</span>
                 </h1>
 
-                <!-- Subtitle -->
+                {{-- Subtitle --}}
                 <p class="subtitle">
-                    Create wishlists your loved ones will love. When they buy, charity wins too.
+                    Share it with friends and family. When they buy, we donate to charity. Simple as that.
                 </p>
 
-                <!-- Badges -->
+                {{-- Badges --}}
                 <div class="badges">
-                    <span class="badge badge-coral">&#127873; Perfect gifts</span>
-                    <span class="badge badge-teal">&#10084; 100% to charity</span>
-                    <span class="badge badge-sunny">&#10003; Always free</span>
+                    <span class="badge badge-coral">&#127873; No duplicate gifts</span>
+                    <span class="badge badge-teal"><x-heart-icon class="heart-svg-inline" /> 100% to charity</span>
+                    <span class="badge badge-sunny">&#10003; Free to use</span>
                 </div>
             </div>
 
-            <!-- Visual card element -->
+            {{-- Visual card --}}
             <div class="visual-card">
                 <div class="visual-card-header">
                     <span class="visual-card-icon">&#127873;</span>
@@ -379,7 +314,7 @@
                         <div class="visual-item-name">Headphones</div>
                         <div class="visual-item-price">€ 79</div>
                     </div>
-                    <span class="visual-item-badge badge-available">Available</span>
+                    <span class="visual-item-badge item-badge-available">Available</span>
                 </div>
                 <div class="visual-item">
                     <div class="visual-item-emoji visual-item-emoji-2">&#129507;</div>
@@ -387,7 +322,7 @@
                         <div class="visual-item-name">Cozy Blanket</div>
                         <div class="visual-item-price">€ 45</div>
                     </div>
-                    <span class="visual-item-badge badge-claimed">Claimed</span>
+                    <span class="visual-item-badge item-badge-claimed">Claimed</span>
                 </div>
                 <div class="visual-item">
                     <div class="visual-item-emoji visual-item-emoji-3">&#128218;</div>
@@ -395,13 +330,11 @@
                         <div class="visual-item-name">Book Set</div>
                         <div class="visual-item-price">€ 32</div>
                     </div>
-                    <span class="visual-item-badge badge-available">Available</span>
+                    <span class="visual-item-badge item-badge-available">Available</span>
                 </div>
             </div>
 
-            <!-- Domain -->
-            <div class="domain">givetwice.app</div>
-        </div>
+        {{-- Domain --}}
+        <div class="domain">givetwice.app</div>
     </div>
-</body>
-</html>
+</x-dev.layouts.base>

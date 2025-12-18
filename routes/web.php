@@ -183,4 +183,12 @@ if (app()->environment('local')) {
     Route::get('/dev/og-image', function () {
         return view('dev.og-image');
     })->name('dev.og-image');
+
+    Route::get('/dev/logo-icon', function () {
+        return view('dev.logo-icon');
+    })->name('dev.logo-icon');
+
+    Route::get('/dev/logo-text', function () {
+        return view('dev.logo-text');
+    })->name('dev.logo-text');
 }

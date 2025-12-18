@@ -3,20 +3,20 @@
 @php
     $sizeClasses = match($size) {
         'small' => [
-            'container' => 'space-x-1.5',
-            'heart' => 'text-lg',
+            'container' => 'gap-1.5',
+            'heart' => 'w-5 h-5',
             'text' => 'text-base',
             'badge' => 'text-[8px] px-1.5 py-px -top-1.5 -right-6',
         ],
         'large' => [
-            'container' => 'space-x-3',
-            'heart' => 'text-3xl',
+            'container' => 'gap-3',
+            'heart' => 'w-8 h-8',
             'text' => 'text-2xl',
             'badge' => 'text-[10px] px-2 py-0.5 -top-2 -right-8',
         ],
         default => [
-            'container' => 'space-x-2',
-            'heart' => 'text-2xl',
+            'container' => 'gap-2',
+            'heart' => 'w-6 h-6',
             'text' => 'text-xl',
             'badge' => 'text-[9px] px-1.5 py-px -top-1.5 -right-6',
         ],
@@ -24,8 +24,8 @@
 @endphp
 
 <a href="{{ url('/' . app()->getLocale()) }}" class="group/logo relative inline-flex items-center {{ $sizeClasses['container'] }}">
-    {{-- Heart emoji --}}
-    <span class="{{ $sizeClasses['heart'] }} text-coral-500">&#10084;</span>
+    {{-- Heart SVG (Noto Emoji) --}}
+    <x-heart-icon class="{{ $sizeClasses['heart'] }} flex-shrink-0" />
 
     {{-- Brand name with relative positioning for badge anchor --}}
     <span class="relative {{ $sizeClasses['text'] }} font-bold">
