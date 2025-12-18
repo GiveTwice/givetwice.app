@@ -77,8 +77,8 @@ describe('GiftClaimed event', function () {
         $owner = User::factory()->create();
         $gift = Gift::factory()->create(['user_id' => $owner->id]);
 
-        $list1 = GiftList::factory()->create(['user_id' => $owner->id, 'slug' => 'list-one']);
-        $list2 = GiftList::factory()->create(['user_id' => $owner->id, 'slug' => 'list-two']);
+        $list1 = GiftList::factory()->create(['user_id' => $owner->id]);
+        $list2 = GiftList::factory()->create(['user_id' => $owner->id]);
         $gift->lists()->attach([$list1->id, $list2->id]);
         $gift->load('lists');
 
@@ -90,8 +90,8 @@ describe('GiftClaimed event', function () {
         $publicChannels = array_filter($channels, fn ($ch) => $ch instanceof Channel && ! $ch instanceof PrivateChannel);
         $publicChannelNames = array_map(fn ($ch) => $ch->name, $publicChannels);
 
-        expect($publicChannelNames)->toContain('list.list-one');
-        expect($publicChannelNames)->toContain('list.list-two');
+        expect($publicChannelNames)->toContain('list.'.$list1->fresh()->slug);
+        expect($publicChannelNames)->toContain('list.'.$list2->fresh()->slug);
     });
 
     it('broadcasts as gift.claimed event', function () {
@@ -135,8 +135,8 @@ describe('GiftFetchCompleted event', function () {
         $owner = User::factory()->create();
         $gift = Gift::factory()->create(['user_id' => $owner->id]);
 
-        $list1 = GiftList::factory()->create(['user_id' => $owner->id, 'slug' => 'fetch-list-one']);
-        $list2 = GiftList::factory()->create(['user_id' => $owner->id, 'slug' => 'fetch-list-two']);
+        $list1 = GiftList::factory()->create(['user_id' => $owner->id]);
+        $list2 = GiftList::factory()->create(['user_id' => $owner->id]);
         $gift->lists()->attach([$list1->id, $list2->id]);
         $gift->load('lists');
 
@@ -146,8 +146,8 @@ describe('GiftFetchCompleted event', function () {
         $publicChannels = array_filter($channels, fn ($ch) => $ch instanceof Channel && ! $ch instanceof PrivateChannel);
         $publicChannelNames = array_map(fn ($ch) => $ch->name, $publicChannels);
 
-        expect($publicChannelNames)->toContain('list.fetch-list-one');
-        expect($publicChannelNames)->toContain('list.fetch-list-two');
+        expect($publicChannelNames)->toContain('list.'.$list1->fresh()->slug);
+        expect($publicChannelNames)->toContain('list.'.$list2->fresh()->slug);
     });
 
     it('does not broadcast to list channels when gift has no lists', function () {
