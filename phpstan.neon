@@ -5,3 +5,8 @@ parameters:
     level: 5
     paths:
         - app
+    ignoreErrors:
+        - message: '#Call to an undefined method Spatie\\Image\\Drivers\\ImageDriver::(nonQueued|performOnCollections)\(\)#'
+          paths:
+            - app/Models/Gift.php
+            - app/Models/User.php

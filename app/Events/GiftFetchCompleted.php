@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Models\Gift;
+use App\Models\GiftList;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -25,8 +26,7 @@ class GiftFetchCompleted implements ShouldBroadcastNow
             new PrivateChannel('user.'.$this->gift->user_id),
         ];
 
-        // Add public channels for each list this gift belongs to
-        // The slug acts as the "secret" - only those with the link can subscribe
+        /** @var GiftList $list */
         foreach ($this->gift->lists as $list) {
             $channels[] = new Channel('list.'.$list->slug);
         }

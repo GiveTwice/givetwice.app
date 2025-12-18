@@ -85,13 +85,13 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     {
         $this->addMediaConversion('thumb')
             ->fit(Fit::Crop, 96, 96)
-            ->performOnCollections('profile')
-            ->nonQueued();
+            ->nonQueued()
+            ->performOnCollections('profile');
 
         $this->addMediaConversion('medium')
             ->fit(Fit::Crop, 256, 256)
-            ->performOnCollections('profile')
-            ->nonQueued();
+            ->nonQueued()
+            ->performOnCollections('profile');
     }
 
     public function getProfileImageUrl(?string $conversion = null): ?string

@@ -21,6 +21,7 @@ class GiftController extends Controller
     public function create(Request $request): View
     {
         $lists = $request->user()->lists()->get();
+        /** @var GiftList|null $defaultList */
         $defaultList = $lists->firstWhere('is_default', true) ?? $lists->first();
 
         $selectedListId = $request->query('list');
@@ -44,6 +45,7 @@ class GiftController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        /** @var GiftList|null $targetList */
         $targetList = $request->list_id
             ? $request->user()->lists()->find($request->list_id)
             : $request->user()->lists()->where('is_default', true)->first();
