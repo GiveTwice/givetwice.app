@@ -71,7 +71,7 @@
                 </div>
 
                 <div class="hidden md:flex items-center space-x-6">
-                    <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="text-gray-600 hover:text-gray-900 transition-colors">{{ __('How It Works') }}</a>
+                    <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="text-gray-600 hover:text-gray-900 transition-colors">{{ __('How it works') }}</a>
                     <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="text-gray-600 hover:text-gray-900 transition-colors">{{ __('About') }}</a>
 
                     <span class="text-cream-300">|</span>
@@ -101,7 +101,7 @@
 
             <div id="mobile-menu" class="hidden md:hidden pb-4">
                 <div class="space-y-2">
-                    <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('How It Works') }}</a>
+                    <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('How it works') }}</a>
                     <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('About') }}</a>
 
                     <div class="border-t border-cream-200 my-2"></div>
@@ -245,7 +245,7 @@
                 <div>
                     <p class="font-semibold text-gray-900 mb-4">{{ __('Product') }}</p>
                     <ul class="space-y-2 text-sm">
-                        <li><a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('How It Works') }}</a></li>
+                        <li><a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('How it works') }}</a></li>
                         <li><a href="{{ route('register', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('Create Wishlist') }}</a></li>
                     </ul>
                 </div>
