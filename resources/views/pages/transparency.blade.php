@@ -87,8 +87,9 @@
             </div>
             <div>
                 <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ __('Fully open source') }}</h2>
-                <p class="text-gray-600 leading-relaxed mb-4">{{ __('GiveTwice is completely open source. Every line of code is publicly available for anyone to inspect, verify, and contribute to. No secrets, no hidden logic — just honest software that does exactly what we say it does.') }}</p>
-                <p class="text-gray-600 leading-relaxed mb-4">{{ __('This is our ultimate form of transparency. You don\'t have to take our word for how the app works — you can see for yourself.') }}</p>
+                <p class="text-gray-600 leading-relaxed mb-4">{{ __('GiveTwice is open source. You can read every line of code on GitHub.') }}</p>
+                <p class="text-gray-600 leading-relaxed mb-4">{{ __('Want to verify that we\'re actually donating profits? Check the code. Want to see how claims work? Check the code. Want to make sure we\'re not tracking you? Check the code.') }}</p>
+                <p class="text-gray-600 leading-relaxed mb-4">{{ __('We built this in public because we don\'t want you to just trust us. Verify it yourself.') }}</p>
                 <a href="https://github.com/GiveTwice" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-gray-900 hover:text-coral-600 font-medium transition-colors">
                     <x-icons.github class="w-4 h-4" />
                     {{ __('View our code on GitHub') }}
@@ -101,10 +102,10 @@
     {{-- Coming Soon Notice --}}
     <div class="bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200 rounded-2xl p-6 lg:p-8 text-center">
         <div class="text-3xl mb-3">&#128202;</div>
-        <h3 class="font-semibold text-gray-900 mb-2">{{ __('Transparency reports coming soon') }}</h3>
-        <p class="text-gray-600 text-sm mb-4">{{ __('Check back after our launch in early 2026 for our first transparency report.') }}</p>
+        <h3 class="font-semibold text-gray-900 mb-2">{{ __('Reports coming after launch') }}</h3>
+        <p class="text-gray-600 text-sm mb-4">{{ __('We\'re aiming to launch in early 2026. Once we have real numbers, we\'ll publish them here.') }}</p>
         <a href="{{ route('contact', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center text-teal-600 hover:text-teal-700 font-medium text-sm">
-            {{ __('Questions? Get in touch') }} <span class="ml-1">&rarr;</span>
+            {{ __('Questions? Email us') }} <span class="ml-1">&rarr;</span>
         </a>
     </div>
 

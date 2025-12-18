@@ -15,7 +15,7 @@ class ClaimConfirmationMail extends Mailable
 
     public function __construct(
         public Claim $claim,
-        public string $locale = 'en'
+        public string $userLocale = 'en'
     ) {}
 
     public function envelope(): Envelope
@@ -27,7 +27,7 @@ class ClaimConfirmationMail extends Mailable
 
     public function content(): Content
     {
-        $confirmUrl = url('/'.$this->locale.'/claim/confirm/'.$this->claim->confirmation_token);
+        $confirmUrl = url('/'.$this->userLocale.'/claim/confirm/'.$this->claim->confirmation_token);
 
         return new Content(
             view: 'emails.claim-confirmation',

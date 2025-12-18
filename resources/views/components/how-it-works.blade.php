@@ -2,7 +2,7 @@
 
 <div id="how-it-works" class="bg-cream-100 py-16 px-4 -mx-4 sm:-mx-6 lg:-mx-8">
     <div class="max-w-4xl mx-auto">
-        <h2 class="text-3xl font-bold text-center text-gray-900 mb-4">{{ __('How It Works') }}</h2>
+        <h2 class="text-3xl font-bold text-center text-gray-900 mb-4">{{ __('How it works') }}</h2>
         <p class="text-center text-gray-600 mb-12">{{ __('Three simple steps to perfect gift-giving') }}</p>
 
         <div class="grid md:grid-cols-3 gap-8 relative">
