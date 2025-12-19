@@ -60,7 +60,7 @@
                 </div>
                 <div>
                     <h3 class="font-semibold text-lg text-gray-900 mb-2">{{ __('Which charities do you support?') }}</h3>
-                    <p class="text-gray-600 leading-relaxed">{{ __('We\'re still figuring this out. We\'re launching in early 2026, and we\'ll announce our charity partners before then. We plan to rotate partners and publish exactly how much we donate to each one.') }}</p>
+                    <p class="text-gray-600 leading-relaxed">{{ __('We\'re still figuring this out. We\'re launching in early 2026, and we\'ll announce our charity partners before then. We plan to rotate partners and publish exactly how much we donate to each one.') }} <a href="{{ route('transparency', ['locale' => app()->getLocale()]) }}" class="text-coral-500 hover:text-coral-600 underline">{{ __('See our transparency page for more details.') }}</a></p>
                 </div>
             </div>
         </div>

@@ -108,7 +108,7 @@
                                         <span class="confetti-dot confetti-dot-teal confetti-12"></span>
                                     </div>
                                 </div>
-                                <p class="text-xs font-medium text-gray-800 leading-tight line-clamp-2">{{ __('Cozy Blanket') }}</p>
+                                <p class="text-xs font-medium text-gray-800 leading-tight line-clamp-2">{{ __('Warm Scarf') }}</p>
                                 <p class="text-xs font-bold text-coral-500 mt-0.5">€ 45</p>
                                 <div class="hero-card-highlight absolute -inset-1 rounded-2xl pointer-events-none"></div>
                             </div>
@@ -188,7 +188,7 @@
                     <p class="text-gray-600">{{ __('Stores pay us a commission. We donate all of it. You pay nothing extra.') }}</p>
                 </div>
             </div>
-            <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center px-5 py-2 bg-white text-gray-700 rounded-full hover:bg-gray-50 font-medium transition-colors border border-gray-200">
+            <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center px-5 py-2 bg-white text-gray-700 rounded-full hover:bg-gray-50 font-medium transition-colors border border-gray-200 whitespace-nowrap">
                 {{ __('How it works') }} <span class="ml-2">&rarr;</span>
             </a>
         </div>
