@@ -39,7 +39,10 @@ class SocialAuthController extends Controller
     {
         session(['social_auth_locale' => app()->getLocale()]);
 
-        return Socialite::driver('apple')
+        /** @var \SocialiteProviders\Apple\Provider $driver */
+        $driver = Socialite::driver('apple');
+
+        return $driver
             ->scopes(['name', 'email'])
             ->redirect();
     }
