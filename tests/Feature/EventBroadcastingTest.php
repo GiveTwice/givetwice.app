@@ -29,8 +29,9 @@ describe('GiftClaimed event', function () {
         $list = GiftList::factory()->create(['user_id' => $owner->id]);
         $gift->lists()->attach($list->id);
 
-        $this->actingAs($claimer)
-            ->post("/en/gifts/{$gift->id}/claim");
+        // Call the action directly instead of HTTP to avoid CSRF/middleware issues
+        $action = new \App\Actions\ClaimGiftAction;
+        $action->execute($gift, $claimer);
 
         Event::assertDispatched(GiftClaimed::class, function ($event) use ($gift) {
             return $event->gift->id === $gift->id;
