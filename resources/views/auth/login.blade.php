@@ -45,6 +45,12 @@
                 {{ __('Continue with Google') }}
             </a>
 
+            <a href="{{ route('auth.apple', ['locale' => app()->getLocale()]) }}"
+               class="flex items-center justify-center w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-colors font-medium text-gray-700">
+                <img src="/icons/logo-apple.svg" alt="Apple" class="w-5 h-5 mr-3">
+                {{ __('Continue with Apple') }}
+            </a>
+
             <button type="button"
                     x-on:click="showEmailForm = true"
                     class="flex items-center justify-center w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-colors font-medium text-gray-700">

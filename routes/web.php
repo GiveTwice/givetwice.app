@@ -116,6 +116,8 @@ Route::prefix('{locale}')
         Route::get('/auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
         Route::get('/auth/facebook', [SocialAuthController::class, 'redirectToFacebook'])->name('auth.facebook');
         Route::get('/auth/facebook/callback', [SocialAuthController::class, 'handleFacebookCallback']);
+        Route::get('/auth/apple', [SocialAuthController::class, 'redirectToApple'])->name('auth.apple');
+        Route::match(['get', 'post'], '/auth/apple/callback', [SocialAuthController::class, 'handleAppleCallback']);
 
         // Protected routes
         Route::middleware(['auth', 'verified'])->group(function () {

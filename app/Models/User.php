@@ -25,6 +25,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         'locale_preference',
         'google_id',
         'facebook_id',
+        'apple_id',
         'is_admin',
         'email_verified_at',
     ];

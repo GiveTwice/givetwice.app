@@ -17,6 +17,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
         ]);
 
+        $middleware->validateCsrfTokens(except: [
+            '*/auth/apple/callback',
+        ]);
+
         $middleware->redirectGuestsTo(function ($request) {
             $locale = $request->route('locale') ?? app()->getLocale();
 
