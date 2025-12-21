@@ -35,6 +35,23 @@ class SocialAuthController extends Controller
         return $this->handleSocialCallback('facebook', 'facebook_id');
     }
 
+    public function redirectToApple(): RedirectResponse
+    {
+        session(['social_auth_locale' => app()->getLocale()]);
+
+        /** @var \SocialiteProviders\Apple\Provider $driver */
+        $driver = Socialite::driver('apple');
+
+        return $driver
+            ->scopes(['name', 'email'])
+            ->redirect();
+    }
+
+    public function handleAppleCallback(): \Illuminate\Http\RedirectResponse
+    {
+        return $this->handleSocialCallback('apple', 'apple_id');
+    }
+
     protected function handleSocialCallback(string $provider, string $socialIdField): \Illuminate\Http\RedirectResponse
     {
         $locale = session()->pull('social_auth_locale', app()->getLocale());
@@ -55,8 +72,15 @@ class SocialAuthController extends Controller
             return $this->redirectToDashboard();
         }
 
+        $email = $socialUser->getEmail();
+
+        if (! $email) {
+            return redirect()->route('home', ['locale' => $locale])
+                ->with('error', __('Unable to authenticate with :provider.', ['provider' => ucfirst($provider)]));
+        }
+
         // Check if user exists with this email
-        $user = User::where('email', $socialUser->getEmail())->first();
+        $user = User::where('email', $email)->first();
 
         if ($user) {
             // Link social account to existing user
@@ -83,9 +107,11 @@ class SocialAuthController extends Controller
                 ->with('error', __('Registration is currently disabled.'));
         }
 
+        $name = $socialUser->getName() ?? $socialUser->getNickname() ?? 'User';
+
         $user = User::create([
-            'name' => $socialUser->getName(),
-            'email' => $socialUser->getEmail(),
+            'name' => $name,
+            'email' => $email,
             $socialIdField => $socialUser->getId(),
             'avatar' => $socialUser->getAvatar(),
             'email_verified_at' => now(),

@@ -148,9 +148,11 @@ function extractBladeTranslationKeys(): array
         if ($file->isFile() && $file->getExtension() === 'php') {
             $content = file_get_contents($file->getPathname());
 
-            preg_match_all("/__\('([^']+)'\)/", $content, $singleQuoteMatches);
+            // Match __('...') with support for escaped single quotes like \'
+            preg_match_all("/__\('((?:[^'\\\\]|\\\\.)*)'\)/", $content, $singleQuoteMatches);
             foreach ($singleQuoteMatches[1] as $key) {
-                $keys[$key] = true;
+                $unescaped = stripslashes($key);
+                $keys[$unescaped] = true;
             }
 
             preg_match_all('/__\("((?:[^"\\\\]|\\\\.)*)"\)/', $content, $doubleQuoteMatches);

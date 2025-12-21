@@ -3,7 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use SocialiteProviders\Apple\Provider as AppleProvider;
+use SocialiteProviders\Manager\SocialiteWasCalled;
 use Spatie\Health\Checks\Checks\CacheCheck;
 use Spatie\Health\Checks\Checks\DatabaseCheck;
 use Spatie\Health\Checks\Checks\DebugModeCheck;
@@ -31,6 +34,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Model::preventLazyLoading(! $this->app->isProduction());
+
+        Event::listen(function (SocialiteWasCalled $event) {
+            $event->extendSocialite('apple', AppleProvider::class);
+        });
 
         $this->registerHealthChecks();
     }
