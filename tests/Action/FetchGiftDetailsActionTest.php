@@ -105,22 +105,22 @@ function sampleProductHtml(array $overrides = []): string
 describe('FetchGiftDetailsAction', function () {
 
     describe('job configuration', function () {
-        it('is configured with 3 retry attempts', function () {
+        it('is configured with 4 retry attempts', function () {
             $user = User::factory()->create();
             $gift = Gift::factory()->create(['user_id' => $user->id]);
 
             $action = new FetchGiftDetailsAction($gift);
 
-            expect($action->tries)->toBe(3);
+            expect($action->tries)->toBe(4);
         });
 
-        it('is configured with 60 second backoff', function () {
+        it('is configured with exponential backoff', function () {
             $user = User::factory()->create();
             $gift = Gift::factory()->create(['user_id' => $user->id]);
 
             $action = new FetchGiftDetailsAction($gift);
 
-            expect($action->backoff)->toBe(60);
+            expect($action->backoff)->toBe([5, 30, 60]);
         });
 
         it('runs on the fetch queue', function () {

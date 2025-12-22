@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7f0a6b316be116e585f19887dd7d5b5a",
+    "content-hash": "0fb208dcf67f9e9027d66b3088697237",
     "packages": [
         {
             "name": "archtechx/enums",
@@ -1284,21 +1284,22 @@
         },
         {
             "name": "givetwice/product-info-fetcher",
-            "version": "0.1",
+            "version": "0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/GiveTwice/product-info-fetcher.git",
-                "reference": "8e3591f613f8e257cfa52e93337f7669459abd86"
+                "reference": "3a51aa2a51f24dc9c1634d3f09440b0260d20c1b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/GiveTwice/product-info-fetcher/zipball/8e3591f613f8e257cfa52e93337f7669459abd86",
-                "reference": "8e3591f613f8e257cfa52e93337f7669459abd86",
+                "url": "https://api.github.com/repos/GiveTwice/product-info-fetcher/zipball/3a51aa2a51f24dc9c1634d3f09440b0260d20c1b",
+                "reference": "3a51aa2a51f24dc9c1634d3f09440b0260d20c1b",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "^7.9",
-                "php": "^8.4"
+                "php": "^8.4",
+                "symfony/process": "^6.0|^7.0"
             },
             "require-dev": {
                 "laravel/pint": "^1.0",
@@ -1330,7 +1331,7 @@
             ],
             "support": {
                 "issues": "https://github.com/GiveTwice/product-info-fetcher/issues",
-                "source": "https://github.com/GiveTwice/product-info-fetcher/tree/0.1"
+                "source": "https://github.com/GiveTwice/product-info-fetcher/tree/0.2"
             },
             "funding": [
                 {
@@ -1338,7 +1339,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-12-17T13:30:30+00:00"
+            "time": "2025-12-22T20:20:23+00:00"
         },
         {
             "name": "graham-campbell/result-type",

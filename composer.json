@@ -7,7 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "givetwice/product-info-fetcher": "^0.1",
+        "givetwice/product-info-fetcher": "^0.2.0",
         "jenssegers/agent": "^2.6",
         "laravel-lang/lang": "^15.26",
         "laravel/fortify": "^1.32",
