@@ -6,6 +6,7 @@ use App\Actions\DeleteAccountAction;
 use App\Actions\DeleteUserProfileImageAction;
 use App\Actions\UpdatePasswordAction;
 use App\Actions\UploadUserProfileImageAction;
+use App\Enums\SupportedLocale;
 use App\Events\ProfileImageUpdated;
 use App\Rules\MatchesUserEmail;
 use Illuminate\Http\JsonResponse;
@@ -33,11 +34,23 @@ class SettingsController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'locale' => ['required', 'string', 'in:'.implode(',', SupportedLocale::values())],
         ]);
 
-        $request->user()->update([
+        $user = $request->user();
+        $oldLocale = $user->locale_preference;
+        $newLocale = $validated['locale'];
+
+        $user->update([
             'name' => $validated['name'],
+            'locale_preference' => $newLocale,
         ]);
+
+        if ($oldLocale !== $newLocale) {
+            return redirect()
+                ->route('settings', ['locale' => $newLocale])
+                ->with('status', 'profile-updated');
+        }
 
         return back()->with('status', 'profile-updated');
     }

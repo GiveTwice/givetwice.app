@@ -153,6 +153,26 @@
                         <p class="form-help">{{ __('Email address cannot be changed at this time.') }}</p>
                     </div>
 
+                    <div class="mb-6">
+                        <label for="locale" class="form-label">
+                            {{ __('Language') }}
+                        </label>
+                        <select
+                            id="locale"
+                            name="locale"
+                            class="form-select @error('locale') border-red-500 @enderror"
+                        >
+                            @foreach(\App\Enums\SupportedLocale::cases() as $locale)
+                                <option value="{{ $locale->value }}" {{ auth()->user()->locale_preference === $locale->value ? 'selected' : '' }}>
+                                    {{ $locale->flag() }} {{ $locale->label() }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('locale')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     <div class="flex items-center gap-4">
                         <button type="submit" class="btn-primary">
                             <x-icons.checkmark class="w-5 h-5" />
