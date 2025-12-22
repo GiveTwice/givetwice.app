@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Route;
 
 // Redirect root to detected locale
 Route::get('/', function () {
-    $locale = SetLocale::detectBrowserLocale(request());
+    $locale = auth()->user()?->locale_preference
+        ?? SetLocale::detectBrowserLocale(request());
 
     return redirect("/{$locale}", 302);
 });
@@ -67,10 +68,7 @@ Route::prefix('{locale}')
         })->name('contact');
 
         // Public list view (shareable)
-        Route::get('/view/{list}', [PublicListController::class, 'show'])->name('public.list');
-
-        // List show - handles both authenticated owners and redirects for guests/non-owners
-        Route::get('/list/{list}', [ListController::class, 'show'])->name('list.show');
+        Route::get('/v/{list}/{slug?}', [PublicListController::class, 'show'])->name('public.list');
 
         // Claim routes (guest + authenticated)
         Route::get('/gifts/{gift}/claim', [ClaimController::class, 'showAnonymousForm'])->name('claim.anonymous.form');
@@ -79,7 +77,7 @@ Route::prefix('{locale}')
         Route::get('/gifts/{gift}/claimed/{token?}', [ClaimController::class, 'showConfirmed'])->name('claim.confirmed');
 
         // Gift card HTML (for real-time updates on public lists)
-        Route::get('/view/{list}/gifts/{gift}/card', [GiftController::class, 'cardHtml'])->name('gifts.card-html');
+        Route::get('/v/{list}/{slug}/gifts/{gift}/card', [GiftController::class, 'cardHtml'])->name('gifts.card-html');
 
         // Auth view routes (GET only - POST handled by Fortify)
         Route::middleware('guest')->group(function () {
@@ -105,6 +103,25 @@ Route::prefix('{locale}')
             Route::get('/verify-email', function () {
                 return view('auth.verify-email');
             })->name('verification.notice');
+
+            Route::get('/verify-email/{id}/{hash}', function ($locale, $id, $hash) {
+                if (! request()->hasValidSignature()) {
+                    abort(401);
+                }
+
+                $user = \App\Models\User::findOrFail($id);
+
+                if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+                    abort(403);
+                }
+
+                if (! $user->hasVerifiedEmail()) {
+                    $user->markEmailAsVerified();
+                    event(new \Illuminate\Auth\Events\Verified($user));
+                }
+
+                return redirect()->route('dashboard.locale', ['locale' => $locale]);
+            })->middleware('signed')->name('verification.verify');
 
             Route::get('/confirm-password', function () {
                 return view('auth.confirm-password');

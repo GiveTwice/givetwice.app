@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -120,5 +121,12 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         }
 
         return strtoupper(mb_substr($this->name, 0, 2));
+    }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(
+            (new VerifyEmail)->locale($this->locale_preference ?? config('app.locale'))
+        );
     }
 }

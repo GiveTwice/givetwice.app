@@ -2,6 +2,7 @@
 
 namespace App\Actions\Fortify;
 
+use App\Enums\SupportedLocale;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -39,7 +40,20 @@ class CreateNewUser implements CreatesNewUsers
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
-            'locale_preference' => app()->getLocale(),
+            'locale_preference' => $this->detectLocale(),
         ]);
+    }
+
+    private function detectLocale(): string
+    {
+        $referer = request()->headers->get('referer', '');
+        if (preg_match('#/([a-z]{2})/(register|login)#', $referer, $matches)) {
+            $locale = $matches[1];
+            if (SupportedLocale::isSupported($locale)) {
+                return $locale;
+            }
+        }
+
+        return config('app.locale', 'en');
     }
 }
