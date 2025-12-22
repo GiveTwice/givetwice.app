@@ -87,7 +87,7 @@ cd givetwice.app
 
 # Install dependencies
 composer install
-npm install
+yarn install
 
 # Configure environment
 cp .env.example .env
@@ -98,7 +98,7 @@ php artisan key:generate
 php artisan migrate --seed
 
 # Build assets
-npm run build
+yarn build
 ```
 
 ### Development
@@ -111,7 +111,7 @@ composer dev
 php artisan octane:start --watch  # App server with hot reload
 php artisan horizon               # Queue workers
 php artisan reverb:start          # WebSocket server
-npm run dev                       # Vite dev server
+yarn dev                          # Vite dev server
 ```
 
 ### Test users
