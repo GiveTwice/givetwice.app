@@ -12,6 +12,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Psr\Http\Message\ResponseInterface;
 use Throwable;
 
 class FetchGiftDetailsAction implements ShouldQueue
@@ -52,17 +53,27 @@ class FetchGiftDetailsAction implements ShouldQueue
             ]);
 
             $this->tryAddImageFromUrls($imageAction, $product->allImageUrls ?? []);
-        } catch (ClientException|ServerException|ConnectException $e) {
+        } catch (ClientException|ServerException $e) {
+            $response = $e->getResponse();
+
             Log::warning('Gift fetch failed due to HTTP error', [
+                'gift_id' => $this->gift->id,
+                'url' => $this->gift->url,
+                'status_code' => $response?->getStatusCode(),
+                'error' => $e->getMessage(),
+                'response_headers' => $response?->getHeaders(),
+                'response_body' => $response ? $this->getResponseBody($response) : null,
+            ]);
+
+            $this->markAsFailed();
+        } catch (ConnectException $e) {
+            Log::warning('Gift fetch failed due to connection error', [
                 'gift_id' => $this->gift->id,
                 'url' => $this->gift->url,
                 'error' => $e->getMessage(),
             ]);
 
-            $this->gift->update([
-                'fetch_status' => 'failed',
-                'fetched_at' => now(),
-            ]);
+            $this->markAsFailed();
         } catch (Throwable $e) {
             Log::error('Gift fetch failed due to unexpected error', [
                 'gift_id' => $this->gift->id,
@@ -85,18 +96,11 @@ class FetchGiftDetailsAction implements ShouldQueue
             'error' => $exception?->getMessage(),
         ]);
 
-        $this->gift->update([
-            'fetch_status' => 'failed',
-            'fetched_at' => now(),
-        ]);
+        $this->markAsFailed();
 
         app(ProcessGiftImageAction::class)->dispatchCompletedEvent($this->gift);
     }
 
-    /**
-     * Try to add an image from a list of URLs.
-     * Stops at the first successful image download.
-     */
     private function tryAddImageFromUrls(ProcessGiftImageAction $imageAction, array $imageUrls): void
     {
         foreach ($imageUrls as $imageUrl) {
@@ -120,5 +124,24 @@ class FetchGiftDetailsAction implements ShouldQueue
             ->setUserAgent('GiveTwice/1.0 (Wishlist Service; +https://givetwice.com) Mozilla/5.0 (compatible)')
             ->setTimeout(15)
             ->setConnectTimeout(10);
+    }
+
+    private function markAsFailed(): void
+    {
+        $this->gift->update([
+            'fetch_status' => 'failed',
+            'fetched_at' => now(),
+        ]);
+    }
+
+    private function getResponseBody(ResponseInterface $response): string
+    {
+        $body = $response->getBody();
+
+        if ($body->isSeekable()) {
+            $body->rewind();
+        }
+
+        return (string) $body;
     }
 }
