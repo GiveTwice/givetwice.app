@@ -105,6 +105,10 @@ Route::prefix('{locale}')
             })->name('verification.notice');
 
             Route::get('/verify-email/{id}/{hash}', function ($locale, $id, $hash) {
+                if (! request()->hasValidSignature()) {
+                    abort(401);
+                }
+
                 $user = \App\Models\User::findOrFail($id);
 
                 if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
