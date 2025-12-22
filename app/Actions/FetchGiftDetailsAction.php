@@ -59,10 +59,10 @@ class FetchGiftDetailsAction implements ShouldQueue
             Log::warning('Gift fetch failed due to HTTP error', [
                 'gift_id' => $this->gift->id,
                 'url' => $this->gift->url,
-                'status_code' => $response?->getStatusCode(),
+                'status_code' => $response->getStatusCode(),
                 'error' => $e->getMessage(),
-                'response_headers' => $response?->getHeaders(),
-                'response_body' => $response ? $this->getResponseBody($response) : null,
+                'response_headers' => $response->getHeaders(),
+                'response_body' => $this->getResponseBody($response),
             ]);
 
             $this->markAsFailed();

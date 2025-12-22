@@ -44,6 +44,7 @@ class ClaimController extends Controller
                 ->first();
         }
 
+        /** @var \App\Models\GiftList|null $list */
         $list = $gift->lists()->first();
 
         if (! $claim) {

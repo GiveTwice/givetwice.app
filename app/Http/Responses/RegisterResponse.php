@@ -8,7 +8,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RegisterResponse implements RegisterResponseContract
 {
-    public function toResponse(Request $request): Response
+    /**
+     * @param  Request  $request
+     */
+    public function toResponse($request): Response
     {
         $locale = $request->user()->locale_preference ?? config('app.locale', 'en');
 
