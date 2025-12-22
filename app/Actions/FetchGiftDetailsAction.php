@@ -123,7 +123,21 @@ class FetchGiftDetailsAction implements ShouldQueue
         return (new ProductInfoFetcher($this->gift->url))
             ->setUserAgent('GiveTwice/1.0 (Wishlist Service; +https://givetwice.com) Mozilla/5.0 (compatible)')
             ->setTimeout(15)
-            ->setConnectTimeout(10);
+            ->setConnectTimeout(10)
+            ->withExtraHeaders([
+                'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+                'Cache-Control' => 'no-cache',
+                'DNT' => '1',
+                'Sec-CH-UA' => '"Google Chrome";v="131", "Chromium";v="131"',
+                'Sec-CH-UA-Mobile' => '?0',
+                'Sec-CH-UA-Platform' => '"macOS"',
+                'Sec-Fetch-Dest' => 'document',
+                'Sec-Fetch-Mode' => 'navigate',
+                'Sec-Fetch-Site' => 'none',
+                'Sec-Fetch-User' => '?1',
+                'Upgrade-Insecure-Requests' => '1',
+            ])
+            ->enableHeadlessFallback();
     }
 
     private function markAsFailed(): void
