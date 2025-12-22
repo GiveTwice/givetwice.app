@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Route;
 
 // Redirect root to detected locale
 Route::get('/', function () {
-    $locale = SetLocale::detectBrowserLocale(request());
+    $locale = auth()->user()?->locale_preference
+        ?? SetLocale::detectBrowserLocale(request());
 
     return redirect("/{$locale}", 302);
 });
