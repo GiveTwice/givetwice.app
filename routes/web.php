@@ -68,7 +68,7 @@ Route::prefix('{locale}')
         })->name('contact');
 
         // Public list view (shareable)
-        Route::get('/view/{list}', [PublicListController::class, 'show'])->name('public.list');
+        Route::get('/v/{list}/{slug?}', [PublicListController::class, 'show'])->name('public.list');
 
         // Claim routes (guest + authenticated)
         Route::get('/gifts/{gift}/claim', [ClaimController::class, 'showAnonymousForm'])->name('claim.anonymous.form');
@@ -77,7 +77,7 @@ Route::prefix('{locale}')
         Route::get('/gifts/{gift}/claimed/{token?}', [ClaimController::class, 'showConfirmed'])->name('claim.confirmed');
 
         // Gift card HTML (for real-time updates on public lists)
-        Route::get('/view/{list}/gifts/{gift}/card', [GiftController::class, 'cardHtml'])->name('gifts.card-html');
+        Route::get('/v/{list}/{slug}/gifts/{gift}/card', [GiftController::class, 'cardHtml'])->name('gifts.card-html');
 
         // Auth view routes (GET only - POST handled by Fortify)
         Route::middleware('guest')->group(function () {

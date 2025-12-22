@@ -52,7 +52,7 @@ class ClaimController extends Controller
                     ->with('error', __('You have not claimed this gift.'));
             }
 
-            return redirect()->route('public.list', ['locale' => $locale, 'list' => $list])
+            return redirect($list->getPublicUrl($locale))
                 ->with('error', __('You have not claimed this gift.'));
         }
 
@@ -121,8 +121,7 @@ class ClaimController extends Controller
         /** @var \App\Models\GiftList|null $list */
         $list = $gift->lists()->first();
 
-        return redirect()
-            ->route('public.list', ['locale' => $locale, 'list' => $list])
+        return redirect($list->getPublicUrl($locale))
             ->with('success', __('Please check your email to confirm your claim.'));
     }
 

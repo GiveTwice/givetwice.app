@@ -14,11 +14,6 @@ class GiftList extends Model
 
     protected $table = 'lists';
 
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
-
     protected $fillable = [
         'user_id',
         'name',
@@ -38,16 +33,29 @@ class GiftList extends Model
     {
         static::creating(function (GiftList $list) {
             if (empty($list->slug)) {
-                $list->slug = Str::uuid()->toString();
+                $list->slug = $list->generateSlug();
             }
         });
 
-        static::created(function (GiftList $list) {
-            if (! str_starts_with($list->slug, $list->id.'-')) {
-                $list->slug = $list->id.'-'.Str::slug($list->name);
-                $list->saveQuietly();
+        static::updating(function (GiftList $list) {
+            if ($list->isDirty('name')) {
+                $list->slug = $list->generateSlug();
             }
         });
+    }
+
+    public function generateSlug(): string
+    {
+        return Str::slug($this->name) ?: Str::uuid()->toString();
+    }
+
+    public function getPublicUrl(?string $locale = null): string
+    {
+        return route('public.list', [
+            'locale' => $locale ?? app()->getLocale(),
+            'list' => $this->id,
+            'slug' => $this->slug,
+        ]);
     }
 
     public function user(): BelongsTo
