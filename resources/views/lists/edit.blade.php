@@ -10,8 +10,7 @@
     :description="__('Update the details of your list.')"
     :breadcrumbs="[
         ['label' => __('Dashboard'), 'url' => url('/' . app()->getLocale() . '/dashboard')],
-        ['label' => $list->name, 'url' => url('/' . app()->getLocale() . '/list/' . $list->slug)],
-        ['label' => __('Edit')]
+        ['label' => __('Edit :name', ['name' => $list->name])]
     ]"
 >
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
@@ -68,7 +67,7 @@
                 @endif
 
                 <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-100">
-                    <a href="{{ url('/' . app()->getLocale() . '/list/' . $list->slug) }}" class="btn-cancel">
+                    <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="btn-cancel">
                         {{ __('Cancel') }}
                     </a>
                     <button type="submit" class="btn-primary">

@@ -69,9 +69,6 @@ Route::prefix('{locale}')
         // Public list view (shareable)
         Route::get('/view/{list}', [PublicListController::class, 'show'])->name('public.list');
 
-        // List show - handles both authenticated owners and redirects for guests/non-owners
-        Route::get('/list/{list}', [ListController::class, 'show'])->name('list.show');
-
         // Claim routes (guest + authenticated)
         Route::get('/gifts/{gift}/claim', [ClaimController::class, 'showAnonymousForm'])->name('claim.anonymous.form');
         Route::post('/gifts/{gift}/claim-anonymous', [ClaimController::class, 'storeAnonymous'])->name('claim.anonymous.store');
@@ -105,6 +102,21 @@ Route::prefix('{locale}')
             Route::get('/verify-email', function () {
                 return view('auth.verify-email');
             })->name('verification.notice');
+
+            Route::get('/verify-email/{id}/{hash}', function ($locale, $id, $hash) {
+                $user = \App\Models\User::findOrFail($id);
+
+                if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+                    abort(403);
+                }
+
+                if (! $user->hasVerifiedEmail()) {
+                    $user->markEmailAsVerified();
+                    event(new \Illuminate\Auth\Events\Verified($user));
+                }
+
+                return redirect()->route('dashboard.locale', ['locale' => $locale]);
+            })->middleware('signed')->name('verification.verify');
 
             Route::get('/confirm-password', function () {
                 return view('auth.confirm-password');

@@ -114,8 +114,8 @@
                     <span class="text-sunny-800 text-sm font-medium">{{ __('Preview Mode') }}</span>
                     <span class="text-sunny-700 text-sm hidden sm:inline">— {{ __('This is how others will see your wishlist.') }}</span>
                 </div>
-                <a href="{{ url('/' . app()->getLocale() . '/list/' . $list->slug) }}" class="text-sm font-medium text-sunny-700 hover:text-sunny-900 underline underline-offset-2">
-                    {{ __('Edit list') }}
+                <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="text-sm font-medium text-sunny-700 hover:text-sunny-900 underline underline-offset-2">
+                    {{ __('Back to dashboard') }}
                 </a>
             </div>
         </div>

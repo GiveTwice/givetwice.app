@@ -9,20 +9,6 @@ use Illuminate\View\View;
 
 class ListController extends Controller
 {
-    public function show(Request $request, string $locale, GiftList $list): View|RedirectResponse
-    {
-        $user = $request->user();
-
-        if (! $user || $list->user_id !== $user->id) {
-            return redirect()->route('public.list', ['locale' => $locale, 'list' => $list]);
-        }
-
-        return view('lists.show', [
-            'list' => $list,
-            'gifts' => $list->gifts()->with('claims')->paginate(100),
-        ]);
-    }
-
     public function create(): View
     {
         return view('lists.create');
@@ -43,7 +29,7 @@ class ListController extends Controller
         ]);
 
         return redirect()
-            ->route('list.show', ['locale' => app()->getLocale(), 'list' => $list])
+            ->route('dashboard.locale', ['locale' => app()->getLocale()])
             ->with('success', __('List created successfully.'));
     }
 
@@ -71,7 +57,7 @@ class ListController extends Controller
         ]);
 
         return redirect()
-            ->route('list.show', ['locale' => app()->getLocale(), 'list' => $list])
+            ->route('dashboard.locale', ['locale' => app()->getLocale()])
             ->with('success', __('List updated successfully.'));
     }
 

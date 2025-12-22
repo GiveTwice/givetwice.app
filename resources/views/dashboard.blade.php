@@ -68,64 +68,6 @@
     }"
 >
 
-@if($isSingleListMode && $defaultList)
-
-    <x-app-content
-        :title="__('Welcome back, :name!', ['name' => auth()->user()->name])"
-    >
-        <x-slot:actions>
-            <x-share-modal :list="$defaultList" />
-            <a href="{{ url('/' . app()->getLocale() . '/gifts/create') }}?list={{ $defaultList->id }}" class="btn-primary">
-                <x-icons.plus class="w-5 h-5" />
-                {{ __('Add a Gift') }}
-            </a>
-        </x-slot:actions>
-
-        <div class="flex items-center gap-3 mb-6 -mt-2">
-            <h2 class="text-lg font-semibold text-gray-700">{{ __('Your Gifts') }}</h2>
-            <span class="text-sm text-gray-500 bg-cream-100 px-2.5 py-0.5 rounded-full">
-                {{ trans_choice(':count gift|:count gifts', $defaultList->gifts_count, ['count' => $defaultList->gifts_count]) }}
-            </span>
-        </div>
-
-        @if($defaultList->gifts->isEmpty())
-            <div class="py-12 text-center">
-                <div class="max-w-md mx-auto">
-                    <div class="w-20 h-20 bg-cream-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <span class="text-4xl">&#127873;</span>
-                    </div>
-                    <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ __('No gifts yet') }}</h3>
-                    <p class="text-gray-500 mb-6">{{ __('Start building your wishlist by adding gifts from any online store.') }}</p>
-                    <a href="{{ url('/' . app()->getLocale() . '/gifts/create') }}?list={{ $defaultList->id }}" class="btn-primary">
-                        <x-icons.plus class="w-5 h-5" />
-                        {{ __('Add Your First Gift') }}
-                    </a>
-                </div>
-            </div>
-        @else
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                @foreach($defaultList->gifts as $gift)
-                    <x-gift-card :gift="$gift" :editable="true" />
-                @endforeach
-            </div>
-        @endif
-    </x-app-content>
-
-    <div class="mt-8">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white/60 backdrop-blur-sm rounded-2xl border border-cream-200/60 p-6">
-            <div>
-                <h3 class="font-semibold text-gray-900">{{ __('Want more than one list?') }}</h3>
-                <p class="text-sm text-gray-500 mt-1">{{ __('You can create additional lists for different occasions or recipients.') }}</p>
-            </div>
-            <a href="{{ url('/' . app()->getLocale() . '/lists/create') }}" class="btn-secondary whitespace-nowrap">
-                <x-icons.plus class="w-4 h-4" />
-                {{ __('Create Another List') }}
-            </a>
-        </div>
-    </div>
-
-@else
-
     <x-app-content
         :title="__('Welcome back, :name!', ['name' => auth()->user()->name])"
     >
@@ -137,10 +79,7 @@
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
                         <div class="flex items-center gap-3">
-                            <a href="{{ url('/' . app()->getLocale() . '/list/' . $list->slug) }}"
-                               class="text-lg font-bold text-gray-900 hover:text-coral-600 transition-colors">
-                                {{ $list->name }}
-                            </a>
+                            <h2 class="text-lg font-bold text-gray-900">{{ $list->name }}</h2>
                             @if($list->is_default)
                                 <span class="badge badge-success text-xs">{{ __('Default') }}</span>
                             @endif
@@ -150,6 +89,9 @@
                         </p>
                     </div>
                     <div class="flex items-center gap-2">
+                        <a href="{{ url('/' . app()->getLocale() . '/list/' . $list->slug . '/edit') }}" class="btn-secondary">
+                            {{ __('Edit') }}
+                        </a>
                         <x-share-modal :list="$list" />
                         <a href="{{ url('/' . app()->getLocale() . '/gifts/create') }}?list={{ $list->id }}" class="btn-primary">
                             <x-icons.plus class="w-5 h-5" />
@@ -168,20 +110,10 @@
                     </div>
                 @else
                     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                        @foreach($list->gifts->take(10) as $gift)
+                        @foreach($list->gifts as $gift)
                             <x-gift-card :gift="$gift" :editable="true" />
                         @endforeach
                     </div>
-
-                    @if($list->gifts_count > 10)
-                        <div class="mt-6 text-center">
-                            <a href="{{ url('/' . app()->getLocale() . '/list/' . $list->slug) }}"
-                               class="inline-flex items-center gap-2 text-coral-600 hover:text-coral-700 font-medium">
-                                {{ __('View all :count gifts', ['count' => $list->gifts_count]) }}
-                                <x-icons.chevron-right class="w-4 h-4" />
-                            </a>
-                        </div>
-                    @endif
                 @endif
             </section>
         @empty
@@ -215,7 +147,6 @@
             </div>
         </div>
     @endif
-@endif
 
 </div>
 @endsection
