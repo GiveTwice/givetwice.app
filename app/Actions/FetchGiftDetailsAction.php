@@ -3,6 +3,7 @@
 namespace App\Actions;
 
 use App\Models\Gift;
+use GiveTwice\ProductInfoFetcher\HeadlessBrowser\Exceptions\BrowserException;
 use GiveTwice\ProductInfoFetcher\ProductInfoFetcher;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
@@ -74,6 +75,24 @@ class FetchGiftDetailsAction implements ShouldQueue
             ]);
 
             $this->markAsFailed();
+        } catch (BrowserException $e) {
+            $context = [
+                'gift_id' => $this->gift->id,
+                'url' => $this->gift->url,
+                'error' => $e->getMessage(),
+                'attempt' => $this->attempts(),
+            ];
+
+            if ($e->hasDebugData()) {
+                $context['status_code'] = $e->getStatusCode();
+                $context['final_url'] = $e->getFinalUrl();
+                $context['response_headers'] = $e->getResponseHeaders();
+                $context['response_body'] = $e->getResponseHtml();
+            }
+
+            Log::warning('Gift fetch failed due to browser error', $context);
+
+            throw $e;
         } catch (Throwable $e) {
             Log::error('Gift fetch failed due to unexpected error', [
                 'gift_id' => $this->gift->id,
@@ -137,7 +156,7 @@ class FetchGiftDetailsAction implements ShouldQueue
                 'Sec-Fetch-User' => '?1',
                 'Upgrade-Insecure-Requests' => '1',
             ])
-            ->enableHeadlessFallback();
+            ->preferHeadless();
     }
 
     private function markAsFailed(): void

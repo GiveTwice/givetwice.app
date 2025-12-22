@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0fb208dcf67f9e9027d66b3088697237",
+    "content-hash": "5019279cf4eab53337ea9f8b3e5daaec",
     "packages": [
         {
             "name": "archtechx/enums",
@@ -1284,16 +1284,16 @@
         },
         {
             "name": "givetwice/product-info-fetcher",
-            "version": "0.2",
+            "version": "0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/GiveTwice/product-info-fetcher.git",
-                "reference": "3a51aa2a51f24dc9c1634d3f09440b0260d20c1b"
+                "reference": "ed799da23e7b84b1de700e4f18a9b9cc56c16c6e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/GiveTwice/product-info-fetcher/zipball/3a51aa2a51f24dc9c1634d3f09440b0260d20c1b",
-                "reference": "3a51aa2a51f24dc9c1634d3f09440b0260d20c1b",
+                "url": "https://api.github.com/repos/GiveTwice/product-info-fetcher/zipball/ed799da23e7b84b1de700e4f18a9b9cc56c16c6e",
+                "reference": "ed799da23e7b84b1de700e4f18a9b9cc56c16c6e",
                 "shasum": ""
             },
             "require": {
@@ -1331,7 +1331,7 @@
             ],
             "support": {
                 "issues": "https://github.com/GiveTwice/product-info-fetcher/issues",
-                "source": "https://github.com/GiveTwice/product-info-fetcher/tree/0.2"
+                "source": "https://github.com/GiveTwice/product-info-fetcher/tree/0.3"
             },
             "funding": [
                 {
@@ -1339,7 +1339,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-12-22T20:20:23+00:00"
+            "time": "2025-12-22T20:59:12+00:00"
         },
         {
             "name": "graham-campbell/result-type",
