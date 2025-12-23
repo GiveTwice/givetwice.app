@@ -139,7 +139,7 @@ class FetchGiftDetailsAction implements ShouldQueue
 
     protected function createFetcher(): ProductInfoFetcher
     {
-        return (new ProductInfoFetcher($this->gift->url))
+        $fetcher = (new ProductInfoFetcher($this->gift->url))
             ->setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36')
             ->setTimeout(15)
             ->setConnectTimeout(10)
@@ -157,6 +157,14 @@ class FetchGiftDetailsAction implements ShouldQueue
                 'Upgrade-Insecure-Requests' => '1',
             ])
             ->preferHeadless();
+
+        $proxy = config('services.gift_fetcher.proxy');
+
+        if ($proxy) {
+            $fetcher->viaProxy($proxy);
+        }
+
+        return $fetcher;
     }
 
     private function markAsFailed(): void

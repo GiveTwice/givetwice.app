@@ -47,4 +47,8 @@ return [
         'redirect' => env('FACEBOOK_REDIRECT_URI'),
     ],
 
+    'gift_fetcher' => [
+        'proxy' => env('HTTP_PROXY'),
+    ],
+
 ];
