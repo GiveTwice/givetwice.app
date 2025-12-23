@@ -25,10 +25,19 @@ class FetchGiftDetailsAction implements ShouldQueue
     /** @var array<int, int> */
     public array $backoff = [5, 30, 60];
 
+    private ?ProductInfoFetcher $fetcher = null;
+
     public function __construct(
         public readonly Gift $gift
     ) {
         $this->onQueue('fetch');
+    }
+
+    public function setFetcher(ProductInfoFetcher $fetcher): self
+    {
+        $this->fetcher = $fetcher;
+
+        return $this;
     }
 
     public function handle(ProcessGiftImageAction $imageAction): void
@@ -36,7 +45,7 @@ class FetchGiftDetailsAction implements ShouldQueue
         $this->gift->update(['fetch_status' => 'fetching']);
 
         try {
-            $product = $this->createFetcher()->fetchAndParse();
+            $product = $this->getFetcher()->fetchAndParse();
 
             $description = $product->description
                 ? Str::limit($product->description, 1497, '...')
@@ -135,6 +144,11 @@ class FetchGiftDetailsAction implements ShouldQueue
                 return;
             }
         }
+    }
+
+    private function getFetcher(): ProductInfoFetcher
+    {
+        return $this->fetcher ?? $this->createFetcher();
     }
 
     protected function createFetcher(): ProductInfoFetcher

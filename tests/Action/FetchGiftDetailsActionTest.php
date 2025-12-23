@@ -5,10 +5,11 @@ use App\Actions\ProcessGiftImageAction;
 use App\Events\GiftFetchCompleted;
 use App\Models\Gift;
 use App\Models\User;
+use GiveTwice\ProductInfoFetcher\DataTransferObjects\ProductInfo;
 use GiveTwice\ProductInfoFetcher\ProductInfoFetcher;
-use GuzzleHttp\Client;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
@@ -18,31 +19,23 @@ beforeEach(function () {
     Event::fake([GiftFetchCompleted::class]);
 });
 
-function createGuzzleMockClient(array $responses): Client
+function mockFetcher(ProductInfo $productInfo): ProductInfoFetcher
 {
-    $mock = new MockHandler($responses);
-    $handlerStack = HandlerStack::create($mock);
+    $fetcher = Mockery::mock(ProductInfoFetcher::class);
+    $fetcher->shouldReceive('fetchAndParse')->andReturn($productInfo);
 
-    return new Client(['handler' => $handlerStack]);
+    return $fetcher;
 }
 
-function createTestAction(Gift $gift, Client $mockClient): FetchGiftDetailsAction
+function mockFetcherThrows(Throwable $exception): ProductInfoFetcher
 {
-    $action = new class($gift) extends FetchGiftDetailsAction
-    {
-        public ?Client $mockClient = null;
+    $fetcher = Mockery::mock(ProductInfoFetcher::class);
+    $fetcher->shouldReceive('fetchAndParse')->andThrow($exception);
 
-        protected function createFetcher(): ProductInfoFetcher
-        {
-            return parent::createFetcher()->setClient($this->mockClient);
-        }
-    };
-    $action->mockClient = $mockClient;
-
-    return $action;
+    return $fetcher;
 }
 
-function createImageActionMock(bool $fromUrlSuccess = false): ProcessGiftImageAction
+function mockImageAction(bool $fromUrlSuccess = false): ProcessGiftImageAction
 {
     $imageAction = Mockery::mock(ProcessGiftImageAction::class);
     $imageAction->shouldReceive('fromUrl')->andReturn($fromUrlSuccess);
@@ -51,81 +44,25 @@ function createImageActionMock(bool $fromUrlSuccess = false): ProcessGiftImageAc
     return $imageAction;
 }
 
-function sampleProductHtml(array $overrides = []): string
-{
-    $data = array_merge([
-        'name' => 'Test Product',
-        'description' => 'A wonderful test product',
-        'price' => '29.99',
-        'currency' => 'EUR',
-        'image' => 'https://example.com/image.jpg',
-        'rating' => null,
-        'reviewCount' => null,
-    ], $overrides);
-
-    $ratingJson = '';
-    if ($data['rating'] !== null) {
-        $ratingJson = sprintf(
-            '"aggregateRating": {"@type": "AggregateRating", "ratingValue": "%s", "reviewCount": "%s"},',
-            $data['rating'],
-            $data['reviewCount'] ?? 0
-        );
-    }
-
-    return <<<HTML
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>{$data['name']}</title>
-        <meta property="og:title" content="{$data['name']}">
-        <meta property="og:description" content="{$data['description']}">
-        <meta property="og:image" content="{$data['image']}">
-    </head>
-    <body>
-        <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "Product",
-            "name": "{$data['name']}",
-            "description": "{$data['description']}",
-            "image": "{$data['image']}",
-            {$ratingJson}
-            "offers": {
-                "@type": "Offer",
-                "price": "{$data['price']}",
-                "priceCurrency": "{$data['currency']}"
-            }
-        }
-        </script>
-    </body>
-    </html>
-    HTML;
-}
-
 describe('FetchGiftDetailsAction', function () {
 
     describe('job configuration', function () {
-        it('is configured with 4 retry attempts', function () {
-            $user = User::factory()->create();
-            $gift = Gift::factory()->create(['user_id' => $user->id]);
+        it('has 4 retry attempts', function () {
+            $gift = Gift::factory()->for(User::factory())->create();
 
-            $action = new FetchGiftDetailsAction($gift);
-
-            expect($action->tries)->toBe(4);
+            expect(new FetchGiftDetailsAction($gift))
+                ->tries->toBe(4);
         });
 
-        it('is configured with exponential backoff', function () {
-            $user = User::factory()->create();
-            $gift = Gift::factory()->create(['user_id' => $user->id]);
+        it('has exponential backoff', function () {
+            $gift = Gift::factory()->for(User::factory())->create();
 
-            $action = new FetchGiftDetailsAction($gift);
-
-            expect($action->backoff)->toBe([5, 30, 60]);
+            expect(new FetchGiftDetailsAction($gift))
+                ->backoff->toBe([5, 30, 60]);
         });
 
         it('runs on the fetch queue', function () {
-            $user = User::factory()->create();
-            $gift = Gift::factory()->create(['user_id' => $user->id]);
+            $gift = Gift::factory()->for(User::factory())->create();
 
             FetchGiftDetailsAction::dispatch($gift);
 
@@ -133,238 +70,152 @@ describe('FetchGiftDetailsAction', function () {
         });
     });
 
-    describe('happy path', function () {
+    describe('successful fetch', function () {
         it('sets fetch_status to fetching before making request', function () {
-            $user = User::factory()->create();
-            $gift = Gift::factory()->create([
-                'user_id' => $user->id,
-                'fetch_status' => 'pending',
-            ]);
-
-            $mockClient = createGuzzleMockClient([
-                new Response(200, [], sampleProductHtml()),
-            ]);
+            $gift = Gift::factory()->for(User::factory())->create(['fetch_status' => 'pending']);
 
             $statusDuringFetch = null;
-            $action = new class($gift) extends FetchGiftDetailsAction
-            {
-                public ?Client $mockClient = null;
+            $fetcher = Mockery::mock(ProductInfoFetcher::class);
+            $fetcher->shouldReceive('fetchAndParse')->andReturnUsing(function () use ($gift, &$statusDuringFetch) {
+                $statusDuringFetch = $gift->fresh()->fetch_status;
 
-                public ?string $statusDuringFetch = null;
+                return new ProductInfo(name: 'Test');
+            });
 
-                protected function createFetcher(): ProductInfoFetcher
-                {
-                    $this->statusDuringFetch = $this->gift->fresh()->fetch_status;
+            (new FetchGiftDetailsAction($gift))
+                ->setFetcher($fetcher)
+                ->handle(mockImageAction());
 
-                    return parent::createFetcher()->setClient($this->mockClient);
-                }
-            };
-            $action->mockClient = $mockClient;
-
-            $action->handle(createImageActionMock());
-
-            expect($action->statusDuringFetch)->toBe('fetching');
+            expect($statusDuringFetch)->toBe('fetching');
         });
 
         it('updates gift with fetched product details', function () {
-            $user = User::factory()->create();
-            $gift = Gift::factory()->create([
-                'user_id' => $user->id,
+            $gift = Gift::factory()->for(User::factory())->create([
                 'title' => 'Original Title',
                 'description' => null,
                 'price_in_cents' => null,
             ]);
 
-            $mockClient = createGuzzleMockClient([
-                new Response(200, [], sampleProductHtml([
-                    'name' => 'Fetched Product Name',
-                    'description' => 'Fetched description',
-                    'price' => '49.99',
-                    'currency' => 'USD',
-                ])),
-            ]);
+            $fetcher = mockFetcher(new ProductInfo(
+                name: 'Fetched Product Name',
+                description: 'Fetched description',
+                priceInCents: 4999,
+                priceCurrency: 'USD',
+            ));
 
-            $action = createTestAction($gift, $mockClient);
-            $action->handle(createImageActionMock());
+            (new FetchGiftDetailsAction($gift))
+                ->setFetcher($fetcher)
+                ->handle(mockImageAction());
 
-            $gift->refresh();
-            expect($gift->title)->toBe('Fetched Product Name');
-            expect($gift->description)->toBe('Fetched description');
-            expect($gift->price_in_cents)->toBe(4999);
-            expect($gift->currency)->toBe('USD');
+            expect($gift->fresh())
+                ->title->toBe('Fetched Product Name')
+                ->description->toBe('Fetched description')
+                ->price_in_cents->toBe(4999)
+                ->currency->toBe('USD');
         });
 
         it('updates rating and review count when available', function () {
-            $user = User::factory()->create();
-            $gift = Gift::factory()->create([
-                'user_id' => $user->id,
+            $gift = Gift::factory()->for(User::factory())->create([
                 'rating' => null,
                 'review_count' => null,
             ]);
 
-            $mockClient = createGuzzleMockClient([
-                new Response(200, [], sampleProductHtml([
-                    'rating' => '4.5',
-                    'reviewCount' => '127',
-                ])),
-            ]);
+            $fetcher = mockFetcher(new ProductInfo(
+                name: 'Product',
+                rating: 4.5,
+                reviewCount: 127,
+            ));
 
-            $action = createTestAction($gift, $mockClient);
-            $action->handle(createImageActionMock());
+            (new FetchGiftDetailsAction($gift))
+                ->setFetcher($fetcher)
+                ->handle(mockImageAction());
 
-            $gift->refresh();
-            expect((float) $gift->rating)->toBe(4.5);
-            expect($gift->review_count)->toBe(127);
+            expect($gift->fresh())
+                ->rating->toBe('4.5')
+                ->review_count->toBe(127);
         });
 
-        it('sets fetch_status to completed after successful fetch', function () {
-            $user = User::factory()->create();
-            $gift = Gift::factory()->create(['user_id' => $user->id]);
+        it('sets fetch_status to completed', function () {
+            $gift = Gift::factory()->for(User::factory())->create();
 
-            $mockClient = createGuzzleMockClient([
-                new Response(200, [], sampleProductHtml()),
-            ]);
-
-            $action = createTestAction($gift, $mockClient);
-            $action->handle(createImageActionMock());
+            (new FetchGiftDetailsAction($gift))
+                ->setFetcher(mockFetcher(new ProductInfo(name: 'Test')))
+                ->handle(mockImageAction());
 
             expect($gift->fresh()->fetch_status)->toBe('completed');
         });
 
-        it('sets fetched_at timestamp after successful fetch', function () {
-            $user = User::factory()->create();
-            $gift = Gift::factory()->create([
-                'user_id' => $user->id,
-                'fetched_at' => null,
-            ]);
+        it('sets fetched_at timestamp', function () {
+            $gift = Gift::factory()->for(User::factory())->create(['fetched_at' => null]);
 
-            $mockClient = createGuzzleMockClient([
-                new Response(200, [], sampleProductHtml()),
-            ]);
-
-            $action = createTestAction($gift, $mockClient);
-            $action->handle(createImageActionMock());
+            (new FetchGiftDetailsAction($gift))
+                ->setFetcher(mockFetcher(new ProductInfo(name: 'Test')))
+                ->handle(mockImageAction());
 
             expect($gift->fresh()->fetched_at)->not->toBeNull();
         });
 
-        it('dispatches completed event after successful fetch', function () {
-            $user = User::factory()->create();
-            $gift = Gift::factory()->create(['user_id' => $user->id]);
-
-            $mockClient = createGuzzleMockClient([
-                new Response(200, [], sampleProductHtml()),
-            ]);
-
-            $action = createTestAction($gift, $mockClient);
+        it('dispatches completed event', function () {
+            $gift = Gift::factory()->for(User::factory())->create();
 
             $imageAction = Mockery::mock(ProcessGiftImageAction::class);
             $imageAction->shouldReceive('fromUrl')->andReturn(false);
             $imageAction->shouldReceive('dispatchCompletedEvent')->once();
 
-            $action->handle($imageAction);
+            (new FetchGiftDetailsAction($gift))
+                ->setFetcher(mockFetcher(new ProductInfo(name: 'Test')))
+                ->handle($imageAction);
         });
     });
 
     describe('data handling', function () {
-        it('truncates long descriptions to 1497 characters', function () {
-            $user = User::factory()->create();
-            $gift = Gift::factory()->create(['user_id' => $user->id]);
+        it('truncates long descriptions to 1500 characters', function () {
+            $gift = Gift::factory()->for(User::factory())->create();
 
-            $longDescription = str_repeat('a', 2000);
-            $mockClient = createGuzzleMockClient([
-                new Response(200, [], sampleProductHtml(['description' => $longDescription])),
-            ]);
+            $fetcher = mockFetcher(new ProductInfo(
+                name: 'Test',
+                description: str_repeat('a', 2000),
+            ));
 
-            $action = createTestAction($gift, $mockClient);
-            $action->handle(createImageActionMock());
+            (new FetchGiftDetailsAction($gift))
+                ->setFetcher($fetcher)
+                ->handle(mockImageAction());
 
             expect(strlen($gift->fresh()->description))->toBe(1500); // 1497 + '...'
         });
 
         it('keeps original title if fetched title is empty', function () {
-            $user = User::factory()->create();
-            $gift = Gift::factory()->create([
-                'user_id' => $user->id,
-                'title' => 'My Original Title',
-            ]);
+            $gift = Gift::factory()->for(User::factory())->create(['title' => 'My Original Title']);
 
-            $mockClient = createGuzzleMockClient([
-                new Response(200, [], sampleProductHtml(['name' => ''])),
-            ]);
+            $fetcher = mockFetcher(new ProductInfo(name: ''));
 
-            $action = createTestAction($gift, $mockClient);
-            $action->handle(createImageActionMock());
+            (new FetchGiftDetailsAction($gift))
+                ->setFetcher($fetcher)
+                ->handle(mockImageAction());
 
             expect($gift->fresh()->title)->toBe('My Original Title');
         });
 
         it('keeps original description if fetched description is null', function () {
-            $user = User::factory()->create();
-            $gift = Gift::factory()->create([
-                'user_id' => $user->id,
-                'description' => 'My original description',
-            ]);
+            $gift = Gift::factory()->for(User::factory())->create(['description' => 'My original description']);
 
-            $html = <<<'HTML'
-            <!DOCTYPE html>
-            <html>
-            <head><title>Test</title></head>
-            <body>
-                <script type="application/ld+json">
-                {
-                    "@context": "https://schema.org",
-                    "@type": "Product",
-                    "name": "Test Product"
-                }
-                </script>
-            </body>
-            </html>
-            HTML;
+            $fetcher = mockFetcher(new ProductInfo(name: 'Test', description: null));
 
-            $mockClient = createGuzzleMockClient([
-                new Response(200, [], $html),
-            ]);
-
-            $action = createTestAction($gift, $mockClient);
-            $action->handle(createImageActionMock());
+            (new FetchGiftDetailsAction($gift))
+                ->setFetcher($fetcher)
+                ->handle(mockImageAction());
 
             expect($gift->fresh()->description)->toBe('My original description');
         });
 
         it('keeps original currency if fetched currency is null', function () {
-            $user = User::factory()->create();
-            $gift = Gift::factory()->create([
-                'user_id' => $user->id,
-                'currency' => 'EUR',
-            ]);
+            $gift = Gift::factory()->for(User::factory())->create(['currency' => 'EUR']);
 
-            $html = <<<'HTML'
-            <!DOCTYPE html>
-            <html>
-            <head><title>Test</title></head>
-            <body>
-                <script type="application/ld+json">
-                {
-                    "@context": "https://schema.org",
-                    "@type": "Product",
-                    "name": "Test Product",
-                    "offers": {
-                        "@type": "Offer",
-                        "price": "19.99"
-                    }
-                }
-                </script>
-            </body>
-            </html>
-            HTML;
+            $fetcher = mockFetcher(new ProductInfo(name: 'Test', priceInCents: 1999, priceCurrency: null));
 
-            $mockClient = createGuzzleMockClient([
-                new Response(200, [], $html),
-            ]);
-
-            $action = createTestAction($gift, $mockClient);
-            $action->handle(createImageActionMock());
+            (new FetchGiftDetailsAction($gift))
+                ->setFetcher($fetcher)
+                ->handle(mockImageAction());
 
             expect($gift->fresh()->currency)->toBe('EUR');
         });
@@ -372,14 +223,12 @@ describe('FetchGiftDetailsAction', function () {
 
     describe('image handling', function () {
         it('tries to add image from fetched URLs', function () {
-            $user = User::factory()->create();
-            $gift = Gift::factory()->create(['user_id' => $user->id]);
+            $gift = Gift::factory()->for(User::factory())->create();
 
-            $mockClient = createGuzzleMockClient([
-                new Response(200, [], sampleProductHtml(['image' => 'https://example.com/product.jpg'])),
-            ]);
-
-            $action = createTestAction($gift, $mockClient);
+            $fetcher = mockFetcher(new ProductInfo(
+                name: 'Test',
+                allImageUrls: ['https://example.com/product.jpg'],
+            ));
 
             $imageAction = Mockery::mock(ProcessGiftImageAction::class);
             $imageAction->shouldReceive('fromUrl')
@@ -388,104 +237,156 @@ describe('FetchGiftDetailsAction', function () {
                 ->andReturn(true);
             $imageAction->shouldReceive('dispatchCompletedEvent');
 
-            $action->handle($imageAction);
+            (new FetchGiftDetailsAction($gift))
+                ->setFetcher($fetcher)
+                ->handle($imageAction);
         });
 
         it('updates original_image_url when image download succeeds', function () {
-            $user = User::factory()->create();
-            $gift = Gift::factory()->create([
-                'user_id' => $user->id,
-                'original_image_url' => null,
-            ]);
+            $gift = Gift::factory()->for(User::factory())->create(['original_image_url' => null]);
 
-            $mockClient = createGuzzleMockClient([
-                new Response(200, [], sampleProductHtml(['image' => 'https://example.com/success.jpg'])),
-            ]);
+            $fetcher = mockFetcher(new ProductInfo(
+                name: 'Test',
+                allImageUrls: ['https://example.com/success.jpg'],
+            ));
 
-            $action = createTestAction($gift, $mockClient);
-            $action->handle(createImageActionMock(fromUrlSuccess: true));
+            (new FetchGiftDetailsAction($gift))
+                ->setFetcher($fetcher)
+                ->handle(mockImageAction(fromUrlSuccess: true));
 
             expect($gift->fresh()->original_image_url)->toBe('https://example.com/success.jpg');
         });
 
         it('does not update original_image_url when image download fails', function () {
-            $user = User::factory()->create();
-            $gift = Gift::factory()->create([
-                'user_id' => $user->id,
-                'original_image_url' => null,
-            ]);
+            $gift = Gift::factory()->for(User::factory())->create(['original_image_url' => null]);
 
-            $mockClient = createGuzzleMockClient([
-                new Response(200, [], sampleProductHtml(['image' => 'https://example.com/fail.jpg'])),
-            ]);
+            $fetcher = mockFetcher(new ProductInfo(
+                name: 'Test',
+                allImageUrls: ['https://example.com/fail.jpg'],
+            ));
 
-            $action = createTestAction($gift, $mockClient);
-            $action->handle(createImageActionMock(fromUrlSuccess: false));
+            (new FetchGiftDetailsAction($gift))
+                ->setFetcher($fetcher)
+                ->handle(mockImageAction(fromUrlSuccess: false));
 
             expect($gift->fresh()->original_image_url)->toBeNull();
+        });
+
+        it('tries multiple images until one succeeds', function () {
+            $gift = Gift::factory()->for(User::factory())->create(['original_image_url' => null]);
+
+            $fetcher = mockFetcher(new ProductInfo(
+                name: 'Test',
+                allImageUrls: [
+                    'https://example.com/first.jpg',
+                    'https://example.com/second.jpg',
+                    'https://example.com/third.jpg',
+                ],
+            ));
+
+            $imageAction = Mockery::mock(ProcessGiftImageAction::class);
+            $imageAction->shouldReceive('fromUrl')
+                ->with($gift, 'https://example.com/first.jpg')
+                ->once()
+                ->andReturn(false);
+            $imageAction->shouldReceive('fromUrl')
+                ->with($gift, 'https://example.com/second.jpg')
+                ->once()
+                ->andReturn(true);
+            $imageAction->shouldReceive('dispatchCompletedEvent');
+
+            (new FetchGiftDetailsAction($gift))
+                ->setFetcher($fetcher)
+                ->handle($imageAction);
+
+            expect($gift->fresh()->original_image_url)->toBe('https://example.com/second.jpg');
+        });
+
+        it('skips empty image URLs', function () {
+            $gift = Gift::factory()->for(User::factory())->create();
+
+            $fetcher = mockFetcher(new ProductInfo(
+                name: 'Test',
+                allImageUrls: ['', null, 'https://example.com/valid.jpg'],
+            ));
+
+            $imageAction = Mockery::mock(ProcessGiftImageAction::class);
+            $imageAction->shouldReceive('fromUrl')
+                ->with($gift, 'https://example.com/valid.jpg')
+                ->once()
+                ->andReturn(true);
+            $imageAction->shouldReceive('dispatchCompletedEvent');
+
+            (new FetchGiftDetailsAction($gift))
+                ->setFetcher($fetcher)
+                ->handle($imageAction);
         });
     });
 
     describe('error handling', function () {
         it('sets fetch_status to failed on client error (4xx)', function () {
-            $user = User::factory()->create();
-            $gift = Gift::factory()->create(['user_id' => $user->id]);
+            $gift = Gift::factory()->for(User::factory())->create();
 
-            $mockClient = createGuzzleMockClient([
-                new Response(404, [], 'Not Found'),
-            ]);
+            $exception = new ClientException(
+                'Not Found',
+                new Request('GET', 'https://example.com'),
+                new Response(404)
+            );
 
-            $action = createTestAction($gift, $mockClient);
-            $action->handle(createImageActionMock());
+            (new FetchGiftDetailsAction($gift))
+                ->setFetcher(mockFetcherThrows($exception))
+                ->handle(mockImageAction());
 
             expect($gift->fresh()->fetch_status)->toBe('failed');
         });
 
         it('sets fetch_status to failed on server error (5xx)', function () {
-            $user = User::factory()->create();
-            $gift = Gift::factory()->create(['user_id' => $user->id]);
+            $gift = Gift::factory()->for(User::factory())->create();
 
-            $mockClient = createGuzzleMockClient([
-                new Response(500, [], 'Internal Server Error'),
-            ]);
+            $exception = new ServerException(
+                'Internal Server Error',
+                new Request('GET', 'https://example.com'),
+                new Response(500)
+            );
 
-            $action = createTestAction($gift, $mockClient);
-            $action->handle(createImageActionMock());
+            (new FetchGiftDetailsAction($gift))
+                ->setFetcher(mockFetcherThrows($exception))
+                ->handle(mockImageAction());
 
             expect($gift->fresh()->fetch_status)->toBe('failed');
         });
 
         it('sets fetched_at even when fetch fails', function () {
-            $user = User::factory()->create();
-            $gift = Gift::factory()->create([
-                'user_id' => $user->id,
-                'fetched_at' => null,
-            ]);
+            $gift = Gift::factory()->for(User::factory())->create(['fetched_at' => null]);
 
-            $mockClient = createGuzzleMockClient([
-                new Response(404, [], 'Not Found'),
-            ]);
+            $exception = new ClientException(
+                'Not Found',
+                new Request('GET', 'https://example.com'),
+                new Response(404)
+            );
 
-            $action = createTestAction($gift, $mockClient);
-            $action->handle(createImageActionMock());
+            (new FetchGiftDetailsAction($gift))
+                ->setFetcher(mockFetcherThrows($exception))
+                ->handle(mockImageAction());
 
             expect($gift->fresh()->fetched_at)->not->toBeNull();
         });
 
         it('dispatches completed event even when fetch fails', function () {
-            $user = User::factory()->create();
-            $gift = Gift::factory()->create(['user_id' => $user->id]);
+            $gift = Gift::factory()->for(User::factory())->create();
 
-            $mockClient = createGuzzleMockClient([
-                new Response(404, [], 'Not Found'),
-            ]);
-
-            $action = createTestAction($gift, $mockClient);
+            $exception = new ClientException(
+                'Not Found',
+                new Request('GET', 'https://example.com'),
+                new Response(404)
+            );
 
             $imageAction = Mockery::mock(ProcessGiftImageAction::class);
             $imageAction->shouldReceive('dispatchCompletedEvent')->once();
 
-            $action->handle($imageAction);
+            (new FetchGiftDetailsAction($gift))
+                ->setFetcher(mockFetcherThrows($exception))
+                ->handle($imageAction);
         });
     });
 
