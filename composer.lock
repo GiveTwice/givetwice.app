@@ -1284,16 +1284,16 @@
         },
         {
             "name": "givetwice/product-info-fetcher",
-            "version": "0.3.2",
+            "version": "0.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/GiveTwice/product-info-fetcher.git",
-                "reference": "a97702298502ff3709f205e56f089d1da0d231de"
+                "reference": "8c75833f8fa1d3eafd3d985d97c2f9956f747e3f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/GiveTwice/product-info-fetcher/zipball/a97702298502ff3709f205e56f089d1da0d231de",
-                "reference": "a97702298502ff3709f205e56f089d1da0d231de",
+                "url": "https://api.github.com/repos/GiveTwice/product-info-fetcher/zipball/8c75833f8fa1d3eafd3d985d97c2f9956f747e3f",
+                "reference": "8c75833f8fa1d3eafd3d985d97c2f9956f747e3f",
                 "shasum": ""
             },
             "require": {
@@ -1331,7 +1331,7 @@
             ],
             "support": {
                 "issues": "https://github.com/GiveTwice/product-info-fetcher/issues",
-                "source": "https://github.com/GiveTwice/product-info-fetcher/tree/0.3.2"
+                "source": "https://github.com/GiveTwice/product-info-fetcher/tree/0.3.3"
             },
             "funding": [
                 {
@@ -1339,7 +1339,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-12-22T21:21:48+00:00"
+            "time": "2025-12-23T06:12:25+00:00"
         },
         {
             "name": "graham-campbell/result-type",
