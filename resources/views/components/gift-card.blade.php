@@ -101,12 +101,20 @@
         @endif
 
         @if($editable)
-            <a href="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/edit') }}"
-               class="gift-card-hover-overlay gift-card-hover-overlay-gray">
-                <span class="gift-card-hover-label text-gray-700">
+            <div class="gift-card-hover-overlay gift-card-hover-overlay-gray flex-col gap-2">
+                <a href="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/edit') }}"
+                   class="gift-card-hover-label text-gray-700">
                     {{ __('Edit') }}
-                </span>
-            </a>
+                </a>
+                @if($gift->url)
+                    <a href="{{ $gift->url }}"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="gift-card-hover-label text-gray-700">
+                        {{ __('View gift') }}
+                    </a>
+                @endif
+            </div>
         @elseif($isClaimedByMe)
             <a href="{{ route('claim.confirmed', ['locale' => app()->getLocale(), 'gift' => $gift]) }}"
                class="gift-card-hover-overlay gift-card-hover-overlay-teal">

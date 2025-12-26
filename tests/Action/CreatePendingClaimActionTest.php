@@ -245,4 +245,52 @@ describe('CreatePendingClaimAction', function () {
         });
     });
 
+    describe('email normalization', function () {
+        it('normalizes email to lowercase when creating claim', function () {
+            $owner = User::factory()->create();
+            $gift = Gift::factory()->create(['user_id' => $owner->id]);
+
+            $action = new CreatePendingClaimAction;
+            $claim = $action->execute($gift, 'Claimer@Example.COM');
+
+            expect($claim->claimer_email)->toBe('claimer@example.com');
+        });
+
+        it('detects existing claim with case-insensitive email', function () {
+            $owner = User::factory()->create();
+            $gift = Gift::factory()->create(['user_id' => $owner->id]);
+
+            Claim::factory()->create([
+                'gift_id' => $gift->id,
+                'claimer_email' => 'claimer@example.com',
+                'confirmed_at' => now(),
+            ]);
+
+            $action = new CreatePendingClaimAction;
+
+            expect(fn () => $action->execute($gift, 'CLAIMER@EXAMPLE.COM'))
+                ->toThrow(EmailAlreadyClaimedException::class);
+        });
+
+        it('resends confirmation with case-insensitive email match', function () {
+            $owner = User::factory()->create();
+            $gift = Gift::factory()->create(['user_id' => $owner->id]);
+
+            $existingClaim = Claim::factory()->create([
+                'gift_id' => $gift->id,
+                'claimer_email' => 'pending@example.com',
+                'confirmed_at' => null,
+            ]);
+
+            $action = new CreatePendingClaimAction;
+
+            expect(fn () => $action->execute($gift, 'PENDING@EXAMPLE.COM'))
+                ->toThrow(ConfirmationResentException::class);
+
+            Mail::assertSent(ClaimConfirmationMail::class, function ($mail) use ($existingClaim) {
+                return $mail->claim->id === $existingClaim->id;
+            });
+        });
+    });
+
 });
