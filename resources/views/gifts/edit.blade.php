@@ -42,16 +42,25 @@
                     @error('url')
                         <p class="form-error">{{ $message }}</p>
                     @enderror
-                    <a
-                        x-show="form.url"
-                        :href="form.url"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="inline-flex items-center gap-1 mt-2 text-sm text-coral-600 hover:text-coral-700 transition-colors"
-                    >
-                        {{ __('View gift') }}
-                        <x-icons.external-link class="w-4 h-4" />
-                    </a>
+                    <div class="flex items-center justify-between mt-2">
+                        <a
+                            x-show="form.url"
+                            :href="form.url"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="inline-flex items-center gap-1 text-sm text-coral-600 hover:text-coral-700 transition-colors"
+                        >
+                            {{ __('View gift') }}
+                            <x-icons.external-link class="w-4 h-4" />
+                        </a>
+                        <span
+                            x-show="form.url !== originalUrl"
+                            x-cloak
+                            class="text-xs text-gray-400"
+                        >
+                            {{ __("We'll refetch the image, description & price") }}
+                        </span>
+                    </div>
                 </div>
 
                 <div class="mb-6">
@@ -259,6 +268,7 @@
 <script>
     function giftEdit() {
         return {
+            originalUrl: @js($gift->url),
             form: {
                 url: @js(old('url', $gift->url)),
                 title: @js(old('title', $gift->title)),
