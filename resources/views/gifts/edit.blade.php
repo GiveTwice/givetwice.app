@@ -42,6 +42,16 @@
                     @error('url')
                         <p class="form-error">{{ $message }}</p>
                     @enderror
+                    <a
+                        x-show="form.url"
+                        :href="form.url"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="inline-flex items-center gap-1 mt-2 text-sm text-coral-600 hover:text-coral-700 transition-colors"
+                    >
+                        {{ __('View gift') }}
+                        <x-icons.external-link class="w-4 h-4" />
+                    </a>
                 </div>
 
                 <div class="mb-6">
