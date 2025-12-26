@@ -14,9 +14,6 @@
         <testsuite name="Action">
             <directory>tests/Action</directory>
         </testsuite>
-        <testsuite name="Listener">
-            <directory>tests/Listener</directory>
-        </testsuite>
     </testsuites>
     <source>
         <include>

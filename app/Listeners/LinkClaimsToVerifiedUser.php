@@ -15,7 +15,7 @@ class LinkClaimsToVerifiedUser
 
         Claim::query()
             ->whereNull('user_id')
-            ->where('claimer_email', $user->email)
+            ->whereRaw('LOWER(claimer_email) = ?', [strtolower($user->email)])
             ->update(['user_id' => $user->id]);
     }
 }

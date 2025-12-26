@@ -58,7 +58,7 @@
                             x-cloak
                             class="text-xs text-gray-400"
                         >
-                            {{ __("We'll refetch the image, description & price") }}
+                            {{ __("Details will be refetched on save") }}
                         </span>
                     </div>
                 </div>

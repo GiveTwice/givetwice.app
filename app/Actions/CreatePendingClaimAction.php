@@ -16,10 +16,11 @@ class CreatePendingClaimAction
     public function execute(Gift $gift, string $email, ?string $name = null, ?string $locale = null): Claim
     {
         $locale ??= app()->getLocale();
+        $normalizedEmail = strtolower($email);
 
         /** @var Claim|null $existingClaim */
         $existingClaim = $gift->claims()
-            ->where('claimer_email', $email)
+            ->where('claimer_email', $normalizedEmail)
             ->first();
 
         if ($existingClaim) {
@@ -27,11 +28,11 @@ class CreatePendingClaimAction
                 throw new EmailAlreadyClaimedException;
             }
 
-            Mail::to($email)->send(new ClaimConfirmationMail($existingClaim, $locale));
+            Mail::to($normalizedEmail)->send(new ClaimConfirmationMail($existingClaim, $locale));
             throw new ConfirmationResentException;
         }
 
-        return DB::transaction(function () use ($gift, $email, $name, $locale) {
+        return DB::transaction(function () use ($gift, $normalizedEmail, $name, $locale) {
             $lockedGift = Gift::lockForUpdate()->find($gift->id);
 
             if ($lockedGift->isClaimed()) {
@@ -40,11 +41,11 @@ class CreatePendingClaimAction
 
             $claim = Claim::create([
                 'gift_id' => $lockedGift->id,
-                'claimer_email' => $email,
+                'claimer_email' => $normalizedEmail,
                 'claimer_name' => $name,
             ]);
 
-            Mail::to($email)->send(new ClaimConfirmationMail($claim, $locale));
+            Mail::to($normalizedEmail)->send(new ClaimConfirmationMail($claim, $locale));
 
             return $claim;
         });

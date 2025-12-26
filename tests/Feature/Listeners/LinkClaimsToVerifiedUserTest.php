@@ -100,4 +100,16 @@ describe('LinkClaimsToVerifiedUser', function () {
         expect($claim->fresh()->user_id)->toBeNull();
     });
 
+    it('links claims with case-insensitive email matching', function () {
+        $claim = Claim::factory()->anonymous()->confirmed()->create([
+            'claimer_email' => 'Jane.Doe@Example.COM',
+        ]);
+
+        $user = User::factory()->create(['email' => 'jane.doe@example.com']);
+
+        event(new Verified($user));
+
+        expect($claim->fresh()->user_id)->toBe($user->id);
+    });
+
 });

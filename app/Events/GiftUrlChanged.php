@@ -11,6 +11,6 @@ class GiftUrlChanged
     use Dispatchable, SerializesModels;
 
     public function __construct(
-        public readonly Gift $gift
+        public readonly Gift $gift,
     ) {}
 }

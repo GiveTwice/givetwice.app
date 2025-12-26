@@ -38,15 +38,14 @@ describe('CreateDefaultListForNewUser', function () {
     });
 
     describe('slug generation', function () {
-        it('creates slug in {id}-{name} format', function () {
+        it('creates slug from list name', function () {
             $user = User::factory()->create();
 
             event(new Registered($user));
 
             $list = $user->lists->first();
 
-            expect($list->slug)->toMatch('/^\d+-my-wishlist$/');
-            expect($list->slug)->toStartWith($list->id.'-');
+            expect($list->slug)->toBe('my-wishlist');
         });
 
         it('creates slug with localized name', function (string $locale, string $expectedSlug) {
@@ -56,7 +55,7 @@ describe('CreateDefaultListForNewUser', function () {
 
             $list = $user->lists->first();
 
-            expect($list->slug)->toMatch('/^\d+-'.$expectedSlug.'$/');
+            expect($list->slug)->toBe($expectedSlug);
         })->with([
             'English' => ['en', 'my-wishlist'],
             'Dutch' => ['nl', 'mijn-verlanglijstje'],
