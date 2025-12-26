@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\SupportedCurrency;
 use App\Events\GiftCreated;
+use App\Events\GiftUrlChanged;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -40,6 +41,15 @@ class Gift extends Model implements HasMedia
         'rating',
         'review_count',
     ];
+
+    protected static function booted(): void
+    {
+        static::updated(function (Gift $gift): void {
+            if ($gift->wasChanged('url')) {
+                GiftUrlChanged::dispatch($gift);
+            }
+        });
+    }
 
     protected function casts(): array
     {
