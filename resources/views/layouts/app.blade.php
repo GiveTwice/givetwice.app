@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'GiveTwice') }} - @yield('title', 'Home')</title>
+    <title>@yield('title', 'Home') | {{ config('app.name', 'GiveTwice') }}</title>
 
     <!-- Meta description -->
     @hasSection('description')
         <meta name="description" content="@yield('description')">
+    @else
+        <meta name="description" content="{{ __('meta.home') }}">
     @endif
 
     <!-- Canonical URL -->
@@ -23,9 +25,11 @@
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:title" content="{{ config('app.name', 'GiveTwice') }} - @yield('title', 'Home')">
+    <meta property="og:title" content="@yield('title', 'Home') | {{ config('app.name', 'GiveTwice') }}">
     @hasSection('description')
         <meta property="og:description" content="@yield('description')">
+    @else
+        <meta property="og:description" content="{{ __('meta.home') }}">
     @endif
     <meta property="og:image" content="{{ asset('images/og-image.png') }}">
     <meta property="og:site_name" content="{{ config('app.name', 'GiveTwice') }}">
@@ -41,9 +45,13 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ config('app.name', 'GiveTwice') }} - @yield('title', 'Home')">
+    <meta name="twitter:site" content="@GiveTwiceApp">
+    <meta name="twitter:creator" content="@GiveTwiceApp">
+    <meta name="twitter:title" content="@yield('title', 'Home') | {{ config('app.name', 'GiveTwice') }}">
     @hasSection('description')
         <meta name="twitter:description" content="@yield('description')">
+    @else
+        <meta name="twitter:description" content="{{ __('meta.home') }}">
     @endif
     <meta name="twitter:image" content="{{ asset('images/og-image.png') }}">
 
