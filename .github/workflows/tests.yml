@@ -12,7 +12,7 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'package.json'
-      - 'package-lock.json'
+      - 'yarn.lock'
       - 'vite.config.js'
       - 'resources/**'
   pull_request:
@@ -24,7 +24,7 @@ on:
       - 'composer.json'
       - 'composer.lock'
       - 'package.json'
-      - 'package-lock.json'
+      - 'yarn.lock'
       - 'vite.config.js'
       - 'resources/**'
 
@@ -77,13 +77,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: 'yarn'
 
-      - name: Install npm dependencies
-        run: npm ci
+      - name: Install yarn dependencies
+        run: yarn install --frozen-lockfile
 
       - name: Build assets
-        run: npm run build
+        run: yarn build
 
       - name: Prepare environment
         run: |
