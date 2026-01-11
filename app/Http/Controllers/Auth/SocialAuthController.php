@@ -9,10 +9,11 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
+use Symfony\Component\HttpFoundation\RedirectResponse as SymfonyRedirectResponse;
 
 class SocialAuthController extends Controller
 {
-    public function redirectToGoogle(): RedirectResponse
+    public function redirectToGoogle(): SymfonyRedirectResponse
     {
         $this->storeSessionDataForCallback();
 
@@ -24,7 +25,7 @@ class SocialAuthController extends Controller
         return $this->handleSocialCallback('google', 'google_id');
     }
 
-    public function redirectToFacebook(): RedirectResponse
+    public function redirectToFacebook(): SymfonyRedirectResponse
     {
         $this->storeSessionDataForCallback();
 
