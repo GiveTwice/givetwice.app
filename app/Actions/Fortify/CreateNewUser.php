@@ -3,6 +3,7 @@
 namespace App\Actions\Fortify;
 
 use App\Enums\SupportedLocale;
+use App\Helpers\OccasionHelper;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -35,6 +36,11 @@ class CreateNewUser implements CreatesNewUsers
             ],
             'password' => $this->passwordRules(),
         ])->validate();
+
+        $occasion = $input['occasion'] ?? null;
+        if ($occasion && OccasionHelper::get($occasion)) {
+            session(['registration_occasion' => $occasion]);
+        }
 
         return User::create([
             'name' => $input['name'],
