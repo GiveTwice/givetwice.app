@@ -15,7 +15,7 @@
                 &#127873;
             </div>
             <div>
-                <h2 class="text-xl font-bold text-gray-900">{{ __('Create your account') }}</h2>
+                <h1 class="text-xl font-bold text-gray-900">{{ __('Create your account') }}</h1>
                 <p class="text-gray-500 text-sm mt-0.5">{{ __('Start creating wishlists in minutes') }}</p>
             </div>
         </div>
@@ -40,7 +40,7 @@
         {{-- Social login options --}}
         <template x-if="!showEmailForm">
             <div class="space-y-3">
-                <a href="{{ route('auth.google', ['locale' => app()->getLocale()]) }}"
+                <a href="{{ route('auth.google', array_filter(['locale' => app()->getLocale(), 'occasion' => request('occasion')])) }}"
                    class="flex items-center justify-center w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-colors font-medium text-gray-700">
                     <img src="/icons/logo-google.svg" alt="Google" class="w-5 h-5 mr-3">
                     {{ __('Sign up with Google') }}
@@ -72,6 +72,10 @@
 
                 <form method="POST" action="{{ url('/register') }}" class="space-y-4">
                     @csrf
+
+                    @if(request('occasion'))
+                        <input type="hidden" name="occasion" value="{{ request('occasion') }}">
+                    @endif
 
                     <div>
                         <label for="name" class="form-label">{{ __('Name') }}</label>
@@ -166,9 +170,9 @@
                 </div>
 
                 {{-- Main heading with brand colors --}}
-                <h2 class="text-2xl font-bold text-gray-900 mb-2">
+                <h1 class="text-2xl font-bold text-gray-900 mb-2">
                     {{ __('Something special is coming') }}
-                </h2>
+                </h1>
 
                 {{-- Subheading --}}
                 <p class="text-gray-600 mb-8 max-w-xs mx-auto leading-relaxed">

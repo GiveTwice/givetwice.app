@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'GiveTwice') }} - @yield('title', 'Home')</title>
+    <title>@yield('title', 'Home') | {{ config('app.name', 'GiveTwice') }}</title>
 
     <!-- Meta description -->
     @hasSection('description')
         <meta name="description" content="@yield('description')">
+    @else
+        <meta name="description" content="{{ __('meta.home') }}">
     @endif
 
     <!-- Canonical URL -->
@@ -23,9 +25,11 @@
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:title" content="{{ config('app.name', 'GiveTwice') }} - @yield('title', 'Home')">
+    <meta property="og:title" content="@yield('title', 'Home') | {{ config('app.name', 'GiveTwice') }}">
     @hasSection('description')
         <meta property="og:description" content="@yield('description')">
+    @else
+        <meta property="og:description" content="{{ __('meta.home') }}">
     @endif
     <meta property="og:image" content="{{ asset('images/og-image.png') }}">
     <meta property="og:site_name" content="{{ config('app.name', 'GiveTwice') }}">
@@ -41,9 +45,13 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ config('app.name', 'GiveTwice') }} - @yield('title', 'Home')">
+    <meta name="twitter:site" content="@GiveTwiceApp">
+    <meta name="twitter:creator" content="@GiveTwiceApp">
+    <meta name="twitter:title" content="@yield('title', 'Home') | {{ config('app.name', 'GiveTwice') }}">
     @hasSection('description')
         <meta name="twitter:description" content="@yield('description')">
+    @else
+        <meta name="twitter:description" content="{{ __('meta.home') }}">
     @endif
     <meta name="twitter:image" content="{{ asset('images/og-image.png') }}">
 
@@ -233,60 +241,7 @@
         </div>
     </main>
 
-    <footer class="bg-white border-t border-cream-200 mt-16">
-        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-            <div class="grid md:grid-cols-4 gap-8 mb-8">
-
-                <div class="md:col-span-1">
-                    <x-logo />
-                    <p class="text-gray-500 text-sm mt-4">{{ __('Create and share wishlists. All affiliate profits go to charity.') }}</p>
-                </div>
-
-                <div>
-                    <p class="font-semibold text-gray-900 mb-4">{{ __('Product') }}</p>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('How it works') }}</a></li>
-                        <li><a href="{{ route('register', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('Create Wishlist') }}</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <p class="font-semibold text-gray-900 mb-4">{{ __('Company') }}</p>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('About') }}</a></li>
-                        <li><a href="{{ route('contact', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('Contact') }}</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <p class="font-semibold text-gray-900 mb-4">{{ __('Legal') }}</p>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="{{ route('privacy', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('Privacy Policy') }}</a></li>
-                        <li><a href="{{ route('terms', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('Terms of Service') }}</a></li>
-                        <li><a href="{{ route('transparency', ['locale' => app()->getLocale()]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('Transparency') }}</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="border-t border-cream-200 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-gray-500 text-sm">
-                    &copy; {{ date('Y') }} GiveTwice. {{ __('All rights reserved.') }}
-                </p>
-                <div class="flex items-center gap-4">
-                    <a href="https://github.com/GiveTwice" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-gray-600 transition-colors" aria-label="GitHub">
-                        <x-icons.github class="w-5 h-5" />
-                    </a>
-                    <a href="https://x.com/GiveTwiceApp" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-gray-600 transition-colors" aria-label="X (Twitter)">
-                        <x-icons.x-twitter class="w-5 h-5" />
-                    </a>
-                </div>
-                <div class="flex items-center space-x-2 text-sm">
-                    <span class="text-coral-500">&#10084;</span>
-                    <span class="text-gray-600">{{ __('All affiliate profits go to charity') }}</span>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <x-footer />
 
     @stack('scripts')
 </body>

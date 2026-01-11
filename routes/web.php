@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\SupportedLocale;
+use App\Helpers\OccasionHelper;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\ClaimController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\GiftController;
 use App\Http\Controllers\ListController;
 use App\Http\Controllers\PublicListController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\ShowOccasionController;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Support\Facades\Route;
 
@@ -38,34 +40,22 @@ Route::prefix('{locale}')
     ->middleware('locale')
     ->group(function () {
         // Public routes
-        Route::get('/', function () {
-            return view('home');
-        })->name('home');
+        Route::view('/', 'home')->name('home');
 
         // Static pages
-        Route::get('/about', function () {
-            return view('pages.about');
-        })->name('about');
+        Route::view('about', 'pages.about')->name('about');
+        Route::view('faq', 'pages.faq')->name('faq');
+        Route::view('privacy', 'pages.privacy')->name('privacy');
+        Route::view('terms', 'pages.terms')->name('terms');
+        Route::view('transparency', 'pages.transparency')->name('transparency');
+        Route::view('contact', 'pages.contact')->name('contact');
 
-        Route::get('/faq', function () {
-            return view('pages.faq');
-        })->name('faq');
-
-        Route::get('/privacy', function () {
-            return view('pages.privacy');
-        })->name('privacy');
-
-        Route::get('/terms', function () {
-            return view('pages.terms');
-        })->name('terms');
-
-        Route::get('/transparency', function () {
-            return view('pages.transparency');
-        })->name('transparency');
-
-        Route::get('/contact', function () {
-            return view('pages.contact');
-        })->name('contact');
+        // Occasion marketing pages
+        foreach (OccasionHelper::all() as $key => $occasion) {
+            Route::get("/{$occasion['slug']}", ShowOccasionController::class)
+                ->defaults('occasion', $key)
+                ->name("occasion.{$key}");
+        }
 
         // Public list view (shareable)
         Route::get('/v/{list}/{slug?}', [PublicListController::class, 'show'])->name('public.list');

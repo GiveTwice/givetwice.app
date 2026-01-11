@@ -2,42 +2,55 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Helpers\OccasionHelper;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse as SymfonyRedirectResponse;
 
 class SocialAuthController extends Controller
 {
-    public function redirectToGoogle(): RedirectResponse
+    public function redirectToGoogle(): SymfonyRedirectResponse
     {
-        session(['social_auth_locale' => app()->getLocale()]);
+        $this->storeSessionDataForCallback();
 
         return Socialite::driver('google')->redirect();
     }
 
-    public function handleGoogleCallback(): \Illuminate\Http\RedirectResponse
+    public function handleGoogleCallback(): RedirectResponse
     {
         return $this->handleSocialCallback('google', 'google_id');
     }
 
-    public function redirectToFacebook(): RedirectResponse
+    public function redirectToFacebook(): SymfonyRedirectResponse
     {
-        session(['social_auth_locale' => app()->getLocale()]);
+        $this->storeSessionDataForCallback();
 
         return Socialite::driver('facebook')->redirect();
     }
 
-    public function handleFacebookCallback(): \Illuminate\Http\RedirectResponse
+    public function handleFacebookCallback(): RedirectResponse
     {
         return $this->handleSocialCallback('facebook', 'facebook_id');
     }
 
-    protected function handleSocialCallback(string $provider, string $socialIdField): \Illuminate\Http\RedirectResponse
+    private function storeSessionDataForCallback(): void
+    {
+        session(['social_auth_locale' => app()->getLocale()]);
+
+        $occasion = request('occasion');
+        if ($occasion && OccasionHelper::get($occasion)) {
+            session(['registration_occasion' => $occasion]);
+        }
+    }
+
+    protected function handleSocialCallback(string $provider, string $socialIdField): RedirectResponse
     {
         $locale = session()->pull('social_auth_locale', app()->getLocale());
+        $occasion = session()->pull('registration_occasion');
 
         try {
             $socialUser = Socialite::driver($provider)->user();
@@ -46,7 +59,6 @@ class SocialAuthController extends Controller
                 ->with('error', __('Unable to authenticate with :provider.', ['provider' => ucfirst($provider)]));
         }
 
-        // Check if user exists with this social ID
         $user = User::where($socialIdField, $socialUser->getId())->first();
 
         if ($user) {
@@ -55,17 +67,14 @@ class SocialAuthController extends Controller
             return $this->redirectToDashboard();
         }
 
-        // Check if user exists with this email
         $user = User::where('email', $socialUser->getEmail())->first();
 
         if ($user) {
-            // Link social account to existing user
             $updateData = [
                 $socialIdField => $socialUser->getId(),
                 'avatar' => $socialUser->getAvatar(),
             ];
 
-            // Social auth implies email is verified (provider verified it)
             if (! $user->email_verified_at) {
                 $updateData['email_verified_at'] = now();
             }
@@ -77,10 +86,13 @@ class SocialAuthController extends Controller
             return $this->redirectToDashboard();
         }
 
-        // Create new user (only if registration is allowed)
         if (! config('app.allow_registration')) {
             return redirect()->route('home', ['locale' => $locale])
                 ->with('error', __('Registration is currently disabled.'));
+        }
+
+        if ($occasion) {
+            session(['registration_occasion' => $occasion]);
         }
 
         $user = User::create([
@@ -99,7 +111,7 @@ class SocialAuthController extends Controller
         return $this->redirectToDashboard();
     }
 
-    protected function redirectToDashboard(): \Illuminate\Http\RedirectResponse
+    protected function redirectToDashboard(): RedirectResponse
     {
         $locale = auth()->user()->locale_preference ?? app()->getLocale();
 

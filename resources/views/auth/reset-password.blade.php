@@ -10,7 +10,7 @@
         <div class="inline-flex items-center justify-center w-14 h-14 bg-teal-100 text-teal-600 rounded-2xl text-2xl mb-4 transform -rotate-3">
             &#128274;
         </div>
-        <h2 class="text-2xl font-bold text-gray-900">{{ __('Reset Password') }}</h2>
+        <h1 class="text-2xl font-bold text-gray-900">{{ __('Reset Password') }}</h1>
         <p class="text-gray-600 mt-2">{{ __('Enter your new password below') }}</p>
     </div>
 

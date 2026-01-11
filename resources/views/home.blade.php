@@ -54,128 +54,14 @@
             </div>
         </div>
 
-        <div class="relative hidden lg:block">
-
-            <div class="relative">
-
-                <div class="absolute top-0 right-0 w-80 h-80 bg-sunny-200 rounded-full opacity-60 -z-10 transform translate-x-10"></div>
-
-                <div class="relative bg-sunny-100 rounded-[2rem] p-6 transform rotate-2 shadow-lg">
-                    <div class="bg-white rounded-2xl p-5 shadow-sm transform -rotate-2">
-
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="text-3xl">&#127873;</div>
-                            <div>
-                                <h3 class="font-bold text-gray-900">{{ __('Birthday Wishlist') }}</h3>
-                                <p class="text-xs text-gray-500">{{ __('3 gift ideas') }}</p>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-3 gap-3">
-
-                            <div class="hero-card group">
-                                <div class="relative aspect-square bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl overflow-hidden mb-2">
-                                    <div class="absolute inset-0 flex items-center justify-center text-3xl">🎧</div>
-                                    <div class="absolute top-1.5 right-1.5">
-                                        <span class="text-[10px] leading-none bg-teal-500 text-white px-2 py-1 rounded-full font-medium shadow-sm flex items-center justify-center">{{ __('Available') }}</span>
-                                    </div>
-                                </div>
-                                <p class="text-xs font-medium text-gray-800 leading-tight line-clamp-2">{{ __('Wireless Headphones') }}</p>
-                                <p class="text-xs font-bold text-coral-500 mt-0.5">€ 79</p>
-                            </div>
-
-                            <div class="hero-card hero-card-cozy group relative">
-                                <div class="relative aspect-square bg-gradient-to-br from-amber-100 to-orange-200 rounded-xl overflow-hidden mb-2">
-                                    <div class="absolute inset-0 flex items-center justify-center text-3xl hero-card-emoji">🧣</div>
-                                    <div class="absolute top-1.5 right-1.5">
-                                        <span class="hero-badge-available text-[10px] leading-none bg-teal-500 text-white px-2 py-1 rounded-full font-medium shadow-sm flex items-center justify-center">{{ __('Available') }}</span>
-                                        <span class="hero-badge-claimed text-[10px] leading-none bg-sunny-500 text-white px-2 py-1 rounded-full font-medium shadow-sm absolute inset-0 flex items-center justify-center">{{ __('Claimed') }}</span>
-                                    </div>
-
-                                    <div class="hero-confetti-cozy absolute inset-0 pointer-events-none overflow-visible rounded-xl">
-                                        <div class="hero-confetti-flash"></div>
-                                        <span class="confetti-piece confetti-1">🎉</span>
-                                        <span class="confetti-piece confetti-2">✨</span>
-                                        <span class="confetti-piece confetti-3">💫</span>
-                                        <span class="confetti-piece confetti-4">🎊</span>
-                                        <span class="confetti-piece confetti-5">❤️</span>
-                                        <span class="confetti-piece confetti-6">⭐</span>
-                                        <span class="confetti-dot confetti-dot-coral confetti-7"></span>
-                                        <span class="confetti-dot confetti-dot-sunny confetti-8"></span>
-                                        <span class="confetti-dot confetti-dot-teal confetti-9"></span>
-                                        <span class="confetti-dot confetti-dot-coral confetti-10"></span>
-                                        <span class="confetti-dot confetti-dot-sunny confetti-11"></span>
-                                        <span class="confetti-dot confetti-dot-teal confetti-12"></span>
-                                    </div>
-                                </div>
-                                <p class="text-xs font-medium text-gray-800 leading-tight line-clamp-2">{{ __('Warm Scarf') }}</p>
-                                <p class="text-xs font-bold text-coral-500 mt-0.5">€ 45</p>
-                                <div class="hero-card-highlight absolute -inset-1 rounded-2xl pointer-events-none"></div>
-                            </div>
-
-                            <div class="hero-card hero-card-book group relative">
-                                <div class="relative aspect-square bg-gradient-to-br from-emerald-100 to-teal-200 rounded-xl overflow-hidden mb-2">
-                                    <div class="absolute inset-0 flex items-center justify-center text-3xl hero-card-emoji-book">📚</div>
-                                    <div class="absolute top-1.5 right-1.5">
-                                        <span class="hero-badge-available-book text-[10px] leading-none bg-teal-500 text-white px-2 py-1 rounded-full font-medium shadow-sm flex items-center justify-center">{{ __('Available') }}</span>
-                                        <span class="hero-badge-claimed-book text-[10px] leading-none bg-sunny-500 text-white px-2 py-1 rounded-full font-medium shadow-sm absolute inset-0 flex items-center justify-center">{{ __('Claimed') }}</span>
-                                    </div>
-
-                                    <div class="hero-confetti-book absolute inset-0 pointer-events-none overflow-visible rounded-xl">
-                                        <div class="hero-confetti-flash"></div>
-                                        <span class="confetti-piece confetti-1">🎉</span>
-                                        <span class="confetti-piece confetti-2">✨</span>
-                                        <span class="confetti-piece confetti-3">💫</span>
-                                        <span class="confetti-piece confetti-4">🎊</span>
-                                        <span class="confetti-piece confetti-5">❤️</span>
-                                        <span class="confetti-piece confetti-6">⭐</span>
-                                        <span class="confetti-dot confetti-dot-coral confetti-7"></span>
-                                        <span class="confetti-dot confetti-dot-sunny confetti-8"></span>
-                                        <span class="confetti-dot confetti-dot-teal confetti-9"></span>
-                                        <span class="confetti-dot confetti-dot-coral confetti-10"></span>
-                                        <span class="confetti-dot confetti-dot-sunny confetti-11"></span>
-                                        <span class="confetti-dot confetti-dot-teal confetti-12"></span>
-                                    </div>
-                                </div>
-                                <p class="text-xs font-medium text-gray-800 leading-tight line-clamp-2">{{ __('Book Set') }}</p>
-                                <p class="text-xs font-bold text-coral-500 mt-0.5">€ 32</p>
-                                <div class="hero-card-highlight-book absolute -inset-1 rounded-2xl pointer-events-none"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="hero-notification-sarah absolute -bottom-4 -left-8 bg-white rounded-xl shadow-lg p-3 transform -rotate-3 border border-cream-100">
-                    <div class="flex items-center space-x-2.5">
-                        <div class="w-9 h-9 bg-gradient-to-br from-coral-100 to-coral-200 rounded-full flex items-center justify-center shadow-sm">
-                            <span class="text-coral-500 text-sm">❤️</span>
-                        </div>
-                        <div>
-                            <p class="text-sm font-semibold text-gray-800">{{ __('Sarah claimed a gift!') }}</p>
-                            <p class="text-[10px] text-gray-400 font-medium">{{ __('Just now') }}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="hero-notification-nick absolute -bottom-4 left-4 bg-white rounded-xl shadow-lg p-3 transform rotate-2 border border-cream-100">
-                    <div class="flex items-center space-x-2.5">
-                        <div class="w-9 h-9 bg-gradient-to-br from-teal-100 to-teal-200 rounded-full flex items-center justify-center shadow-sm">
-                            <span class="text-teal-500 text-sm">💚</span>
-                        </div>
-                        <div>
-                            <p class="text-sm font-semibold text-gray-800">{{ __('Nick claimed a gift!') }}</p>
-                            <p class="text-[10px] text-gray-400 font-medium">{{ __('Just now') }}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="absolute -top-4 right-20 text-coral-400 hero-sparkle">
-                    <svg width="32" height="32" viewBox="0 0 40 40" fill="currentColor">
-                        <path d="M20 0l2.5 17.5L40 20l-17.5 2.5L20 40l-2.5-17.5L0 20l17.5-2.5z"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
+        <x-occasion-hero-card
+            :title="__('Birthday Wishlist')"
+            :gifts="[
+                ['emoji' => '🎧', 'name' => 'Wireless Headphones', 'price' => 79, 'gradient' => 'from-blue-100 to-blue-200'],
+                ['emoji' => '🧣', 'name' => 'Warm Scarf', 'price' => 45, 'gradient' => 'from-amber-100 to-orange-200'],
+                ['emoji' => '📚', 'name' => 'Book Set', 'price' => 32, 'gradient' => 'from-emerald-100 to-teal-200'],
+            ]"
+        />
     </div>
 
     @guest
