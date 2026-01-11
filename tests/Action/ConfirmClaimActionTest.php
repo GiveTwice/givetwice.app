@@ -83,7 +83,7 @@ describe('ConfirmClaimAction', function () {
 
             $owner = User::factory()->create();
             $gift = Gift::factory()->create(['user_id' => $owner->id]);
-            $list = GiftList::factory()->create(['user_id' => $owner->id]);
+            $list = GiftList::factory()->create(['creator_id' => $owner->id]);
             $gift->lists()->attach($list->id);
 
             $pendingClaim = Claim::factory()->anonymous()->create([

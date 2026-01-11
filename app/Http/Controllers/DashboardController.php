@@ -17,10 +17,18 @@ class DashboardController extends Controller
             ->with(['gifts' => function ($query) {
                 $query->with('claims')->reorder()->orderByDesc('created_at');
             }])
+            ->with('users:id,name,avatar')
+            ->orderBy('lists.created_at', 'asc')
+            ->get();
+
+        $pendingInvitations = $request->user()
+            ->pendingListInvitations()
+            ->with('list:id,name,slug', 'inviter:id,name')
             ->get();
 
         return view('dashboard', [
             'lists' => $lists,
+            'pendingInvitations' => $pendingInvitations,
         ]);
     }
 }

@@ -24,11 +24,13 @@ class CreateDefaultListForNewUser
             $occasionData = $occasion ? OccasionHelper::get($occasion) : null;
             $listName = $occasionData ? __($occasionData['list_name']) : __('My wishlist');
 
-            GiftList::create([
-                'user_id' => $user->id,
+            $list = GiftList::create([
+                'creator_id' => $user->id,
                 'name' => $listName,
                 'is_default' => true,
             ]);
+
+            $list->users()->attach($user->id, ['joined_at' => now()]);
         } finally {
             app()->setLocale($originalLocale);
         }

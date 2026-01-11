@@ -71,7 +71,7 @@ class GiftController extends Controller
             'description' => ['nullable', 'string', 'max:1500'],
             'price' => ['nullable', 'numeric', 'min:0', 'max:9999999.99'],
             'currency' => ['nullable', 'string', Rule::enum(SupportedCurrency::class)],
-            'list_id' => ['nullable', Rule::exists('lists', 'id')->where('user_id', $request->user()->id)],
+            'list_id' => ['nullable', 'integer'],
         ]);
 
         $priceInCents = isset($validated['price'])

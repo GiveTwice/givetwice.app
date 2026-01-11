@@ -27,7 +27,7 @@ describe('CreateDefaultListForNewUser', function () {
 
             event(new Registered($user));
 
-            expect($user->lists->first()->user_id)->toBe($user->id);
+            expect($user->lists->first()->creator_id)->toBe($user->id);
         });
 
         it('does not create a list when user is created without Registered event', function () {
@@ -38,24 +38,24 @@ describe('CreateDefaultListForNewUser', function () {
     });
 
     describe('slug generation', function () {
-        it('creates slug from list name', function () {
+        it('creates slug from list name with ID prefix', function () {
             $user = User::factory()->create();
 
             event(new Registered($user));
 
             $list = $user->lists->first();
 
-            expect($list->slug)->toBe('my-wishlist');
+            expect($list->slug)->toBe($list->id.'-my-wishlist');
         });
 
-        it('creates slug with localized name', function (string $locale, string $expectedSlug) {
+        it('creates slug with localized name', function (string $locale, string $expectedSlugSuffix) {
             $user = User::factory()->create(['locale_preference' => $locale]);
 
             event(new Registered($user));
 
             $list = $user->lists->first();
 
-            expect($list->slug)->toBe($expectedSlug);
+            expect($list->slug)->toBe($list->id.'-'.$expectedSlugSuffix);
         })->with([
             'English' => ['en', 'my-wishlist'],
             'Dutch' => ['nl', 'mijn-verlanglijstje'],

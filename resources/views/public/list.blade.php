@@ -1,14 +1,13 @@
 @extends('layouts.app')
 
-@section('title', $list->name . ' - ' . $list->user->name)
+@section('title', $list->name . ' - ' . $list->creator->name)
 
 @section('robots', 'noindex, nofollow')
 
 @php
-    $isOwner = auth()->check() && auth()->id() === $list->user_id;
     $availableGifts = (int) $gifts->filter(fn($gift) => $gift->claims->isEmpty())->count();
     $claimedGifts = (int) max(0, $gifts->total() - $availableGifts);
-    $listOwner = $list->user;
+    $listOwner = $list->creator;
     $ownerHasAvatar = $listOwner->hasProfileImage();
     $ownerAvatarUrl = $listOwner->getProfileImageUrl('medium');
 @endphp

@@ -190,4 +190,13 @@ class Gift extends Model implements HasMedia
 
         return preg_replace('/^www\./', '', $host) ?: null;
     }
+
+    public function hasAccessibleListFor(User $user): bool
+    {
+        return $this->lists()
+            ->whereHas('users', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
+            ->exists();
+    }
 }

@@ -70,6 +70,10 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-gradient-warm flex flex-col">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-coral-500 focus:text-white focus:rounded-lg focus:font-medium">
+        {{ __('Skip to content') }}
+    </a>
+
     <header class="bg-white border-b border-cream-200">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
@@ -114,7 +118,7 @@
         @endif
     </div>
 
-    <main class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <main id="main-content" class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div class="w-full max-w-md">
             @yield('content')
         </div>

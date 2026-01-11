@@ -22,11 +22,14 @@ class ListController extends Controller
         ]);
 
         /** @var GiftList $list */
-        $list = $request->user()->lists()->create([
+        $list = GiftList::create([
+            'creator_id' => $request->user()->id,
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
             'is_default' => false,
         ]);
+
+        $list->users()->attach($request->user()->id, ['joined_at' => now()]);
 
         return redirect()
             ->route('dashboard.locale', ['locale' => app()->getLocale()])

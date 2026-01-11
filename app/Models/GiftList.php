@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class GiftList extends Model
@@ -15,7 +16,7 @@ class GiftList extends Model
     protected $table = 'lists';
 
     protected $fillable = [
-        'user_id',
+        'creator_id',
         'name',
         'description',
         'slug',
@@ -33,8 +34,14 @@ class GiftList extends Model
     {
         static::creating(function (GiftList $list) {
             if (empty($list->slug)) {
-                $list->slug = $list->generateSlug();
+                // Temporary slug for insertion - will be updated after creation
+                $list->slug = Str::uuid()->toString();
             }
+        });
+
+        static::created(function (GiftList $list) {
+            $list->slug = $list->generateSlug();
+            $list->saveQuietly();
         });
 
         static::updating(function (GiftList $list) {
@@ -46,7 +53,14 @@ class GiftList extends Model
 
     public function generateSlug(): string
     {
-        return Str::slug($this->name) ?: Str::uuid()->toString();
+        $baseSlug = Str::slug($this->name) ?: 'list';
+
+        return $this->id.'-'.$baseSlug;
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
     }
 
     public function getPublicUrl(?string $locale = null): string
@@ -58,9 +72,42 @@ class GiftList extends Model
         ]);
     }
 
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'creator_id');
+    }
+
+    /**
+     * @deprecated Use creator() instead
+     */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->creator();
+    }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'list_user', 'list_id', 'user_id')
+            ->withPivot('joined_at')
+            ->withTimestamps();
+    }
+
+    public function hasUser(User $user): bool
+    {
+        return $this->users()->where('user_id', $user->id)->exists();
+    }
+
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(ListInvitation::class, 'list_id');
+    }
+
+    public function pendingInvitations(): HasMany
+    {
+        return $this->invitations()
+            ->whereNull('accepted_at')
+            ->whereNull('declined_at')
+            ->where('expires_at', '>', now());
     }
 
     public function gifts(): BelongsToMany
