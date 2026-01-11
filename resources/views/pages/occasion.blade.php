@@ -163,3 +163,29 @@
     </a>
 </div>
 @endsection
+
+@push('scripts')
+<x-breadcrumb-schema :items="[
+    ['name' => __($data['page_title'])]
+]" />
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "Service",
+    "name": "{{ __($data['page_title']) }}",
+    "description": "{{ __('meta.occasion.' . $occasion) }}",
+    "provider": {
+        "@@type": "Organization",
+        "name": "GiveTwice",
+        "url": "{{ config('app.url') }}"
+    },
+    "serviceType": "Wishlist Creation",
+    "areaServed": "Worldwide",
+    "availableChannel": {
+        "@@type": "ServiceChannel",
+        "serviceUrl": "{{ url()->current() }}",
+        "availableLanguage": ["en", "nl", "fr"]
+    }
+}
+</script>
+@endpush
