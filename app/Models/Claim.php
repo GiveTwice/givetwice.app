@@ -65,7 +65,6 @@ class Claim extends Model
     {
         $this->update([
             'confirmed_at' => now(),
-            'confirmation_token' => null,
         ]);
     }
 

@@ -219,17 +219,19 @@ describe('ConfirmClaimAction', function () {
             expect($gift2->fresh()->isClaimed())->toBeFalse();
         });
 
-        it('clears token after confirmation', function () {
+        it('preserves token after confirmation for redirect lookup', function () {
             $owner = User::factory()->create();
             $gift = Gift::factory()->create(['user_id' => $owner->id]);
             $pendingClaim = Claim::factory()->anonymous()->create([
                 'gift_id' => $gift->id,
             ]);
+            $originalToken = $pendingClaim->confirmation_token;
 
             $action = new ConfirmClaimAction;
             $action->execute($pendingClaim->confirmation_token);
 
-            expect($pendingClaim->fresh()->confirmation_token)->toBeNull();
+            // Token is preserved so it can be used for the redirect lookup
+            expect($pendingClaim->fresh()->confirmation_token)->toBe($originalToken);
         });
     });
 
