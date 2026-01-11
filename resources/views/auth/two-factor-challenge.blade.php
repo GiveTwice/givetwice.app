@@ -10,7 +10,7 @@
         <div class="inline-flex items-center justify-center w-14 h-14 bg-teal-100 text-teal-600 rounded-2xl mb-4">
             <x-icons.shield-check class="w-7 h-7" />
         </div>
-        <h2 class="text-2xl font-bold text-gray-900">{{ __('Two-factor authentication') }}</h2>
+        <h1 class="text-2xl font-bold text-gray-900">{{ __('Two-factor authentication') }}</h1>
         <p class="text-gray-600 mt-1" x-show="!useRecoveryCode">{{ __('Enter the authentication code from your authenticator app.') }}</p>
         <p class="text-gray-600 mt-1" x-show="useRecoveryCode" x-cloak>{{ __('Enter one of your emergency recovery codes.') }}</p>
     </div>

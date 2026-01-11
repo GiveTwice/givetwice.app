@@ -10,7 +10,7 @@
         <div class="inline-flex items-center justify-center w-14 h-14 bg-sunny-100 text-sunny-600 rounded-2xl text-2xl mb-4 transform -rotate-3">
             &#9993;
         </div>
-        <h2 class="text-2xl font-bold text-gray-900">{{ __('Verify Your Email') }}</h2>
+        <h1 class="text-2xl font-bold text-gray-900">{{ __('Verify Your Email') }}</h1>
         <p class="text-gray-600 mt-2 leading-relaxed">
             {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you?') }}
         </p>

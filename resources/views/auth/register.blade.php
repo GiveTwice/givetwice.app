@@ -15,7 +15,7 @@
                 &#127873;
             </div>
             <div>
-                <h2 class="text-xl font-bold text-gray-900">{{ __('Create your account') }}</h2>
+                <h1 class="text-xl font-bold text-gray-900">{{ __('Create your account') }}</h1>
                 <p class="text-gray-500 text-sm mt-0.5">{{ __('Start creating wishlists in minutes') }}</p>
             </div>
         </div>
@@ -170,9 +170,9 @@
                 </div>
 
                 {{-- Main heading with brand colors --}}
-                <h2 class="text-2xl font-bold text-gray-900 mb-2">
+                <h1 class="text-2xl font-bold text-gray-900 mb-2">
                     {{ __('Something special is coming') }}
-                </h2>
+                </h1>
 
                 {{-- Subheading --}}
                 <p class="text-gray-600 mb-8 max-w-xs mx-auto leading-relaxed">

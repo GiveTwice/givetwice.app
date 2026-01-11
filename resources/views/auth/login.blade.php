@@ -14,7 +14,7 @@
             &#128075;
         </div>
         <div>
-            <h2 class="text-xl font-bold text-gray-900">{{ __('Welcome back!') }}</h2>
+            <h1 class="text-xl font-bold text-gray-900">{{ __('Welcome back!') }}</h1>
             <p class="text-gray-500 text-sm mt-0.5">{{ __('Sign in to manage your wishlists') }}</p>
         </div>
     </div>
