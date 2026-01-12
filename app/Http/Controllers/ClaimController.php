@@ -85,7 +85,7 @@ class ClaimController extends Controller
             return back()->with('error', __('This gift has already been claimed.'));
         }
 
-        $list = $gift->lists()->first();
+        $list = $gift->lists()->with('creator:id,name')->first();
 
         return view('claims.anonymous', [
             'gift' => $gift,
