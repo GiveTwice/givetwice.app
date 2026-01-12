@@ -35,7 +35,8 @@ class AcceptListInvitationAction
             throw new InvalidInvitationException;
         }
 
-        return DB::transaction(function () use ($invitation, $user) {
+        /** @var GiftList $list */
+        $list = DB::transaction(function () use ($invitation, $user): GiftList {
             $invitation->accept();
 
             if (! $invitation->list->hasUser($user)) {
@@ -48,5 +49,7 @@ class AcceptListInvitationAction
 
             return $invitation->list;
         });
+
+        return $list;
     }
 }
