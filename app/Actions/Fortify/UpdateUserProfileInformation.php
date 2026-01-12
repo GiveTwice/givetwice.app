@@ -28,26 +28,25 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             ],
         ])->validateWithBag('updateProfileInformation');
 
-        if ($input['email'] !== $user->email) {
-            $this->updateVerifiedUser($user, $input);
+        $normalizedEmail = strtolower($input['email']);
+
+        if ($normalizedEmail !== $user->email) {
+            $this->updateVerifiedUser($user, $input['name'], $normalizedEmail);
         } else {
             $user->forceFill([
                 'name' => $input['name'],
-                'email' => $input['email'],
             ])->save();
         }
     }
 
     /**
      * Update the given verified user's profile information.
-     *
-     * @param  array<string, string>  $input
      */
-    protected function updateVerifiedUser(User $user, array $input): void
+    protected function updateVerifiedUser(User $user, string $name, string $email): void
     {
         $user->forceFill([
-            'name' => $input['name'],
-            'email' => $input['email'],
+            'name' => $name,
+            'email' => $email,
             'email_verified_at' => null,
         ])->save();
 

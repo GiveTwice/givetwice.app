@@ -17,18 +17,18 @@ class InviteToListAction
     {
         $normalizedEmail = strtolower(trim($email));
 
-        if (strtolower($inviter->email) === $normalizedEmail) {
+        if ($inviter->email === $normalizedEmail) {
             throw new CannotInviteSelfException;
         }
 
-        $existingUser = User::whereRaw('LOWER(email) = ?', [$normalizedEmail])->first();
+        $existingUser = User::where('email', $normalizedEmail)->first();
 
         if ($existingUser && $list->hasUser($existingUser)) {
             throw new AlreadyCollaboratorException;
         }
 
         $pendingInvitation = $list->pendingInvitations()
-            ->whereRaw('LOWER(email) = ?', [$normalizedEmail])
+            ->where('email', $normalizedEmail)
             ->first();
 
         if ($pendingInvitation) {
@@ -37,7 +37,7 @@ class InviteToListAction
 
         return DB::transaction(function () use ($list, $inviter, $normalizedEmail, $existingUser) {
             $list->invitations()
-                ->whereRaw('LOWER(email) = ?', [$normalizedEmail])
+                ->where('email', $normalizedEmail)
                 ->whereNotNull('declined_at')
                 ->delete();
 

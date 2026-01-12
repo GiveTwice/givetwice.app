@@ -15,7 +15,7 @@ class LinkInvitationsToVerifiedUser
 
         ListInvitation::query()
             ->whereNull('invitee_id')
-            ->whereRaw('LOWER(email) = ?', [strtolower($user->email)])
+            ->where('email', $user->email)
             ->whereNull('accepted_at')
             ->whereNull('declined_at')
             ->update(['invitee_id' => $user->id]);
