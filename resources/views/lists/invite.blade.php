@@ -76,7 +76,7 @@
                                     <p class="text-xs text-gray-500">{{ $user->email }}</p>
                                 </div>
                             </div>
-                            @if($list->users->count() > 1 && $user->id !== auth()->id())
+                            @if($list->users->count() > 1 && $user->id !== auth()->id() && $user->id !== $list->creator_id)
                                 <form action="{{ route('lists.collaborator.remove', ['locale' => app()->getLocale(), 'list' => $list->slug, 'user' => $user->id]) }}" method="POST">
                                     @csrf
                                     @method('DELETE')

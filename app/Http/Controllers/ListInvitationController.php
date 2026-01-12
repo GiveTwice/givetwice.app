@@ -64,13 +64,13 @@ class ListInvitationController extends Controller
         if ($invitation->accepted_at) {
             return redirect()
                 ->route('dashboard.locale', ['locale' => $locale])
-                ->with('info', __('This invitation has already been accepted.'));
+                ->with('success', __('This invitation has already been accepted.'));
         }
 
         if ($invitation->declined_at) {
             return redirect()
                 ->route('dashboard.locale', ['locale' => $locale])
-                ->with('info', __('This invitation has been declined.'));
+                ->with('success', __('This invitation has been declined.'));
         }
 
         if ($invitation->isExpired()) {
@@ -83,6 +83,12 @@ class ListInvitationController extends Controller
             return redirect()
                 ->route('dashboard.locale', ['locale' => $locale])
                 ->with('error', __('This invitation was sent to a different account.'));
+        }
+
+        if (strtolower($invitation->email) !== strtolower($request->user()->email)) {
+            return redirect()
+                ->route('dashboard.locale', ['locale' => $locale])
+                ->with('error', __('This invitation was sent to a different email address.'));
         }
 
         return view('lists.invitation-show', [

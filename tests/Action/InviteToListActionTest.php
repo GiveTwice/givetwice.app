@@ -113,6 +113,25 @@ describe('InviteToListAction', function () {
             expect($invitation->expires_at->isFuture())->toBeTrue();
         });
 
+        it('deletes accepted invitation before creating new one (re-invite after removal)', function () {
+            $inviter = User::factory()->create();
+            $list = GiftList::factory()->create(['creator_id' => $inviter->id]);
+            $list->users()->attach($inviter->id);
+
+            // Create an accepted invitation (user was invited, accepted, then removed)
+            ListInvitation::factory()->accepted()->create([
+                'list_id' => $list->id,
+                'inviter_id' => $inviter->id,
+                'email' => 'test@example.com',
+            ]);
+
+            $action = new InviteToListAction;
+            $invitation = $action->execute($list, $inviter, 'test@example.com');
+
+            expect(ListInvitation::where('email', 'test@example.com')->count())->toBe(1);
+            expect($invitation->accepted_at)->toBeNull();
+        });
+
         it('sets expiration date 30 days in the future', function () {
             $inviter = User::factory()->create();
             $list = GiftList::factory()->create(['creator_id' => $inviter->id]);

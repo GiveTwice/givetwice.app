@@ -38,7 +38,11 @@ class InviteToListAction
         return DB::transaction(function () use ($list, $inviter, $normalizedEmail, $existingUser) {
             $list->invitations()
                 ->where('email', $normalizedEmail)
-                ->where(fn ($q) => $q->whereNotNull('declined_at')->orWhere('expires_at', '<', now()))
+                ->where(fn ($q) => $q
+                    ->whereNotNull('declined_at')
+                    ->orWhereNotNull('accepted_at')
+                    ->orWhere('expires_at', '<', now())
+                )
                 ->delete();
 
             $invitation = ListInvitation::create([

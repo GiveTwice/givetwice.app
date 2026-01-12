@@ -21,14 +21,8 @@ class DashboardController extends Controller
             ->orderBy('lists.created_at', 'asc')
             ->get();
 
-        $pendingInvitations = $request->user()
-            ->pendingListInvitations()
-            ->with('list:id,name,slug', 'inviter:id,name')
-            ->get();
-
         return view('dashboard', [
             'lists' => $lists,
-            'pendingInvitations' => $pendingInvitations,
         ]);
     }
 }
