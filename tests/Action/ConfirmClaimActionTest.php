@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Queue;
 
 beforeEach(function () {
     Queue::fake();
+    $this->trackQueriesForEfficiency();
 });
 
 describe('ConfirmClaimAction', function () {
@@ -30,6 +31,8 @@ describe('ConfirmClaimAction', function () {
 
             expect($claim->id)->toBe($pendingClaim->id);
             expect($claim->fresh()->confirmed_at)->not->toBeNull();
+
+            $this->assertQueriesAreEfficient();
         });
 
         it('returns the confirmed claim', function () {

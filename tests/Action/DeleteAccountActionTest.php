@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Queue;
 
 beforeEach(function () {
     Queue::fake();
+    $this->trackQueriesForEfficiency();
 });
 
 describe('DeleteAccountAction', function () {
@@ -23,6 +24,8 @@ describe('DeleteAccountAction', function () {
             $action->execute($user);
 
             expect(User::find($userId))->toBeNull();
+
+            $this->assertQueriesAreEfficient();
         });
 
         it('deletes user sessions', function () {

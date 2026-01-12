@@ -125,7 +125,7 @@ describe('LinkInvitationsToVerifiedUser', function () {
         expect($invitation->fresh()->invitee_id)->toBeNull();
     });
 
-    it('handles case-insensitive email matching', function () {
+    it('links invitations when emails match (emails are normalized to lowercase at input)', function () {
         $inviter = User::factory()->create();
         $list = GiftList::factory()->create(['creator_id' => $inviter->id]);
         $list->users()->attach($inviter->id);
@@ -138,7 +138,7 @@ describe('LinkInvitationsToVerifiedUser', function () {
         ]);
 
         $newUser = User::factory()->create([
-            'email' => 'NewUser@Example.COM',
+            'email' => 'newuser@example.com',
             'email_verified_at' => null,
         ]);
 

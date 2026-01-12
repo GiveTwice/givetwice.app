@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Queue;
 
 beforeEach(function () {
     Queue::fake();
+    $this->trackQueriesForEfficiency();
 });
 
 describe('AcceptListInvitationAction', function () {
@@ -32,6 +33,8 @@ describe('AcceptListInvitationAction', function () {
             $action->execute($invitation->token, $invitee);
 
             expect($invitation->fresh()->accepted_at)->not->toBeNull();
+
+            $this->assertQueriesAreEfficient();
         });
 
         it('attaches user to the list', function () {

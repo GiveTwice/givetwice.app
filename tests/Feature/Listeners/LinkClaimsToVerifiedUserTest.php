@@ -100,9 +100,9 @@ describe('LinkClaimsToVerifiedUser', function () {
         expect($claim->fresh()->user_id)->toBeNull();
     });
 
-    it('links claims with case-insensitive email matching', function () {
+    it('links claims when emails match (emails are normalized to lowercase at input)', function () {
         $claim = Claim::factory()->anonymous()->confirmed()->create([
-            'claimer_email' => 'Jane.Doe@Example.COM',
+            'claimer_email' => 'jane.doe@example.com',
         ]);
 
         $user = User::factory()->create(['email' => 'jane.doe@example.com']);

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bcce30691a0bc5ca982f1af1c3679f1f",
+    "content-hash": "cfa7e6e704cc5f3d2049452b8b3fe85f",
     "packages": [
         {
             "name": "archtechx/enums",
@@ -11702,6 +11702,74 @@
                 "source": "https://github.com/laravel/sail"
             },
             "time": "2026-01-01T02:46:03+00:00"
+        },
+        {
+            "name": "mattiasgeniar/phpunit-query-count-assertions",
+            "version": "1.1.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mattiasgeniar/phpunit-query-count-assertions.git",
+                "reference": "7fbf8ba9ef7a900cecd310045935a0cf6e6a1389"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mattiasgeniar/phpunit-query-count-assertions/zipball/7fbf8ba9ef7a900cecd310045935a0cf6e6a1389",
+                "reference": "7fbf8ba9ef7a900cecd310045935a0cf6e6a1389",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^11.0|^12.0",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "larastan/larastan": "^3.0",
+                "laravel/pint": "^1.18",
+                "orchestra/testbench": "^9.0|^10.0",
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": [],
+                    "providers": []
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mattiasgeniar\\PhpunitQueryCountAssertions\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mattias Geniar",
+                    "email": "m@ttias.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A custom assertion for phpunit that allows you to count the amount of SQL queries used in a test. Can be used to enforce certain performance characteristics (ie: limit queries to X for a certain action).",
+            "homepage": "https://github.com/mattiasgeniar/phpunit-query-count-assertions",
+            "keywords": [
+                "laravel",
+                "mattiasgeniar",
+                "phpunit-query-count-assertions",
+                "queries",
+                "testing"
+            ],
+            "support": {
+                "issues": "https://github.com/mattiasgeniar/phpunit-query-count-assertions/issues",
+                "source": "https://github.com/mattiasgeniar/phpunit-query-count-assertions/tree/1.1.6"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/mattiasgeniar",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-01-12T13:33:39+00:00"
         },
         {
             "name": "mockery/mockery",

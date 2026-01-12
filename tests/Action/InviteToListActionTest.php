@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Queue;
 
 beforeEach(function () {
     Queue::fake();
+    $this->trackQueriesForEfficiency();
 });
 
 describe('InviteToListAction', function () {
@@ -32,6 +33,8 @@ describe('InviteToListAction', function () {
             expect($invitation->email)->toBe('newuser@example.com');
             expect($invitation->token)->toHaveLength(64);
             expect($invitation->invitee_id)->toBeNull();
+
+            $this->assertQueriesAreEfficient();
         });
 
         it('creates an invitation for an existing user and sets invitee_id', function () {

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Queue;
 
 beforeEach(function () {
     Queue::fake();
+    $this->trackQueriesForEfficiency();
 });
 
 describe('DeclineListInvitationAction', function () {
@@ -31,6 +32,8 @@ describe('DeclineListInvitationAction', function () {
             $action->execute($invitation->token, $invitee);
 
             expect($invitation->fresh()->declined_at)->not->toBeNull();
+
+            $this->assertQueriesAreEfficient();
         });
 
         it('does not attach user to the list', function () {
