@@ -49,6 +49,49 @@ class ListInvitationController extends Controller
         }
     }
 
+    public function show(Request $request, string $locale, string $token): View|RedirectResponse
+    {
+        $invitation = ListInvitation::where('token', $token)
+            ->with(['list', 'inviter'])
+            ->first();
+
+        if (! $invitation) {
+            return redirect()
+                ->route('dashboard.locale', ['locale' => $locale])
+                ->with('error', __('This invitation link is invalid.'));
+        }
+
+        if ($invitation->accepted_at) {
+            return redirect()
+                ->route('dashboard.locale', ['locale' => $locale])
+                ->with('info', __('This invitation has already been accepted.'));
+        }
+
+        if ($invitation->declined_at) {
+            return redirect()
+                ->route('dashboard.locale', ['locale' => $locale])
+                ->with('info', __('This invitation has been declined.'));
+        }
+
+        if ($invitation->isExpired()) {
+            return redirect()
+                ->route('dashboard.locale', ['locale' => $locale])
+                ->with('error', __('This invitation has expired.'));
+        }
+
+        if ($invitation->invitee_id && $invitation->invitee_id !== $request->user()->id) {
+            return redirect()
+                ->route('dashboard.locale', ['locale' => $locale])
+                ->with('error', __('This invitation was sent to a different account.'));
+        }
+
+        return view('lists.invitation-show', [
+            'invitation' => $invitation,
+            'list' => $invitation->list,
+            'inviter' => $invitation->inviter,
+        ]);
+    }
+
     public function accept(Request $request, string $locale, string $token): RedirectResponse
     {
         try {

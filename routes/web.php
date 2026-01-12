@@ -143,6 +143,7 @@ Route::prefix('{locale}')
             // List invitation routes
             Route::get('/lists/{list}/invite', [ListInvitationController::class, 'create'])->name('lists.invite');
             Route::post('/lists/{list}/invite', [ListInvitationController::class, 'store'])->name('lists.invite.store');
+            Route::get('/lists/invitation/{token}', [ListInvitationController::class, 'show'])->name('lists.invitation.show');
             Route::post('/lists/invitation/{token}/accept', [ListInvitationController::class, 'accept'])->name('lists.invitation.accept');
             Route::post('/lists/invitation/{token}/decline', [ListInvitationController::class, 'decline'])->name('lists.invitation.decline');
             Route::delete('/lists/{list}/leave', [ListInvitationController::class, 'leave'])->name('lists.leave');

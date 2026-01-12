@@ -34,7 +34,7 @@ class ListInvitationMail extends Mailable
         $inviterLocale = $this->invitation->inviter->locale_preference ?? 'en';
         $isExistingUser = $this->invitation->invitee_id !== null;
 
-        $acceptUrl = url("/{$inviterLocale}/lists/invitation/{$this->invitation->token}/accept");
+        $acceptUrl = url("/{$inviterLocale}/lists/invitation/{$this->invitation->token}");
         $registerUrl = url("/{$inviterLocale}/register").'?invitation='.$this->invitation->token;
 
         return new Content(
