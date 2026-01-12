@@ -217,8 +217,10 @@ class GiftController extends Controller
         ]);
     }
 
-    public function cardHtml(string $locale, GiftList $list, string $slug, Gift $gift): Response
+    public function cardHtml(string $locale, int $list, string $slug, Gift $gift): Response
     {
+        $list = GiftList::findOrFail($list);
+
         // Verify the gift belongs to this list
         if (! $list->gifts()->where('gifts.id', $gift->id)->exists()) {
             abort(404);
