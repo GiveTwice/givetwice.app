@@ -156,6 +156,12 @@ class ListInvitationController extends Controller
                 ->with('error', __('You cannot remove yourself. Use the leave option instead.'));
         }
 
+        if ($user->id === $list->creator_id) {
+            return redirect()
+                ->back()
+                ->with('error', __('Cannot remove the list creator.'));
+        }
+
         if ($list->users()->count() <= 1) {
             return redirect()
                 ->back()

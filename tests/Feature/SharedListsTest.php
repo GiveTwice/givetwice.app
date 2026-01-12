@@ -289,6 +289,24 @@ describe('Shared Lists Feature', function () {
 
             expect($list->fresh()->hasUser($collaborator))->toBeTrue();
         });
+
+        it('prevents collaborator from removing the list creator', function () {
+            $creator = User::factory()->create();
+            $collaborator = User::factory()->create();
+            $list = GiftList::factory()->create(['creator_id' => $creator->id]);
+            $list->users()->attach([$creator->id, $collaborator->id]);
+
+            $this->actingAs($collaborator)
+                ->delete(route('lists.collaborator.remove', [
+                    'locale' => 'en',
+                    'list' => $list->slug,
+                    'user' => $creator->id,
+                ]))
+                ->assertRedirect()
+                ->assertSessionHas('error');
+
+            expect($list->fresh()->hasUser($creator))->toBeTrue();
+        });
     });
 
     describe('canceling invitation', function () {
