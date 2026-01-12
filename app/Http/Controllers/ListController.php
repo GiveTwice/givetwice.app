@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\CreateListAction;
 use App\Models\GiftList;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,22 +15,18 @@ class ListController extends Controller
         return view('lists.create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, CreateListAction $action): RedirectResponse
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        /** @var GiftList $list */
-        $list = GiftList::create([
-            'creator_id' => $request->user()->id,
-            'name' => $validated['name'],
-            'description' => $validated['description'] ?? null,
-            'is_default' => false,
-        ]);
-
-        $list->users()->attach($request->user()->id, ['joined_at' => now()]);
+        $action->execute(
+            $request->user(),
+            $validated['name'],
+            $validated['description'] ?? null,
+        );
 
         return redirect()
             ->route('dashboard.locale', ['locale' => app()->getLocale()])
