@@ -16,7 +16,7 @@ class PublicListController extends Controller
             return $redirect;
         }
 
-        $list->load('users:id,name');
+        $list->load(['creator:id,name,avatar', 'users:id,name']);
 
         $isOwner = auth()->check() && $list->hasUser(auth()->user());
 

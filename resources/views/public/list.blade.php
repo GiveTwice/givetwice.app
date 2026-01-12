@@ -52,7 +52,7 @@
                     {{ __('Wishlist from') }}
                 </p>
                 <h1 class="text-xl sm:text-2xl font-bold text-gray-900 truncate">
-                    {{ $list->user->name }}
+                    {{ $list->creator->name }}
                 </h1>
                 <p class="text-gray-500 text-sm truncate">{{ $list->name }}</p>
                 @if($list->description)
@@ -99,7 +99,7 @@
                 <div class="hidden sm:block w-px h-4 bg-gray-200"></div>
 
                 <p class="text-gray-400 text-sm">
-                    {{ __(':name won\'t see who claimed what.', ['name' => $list->user->name]) }}
+                    {{ __(':name won\'t see who claimed what.', ['name' => $list->creator->name]) }}
                 </p>
             </div>
         </div>
@@ -139,7 +139,7 @@
                     <span class="text-4xl">&#127873;</span>
                 </div>
                 <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ __('No gifts yet') }}</h3>
-                <p class="text-gray-500">{{ __(':name hasn\'t added any gifts to this list yet.', ['name' => $list->user->name]) }}</p>
+                <p class="text-gray-500">{{ __(':name hasn\'t added any gifts to this list yet.', ['name' => $list->creator->name]) }}</p>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 hidden" data-gift-grid></div>
         @else
