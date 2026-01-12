@@ -94,6 +94,25 @@ describe('InviteToListAction', function () {
             expect($invitation->declined_at)->toBeNull();
         });
 
+        it('deletes expired invitation before creating new one', function () {
+            $inviter = User::factory()->create();
+            $list = GiftList::factory()->create(['creator_id' => $inviter->id]);
+            $list->users()->attach($inviter->id);
+
+            // Create an expired invitation
+            ListInvitation::factory()->expired()->create([
+                'list_id' => $list->id,
+                'inviter_id' => $inviter->id,
+                'email' => 'test@example.com',
+            ]);
+
+            $action = new InviteToListAction;
+            $invitation = $action->execute($list, $inviter, 'test@example.com');
+
+            expect(ListInvitation::where('email', 'test@example.com')->count())->toBe(1);
+            expect($invitation->expires_at->isFuture())->toBeTrue();
+        });
+
         it('sets expiration date 30 days in the future', function () {
             $inviter = User::factory()->create();
             $list = GiftList::factory()->create(['creator_id' => $inviter->id]);
