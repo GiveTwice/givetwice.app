@@ -2,6 +2,7 @@
 
 use App\Actions\DeclineListInvitationAction;
 use App\Exceptions\ListInvitation\InvalidInvitationException;
+use App\Exceptions\ListInvitation\InvitationExpiredException;
 use App\Models\GiftList;
 use App\Models\ListInvitation;
 use App\Models\User;
@@ -113,7 +114,7 @@ describe('DeclineListInvitationAction', function () {
             $action = new DeclineListInvitationAction;
 
             expect(fn () => $action->execute($invitation->token, $invitee))
-                ->toThrow(InvalidInvitationException::class);
+                ->toThrow(InvitationExpiredException::class);
         });
 
         it('throws exception when invitation is already accepted', function () {

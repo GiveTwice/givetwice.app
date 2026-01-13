@@ -2,8 +2,8 @@
 
 namespace App\Actions;
 
+use App\Actions\Concerns\ValidatesListInvitation;
 use App\Exceptions\ListInvitation\InvalidInvitationException;
-use App\Exceptions\ListInvitation\InvitationExpiredException;
 use App\Models\GiftList;
 use App\Models\ListInvitation;
 use App\Models\User;
@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 
 class AcceptListInvitationAction
 {
+    use ValidatesListInvitation;
+
     public function execute(string $token, User $user): GiftList
     {
         $invitation = ListInvitation::where('token', $token)->first();
@@ -19,21 +21,7 @@ class AcceptListInvitationAction
             throw new InvalidInvitationException;
         }
 
-        if ($invitation->isExpired()) {
-            throw new InvitationExpiredException;
-        }
-
-        if (! $invitation->isPending()) {
-            throw new InvalidInvitationException;
-        }
-
-        if ($invitation->invitee_id && $invitation->invitee_id !== $user->id) {
-            throw new InvalidInvitationException;
-        }
-
-        if (strtolower($invitation->email) !== strtolower($user->email)) {
-            throw new InvalidInvitationException;
-        }
+        $this->validateInvitationForUser($invitation, $user);
 
         /** @var GiftList $list */
         $list = DB::transaction(function () use ($invitation, $user): GiftList {

@@ -149,4 +149,28 @@ describe('LinkInvitationsToVerifiedUser', function () {
         expect($invitation->fresh()->invitee_id)->toBe($newUser->id);
     });
 
+    it('does not link expired invitations', function () {
+        $inviter = User::factory()->create();
+        $list = GiftList::factory()->create(['creator_id' => $inviter->id]);
+        $list->users()->attach($inviter->id);
+
+        $invitation = ListInvitation::factory()->expired()->create([
+            'list_id' => $list->id,
+            'inviter_id' => $inviter->id,
+            'invitee_id' => null,
+            'email' => 'newuser@example.com',
+        ]);
+
+        $newUser = User::factory()->create([
+            'email' => 'newuser@example.com',
+            'email_verified_at' => null,
+        ]);
+
+        $event = new Verified($newUser);
+        $listener = new LinkInvitationsToVerifiedUser;
+        $listener->handle($event);
+
+        expect($invitation->fresh()->invitee_id)->toBeNull();
+    });
+
 });

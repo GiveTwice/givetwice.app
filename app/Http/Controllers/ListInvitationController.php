@@ -55,40 +55,12 @@ class ListInvitationController extends Controller
             ->with(['list', 'inviter'])
             ->first();
 
-        if (! $invitation) {
-            return redirect()
-                ->route('dashboard.locale', ['locale' => $locale])
-                ->with('error', __('This invitation link is invalid.'));
-        }
+        $validationError = $this->validateInvitationAccess($invitation, $request->user());
 
-        if ($invitation->accepted_at) {
+        if ($validationError) {
             return redirect()
                 ->route('dashboard.locale', ['locale' => $locale])
-                ->with('success', __('This invitation has already been accepted.'));
-        }
-
-        if ($invitation->declined_at) {
-            return redirect()
-                ->route('dashboard.locale', ['locale' => $locale])
-                ->with('success', __('This invitation has been declined.'));
-        }
-
-        if ($invitation->isExpired()) {
-            return redirect()
-                ->route('dashboard.locale', ['locale' => $locale])
-                ->with('error', __('This invitation has expired.'));
-        }
-
-        if ($invitation->invitee_id && $invitation->invitee_id !== $request->user()->id) {
-            return redirect()
-                ->route('dashboard.locale', ['locale' => $locale])
-                ->with('error', __('This invitation was sent to a different account.'));
-        }
-
-        if (strtolower($invitation->email) !== strtolower($request->user()->email)) {
-            return redirect()
-                ->route('dashboard.locale', ['locale' => $locale])
-                ->with('error', __('This invitation was sent to a different email address.'));
+                ->with($validationError['type'], $validationError['message']);
         }
 
         return view('lists.invitation-show', [
@@ -190,5 +162,37 @@ class ListInvitationController extends Controller
         return redirect()
             ->back()
             ->with('success', __('Invitation cancelled.'));
+    }
+
+    /**
+     * @return array{type: string, message: string}|null
+     */
+    private function validateInvitationAccess(?ListInvitation $invitation, User $user): ?array
+    {
+        if (! $invitation) {
+            return ['type' => 'error', 'message' => __('This invitation link is invalid.')];
+        }
+
+        if ($invitation->accepted_at) {
+            return ['type' => 'success', 'message' => __('This invitation has already been accepted.')];
+        }
+
+        if ($invitation->declined_at) {
+            return ['type' => 'success', 'message' => __('This invitation has been declined.')];
+        }
+
+        if ($invitation->isExpired()) {
+            return ['type' => 'error', 'message' => __('This invitation has expired.')];
+        }
+
+        if ($invitation->invitee_id && $invitation->invitee_id !== $user->id) {
+            return ['type' => 'error', 'message' => __('This invitation was sent to a different account.')];
+        }
+
+        if ($invitation->email !== $user->email) {
+            return ['type' => 'error', 'message' => __('This invitation was sent to a different email address.')];
+        }
+
+        return null;
     }
 }
