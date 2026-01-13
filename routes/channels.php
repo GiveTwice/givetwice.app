@@ -18,8 +18,8 @@ Broadcast::channel('list.{listId}', function ($user, $listId) {
         return false;
     }
 
-    // List owner can always access
-    if ($user->id === $list->user_id) {
+    // List collaborators can access
+    if ($list->hasUser($user)) {
         return true;
     }
 

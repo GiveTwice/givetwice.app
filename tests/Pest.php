@@ -17,6 +17,8 @@ pest()->extend(Tests\TestCase::class)
 
 pest()->extend(Tests\TestCase::class)
     ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+    ->use(Mattiasgeniar\PhpunitQueryCountAssertions\AssertsQueryCounts::class)
+    ->beforeEach(fn () => $this->trackQueriesForEfficiency())
     ->in('Action');
 
 pest()->extend(Tests\TestCase::class)

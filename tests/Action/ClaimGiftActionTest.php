@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Queue;
 
 beforeEach(function () {
     Queue::fake();
+    $this->trackQueriesForEfficiency();
 });
 
 describe('ClaimGiftAction', function () {
@@ -32,6 +33,8 @@ describe('ClaimGiftAction', function () {
             expect($claim->gift_id)->toBe($gift->id);
             expect($claim->user_id)->toBe($claimer->id);
             expect($claim->confirmed_at)->not->toBeNull();
+
+            $this->assertQueriesAreEfficient();
         });
 
         it('dispatches GiftClaimed event', function () {
@@ -55,7 +58,7 @@ describe('ClaimGiftAction', function () {
             $owner = User::factory()->create();
             $claimer = User::factory()->create();
             $gift = Gift::factory()->create(['user_id' => $owner->id]);
-            $list = GiftList::factory()->create(['user_id' => $owner->id]);
+            $list = GiftList::factory()->create(['creator_id' => $owner->id]);
             $gift->lists()->attach($list->id);
 
             $action = new ClaimGiftAction;

@@ -67,7 +67,7 @@ class SocialAuthController extends Controller
             return $this->redirectToDashboard();
         }
 
-        $user = User::where('email', $socialUser->getEmail())->first();
+        $user = User::where('email', strtolower($socialUser->getEmail()))->first();
 
         if ($user) {
             $updateData = [
@@ -97,7 +97,7 @@ class SocialAuthController extends Controller
 
         $user = User::create([
             'name' => $socialUser->getName(),
-            'email' => $socialUser->getEmail(),
+            'email' => strtolower($socialUser->getEmail()),
             $socialIdField => $socialUser->getId(),
             'avatar' => $socialUser->getAvatar(),
             'email_verified_at' => now(),

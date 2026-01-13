@@ -71,6 +71,10 @@
     @stack('styles')
 </head>
 <body class="min-h-screen bg-gradient-warm flex flex-col">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-coral-500 focus:text-white focus:rounded-lg focus:font-medium">
+        {{ __('Skip to content') }}
+    </a>
+
     <header class="bg-white border-b border-cream-200">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
@@ -181,6 +185,12 @@
         </nav>
     </header>
 
+    @auth
+        @if(auth()->user()->hasPendingListInvitations())
+            <x-invitation-banner :invitations="auth()->user()->pendingListInvitations()->with('list:id,name,slug', 'inviter:id,name')->get()" />
+        @endif
+    @endauth
+
     <div class="fixed top-20 right-4 z-50 flex flex-col gap-3">
         @if (session('success'))
             <div
@@ -235,7 +245,7 @@
         @endif
     </div>
 
-    <main class="flex-grow">
+    <main id="main-content" class="flex-grow">
         <div class="max-w-7xl mx-auto pt-6 pb-20 px-4 sm:px-6 lg:px-8">
             @yield('content')
         </div>

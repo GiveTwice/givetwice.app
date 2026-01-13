@@ -80,9 +80,6 @@
                     <div>
                         <div class="flex items-center gap-3">
                             <h2 class="text-lg font-bold text-gray-900">{{ $list->name }}</h2>
-                            @if($list->is_default)
-                                <span class="badge badge-success text-xs">{{ __('Default') }}</span>
-                            @endif
                         </div>
                         <p class="text-sm text-gray-500 mt-1">
                             {{ trans_choice(':count gift|:count gifts', $list->gifts_count, ['count' => $list->gifts_count]) }}
@@ -92,6 +89,7 @@
                         <a href="{{ url('/' . app()->getLocale() . '/list/' . $list->slug . '/edit') }}" class="btn-secondary">
                             {{ __('Edit') }}
                         </a>
+                        <x-collaborators-button :list="$list" />
                         <x-share-modal :list="$list" />
                         <a href="{{ url('/' . app()->getLocale() . '/gifts/create') }}?list={{ $list->id }}" class="btn-primary">
                             <x-icons.plus class="w-5 h-5" />

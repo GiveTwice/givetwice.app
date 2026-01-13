@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Queue;
 
 beforeEach(function () {
     Queue::fake();
+    $this->trackQueriesForEfficiency();
 });
 
 describe('DeleteAccountAction', function () {
@@ -23,6 +24,8 @@ describe('DeleteAccountAction', function () {
             $action->execute($user);
 
             expect(User::find($userId))->toBeNull();
+
+            $this->assertQueriesAreEfficient();
         });
 
         it('deletes user sessions', function () {
@@ -71,19 +74,19 @@ describe('DeleteAccountAction', function () {
     describe('list cleanup', function () {
         it('deletes all user lists', function () {
             $user = User::factory()->create();
-            GiftList::factory()->count(2)->create(['user_id' => $user->id]);
+            GiftList::factory()->count(2)->create(['creator_id' => $user->id]);
 
-            expect(GiftList::where('user_id', $user->id)->count())->toBe(2);
+            expect(GiftList::where('creator_id', $user->id)->count())->toBe(2);
 
             $action = new DeleteAccountAction;
             $action->execute($user);
 
-            expect(GiftList::where('user_id', $user->id)->count())->toBe(0);
+            expect(GiftList::where('creator_id', $user->id)->count())->toBe(0);
         });
 
         it('removes gift-list associations', function () {
             $user = User::factory()->create();
-            $list = GiftList::factory()->create(['user_id' => $user->id]);
+            $list = GiftList::factory()->create(['creator_id' => $user->id]);
             $gift = Gift::factory()->create(['user_id' => $user->id]);
             $gift->lists()->attach($list->id);
 
@@ -144,8 +147,8 @@ describe('DeleteAccountAction', function () {
             $otherUser = User::factory()->create();
 
             // Create multiple lists for the user
-            $list1 = GiftList::factory()->create(['user_id' => $userToDelete->id, 'name' => 'Birthday']);
-            $list2 = GiftList::factory()->create(['user_id' => $userToDelete->id, 'name' => 'Christmas']);
+            $list1 = GiftList::factory()->create(['creator_id' => $userToDelete->id, 'name' => 'Birthday']);
+            $list2 = GiftList::factory()->create(['creator_id' => $userToDelete->id, 'name' => 'Christmas']);
 
             // Create multiple gifts
             $gift1 = Gift::factory()->create(['user_id' => $userToDelete->id, 'title' => 'Gift 1']);
@@ -230,13 +233,13 @@ describe('DeleteAccountAction', function () {
             $otherUser = User::factory()->create();
 
             // Other user's data
-            $otherList = GiftList::factory()->create(['user_id' => $otherUser->id]);
+            $otherList = GiftList::factory()->create(['creator_id' => $otherUser->id]);
             $otherGift = Gift::factory()->create(['user_id' => $otherUser->id]);
             $otherGift->lists()->attach($otherList->id);
 
             // User to delete's data
             Gift::factory()->create(['user_id' => $userToDelete->id]);
-            GiftList::factory()->create(['user_id' => $userToDelete->id]);
+            GiftList::factory()->create(['creator_id' => $userToDelete->id]);
 
             $action = new DeleteAccountAction;
             $action->execute($userToDelete);

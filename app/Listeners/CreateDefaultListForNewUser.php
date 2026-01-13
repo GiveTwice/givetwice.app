@@ -2,8 +2,8 @@
 
 namespace App\Listeners;
 
+use App\Actions\CreateListAction;
 use App\Helpers\OccasionHelper;
-use App\Models\GiftList;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 
@@ -24,11 +24,8 @@ class CreateDefaultListForNewUser
             $occasionData = $occasion ? OccasionHelper::get($occasion) : null;
             $listName = $occasionData ? __($occasionData['list_name']) : __('My wishlist');
 
-            GiftList::create([
-                'user_id' => $user->id,
-                'name' => $listName,
-                'is_default' => true,
-            ]);
+            $action = new CreateListAction;
+            $action->execute($user, $listName, isDefault: true);
         } finally {
             app()->setLocale($originalLocale);
         }

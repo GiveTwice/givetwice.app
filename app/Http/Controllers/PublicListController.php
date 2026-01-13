@@ -8,13 +8,17 @@ use Illuminate\View\View;
 
 class PublicListController extends Controller
 {
-    public function show(string $locale, GiftList $list, ?string $slug = null): View|RedirectResponse
+    public function show(string $locale, int $list, ?string $slug = null): View|RedirectResponse
     {
+        $list = GiftList::findOrFail($list);
+
         if ($redirect = $this->ensureOnCorrectSlugUrl($list, $slug, $locale)) {
             return $redirect;
         }
 
-        $list->load('user:id,name');
+        $list->load(['creator:id,name,avatar', 'users:id,name']);
+
+        $isOwner = auth()->check() && $list->hasUser(auth()->user());
 
         $gifts = $list->gifts()
             ->whereNull('deleted_at')
@@ -32,6 +36,7 @@ class PublicListController extends Controller
         return view('public.list', [
             'list' => $list,
             'gifts' => $gifts,
+            'isOwner' => $isOwner,
         ]);
     }
 

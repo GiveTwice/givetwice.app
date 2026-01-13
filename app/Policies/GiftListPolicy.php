@@ -14,7 +14,6 @@ class GiftListPolicy
 
     public function view(?User $user, GiftList $giftList): bool
     {
-        // All lists are public/viewable
         return true;
     }
 
@@ -25,31 +24,44 @@ class GiftListPolicy
 
     public function update(User $user, GiftList $giftList): bool
     {
-        return $user->id === $giftList->user_id;
+        return $giftList->hasUser($user);
     }
 
     public function delete(User $user, GiftList $giftList): bool
     {
-        // Cannot delete the default list
         if ($giftList->is_default) {
             return false;
         }
 
-        return $user->id === $giftList->user_id;
+        return $giftList->hasUser($user);
+    }
+
+    public function invite(User $user, GiftList $giftList): bool
+    {
+        return $giftList->hasUser($user);
+    }
+
+    public function leave(User $user, GiftList $giftList): bool
+    {
+        return $giftList->hasUser($user);
+    }
+
+    public function viewCollaborators(User $user, GiftList $giftList): bool
+    {
+        return $giftList->hasUser($user);
     }
 
     public function restore(User $user, GiftList $giftList): bool
     {
-        return $user->id === $giftList->user_id;
+        return $giftList->hasUser($user);
     }
 
     public function forceDelete(User $user, GiftList $giftList): bool
     {
-        // Cannot force delete the default list
         if ($giftList->is_default) {
             return false;
         }
 
-        return $user->id === $giftList->user_id && $user->is_admin;
+        return $giftList->hasUser($user) && $user->is_admin;
     }
 }

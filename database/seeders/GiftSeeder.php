@@ -14,9 +14,9 @@ class GiftSeeder extends Seeder
         $mattias = User::where('email', 'm@ttias.be')->first();
         $john = User::where('email', 'john@doe.tld')->first();
 
-        $mattiasDefaultList = GiftList::where('user_id', $mattias->id)->where('is_default', true)->first();
-        $mattiasBirthdayList = GiftList::where('user_id', $mattias->id)->where('name', 'Birthday Ideas')->first();
-        $johnDefaultList = GiftList::where('user_id', $john->id)->where('is_default', true)->first();
+        $mattiasDefaultList = GiftList::where('creator_id', $mattias->id)->where('is_default', true)->first();
+        $mattiasBirthdayList = GiftList::where('creator_id', $mattias->id)->where('name', 'Birthday Ideas')->first();
+        $johnDefaultList = GiftList::where('creator_id', $john->id)->where('is_default', true)->first();
 
         $gifts = [
             [

@@ -50,7 +50,7 @@
                         <select id="list_id" name="list_id" class="form-select">
                             @foreach($lists as $list)
                                 <option value="{{ $list->id }}" {{ $list->id === $selectedListId ? 'selected' : '' }}>
-                                    {{ $list->name }}{{ $list->is_default ? ' (' . __('Default') . ')' : '' }}
+                                    {{ $list->name }}
                                 </option>
                             @endforeach
                         </select>

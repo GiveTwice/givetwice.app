@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -59,9 +60,34 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         return $this->hasMany(Gift::class);
     }
 
-    public function lists(): HasMany
+    public function lists(): BelongsToMany
     {
-        return $this->hasMany(GiftList::class);
+        return $this->belongsToMany(GiftList::class, 'list_user', 'user_id', 'list_id')
+            ->withPivot('joined_at')
+            ->withTimestamps();
+    }
+
+    public function createdLists(): HasMany
+    {
+        return $this->hasMany(GiftList::class, 'creator_id');
+    }
+
+    public function listInvitations(): HasMany
+    {
+        return $this->hasMany(ListInvitation::class, 'invitee_id');
+    }
+
+    public function pendingListInvitations(): HasMany
+    {
+        return $this->listInvitations()
+            ->whereNull('accepted_at')
+            ->whereNull('declined_at')
+            ->where('expires_at', '>', now());
+    }
+
+    public function hasPendingListInvitations(): bool
+    {
+        return $this->pendingListInvitations()->exists();
     }
 
     public function claims(): HasMany
@@ -72,7 +98,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     public function defaultList(): ?GiftList
     {
         /** @var GiftList|null */
-        return $this->lists()->where('is_default', true)->first();
+        return $this->lists()->where('lists.is_default', true)->first();
     }
 
     public function registerMediaCollections(): void

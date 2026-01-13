@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Queue;
 beforeEach(function () {
     Queue::fake();
     Mail::fake();
+    $this->trackQueriesForEfficiency();
 });
 
 describe('CreatePendingClaimAction', function () {
@@ -30,6 +31,8 @@ describe('CreatePendingClaimAction', function () {
             expect($claim->gift_id)->toBe($gift->id);
             expect($claim->claimer_email)->toBe('claimer@example.com');
             expect($claim->confirmed_at)->toBeNull();
+
+            $this->assertQueriesAreEfficient();
         });
 
         it('stores optional name with the claim', function () {

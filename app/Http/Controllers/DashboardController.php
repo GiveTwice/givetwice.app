@@ -17,6 +17,8 @@ class DashboardController extends Controller
             ->with(['gifts' => function ($query) {
                 $query->with('claims')->reorder()->orderByDesc('created_at');
             }])
+            ->with('users:id,name,avatar')
+            ->orderBy('lists.created_at', 'asc')
             ->get();
 
         return view('dashboard', [

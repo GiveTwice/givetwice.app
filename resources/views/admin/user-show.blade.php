@@ -96,12 +96,7 @@
                 @forelse($user->lists as $list)
                     <div class="flex items-center justify-between py-2 {{ !$loop->last ? 'border-b' : '' }}">
                         <div>
-                            <p class="font-medium text-gray-900">
-                                {{ $list->name }}
-                                @if($list->is_default)
-                                    <span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded ml-1">Default</span>
-                                @endif
-                            </p>
+                            <p class="font-medium text-gray-900">{{ $list->name }}</p>
                             <p class="text-sm text-gray-500">
                                 {{ $list->slug }}
                             </p>

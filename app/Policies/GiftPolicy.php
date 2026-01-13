@@ -14,7 +14,7 @@ class GiftPolicy
 
     public function view(User $user, Gift $gift): bool
     {
-        return $user->id === $gift->user_id;
+        return $user->id === $gift->user_id || $gift->hasAccessibleListFor($user);
     }
 
     public function create(User $user): bool
@@ -24,21 +24,21 @@ class GiftPolicy
 
     public function update(User $user, Gift $gift): bool
     {
-        return $user->id === $gift->user_id;
+        return $user->id === $gift->user_id || $gift->hasAccessibleListFor($user);
     }
 
     public function delete(User $user, Gift $gift): bool
     {
-        return $user->id === $gift->user_id;
+        return $user->id === $gift->user_id || $gift->hasAccessibleListFor($user);
     }
 
     public function restore(User $user, Gift $gift): bool
     {
-        return $user->id === $gift->user_id;
+        return $user->id === $gift->user_id || $gift->hasAccessibleListFor($user);
     }
 
     public function forceDelete(User $user, Gift $gift): bool
     {
-        return $user->id === $gift->user_id && $user->is_admin;
+        return ($user->id === $gift->user_id || $gift->hasAccessibleListFor($user)) && $user->is_admin;
     }
 }

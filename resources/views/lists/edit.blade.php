@@ -54,17 +54,6 @@
                     @enderror
                 </div>
 
-                @if($list->is_default)
-                    <div class="bg-teal-50 border border-teal-100 rounded-xl p-4 mb-6">
-                        <div class="flex gap-3">
-                            <x-icons.info-circle class="w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" />
-                            <div class="text-sm">
-                                <p class="font-medium text-teal-800">{{ __('This is your default list') }}</p>
-                                <p class="text-teal-700">{{ __('New gifts will be added here automatically.') }}</p>
-                            </div>
-                        </div>
-                    </div>
-                @endif
 
                 <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-100">
                     <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="btn-cancel">
@@ -97,15 +86,6 @@
                             <x-icons.external-link class="w-4 h-4 flex-shrink-0" />
                         </a>
                     </div>
-
-                    @if($list->is_default)
-                        <div class="flex items-center justify-between">
-                            <span class="text-gray-600">{{ __('Type') }}</span>
-                            <span class="badge badge-success">
-                                {{ __('Default') }}
-                            </span>
-                        </div>
-                    @endif
                 </div>
             </div>
         </div>

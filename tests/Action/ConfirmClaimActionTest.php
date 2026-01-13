@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Queue;
 
 beforeEach(function () {
     Queue::fake();
+    $this->trackQueriesForEfficiency();
 });
 
 describe('ConfirmClaimAction', function () {
@@ -30,6 +31,8 @@ describe('ConfirmClaimAction', function () {
 
             expect($claim->id)->toBe($pendingClaim->id);
             expect($claim->fresh()->confirmed_at)->not->toBeNull();
+
+            $this->assertQueriesAreEfficient();
         });
 
         it('returns the confirmed claim', function () {
@@ -83,7 +86,7 @@ describe('ConfirmClaimAction', function () {
 
             $owner = User::factory()->create();
             $gift = Gift::factory()->create(['user_id' => $owner->id]);
-            $list = GiftList::factory()->create(['user_id' => $owner->id]);
+            $list = GiftList::factory()->create(['creator_id' => $owner->id]);
             $gift->lists()->attach($list->id);
 
             $pendingClaim = Claim::factory()->anonymous()->create([

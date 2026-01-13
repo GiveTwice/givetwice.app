@@ -24,7 +24,7 @@
             <div class="flex-1 min-w-0">
                 @if($list)
                     <a href="{{ url('/' . app()->getLocale() . '/view/' . $list->slug) }}" class="text-coral-500 text-xs sm:text-sm tracking-wide uppercase font-medium hover:text-coral-600 transition-colors">
-                        {{ __('From :name\'s wishlist', ['name' => $list->user->name]) }}
+                        {{ __('From :name\'s wishlist', ['name' => $list->creator->name]) }}
                     </a>
                 @else
                     <p class="text-coral-500 text-xs sm:text-sm tracking-wide uppercase font-medium">

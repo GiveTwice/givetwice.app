@@ -7,7 +7,7 @@ describe('Public list slug', function () {
     it('redirects to correct slug when visiting with wrong slug', function () {
         $user = User::factory()->create();
         $list = GiftList::factory()->create([
-            'user_id' => $user->id,
+            'creator_id' => $user->id,
             'name' => 'My Wishlist',
         ]);
 
@@ -20,7 +20,7 @@ describe('Public list slug', function () {
     it('redirects to correct slug when visiting without slug', function () {
         $user = User::factory()->create();
         $list = GiftList::factory()->create([
-            'user_id' => $user->id,
+            'creator_id' => $user->id,
             'name' => 'My Wishlist',
         ]);
 
@@ -33,7 +33,7 @@ describe('Public list slug', function () {
     it('does not redirect when visiting with correct slug', function () {
         $user = User::factory()->create();
         $list = GiftList::factory()->create([
-            'user_id' => $user->id,
+            'creator_id' => $user->id,
             'name' => 'My Wishlist',
         ]);
 
@@ -45,30 +45,30 @@ describe('Public list slug', function () {
     it('updates slug when list name changes', function () {
         $user = User::factory()->create();
         $list = GiftList::factory()->create([
-            'user_id' => $user->id,
+            'creator_id' => $user->id,
             'name' => 'Original Name',
         ]);
 
-        expect($list->slug)->toBe('original-name');
+        expect($list->slug)->toBe($list->id.'-original-name');
 
         $list->update(['name' => 'New Name']);
 
-        expect($list->fresh()->slug)->toBe('new-name');
+        expect($list->fresh()->slug)->toBe($list->id.'-new-name');
     });
 
     it('redirects old slug URL to new slug URL after name change', function () {
         $user = User::factory()->create();
         $list = GiftList::factory()->create([
-            'user_id' => $user->id,
+            'creator_id' => $user->id,
             'name' => 'Original Name',
         ]);
 
         $oldSlug = $list->slug;
-        expect($oldSlug)->toBe('original-name');
+        expect($oldSlug)->toBe($list->id.'-original-name');
 
         $list->update(['name' => 'Updated Name']);
         $newSlug = $list->fresh()->slug;
-        expect($newSlug)->toBe('updated-name');
+        expect($newSlug)->toBe($list->id.'-updated-name');
 
         $response = $this->get("/en/v/{$list->id}/{$oldSlug}");
 

@@ -71,7 +71,7 @@ class GiftController extends Controller
             'description' => ['nullable', 'string', 'max:1500'],
             'price' => ['nullable', 'numeric', 'min:0', 'max:9999999.99'],
             'currency' => ['nullable', 'string', Rule::enum(SupportedCurrency::class)],
-            'list_id' => ['nullable', Rule::exists('lists', 'id')->where('user_id', $request->user()->id)],
+            'list_id' => ['nullable', 'integer'],
         ]);
 
         $priceInCents = isset($validated['price'])
@@ -217,8 +217,10 @@ class GiftController extends Controller
         ]);
     }
 
-    public function cardHtml(string $locale, GiftList $list, string $slug, Gift $gift): Response
+    public function cardHtml(string $locale, int $list, string $slug, Gift $gift): Response
     {
+        $list = GiftList::findOrFail($list);
+
         // Verify the gift belongs to this list
         if (! $list->gifts()->where('gifts.id', $gift->id)->exists()) {
             abort(404);

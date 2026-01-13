@@ -8,6 +8,7 @@ use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GiftController;
 use App\Http\Controllers\ListController;
+use App\Http\Controllers\ListInvitationController;
 use App\Http\Controllers\PublicListController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\ShowOccasionController;
@@ -57,8 +58,10 @@ Route::prefix('{locale}')
                 ->name("occasion.{$key}");
         }
 
-        // Public list view (shareable)
-        Route::get('/v/{list}/{slug?}', [PublicListController::class, 'show'])->name('public.list');
+        // Public list view (shareable) - use ID binding explicitly
+        Route::get('/v/{list}/{slug?}', [PublicListController::class, 'show'])
+            ->whereNumber('list')
+            ->name('public.list');
 
         // Claim routes (guest + authenticated)
         Route::get('/gifts/{gift}/claim', [ClaimController::class, 'showAnonymousForm'])->name('claim.anonymous.form');
@@ -67,7 +70,9 @@ Route::prefix('{locale}')
         Route::get('/gifts/{gift}/claimed/{token?}', [ClaimController::class, 'showConfirmed'])->name('claim.confirmed');
 
         // Gift card HTML (for real-time updates on public lists)
-        Route::get('/v/{list}/{slug}/gifts/{gift}/card', [GiftController::class, 'cardHtml'])->name('gifts.card-html');
+        Route::get('/v/{list}/{slug}/gifts/{gift}/card', [GiftController::class, 'cardHtml'])
+            ->whereNumber('list')
+            ->name('gifts.card-html');
 
         // Auth view routes (GET only - POST handled by Fortify)
         Route::middleware('guest')->group(function () {
@@ -134,6 +139,16 @@ Route::prefix('{locale}')
             Route::get('/list/{list}/edit', [ListController::class, 'edit'])->name('list.edit');
             Route::put('/list/{list}', [ListController::class, 'update'])->name('list.update');
             Route::delete('/list/{list}', [ListController::class, 'destroy'])->name('list.destroy');
+
+            // List invitation routes
+            Route::get('/lists/{list}/invite', [ListInvitationController::class, 'create'])->name('lists.invite');
+            Route::post('/lists/{list}/invite', [ListInvitationController::class, 'store'])->name('lists.invite.store');
+            Route::get('/lists/invitation/{token}', [ListInvitationController::class, 'show'])->name('lists.invitation.show');
+            Route::post('/lists/invitation/{token}/accept', [ListInvitationController::class, 'accept'])->name('lists.invitation.accept');
+            Route::post('/lists/invitation/{token}/decline', [ListInvitationController::class, 'decline'])->name('lists.invitation.decline');
+            Route::delete('/lists/{list}/leave', [ListInvitationController::class, 'leave'])->name('lists.leave');
+            Route::delete('/lists/{list}/collaborator/{user}', [ListInvitationController::class, 'removeCollaborator'])->name('lists.collaborator.remove');
+            Route::delete('/lists/invitation/{invitation}', [ListInvitationController::class, 'cancelInvitation'])->name('lists.invitation.cancel');
 
             // Gift routes
             Route::get('/gifts/create', [GiftController::class, 'create'])->name('gifts.create');

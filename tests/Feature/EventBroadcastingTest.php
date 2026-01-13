@@ -26,7 +26,7 @@ describe('GiftClaimed event', function () {
         $claimer = User::factory()->create();
 
         $gift = Gift::factory()->create(['user_id' => $owner->id]);
-        $list = GiftList::factory()->create(['user_id' => $owner->id]);
+        $list = GiftList::factory()->create(['creator_id' => $owner->id]);
         $gift->lists()->attach($list->id);
 
         $this->actingAs($claimer)
@@ -42,7 +42,7 @@ describe('GiftClaimed event', function () {
 
         $owner = User::factory()->create();
         $gift = Gift::factory()->create(['user_id' => $owner->id]);
-        $list = GiftList::factory()->create(['user_id' => $owner->id]);
+        $list = GiftList::factory()->create(['creator_id' => $owner->id]);
         $gift->lists()->attach($list->id);
 
         $claim = Claim::create([
@@ -77,8 +77,8 @@ describe('GiftClaimed event', function () {
         $owner = User::factory()->create();
         $gift = Gift::factory()->create(['user_id' => $owner->id]);
 
-        $list1 = GiftList::factory()->create(['user_id' => $owner->id]);
-        $list2 = GiftList::factory()->create(['user_id' => $owner->id]);
+        $list1 = GiftList::factory()->create(['creator_id' => $owner->id]);
+        $list2 = GiftList::factory()->create(['creator_id' => $owner->id]);
         $gift->lists()->attach([$list1->id, $list2->id]);
         $gift->load('lists');
 
@@ -135,8 +135,8 @@ describe('GiftFetchCompleted event', function () {
         $owner = User::factory()->create();
         $gift = Gift::factory()->create(['user_id' => $owner->id]);
 
-        $list1 = GiftList::factory()->create(['user_id' => $owner->id]);
-        $list2 = GiftList::factory()->create(['user_id' => $owner->id]);
+        $list1 = GiftList::factory()->create(['creator_id' => $owner->id]);
+        $list2 = GiftList::factory()->create(['creator_id' => $owner->id]);
         $gift->lists()->attach([$list1->id, $list2->id]);
         $gift->load('lists');
 
@@ -205,7 +205,7 @@ describe('Claim confirmation flow', function () {
 
         $owner = User::factory()->create();
         $gift = Gift::factory()->create(['user_id' => $owner->id]);
-        $list = GiftList::factory()->create(['user_id' => $owner->id]);
+        $list = GiftList::factory()->create(['creator_id' => $owner->id]);
         $gift->lists()->attach($list->id);
 
         $claim = Claim::create([

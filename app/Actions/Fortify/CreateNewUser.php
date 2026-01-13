@@ -44,7 +44,7 @@ class CreateNewUser implements CreatesNewUsers
 
         return User::create([
             'name' => $input['name'],
-            'email' => $input['email'],
+            'email' => strtolower($input['email']),
             'password' => Hash::make($input['password']),
             'locale_preference' => $this->detectLocale(),
         ]);
