@@ -139,6 +139,25 @@
                                 <p class="form-error">{{ $message }}</p>
                             @enderror
                         </div>
+
+                        <div class="flex items-start gap-3 pt-4 border-t border-gray-100">
+                            <input
+                                type="checkbox"
+                                name="allow_multiple_claims"
+                                id="allow_multiple_claims"
+                                value="1"
+                                {{ old('allow_multiple_claims') ? 'checked' : '' }}
+                                class="mt-1 w-4 h-4 text-teal-500 border-cream-300 rounded focus:ring-teal-400"
+                            >
+                            <div>
+                                <label for="allow_multiple_claims" class="form-label mb-0 cursor-pointer">
+                                    {{ __('Allow multiple claims') }}
+                                </label>
+                                <p class="form-help mt-1">
+                                    {{ __('Enable for gift cards or items that multiple people can give.') }}
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </details>
 

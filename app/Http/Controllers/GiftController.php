@@ -72,6 +72,7 @@ class GiftController extends Controller
             'price' => ['nullable', 'numeric', 'min:0', 'max:9999999.99'],
             'currency' => ['nullable', 'string', Rule::enum(SupportedCurrency::class)],
             'list_id' => ['nullable', 'integer'],
+            'allow_multiple_claims' => ['nullable', 'boolean'],
         ]);
 
         $priceInCents = isset($validated['price'])
@@ -85,6 +86,7 @@ class GiftController extends Controller
             'description' => $validated['description'] ?? null,
             'price_in_cents' => $priceInCents,
             'currency' => $validated['currency'] ?? SupportedCurrency::default()->value,
+            'allow_multiple_claims' => $request->boolean('allow_multiple_claims'),
         ]);
 
         $targetList->gifts()->attach($gift->id, [
@@ -141,6 +143,7 @@ class GiftController extends Controller
                     }
                 },
             ],
+            'allow_multiple_claims' => ['nullable', 'boolean'],
         ]);
 
         $priceInCents = isset($validated['price'])
@@ -153,6 +156,7 @@ class GiftController extends Controller
             'price_in_cents' => $priceInCents,
             'currency' => $validated['currency'] ?? $gift->currency,
             'url' => $validated['url'] ?? $gift->url,
+            'allow_multiple_claims' => $request->boolean('allow_multiple_claims'),
         ]);
 
         return redirect()

@@ -29,7 +29,7 @@ class PublicListController extends Controller
                 $query->whereNotNull('confirmed_at');
             }])
             ->reorder()
-            ->orderBy('claims_count')
+            ->orderByRaw('case when gifts.allow_multiple_claims = true or claims_count = 0 then 0 else 1 end')
             ->orderBy('title')
             ->paginate(100);
 

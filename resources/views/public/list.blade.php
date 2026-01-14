@@ -5,7 +5,7 @@
 @section('robots', 'noindex, nofollow')
 
 @php
-    $availableGifts = (int) $gifts->filter(fn($gift) => $gift->claims->isEmpty())->count();
+    $availableGifts = (int) $gifts->filter(fn($gift) => $gift->claims->isEmpty() || $gift->allow_multiple_claims)->count();
     $claimedGifts = (int) max(0, $gifts->total() - $availableGifts);
     $listOwner = $list->creator;
     $ownerHasAvatar = $listOwner->hasProfileImage();
