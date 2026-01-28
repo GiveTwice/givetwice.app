@@ -13,9 +13,20 @@ class LinkClaimsToVerifiedUser
         /** @var User $user */
         $user = $event->user;
 
-        Claim::query()
+        $claims = Claim::query()
             ->whereNull('user_id')
             ->where('claimer_email', $user->email)
-            ->update(['user_id' => $user->id]);
+            ->with('gift.lists.users')
+            ->get();
+
+        foreach ($claims as $claim) {
+            $claim->update(['user_id' => $user->id]);
+
+            if ($claim->gift) {
+                foreach ($claim->gift->lists as $list) {
+                    $user->followListIfEligible($list);
+                }
+            }
+        }
     }
 }

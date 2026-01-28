@@ -40,3 +40,8 @@ Schedule::command('model:prune', ['--model' => MonitoredScheduledTaskLogItem::cl
 Schedule::command('sitemap:generate')
     ->weekly()
     ->monitorName('Generate Sitemap');
+
+// Send friend wishlist digest emails daily at 1PM UTC
+Schedule::command('friends:send-digest')
+    ->dailyAt('13:00')
+    ->monitorName('Friend Digest Emails');

@@ -280,6 +280,69 @@
 
         <div class="border-t border-gray-200"></div>
 
+        {{-- Notifications --}}
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8" x-data="{ friendNotifications: @js(auth()->user()->friend_notifications_enabled), saving: false }">
+            <div>
+                <h2 class="text-lg font-semibold text-gray-900">{{ __('Notifications') }}</h2>
+                <p class="mt-1 text-sm text-gray-600">{{ __('Manage your email notification preferences.') }}</p>
+            </div>
+
+            <div class="lg:col-span-2">
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-4 bg-cream-50 rounded-xl">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-coral-100 flex items-center justify-center">
+                                <x-icons.users class="w-5 h-5 text-coral-600" />
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-900">{{ __('Friends\' wishlist updates') }}</p>
+                                <p class="text-sm text-gray-500">{{ __('Receive daily updates when friends update their wishlists') }}</p>
+                            </div>
+                        </div>
+                        <button
+                            type="button"
+                            x-on:click="async () => {
+                                saving = true;
+                                try {
+                                    const response = await fetch('{{ route('friends.notifications.global', ['locale' => app()->getLocale()]) }}', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                            'Accept': 'application/json'
+                                        }
+                                    });
+                                    const data = await response.json();
+                                    if (response.ok) {
+                                        friendNotifications = data.enabled;
+                                    }
+                                } finally {
+                                    saving = false;
+                                }
+                            }"
+                            :disabled="saving"
+                            class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-coral-500 focus:ring-offset-2 disabled:opacity-50"
+                            :class="friendNotifications ? 'bg-coral-500' : 'bg-gray-200'"
+                            role="switch"
+                            :aria-checked="friendNotifications"
+                        >
+                            <span
+                                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                                :class="friendNotifications ? 'translate-x-5' : 'translate-x-0'"
+                            ></span>
+                        </button>
+                    </div>
+
+                    <p class="text-sm text-gray-500">
+                        {{ __('You can also manage notifications for individual wishlists from the') }}
+                        <a href="{{ route('friends.index', ['locale' => app()->getLocale()]) }}" class="text-coral-600 hover:text-coral-700 font-medium">{{ __('Friends page') }}</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-200"></div>
+
         {{-- Two-Factor Authentication --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8" x-data="twoFactorAuth()">
             <div>

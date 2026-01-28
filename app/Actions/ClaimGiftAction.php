@@ -37,7 +37,12 @@ class ClaimGiftAction
                 'confirmed_at' => now(),
             ]);
 
-            $lockedGift->load('lists');
+            $lockedGift->load('lists.users');
+
+            foreach ($lockedGift->lists as $list) {
+                $user->followListIfEligible($list);
+            }
+
             event(new GiftClaimed($lockedGift, $claim));
 
             return $claim;

@@ -111,6 +111,17 @@
                     <span class="font-medium">{{ __('Settings') }}</span>
                 </a>
 
+                <a
+                    href="{{ url('/' . app()->getLocale() . '/friends') }}"
+                    class="flex items-center gap-4 px-4 py-3 rounded-xl text-gray-700 hover:bg-cream-50 hover:text-gray-900 transition-all duration-150 group"
+                    @click="open = false"
+                >
+                    <span class="flex-shrink-0 w-9 h-9 rounded-xl bg-gray-100 group-hover:bg-coral-100 flex items-center justify-center transition-all duration-150">
+                        <x-icons.users class="w-[18px] h-[18px] text-gray-500 group-hover:text-coral-600 transition-colors duration-150" />
+                    </span>
+                    <span class="font-medium">{{ __('Friends') }}</span>
+                </a>
+
                 <div class="my-2 mx-3 border-t border-cream-100"></div>
 
                 <form method="POST" action="{{ url('/logout') }}">
