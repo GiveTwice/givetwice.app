@@ -156,4 +156,35 @@ Alpine.data('publicList', (config) => ({
     }
 }));
 
+// Follow button component for public list pages
+Alpine.data('followButton', (config) => ({
+    following: config.following,
+    loading: false,
+
+    async toggle() {
+        this.loading = true;
+
+        try {
+            const url = `/${config.locale}/friends/follow/${config.slug}`;
+            const response = await fetch(url, {
+                method: this.following ? 'DELETE' : 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                this.following = data.following;
+            }
+        } catch (error) {
+            console.error('Error toggling follow:', error);
+        } finally {
+            this.loading = false;
+        }
+    }
+}));
+
 Alpine.start();

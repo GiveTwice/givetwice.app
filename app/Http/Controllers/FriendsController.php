@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\FollowListAction;
+use App\Exceptions\FollowListException;
 use App\Models\FollowedList;
+use App\Models\GiftList;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -51,6 +54,33 @@ class FriendsController extends Controller
         return response()->json([
             'success' => true,
             'enabled' => $user->friend_notifications_enabled,
+        ]);
+    }
+
+    public function follow(Request $request, string $locale, GiftList $list, FollowListAction $action): JsonResponse
+    {
+        try {
+            $action->execute($list, $request->user());
+        } catch (FollowListException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 403);
+        }
+
+        return response()->json([
+            'success' => true,
+            'following' => true,
+        ]);
+    }
+
+    public function unfollow(Request $request, string $locale, GiftList $list): JsonResponse
+    {
+        $request->user()->followedLists()->where('list_id', $list->id)->delete();
+
+        return response()->json([
+            'success' => true,
+            'following' => false,
         ]);
     }
 }

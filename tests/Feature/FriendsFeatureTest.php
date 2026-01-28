@@ -248,6 +248,135 @@ describe('Friends Feature', function () {
         });
     });
 
+    describe('follow/unfollow endpoints', function () {
+        it('allows authenticated user to follow a list using slug', function () {
+            $creator = User::factory()->create();
+            $follower = User::factory()->create();
+
+            $list = GiftList::factory()->create(['creator_id' => $creator->id]);
+            $list->users()->attach($creator->id);
+
+            $this->actingAs($follower)
+                ->postJson("/en/friends/follow/{$list->slug}")
+                ->assertOk()
+                ->assertJson(['success' => true, 'following' => true]);
+
+            expect(FollowedList::where('user_id', $follower->id)->where('list_id', $list->id)->exists())->toBeTrue();
+        });
+
+        it('prevents following own list', function () {
+            $user = User::factory()->create();
+
+            $list = GiftList::factory()->create(['creator_id' => $user->id]);
+            $list->users()->attach($user->id);
+
+            $this->actingAs($user)
+                ->postJson("/en/friends/follow/{$list->slug}")
+                ->assertForbidden()
+                ->assertJson(['success' => false]);
+
+            expect(FollowedList::where('user_id', $user->id)->where('list_id', $list->id)->exists())->toBeFalse();
+        });
+
+        it('prevents following list where user is collaborator', function () {
+            $creator = User::factory()->create();
+            $collaborator = User::factory()->create();
+
+            $list = GiftList::factory()->create(['creator_id' => $creator->id]);
+            $list->users()->attach([$creator->id, $collaborator->id]);
+
+            $this->actingAs($collaborator)
+                ->postJson("/en/friends/follow/{$list->slug}")
+                ->assertForbidden()
+                ->assertJson(['success' => false]);
+
+            expect(FollowedList::where('user_id', $collaborator->id)->where('list_id', $list->id)->exists())->toBeFalse();
+        });
+
+        it('does not create duplicate followed_list entries', function () {
+            $creator = User::factory()->create();
+            $follower = User::factory()->create();
+
+            $list = GiftList::factory()->create(['creator_id' => $creator->id]);
+            $list->users()->attach($creator->id);
+
+            $this->actingAs($follower)
+                ->postJson("/en/friends/follow/{$list->slug}")
+                ->assertOk();
+
+            $this->actingAs($follower)
+                ->postJson("/en/friends/follow/{$list->slug}")
+                ->assertOk();
+
+            expect(FollowedList::where('user_id', $follower->id)->where('list_id', $list->id)->count())->toBe(1);
+        });
+
+        it('allows authenticated user to unfollow a list using slug', function () {
+            $creator = User::factory()->create();
+            $follower = User::factory()->create();
+
+            $list = GiftList::factory()->create(['creator_id' => $creator->id]);
+            $list->users()->attach($creator->id);
+
+            FollowedList::create([
+                'user_id' => $follower->id,
+                'list_id' => $list->id,
+            ]);
+
+            $this->actingAs($follower)
+                ->deleteJson("/en/friends/follow/{$list->slug}")
+                ->assertOk()
+                ->assertJson(['success' => true, 'following' => false]);
+
+            expect(FollowedList::where('user_id', $follower->id)->where('list_id', $list->id)->exists())->toBeFalse();
+        });
+
+        it('returns 404 for non-existent slug', function () {
+            $user = User::factory()->create();
+
+            $this->actingAs($user)
+                ->postJson('/en/friends/follow/99999-nonexistent')
+                ->assertNotFound();
+        });
+
+        it('requires authentication to follow', function () {
+            $creator = User::factory()->create();
+            $list = GiftList::factory()->create(['creator_id' => $creator->id]);
+
+            $this->postJson("/en/friends/follow/{$list->slug}")
+                ->assertUnauthorized();
+        });
+
+        it('requires authentication to unfollow', function () {
+            $creator = User::factory()->create();
+            $list = GiftList::factory()->create(['creator_id' => $creator->id]);
+
+            $this->deleteJson("/en/friends/follow/{$list->slug}")
+                ->assertUnauthorized();
+        });
+
+        it('prevents enumeration attacks by requiring full slug', function () {
+            $creator = User::factory()->create();
+            $follower = User::factory()->create();
+
+            $list = GiftList::factory()->create([
+                'creator_id' => $creator->id,
+                'name' => 'Secret Birthday List',
+            ]);
+            $list->users()->attach($creator->id);
+
+            // Trying with just the ID should fail (returns 404)
+            $this->actingAs($follower)
+                ->postJson("/en/friends/follow/{$list->id}")
+                ->assertNotFound();
+
+            // The correct slug includes both ID and name
+            $this->actingAs($follower)
+                ->postJson("/en/friends/follow/{$list->slug}")
+                ->assertOk();
+        });
+    });
+
     describe('friend digest command', function () {
         it('sends digest email when there are changes', function () {
             $creator = User::factory()->create();

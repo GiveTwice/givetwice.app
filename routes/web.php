@@ -195,6 +195,10 @@ Route::prefix('{locale}')
                 ->name('friends.notifications.list');
             Route::post('/friends/notifications', [FriendsController::class, 'toggleGlobalNotifications'])
                 ->name('friends.notifications.global');
+            Route::post('/friends/follow/{list}', [FriendsController::class, 'follow'])
+                ->name('friends.follow');
+            Route::delete('/friends/follow/{list}', [FriendsController::class, 'unfollow'])
+                ->name('friends.unfollow');
         });
     });
 
