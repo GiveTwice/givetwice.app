@@ -19,9 +19,4 @@ return new class extends Migration
             $table->index('list_id');
         });
     }
-
-    public function down(): void
-    {
-        Schema::dropIfExists('followed_lists');
-    }
 };

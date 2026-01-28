@@ -31,9 +31,6 @@ class FollowedList extends Model
         return $this->belongsTo(GiftList::class, 'list_id');
     }
 
-    /**
-     * Scope to exclude lists where the user is the creator or a collaborator.
-     */
     public function scopeVisibleTo(Builder $query, User $user): Builder
     {
         return $query->whereHas('list', function (Builder $listQuery) use ($user) {
@@ -44,10 +41,6 @@ class FollowedList extends Model
         });
     }
 
-    /**
-     * Check if this followed list is visible to the given user.
-     * A list is visible if the user is not the creator and not a collaborator.
-     */
     public function isVisibleTo(User $user): bool
     {
         if (! $this->list) {

@@ -16,7 +16,7 @@ class FriendDigestMail extends Mailable
 
     public function __construct(
         public User $user,
-        public Collection $digestData
+        public Collection $digestData,
     ) {
         $this->locale($user->locale_preference ?? 'en');
     }

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\FollowedList;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class FriendsController extends Controller
@@ -29,7 +28,7 @@ class FriendsController extends Controller
 
     public function toggleListNotifications(Request $request, string $locale, FollowedList $followedList): JsonResponse
     {
-        Gate::authorize('update', $followedList);
+        $this->authorize('update', $followedList);
 
         $followedList->update([
             'notifications' => ! $followedList->notifications,

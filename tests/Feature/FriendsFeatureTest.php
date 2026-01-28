@@ -120,7 +120,7 @@ describe('Friends Feature', function () {
 
             $this->actingAs($user)
                 ->get('/en/friends')
-                ->assertStatus(200)
+                ->assertOk()
                 ->assertSee(__("Friends' wishlists"));
         });
 
@@ -146,7 +146,7 @@ describe('Friends Feature', function () {
 
             $this->actingAs($user)
                 ->get('/en/friends')
-                ->assertStatus(200)
+                ->assertOk()
                 ->assertSee('Johns Birthday List')
                 ->assertSee('John Creator');
         });
@@ -168,7 +168,7 @@ describe('Friends Feature', function () {
 
             $this->actingAs($user)
                 ->get('/en/friends')
-                ->assertStatus(200)
+                ->assertOk()
                 ->assertDontSee('Collaborated List');
         });
 
@@ -177,7 +177,7 @@ describe('Friends Feature', function () {
 
             $this->actingAs($user)
                 ->get('/en/friends')
-                ->assertStatus(200)
+                ->assertOk()
                 ->assertSee(__("No friends' wishlists yet"));
         });
     });
@@ -226,7 +226,7 @@ describe('Friends Feature', function () {
 
             $this->actingAs($user)
                 ->postJson("/en/friends/{$followedList->id}/notifications")
-                ->assertStatus(403);
+                ->assertForbidden();
         });
 
         it('toggles global notifications via JSON API', function () {

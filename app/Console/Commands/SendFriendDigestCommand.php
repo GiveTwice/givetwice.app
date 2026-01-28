@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Mail\FriendDigestMail;
 use App\Models\Gift;
+use App\Models\GiftList;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
@@ -47,7 +48,7 @@ class SendFriendDigestCommand extends Command
     }
 
     /**
-     * @return Collection<int, array{list: \App\Models\GiftList, added_gifts: Collection, removed_gifts: Collection}>
+     * @return Collection<int, array{list: GiftList, added_gifts: Collection<int, Gift>, removed_gifts: Collection<int, Gift>}>
      */
     protected function getDigestDataForUser(User $user): Collection
     {

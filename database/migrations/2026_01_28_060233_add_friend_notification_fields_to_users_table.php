@@ -13,11 +13,4 @@ return new class extends Migration
             $table->timestamp('last_friend_digest_at')->nullable()->after('friend_notifications_enabled');
         });
     }
-
-    public function down(): void
-    {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['friend_notifications_enabled', 'last_friend_digest_at']);
-        });
-    }
 };
