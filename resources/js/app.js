@@ -14,7 +14,7 @@ Alpine.data('publicList', (config) => ({
             window.Echo.channel('list.' + config.slug)
                 .listen('.gift.added', (e) => this.addGiftCard(e.gift))
                 .listen('.gift.fetch.completed', (e) => this.updateGiftCard(e.gift))
-                .listen('.gift.claimed', (e) => this.markGiftAsClaimed(e.gift.id));
+                .listen('.gift.claimed', (e) => this.markGiftAsClaimed(e.gift, e.claimed));
         }
     },
 
@@ -97,9 +97,33 @@ Alpine.data('publicList', (config) => ({
         }
     },
 
-    markGiftAsClaimed(giftId) {
-        const card = document.querySelector(`[data-gift-id='${giftId}']`);
+    markGiftAsClaimed(gift, isClaimed) {
+        const card = document.querySelector(`[data-gift-id='${gift.id}']`);
         if (!card) return;
+
+        // For multi-claim gifts, only update the claim count badge
+        if (gift.allow_multiple_claims) {
+            const badge = card.querySelector('[data-multi-claim-badge]');
+            if (!badge) return;
+
+            let claimCount = badge.querySelector('[data-claim-count]');
+            if (gift.claim_count > 0) {
+                if (!claimCount) {
+                    claimCount = document.createElement('span');
+                    claimCount.className = 'claim-count opacity-75';
+                    claimCount.setAttribute('data-claim-count', '');
+                    badge.append(document.createTextNode(' '));
+                    badge.appendChild(claimCount);
+                }
+                claimCount.textContent = `(${gift.claim_count})`;
+            } else if (claimCount) {
+                claimCount.remove();
+            }
+            // Don't change available/claimed counts or disable buttons
+            return;
+        }
+
+        // Regular gift - mark as claimed
         this.availableCount = Math.max(0, this.availableCount - 1);
         this.claimedCount++;
         const imgContainer = card.querySelector('[data-gift-image]');

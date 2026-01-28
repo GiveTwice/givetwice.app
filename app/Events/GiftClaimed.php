@@ -47,8 +47,10 @@ class GiftClaimed implements ShouldBroadcast
             'gift' => [
                 'id' => $this->gift->id,
                 'title' => $this->gift->title,
+                'allow_multiple_claims' => $this->gift->allow_multiple_claims,
+                'claim_count' => $this->gift->getConfirmedClaimCount(),
             ],
-            'claimed' => true,
+            'claimed' => ! $this->gift->allowsMultipleClaims(),
         ];
     }
 }

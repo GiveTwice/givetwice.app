@@ -7,12 +7,15 @@
 ])
 
 @php
-    $isClaimed = $gift->claims_count > 0 || $gift->claims->isNotEmpty();
-    $isClaimedByMe = auth()->check() && $gift->claims->where('user_id', auth()->id())->isNotEmpty();
+    $allowsMultipleClaims = $gift->allowsMultipleClaims();
+    $hasAnyClaims = $gift->claims_count > 0 || $gift->claims->isNotEmpty();
+    $confirmedClaimCount = $gift->getConfirmedClaimCount();
+    $isClaimed = !$allowsMultipleClaims && $hasAnyClaims;
+    $isClaimedByMe = auth()->check() && $gift->claims->where('user_id', auth()->id())->whereNotNull('confirmed_at')->isNotEmpty();
     $isPending = $gift->isPending() || $gift->isFetching();
     $isFailed = $gift->isFetchFailed();
     $isClaimedByOthers = $showClaimActions && $isClaimed && !$isClaimedByMe && !$isOwner;
-    $isUnavailable = $isClaimedByOthers || ($showClaimActions && $isClaimedByMe);
+    $isUnavailable = $isClaimedByOthers || ($showClaimActions && $isClaimedByMe && !$allowsMultipleClaims);
 @endphp
 
 <div
@@ -65,7 +68,18 @@
             </div>
         @endif
 
-        @if($isClaimed && !$showClaimActions)
+        @if($allowsMultipleClaims)
+
+            <div class="absolute top-3 right-3">
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-teal-100/95 backdrop-blur-sm text-teal-700 text-xs font-semibold rounded-full shadow-sm" data-multi-claim-badge>
+                    <x-icons.infinity class="w-3 h-3" />
+                    {{ __('Always available') }}
+                    @if($confirmedClaimCount > 0)
+                        <span class="claim-count opacity-75" data-claim-count>({{ $confirmedClaimCount }})</span>
+                    @endif
+                </span>
+            </div>
+        @elseif($isClaimed && !$showClaimActions)
 
             <div class="absolute top-3 right-3">
                 <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-sunny-100/95 backdrop-blur-sm text-sunny-700 text-xs font-semibold rounded-full shadow-sm">

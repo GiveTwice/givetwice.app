@@ -40,6 +40,7 @@ class Gift extends Model implements HasMedia
         'fetched_at',
         'rating',
         'review_count',
+        'allow_multiple_claims',
     ];
 
     protected static function booted(): void
@@ -58,6 +59,7 @@ class Gift extends Model implements HasMedia
             'fetched_at' => 'datetime',
             'rating' => 'decimal:1',
             'review_count' => 'integer',
+            'allow_multiple_claims' => 'boolean',
         ];
     }
 
@@ -135,7 +137,25 @@ class Gift extends Model implements HasMedia
 
     public function isClaimed(): bool
     {
+        if ($this->allow_multiple_claims) {
+            return false;
+        }
+
         return $this->claims()->whereNotNull('confirmed_at')->exists();
+    }
+
+    public function allowsMultipleClaims(): bool
+    {
+        return (bool) $this->allow_multiple_claims;
+    }
+
+    public function getConfirmedClaimCount(): int
+    {
+        if ($this->relationLoaded('claims')) {
+            return $this->claims->whereNotNull('confirmed_at')->count();
+        }
+
+        return $this->claims()->whereNotNull('confirmed_at')->count();
     }
 
     public function isPending(): bool

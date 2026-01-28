@@ -4,8 +4,10 @@
 ])
 
 @php
-    $isClaimed = $gift->claims_count > 0 || $gift->claims->isNotEmpty();
-    $isClaimedByMe = auth()->check() && $gift->claims->where('user_id', auth()->id())->isNotEmpty();
+    $allowsMultipleClaims = $gift->allowsMultipleClaims();
+    $hasAnyClaims = $gift->claims_count > 0 || $gift->claims->isNotEmpty();
+    $isClaimed = !$allowsMultipleClaims && $hasAnyClaims;
+    $isClaimedByMe = auth()->check() && $gift->claims->where('user_id', auth()->id())->whereNotNull('confirmed_at')->isNotEmpty();
     $addedAgo = $gift->created_at->diffForHumans();
 @endphp
 
@@ -244,14 +246,14 @@
                             @endif
                         </div>
 
-                        @unless($isClaimed)
+                        @if(! $isClaimed && ! $allowsMultipleClaims)
                             <p class="mt-4 text-sm text-gray-500 flex items-center gap-2">
                                 <x-icons.info-circle class="w-4 h-4 text-gray-400" />
                                 {{ __('Giving this gift?') }}
                                 <a href="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/claim') }}" class="text-coral-600 hover:text-coral-700 hover:underline font-medium">{{ __('Claim it') }}</a>
                                 {{ __('to prevent duplicates.') }}
                             </p>
-                        @endunless
+                        @endif
                     @else
 
                         <div class="space-y-3 mt-4">
