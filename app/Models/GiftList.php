@@ -106,6 +106,11 @@ class GiftList extends Model
             ->where('expires_at', '>', now());
     }
 
+    public function followers(): HasMany
+    {
+        return $this->hasMany(FollowedList::class, 'list_id');
+    }
+
     public function gifts(): BelongsToMany
     {
         return $this->belongsToMany(Gift::class, 'gift_list', 'list_id', 'gift_id')

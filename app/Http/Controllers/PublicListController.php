@@ -20,6 +20,11 @@ class PublicListController extends Controller
 
         $isOwner = auth()->check() && $list->hasUser(auth()->user());
 
+        $isFollowing = false;
+        if (auth()->check() && ! $isOwner) {
+            $isFollowing = auth()->user()->followedLists()->where('list_id', $list->id)->exists();
+        }
+
         $gifts = $list->gifts()
             ->whereNull('deleted_at')
             ->withCount(['claims' => function ($query) {
@@ -37,6 +42,7 @@ class PublicListController extends Controller
             'list' => $list,
             'gifts' => $gifts,
             'isOwner' => $isOwner,
+            'isFollowing' => $isFollowing,
         ]);
     }
 

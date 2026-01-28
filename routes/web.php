@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FriendsController;
 use App\Http\Controllers\GiftController;
 use App\Http\Controllers\ListController;
 use App\Http\Controllers\ListInvitationController;
@@ -187,6 +188,17 @@ Route::prefix('{locale}')
             Route::delete('/settings/account', [SettingsController::class, 'destroyAccount'])
                 ->middleware('throttle:3,10')
                 ->name('settings.account.destroy');
+
+            // Friends routes
+            Route::get('/friends', [FriendsController::class, 'index'])->name('friends.index');
+            Route::post('/friends/{followedList}/notifications', [FriendsController::class, 'toggleListNotifications'])
+                ->name('friends.notifications.list');
+            Route::post('/friends/notifications', [FriendsController::class, 'toggleGlobalNotifications'])
+                ->name('friends.notifications.global');
+            Route::post('/friends/follow/{list}', [FriendsController::class, 'follow'])
+                ->name('friends.follow');
+            Route::delete('/friends/follow/{list}', [FriendsController::class, 'unfollow'])
+                ->name('friends.unfollow');
         });
     });
 

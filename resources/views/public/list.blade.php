@@ -71,6 +71,24 @@
                     <span class="text-xs font-semibold text-gray-600" x-text="claimedCount">{{ $claimedGifts }}</span>
                     <span class="text-xs text-gray-500">{{ __('claimed') }}</span>
                 </div>
+                @auth
+                    @unless($isOwner)
+                        <div x-data="followButton({ following: {{ $isFollowing ? 'true' : 'false' }}, slug: '{{ $list->slug }}', locale: '{{ app()->getLocale() }}' })">
+                            <button
+                                type="button"
+                                x-on:click="toggle()"
+                                :disabled="loading"
+                                class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all"
+                                :class="following
+                                    ? 'bg-coral-100 text-coral-700 hover:bg-coral-200'
+                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+                            >
+                                <x-icons.bell class="w-4 h-4" />
+                                <span x-text="following ? '{{ __('Unfollow') }}' : '{{ __('Follow') }}'"></span>
+                            </button>
+                        </div>
+                    @endunless
+                @endauth
             </div>
         </div>
     </div>

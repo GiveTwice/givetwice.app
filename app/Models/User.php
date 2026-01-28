@@ -29,6 +29,8 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         'facebook_id',
         'is_admin',
         'email_verified_at',
+        'friend_notifications_enabled',
+        'last_friend_digest_at',
     ];
 
     /**
@@ -52,6 +54,8 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_admin' => 'boolean',
+            'friend_notifications_enabled' => 'boolean',
+            'last_friend_digest_at' => 'datetime',
         ];
     }
 
@@ -93,6 +97,29 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     public function claims(): HasMany
     {
         return $this->hasMany(Claim::class);
+    }
+
+    /**
+     * @return HasMany<FollowedList, $this>
+     */
+    public function followedLists(): HasMany
+    {
+        return $this->hasMany(FollowedList::class);
+    }
+
+    /**
+     * Follow a list if the user is eligible (not creator, not collaborator).
+     */
+    public function followListIfEligible(GiftList $list): void
+    {
+        if ($list->creator_id === $this->id || $list->hasUser($this)) {
+            return;
+        }
+
+        FollowedList::firstOrCreate([
+            'user_id' => $this->id,
+            'list_id' => $list->id,
+        ]);
     }
 
     public function defaultList(): ?GiftList
