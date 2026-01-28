@@ -12,7 +12,9 @@
     @foreach($digestData as $data)
         <div style="background: #f0fdfa; padding: 16px; border-radius: 12px; margin: 20px 0; border: 1px solid #99f6e4;">
             <div style="margin-bottom: 12px;">
-                <strong style="color: #0d9488; font-size: 16px;">{{ $data['list']->name }}</strong>
+                <a href="{{ $data['list']->getPublicUrl($locale) }}" style="color: #0d9488; text-decoration: none;">
+                    <strong style="font-size: 16px;">{{ $data['list']->name }}</strong>
+                </a>
                 <br>
                 <span style="color: #6b7280; font-size: 13px;">{{ __('by') }} {{ $data['list']->creator->name }}</span>
             </div>
@@ -55,6 +57,6 @@
 
     <p style="color: #9ca3af; font-size: 12px; text-align: center; margin-top: 30px;">
         {{ __('You can manage your notification preferences in') }}
-        <a href="{{ $settingsUrl }}" style="color: #0d9488;">{{ __('Settings') }}</a>.
+        <a href="{{ $settingsUrl }}#notifications" style="color: #0d9488;">{{ __('Settings') }}</a>.
     </p>
 @endsection

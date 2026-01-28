@@ -25,20 +25,34 @@
                     <p class="text-sm text-gray-500">{{ __('Receive daily updates when friends update their wishlists') }}</p>
                 </div>
             </div>
-            <button
-                type="button"
-                x-on:click="toggleGlobalNotifications()"
-                :disabled="togglingGlobal"
-                class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-coral-500 focus:ring-offset-2 disabled:opacity-50"
-                :class="globalEnabled ? 'bg-coral-500' : 'bg-gray-200'"
-                role="switch"
-                :aria-checked="globalEnabled"
-            >
-                <span
-                    class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-                    :class="globalEnabled ? 'translate-x-5' : 'translate-x-0'"
-                ></span>
-            </button>
+            <div class="relative">
+                <button
+                    type="button"
+                    x-on:click="toggleGlobalNotifications()"
+                    :disabled="togglingGlobal"
+                    class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-coral-500 focus:ring-offset-2 disabled:opacity-50"
+                    :class="globalEnabled ? 'bg-coral-500' : 'bg-gray-200'"
+                    role="switch"
+                    :aria-checked="globalEnabled"
+                >
+                    <span
+                        class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                        :class="globalEnabled ? 'translate-x-5' : 'translate-x-0'"
+                    ></span>
+                </button>
+                <div
+                    x-show="globalSaved"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100"
+                    x-transition:leave="transition ease-in duration-300"
+                    x-transition:leave-start="opacity-100"
+                    x-transition:leave-end="opacity-0"
+                    class="absolute top-full left-1/2 -translate-x-1/2 mt-1 text-xs text-teal-600 font-medium whitespace-nowrap"
+                >
+                    {{ __('Saved!') }}
+                </div>
+            </div>
         </div>
 
         @if($groupedByOwner->isEmpty())
@@ -76,7 +90,7 @@
                             @foreach($followedLists as $followedList)
                                 <div
                                     class="flex items-center justify-between p-3 bg-cream-50/50 rounded-lg"
-                                    x-data="{ notifications: {{ $followedList->notifications ? 'true' : 'false' }}, toggling: false }"
+                                    x-data="{ notifications: {{ $followedList->notifications ? 'true' : 'false' }}, toggling: false, saved: false }"
                                 >
                                     <div class="flex items-center gap-3 min-w-0">
                                         <div class="w-8 h-8 rounded-lg bg-white border border-cream-200 flex items-center justify-center flex-shrink-0">
@@ -97,21 +111,35 @@
 
                                     <div class="flex items-center gap-3 flex-shrink-0">
                                         {{-- Per-list notification toggle --}}
-                                        <button
-                                            type="button"
-                                            x-on:click="toggleListNotifications({{ $followedList->id }}, $data)"
-                                            :disabled="toggling || !globalEnabled"
-                                            class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-coral-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                                            :class="notifications && globalEnabled ? 'bg-coral-500' : 'bg-gray-200'"
-                                            role="switch"
-                                            :aria-checked="notifications"
-                                            :title="globalEnabled ? '' : '{{ __('Enable global notifications first') }}'"
-                                        >
-                                            <span
-                                                class="pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-                                                :class="notifications && globalEnabled ? 'translate-x-4' : 'translate-x-0'"
-                                            ></span>
-                                        </button>
+                                        <div class="relative">
+                                            <button
+                                                type="button"
+                                                x-on:click="toggleListNotifications({{ $followedList->id }}, $data)"
+                                                :disabled="toggling || !globalEnabled"
+                                                class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-coral-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                :class="notifications && globalEnabled ? 'bg-coral-500' : 'bg-gray-200'"
+                                                role="switch"
+                                                :aria-checked="notifications"
+                                                :title="globalEnabled ? '' : '{{ __('Enable global notifications first') }}'"
+                                            >
+                                                <span
+                                                    class="pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                                                    :class="notifications && globalEnabled ? 'translate-x-4' : 'translate-x-0'"
+                                                ></span>
+                                            </button>
+                                            <div
+                                                x-show="saved"
+                                                x-transition:enter="transition ease-out duration-300"
+                                                x-transition:enter-start="opacity-0"
+                                                x-transition:enter-end="opacity-100"
+                                                x-transition:leave="transition ease-in duration-300"
+                                                x-transition:leave-start="opacity-100"
+                                                x-transition:leave-end="opacity-0"
+                                                class="absolute top-full left-1/2 -translate-x-1/2 mt-1 text-xs text-teal-600 font-medium whitespace-nowrap"
+                                            >
+                                                {{ __('Saved!') }}
+                                            </div>
+                                        </div>
 
                                         {{-- View list link --}}
                                         <a
@@ -138,6 +166,8 @@ function friendsPage() {
     return {
         globalEnabled: @js($globalNotificationsEnabled),
         togglingGlobal: false,
+        globalSaved: false,
+        globalSavedTimeout: null,
 
         async toggleGlobalNotifications() {
             this.togglingGlobal = true;
@@ -156,12 +186,23 @@ function friendsPage() {
 
                 if (response.ok) {
                     this.globalEnabled = data.enabled;
+                    this.showGlobalSaved();
                 }
             } catch (error) {
                 console.error('Error toggling global notifications:', error);
             } finally {
                 this.togglingGlobal = false;
             }
+        },
+
+        showGlobalSaved() {
+            if (this.globalSavedTimeout) {
+                clearTimeout(this.globalSavedTimeout);
+            }
+            this.globalSaved = true;
+            this.globalSavedTimeout = setTimeout(() => {
+                this.globalSaved = false;
+            }, 5000);
         },
 
         async toggleListNotifications(followedListId, data) {
@@ -181,12 +222,23 @@ function friendsPage() {
 
                 if (response.ok) {
                     data.notifications = result.notifications;
+                    this.showListSaved(data);
                 }
             } catch (error) {
                 console.error('Error toggling list notifications:', error);
             } finally {
                 data.toggling = false;
             }
+        },
+
+        showListSaved(data) {
+            if (data.savedTimeout) {
+                clearTimeout(data.savedTimeout);
+            }
+            data.saved = true;
+            data.savedTimeout = setTimeout(() => {
+                data.saved = false;
+            }, 5000);
         }
     }
 }

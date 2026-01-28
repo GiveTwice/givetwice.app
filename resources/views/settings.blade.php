@@ -281,7 +281,7 @@
         <div class="border-t border-gray-200"></div>
 
         {{-- Notifications --}}
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8" x-data="{ friendNotifications: @js(auth()->user()->friend_notifications_enabled), saving: false }">
+        <div id="notifications" class="grid grid-cols-1 lg:grid-cols-3 gap-8" x-data="notificationSettings()">
             <div>
                 <h2 class="text-lg font-semibold text-gray-900">{{ __('Notifications') }}</h2>
                 <p class="mt-1 text-sm text-gray-600">{{ __('Manage your email notification preferences.') }}</p>
@@ -299,38 +299,34 @@
                                 <p class="text-sm text-gray-500">{{ __('Receive daily updates when friends update their wishlists') }}</p>
                             </div>
                         </div>
-                        <button
-                            type="button"
-                            x-on:click="async () => {
-                                saving = true;
-                                try {
-                                    const response = await fetch('{{ route('friends.notifications.global', ['locale' => app()->getLocale()]) }}', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                            'Accept': 'application/json'
-                                        }
-                                    });
-                                    const data = await response.json();
-                                    if (response.ok) {
-                                        friendNotifications = data.enabled;
-                                    }
-                                } finally {
-                                    saving = false;
-                                }
-                            }"
-                            :disabled="saving"
-                            class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-coral-500 focus:ring-offset-2 disabled:opacity-50"
-                            :class="friendNotifications ? 'bg-coral-500' : 'bg-gray-200'"
-                            role="switch"
-                            :aria-checked="friendNotifications"
-                        >
-                            <span
-                                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-                                :class="friendNotifications ? 'translate-x-5' : 'translate-x-0'"
-                            ></span>
-                        </button>
+                        <div class="relative">
+                            <button
+                                type="button"
+                                x-on:click="toggleNotifications()"
+                                :disabled="saving"
+                                class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-coral-500 focus:ring-offset-2 disabled:opacity-50"
+                                :class="friendNotifications ? 'bg-coral-500' : 'bg-gray-200'"
+                                role="switch"
+                                :aria-checked="friendNotifications"
+                            >
+                                <span
+                                    class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                                    :class="friendNotifications ? 'translate-x-5' : 'translate-x-0'"
+                                ></span>
+                            </button>
+                            <div
+                                x-show="saved"
+                                x-transition:enter="transition ease-out duration-300"
+                                x-transition:enter-start="opacity-0"
+                                x-transition:enter-end="opacity-100"
+                                x-transition:leave="transition ease-in duration-300"
+                                x-transition:leave-start="opacity-100"
+                                x-transition:leave-end="opacity-0"
+                                class="absolute top-full left-1/2 -translate-x-1/2 mt-1 text-xs text-teal-600 font-medium whitespace-nowrap"
+                            >
+                                {{ __('Saved!') }}
+                            </div>
+                        </div>
                     </div>
 
                     <p class="text-sm text-gray-500">
@@ -829,6 +825,46 @@
 
 @push('scripts')
 <script>
+function notificationSettings() {
+    return {
+        friendNotifications: @js(auth()->user()->friend_notifications_enabled),
+        saving: false,
+        saved: false,
+        savedTimeout: null,
+
+        async toggleNotifications() {
+            this.saving = true;
+            try {
+                const response = await fetch('{{ route('friends.notifications.global', ['locale' => app()->getLocale()]) }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    this.friendNotifications = data.enabled;
+                    this.showSaved();
+                }
+            } finally {
+                this.saving = false;
+            }
+        },
+
+        showSaved() {
+            if (this.savedTimeout) {
+                clearTimeout(this.savedTimeout);
+            }
+            this.saved = true;
+            this.savedTimeout = setTimeout(() => {
+                this.saved = false;
+            }, 5000);
+        }
+    }
+}
+
 function profileSettings() {
     return {
         imageUrl: @js(auth()->user()->getProfileImageUrl('medium')),
