@@ -123,6 +123,9 @@ class Gift extends Model implements HasMedia
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @return BelongsToMany<GiftList, $this>
+     */
     public function lists(): BelongsToMany
     {
         return $this->belongsToMany(GiftList::class, 'gift_list', 'gift_id', 'list_id')

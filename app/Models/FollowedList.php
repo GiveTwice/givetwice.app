@@ -26,6 +26,9 @@ class FollowedList extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @return BelongsTo<GiftList, $this>
+     */
     public function list(): BelongsTo
     {
         return $this->belongsTo(GiftList::class, 'list_id');

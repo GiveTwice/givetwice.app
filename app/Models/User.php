@@ -99,6 +99,9 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         return $this->hasMany(Claim::class);
     }
 
+    /**
+     * @return HasMany<FollowedList, $this>
+     */
     public function followedLists(): HasMany
     {
         return $this->hasMany(FollowedList::class);

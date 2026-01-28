@@ -36,6 +36,9 @@ class Claim extends Model
         });
     }
 
+    /**
+     * @return BelongsTo<Gift, $this>
+     */
     public function gift(): BelongsTo
     {
         return $this->belongsTo(Gift::class);
