@@ -109,6 +109,7 @@
                 <div class="p-6">
                     <p class="text-gray-700 leading-relaxed mb-4">{{ __('Let\'s be honest: most wishlist apps look like they haven\'t been updated since 2010. Clunky interfaces, confusing navigation, ads everywhere.') }}</p>
                     <p class="text-gray-700 leading-relaxed mb-4">{{ __('We wanted to build something you\'d actually enjoy using. Clean design, no ads, no clutter. Just your gifts and a share button.') }}</p>
+                    <p class="text-gray-700 leading-relaxed mb-4">{{ __('And we keep making it better. You can now collaborate on lists with your partner or family, follow friends\' wishlists to get notified when they add something new, and mark gifts as multi-claim for things like gift cards or group presents.') }}</p>
                     <p class="text-gray-600 text-sm">{{ __('You\'ll actually want to share it.') }}</p>
                 </div>
             </div>
