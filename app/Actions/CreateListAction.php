@@ -4,6 +4,7 @@ namespace App\Actions;
 
 use App\Models\GiftList;
 use App\Models\User;
+use Spatie\SlackAlerts\Facades\SlackAlert;
 
 class CreateListAction
 {
@@ -17,6 +18,10 @@ class CreateListAction
         ]);
 
         $list->users()->attach($creator->id, ['joined_at' => now()]);
+
+        if (! $isDefault) {
+            SlackAlert::message("📋 {$creator->email} created a new list: \"{$name}\"");
+        }
 
         return $list;
     }

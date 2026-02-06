@@ -7,9 +7,11 @@ use App\Models\GiftList;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Queue;
+use Spatie\SlackAlerts\Facades\SlackAlert;
 
 beforeEach(function () {
     Queue::fake();
+    SlackAlert::fake();
     $this->trackQueriesForEfficiency();
 });
 
@@ -249,6 +251,18 @@ describe('DeleteAccountAction', function () {
             expect(GiftList::find($otherList->id))->not->toBeNull();
             expect(Gift::find($otherGift->id))->not->toBeNull();
             expect(DB::table('gift_list')->where('list_id', $otherList->id)->count())->toBe(1);
+        });
+    });
+
+    describe('slack notifications', function () {
+        it('sends a slack notification when a user deletes their account', function () {
+            $user = User::factory()->create();
+            $email = $user->email;
+
+            $action = new DeleteAccountAction;
+            $action->execute($user);
+
+            SlackAlert::expectMessageSentContaining($email);
         });
     });
 

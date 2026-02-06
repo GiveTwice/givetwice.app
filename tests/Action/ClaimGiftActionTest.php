@@ -12,9 +12,11 @@ use App\Models\GiftList;
 use App\Models\User;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
+use Spatie\SlackAlerts\Facades\SlackAlert;
 
 beforeEach(function () {
     Queue::fake();
+    SlackAlert::fake();
     $this->trackQueriesForEfficiency();
 });
 
