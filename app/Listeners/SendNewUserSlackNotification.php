@@ -13,7 +13,7 @@ class SendNewUserSlackNotification
         /** @var User $user */
         $user = $event->user;
 
-        $provider = $user->google_id ? 'Google' : ($user->facebook_id ? 'Facebook' : ($user->apple_id ? 'Apple' : 'email'));
+        $provider = $user->google_id ? 'Google' : ($user->facebook_id ? 'Facebook' : 'email');
 
         SlackAlert::message("👤 New user registered: {$user->email} (via {$provider})");
     }
