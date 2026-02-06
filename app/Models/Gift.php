@@ -37,6 +37,8 @@ class Gift extends Model implements HasMedia
         'currency',
         'original_image_url',
         'fetch_status',
+        'fetch_error',
+        'fetch_attempts',
         'fetched_at',
         'rating',
         'review_count',
@@ -56,6 +58,7 @@ class Gift extends Model implements HasMedia
     {
         return [
             'price_in_cents' => 'integer',
+            'fetch_error' => 'array',
             'fetched_at' => 'datetime',
             'rating' => 'decimal:1',
             'review_count' => 'integer',

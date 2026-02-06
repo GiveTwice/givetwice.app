@@ -53,6 +53,8 @@ class GiftFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'fetch_status' => 'failed',
+            'fetch_error' => ['summary' => 'HTTP 404: Not Found', 'status_code' => 404],
+            'fetch_attempts' => 1,
             'fetched_at' => now(),
         ]);
     }

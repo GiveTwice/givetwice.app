@@ -57,6 +57,8 @@ class FetchGiftDetailsAction implements ShouldQueue
                 'price_in_cents' => $product->priceInCents,
                 'currency' => $product->priceCurrency ?: $this->gift->currency,
                 'fetch_status' => 'completed',
+                'fetch_error' => null,
+                'fetch_attempts' => $this->attempts(),
                 'fetched_at' => now(),
                 'rating' => $product->rating,
                 'review_count' => $product->reviewCount,
@@ -65,50 +67,76 @@ class FetchGiftDetailsAction implements ShouldQueue
             $this->tryAddImageFromUrls($imageAction, $product->allImageUrls ?? []);
         } catch (ClientException|ServerException $e) {
             $response = $e->getResponse();
+            $statusCode = $response->getStatusCode();
+
+            $error = [
+                'summary' => "HTTP {$statusCode}: {$response->getReasonPhrase()}",
+                'status_code' => $statusCode,
+                'headers' => $response->getHeaders(),
+                'body' => Str::limit($this->getResponseBody($response), 5000, '… [truncated]'),
+            ];
 
             Log::warning('Gift fetch failed due to HTTP error', [
                 'gift_id' => $this->gift->id,
                 'url' => $this->gift->url,
-                'status_code' => $response->getStatusCode(),
+                'status_code' => $statusCode,
                 'error' => $e->getMessage(),
-                'response_headers' => $response->getHeaders(),
-                'response_body' => $this->getResponseBody($response),
             ]);
 
-            $this->markAsFailed();
+            if (in_array($statusCode, [429, 503])) {
+                $this->recordAttempt($error);
+
+                throw $e;
+            }
+
+            $this->markAsFailed($error);
         } catch (ConnectException $e) {
+            $error = [
+                'summary' => "Connection failed: {$e->getMessage()}",
+            ];
+
             Log::warning('Gift fetch failed due to connection error', [
                 'gift_id' => $this->gift->id,
                 'url' => $this->gift->url,
                 'error' => $e->getMessage(),
             ]);
 
-            $this->markAsFailed();
+            $this->markAsFailed($error);
         } catch (BrowserException $e) {
-            $context = [
+            $error = [
+                'summary' => "Browser error: {$e->getMessage()}",
+            ];
+
+            if ($e->hasDebugData()) {
+                $error['status_code'] = $e->getStatusCode();
+                $error['final_url'] = $e->getFinalUrl();
+                $error['headers'] = $e->getResponseHeaders();
+                $error['body'] = Str::limit($e->getResponseHtml() ?? '', 5000, '… [truncated]');
+            }
+
+            Log::warning('Gift fetch failed due to browser error', [
                 'gift_id' => $this->gift->id,
                 'url' => $this->gift->url,
                 'error' => $e->getMessage(),
                 'attempt' => $this->attempts(),
-            ];
+            ]);
 
-            if ($e->hasDebugData()) {
-                $context['status_code'] = $e->getStatusCode();
-                $context['final_url'] = $e->getFinalUrl();
-                $context['response_headers'] = $e->getResponseHeaders();
-                $context['response_body'] = $e->getResponseHtml();
-            }
-
-            Log::warning('Gift fetch failed due to browser error', $context);
+            $this->recordAttempt($error);
 
             throw $e;
         } catch (Throwable $e) {
+            $error = [
+                'summary' => 'Unexpected: '.get_class($e).": {$e->getMessage()}",
+            ];
+
             Log::error('Gift fetch failed due to unexpected error', [
                 'gift_id' => $this->gift->id,
                 'url' => $this->gift->url,
                 'error' => $e->getMessage(),
                 'attempt' => $this->attempts(),
             ]);
+
+            $this->recordAttempt($error);
 
             throw $e;
         }
@@ -118,13 +146,19 @@ class FetchGiftDetailsAction implements ShouldQueue
 
     public function failed(?Throwable $exception): void
     {
+        $fallback = [
+            'summary' => $exception
+                ? get_class($exception).": {$exception->getMessage()}"
+                : 'Unknown error',
+        ];
+
         Log::error('Gift fetch permanently failed after all retries', [
             'gift_id' => $this->gift->id,
             'url' => $this->gift->url,
             'error' => $exception?->getMessage(),
         ]);
 
-        $this->markAsFailed();
+        $this->markAsFailed($this->gift->fetch_error ?? $fallback);
 
         app(ProcessGiftImageAction::class)->dispatchCompletedEvent($this->gift);
     }
@@ -181,11 +215,21 @@ class FetchGiftDetailsAction implements ShouldQueue
         return $fetcher;
     }
 
-    private function markAsFailed(): void
+    private function markAsFailed(array $error): void
     {
         $this->gift->update([
             'fetch_status' => 'failed',
+            'fetch_error' => $error,
+            'fetch_attempts' => $this->attempts(),
             'fetched_at' => now(),
+        ]);
+    }
+
+    private function recordAttempt(array $error): void
+    {
+        $this->gift->update([
+            'fetch_error' => $error,
+            'fetch_attempts' => $this->attempts(),
         ]);
     }
 
