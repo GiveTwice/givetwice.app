@@ -179,7 +179,11 @@ class GiftController extends Controller
     {
         $this->authorize('update', $gift);
 
-        $gift->update(['fetch_status' => 'pending']);
+        $gift->update([
+            'fetch_status' => 'pending',
+            'fetch_error' => null,
+            'fetch_attempts' => 0,
+        ]);
 
         FetchGiftDetailsAction::dispatch($gift);
 
