@@ -14,6 +14,7 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Psr\Http\Message\ResponseInterface;
+use Spatie\SlackAlerts\Facades\SlackAlert;
 use Throwable;
 
 class FetchGiftDetailsAction implements ShouldQueue
@@ -125,6 +126,8 @@ class FetchGiftDetailsAction implements ShouldQueue
         ]);
 
         $this->markAsFailed();
+
+        SlackAlert::message("⚠️ Gift fetch failed for \"{$this->gift->url}\" (gift #{$this->gift->id}, owner: {$this->gift->user->email})");
 
         app(ProcessGiftImageAction::class)->dispatchCompletedEvent($this->gift);
     }

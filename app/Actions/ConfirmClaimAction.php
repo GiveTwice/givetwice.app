@@ -30,7 +30,7 @@ class ConfirmClaimAction
                 return null;
             }
 
-            $lockedGift->load('lists');
+            $lockedGift->load('lists', 'user');
             $claim->confirm();
 
             $claimCount = $lockedGift->claims()->whereNotNull('confirmed_at')->count();

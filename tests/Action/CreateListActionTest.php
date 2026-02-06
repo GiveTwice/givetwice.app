@@ -4,9 +4,11 @@ use App\Actions\CreateListAction;
 use App\Models\GiftList;
 use App\Models\User;
 use Illuminate\Support\Facades\Queue;
+use Spatie\SlackAlerts\Facades\SlackAlert;
 
 beforeEach(function () {
     Queue::fake();
+    SlackAlert::fake();
 });
 
 describe('CreateListAction', function () {
@@ -66,6 +68,25 @@ describe('CreateListAction', function () {
         $list = $action->execute($user, 'My Birthday List');
 
         expect($list->slug)->toContain('my-birthday-list');
+    });
+
+    it('sends a slack notification for non-default lists', function () {
+        $user = User::factory()->create();
+
+        $action = new CreateListAction;
+        $action->execute($user, 'Birthday Wishlist');
+
+        SlackAlert::expectMessageSentContaining($user->email);
+        SlackAlert::expectMessageSentContaining('Birthday Wishlist');
+    });
+
+    it('does not send a slack notification for default lists', function () {
+        $user = User::factory()->create();
+
+        $action = new CreateListAction;
+        $action->execute($user, 'My wishlist', isDefault: true);
+
+        SlackAlert::expectNoMessagesSent();
     });
 
 });
