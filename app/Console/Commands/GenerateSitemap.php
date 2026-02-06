@@ -22,6 +22,7 @@ class GenerateSitemap extends Command
         'terms' => '/terms',
         'contact' => '/contact',
         'transparency' => '/transparency',
+        'brand' => '/brand',
     ];
 
     public function handle(): int
