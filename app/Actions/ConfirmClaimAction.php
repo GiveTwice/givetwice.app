@@ -33,14 +33,16 @@ class ConfirmClaimAction
             $lockedGift->load('lists');
             $claim->confirm();
 
-            return ['claim' => $claim, 'gift' => $lockedGift];
+            $claimCount = $lockedGift->claims()->whereNotNull('confirmed_at')->count();
+
+            return ['claim' => $claim, 'gift' => $lockedGift, 'claim_count' => $claimCount];
         });
 
         if ($result === null) {
             throw new AlreadyClaimedException;
         }
 
-        event(new GiftClaimed($result['gift'], $result['claim']));
+        event(new GiftClaimed($result['gift'], $result['claim'], $result['claim_count']));
 
         return $result['claim'];
     }

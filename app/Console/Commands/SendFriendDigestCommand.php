@@ -19,6 +19,8 @@ class SendFriendDigestCommand extends Command
 
     public function handle(): int
     {
+        $startedAt = now();
+
         $users = User::query()
             ->where('friend_notifications_enabled', true)
             ->whereNotNull('email_verified_at')
@@ -37,9 +39,13 @@ class SendFriendDigestCommand extends Command
             }
 
             Mail::to($user)->queue(new FriendDigestMail($user, $digestData));
-
-            $user->update(['last_friend_digest_at' => now()]);
             $sentCount++;
+        }
+
+        if ($users->isNotEmpty()) {
+            User::query()
+                ->whereIn('id', $users->pluck('id'))
+                ->update(['last_friend_digest_at' => $startedAt]);
         }
 
         $this->info("Sent {$sentCount} friend digest emails.");
@@ -66,24 +72,28 @@ class SendFriendDigestCommand extends Command
 
         $listIds = $followedLists->pluck('list_id')->toArray();
 
-        $addedGiftsByList = Gift::query()
-            ->whereHas('lists', function (Builder $query) use ($listIds) {
-                $query->whereIn('lists.id', $listIds);
-            })
-            ->where('created_at', '>', $sinceDate)
-            ->with('lists')
-            ->get()
-            ->groupBy(fn (Gift $gift) => $gift->lists->pluck('id')->intersect($listIds)->first());
+        $addedGiftsByList = $this->groupGiftsByMatchingLists(
+            Gift::query()
+                ->whereHas('lists', function (Builder $query) use ($listIds) {
+                    $query->whereIn('lists.id', $listIds);
+                })
+                ->where('created_at', '>', $sinceDate)
+                ->with('lists')
+                ->get(),
+            $listIds,
+        );
 
-        $removedGiftsByList = Gift::withTrashed()
-            ->whereHas('lists', function (Builder $query) use ($listIds) {
-                $query->whereIn('lists.id', $listIds);
-            })
-            ->whereNotNull('deleted_at')
-            ->where('deleted_at', '>', $sinceDate)
-            ->with('lists')
-            ->get()
-            ->groupBy(fn (Gift $gift) => $gift->lists->pluck('id')->intersect($listIds)->first());
+        $removedGiftsByList = $this->groupGiftsByMatchingLists(
+            Gift::withTrashed()
+                ->whereHas('lists', function (Builder $query) use ($listIds) {
+                    $query->whereIn('lists.id', $listIds);
+                })
+                ->whereNotNull('deleted_at')
+                ->where('deleted_at', '>', $sinceDate)
+                ->with('lists')
+                ->get(),
+            $listIds,
+        );
 
         $digestData = collect();
 
@@ -104,5 +114,28 @@ class SendFriendDigestCommand extends Command
         }
 
         return $digestData;
+    }
+
+    /**
+     * @param  Collection<int, Gift>  $gifts
+     * @param  array<int>  $listIds
+     * @return Collection<int, Collection<int, Gift>>
+     */
+    protected function groupGiftsByMatchingLists(Collection $gifts, array $listIds): Collection
+    {
+        $grouped = collect();
+
+        foreach ($gifts as $gift) {
+            $matchingListIds = $gift->lists->pluck('id')->intersect($listIds);
+
+            foreach ($matchingListIds as $listId) {
+                if (! $grouped->has($listId)) {
+                    $grouped->put($listId, collect());
+                }
+                $grouped->get($listId)->push($gift);
+            }
+        }
+
+        return $grouped;
     }
 }

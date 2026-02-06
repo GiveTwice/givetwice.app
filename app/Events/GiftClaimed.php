@@ -18,7 +18,8 @@ class GiftClaimed implements ShouldBroadcast
 
     public function __construct(
         public readonly Gift $gift,
-        public readonly Claim $claim
+        public readonly Claim $claim,
+        public readonly int $claimCount,
     ) {}
 
     public function broadcastOn(): array
@@ -48,7 +49,7 @@ class GiftClaimed implements ShouldBroadcast
                 'id' => $this->gift->id,
                 'title' => $this->gift->title,
                 'allow_multiple_claims' => $this->gift->allow_multiple_claims,
-                'claim_count' => $this->gift->getConfirmedClaimCount(),
+                'claim_count' => $this->claimCount,
             ],
             'claimed' => ! $this->gift->allowsMultipleClaims(),
         ];
