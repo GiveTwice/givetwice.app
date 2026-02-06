@@ -330,7 +330,8 @@ describe('GiftClaimed event broadcast payload', function () {
             'confirmed_at' => now(),
         ]);
 
-        $event = new GiftClaimed($gift->fresh(), $claim);
+        $freshGift = $gift->fresh();
+        $event = new GiftClaimed($freshGift, $claim, $freshGift->getConfirmedClaimCount());
         $payload = $event->broadcastWith();
 
         expect($payload['gift']['allow_multiple_claims'])->toBeTrue();
@@ -357,7 +358,8 @@ describe('GiftClaimed event broadcast payload', function () {
             'confirmed_at' => now(),
         ]);
 
-        $event = new GiftClaimed($gift->fresh(), $claim);
+        $freshGift = $gift->fresh();
+        $event = new GiftClaimed($freshGift, $claim, $freshGift->getConfirmedClaimCount());
         $payload = $event->broadcastWith();
 
         expect($payload['gift']['claim_count'])->toBe(3);
@@ -378,7 +380,8 @@ describe('GiftClaimed event broadcast payload', function () {
             'confirmed_at' => now(),
         ]);
 
-        $event = new GiftClaimed($gift->fresh(), $claim);
+        $freshGift = $gift->fresh();
+        $event = new GiftClaimed($freshGift, $claim, $freshGift->getConfirmedClaimCount());
         $payload = $event->broadcastWith();
 
         expect($payload['claimed'])->toBeTrue();

@@ -112,6 +112,42 @@
                 </div>
             </div>
         </div>
+
+        <div class="bg-white border border-cream-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-start gap-4">
+                <div class="flex-shrink-0 w-10 h-10 bg-coral-100 text-coral-500 rounded-xl flex items-center justify-center font-bold">
+                    9
+                </div>
+                <div>
+                    <h3 class="font-semibold text-lg text-gray-900 mb-2">{{ __('Can multiple people manage the same list?') }}</h3>
+                    <p class="text-gray-600 leading-relaxed">{{ __('Yes! You can invite anyone by email to collaborate on a list. Collaborators can add, edit, and remove gifts - great for couples building a shared wishlist or parents managing a list for their kids.') }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white border border-cream-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-start gap-4">
+                <div class="flex-shrink-0 w-10 h-10 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center font-bold">
+                    10
+                </div>
+                <div>
+                    <h3 class="font-semibold text-lg text-gray-900 mb-2">{{ __('What are multi-claim gifts?') }}</h3>
+                    <p class="text-gray-600 leading-relaxed">{{ __('Some gifts make sense from more than one person - gift cards, group presents, or charity donations. When you mark a gift as multi-claim, it stays available no matter how many people claim it. You\'ll see a count of how many people are getting it.') }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white border border-cream-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-start gap-4">
+                <div class="flex-shrink-0 w-10 h-10 bg-sunny-100 text-sunny-600 rounded-xl flex items-center justify-center font-bold">
+                    11
+                </div>
+                <div>
+                    <h3 class="font-semibold text-lg text-gray-900 mb-2">{{ __('Can I follow someone\'s wishlist?') }}</h3>
+                    <p class="text-gray-600 leading-relaxed">{{ __('Yes. When you view someone\'s list, you can follow it to keep track. You\'ll get a daily email digest whenever they add or remove gifts - so you always know what they\'re wishing for. You can manage notifications per list or turn them off entirely.') }}</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="mt-12 bg-gradient-to-r from-coral-50 to-sunny-50 rounded-2xl p-8 text-center border border-coral-100">
@@ -199,6 +235,30 @@
             "acceptedAnswer": {
                 "@@type": "Answer",
                 "text": "{{ __('Each wishlist has its own link. Copy it and send it however you want - email, WhatsApp, text message, carrier pigeon. Whatever works.') }}"
+            }
+        },
+        {
+            "@@type": "Question",
+            "name": "{{ __('Can multiple people manage the same list?') }}",
+            "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "{{ __('Yes! You can invite anyone by email to collaborate on a list. Collaborators can add, edit, and remove gifts - great for couples building a shared wishlist or parents managing a list for their kids.') }}"
+            }
+        },
+        {
+            "@@type": "Question",
+            "name": "{{ __('What are multi-claim gifts?') }}",
+            "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": {!! json_encode(__('Some gifts make sense from more than one person - gift cards, group presents, or charity donations. When you mark a gift as multi-claim, it stays available no matter how many people claim it. You\'ll see a count of how many people are getting it.'), JSON_UNESCAPED_UNICODE) !!}
+            }
+        },
+        {
+            "@@type": "Question",
+            "name": "{{ __('Can I follow someone\'s wishlist?') }}",
+            "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": {!! json_encode(__('Yes. When you view someone\'s list, you can follow it to keep track. You\'ll get a daily email digest whenever they add or remove gifts - so you always know what they\'re wishing for. You can manage notifications per list or turn them off entirely.'), JSON_UNESCAPED_UNICODE) !!}
             }
         }
     ]

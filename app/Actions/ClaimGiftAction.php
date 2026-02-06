@@ -43,7 +43,7 @@ class ClaimGiftAction
                 $user->followListIfEligible($list);
             }
 
-            event(new GiftClaimed($lockedGift, $claim));
+            event(new GiftClaimed($lockedGift, $claim, $lockedGift->getConfirmedClaimCount()));
 
             return $claim;
         });

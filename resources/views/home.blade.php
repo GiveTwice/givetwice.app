@@ -86,6 +86,33 @@
 
 <div class="py-16 px-4">
     <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold text-gray-900 mb-3 text-center">{{ __('More than a wishlist') }}</h2>
+        <p class="text-lg text-gray-600 mb-10 text-center max-w-2xl mx-auto">{{ __('Built for how people actually give gifts - together.') }}</p>
+
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-cream-200 hover:border-coral-200 hover:shadow-md transition-all">
+                <div class="w-12 h-12 bg-coral-100 rounded-xl flex items-center justify-center text-2xl mb-4">&#129309;</div>
+                <h3 class="font-semibold text-gray-900 mb-2">{{ __('Collaborate on lists') }}</h3>
+                <p class="text-gray-600 text-sm">{{ __('Invite your partner, family, or friends to add gifts to the same list. Perfect for couples, parents, or group events.') }}</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-cream-200 hover:border-teal-200 hover:shadow-md transition-all">
+                <div class="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center text-2xl mb-4">&#128276;</div>
+                <h3 class="font-semibold text-gray-900 mb-2">{{ __('Follow friends\' wishlists') }}</h3>
+                <p class="text-gray-600 text-sm">{{ __('Stay updated when someone adds new gift ideas. Get a daily digest so you never miss a hint.') }}</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-cream-200 hover:border-sunny-200 hover:shadow-md transition-all">
+                <div class="w-12 h-12 bg-sunny-100 rounded-xl flex items-center justify-center text-2xl mb-4">&#8734;</div>
+                <h3 class="font-semibold text-gray-900 mb-2">{{ __('Group gifts') }}</h3>
+                <p class="text-gray-600 text-sm">{{ __('Some gifts are better from many. Gift cards, group presents, or charity donations - mark a gift as multi-claim and everyone can pitch in.') }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="py-16 px-4">
+    <div class="max-w-4xl mx-auto">
         <h2 class="text-3xl font-bold text-gray-900 mb-3 text-center">{{ __('Why "Twice"?') }}</h2>
         <p class="text-lg text-gray-600 mb-10 text-center max-w-2xl mx-auto">{{ __('Every gift from your wishlist does two things at once.') }}</p>
 

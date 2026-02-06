@@ -64,7 +64,7 @@ describe('GiftClaimed event', function () {
         $gift = Gift::factory()->create(['user_id' => $owner->id]);
         $claim = Claim::factory()->create(['gift_id' => $gift->id]);
 
-        $event = new GiftClaimed($gift, $claim);
+        $event = new GiftClaimed($gift, $claim, $gift->getConfirmedClaimCount());
         $channels = $event->broadcastOn();
 
         $privateChannels = array_filter($channels, fn ($ch) => $ch instanceof PrivateChannel);
@@ -84,7 +84,7 @@ describe('GiftClaimed event', function () {
 
         $claim = Claim::factory()->create(['gift_id' => $gift->id]);
 
-        $event = new GiftClaimed($gift, $claim);
+        $event = new GiftClaimed($gift, $claim, $gift->getConfirmedClaimCount());
         $channels = $event->broadcastOn();
 
         $publicChannels = array_filter($channels, fn ($ch) => $ch instanceof Channel && ! $ch instanceof PrivateChannel);
@@ -98,7 +98,7 @@ describe('GiftClaimed event', function () {
         $gift = Gift::factory()->create();
         $claim = Claim::factory()->create(['gift_id' => $gift->id]);
 
-        $event = new GiftClaimed($gift, $claim);
+        $event = new GiftClaimed($gift, $claim, $gift->getConfirmedClaimCount());
 
         expect($event->broadcastAs())->toBe('gift.claimed');
     });
@@ -107,7 +107,7 @@ describe('GiftClaimed event', function () {
         $gift = Gift::factory()->create(['title' => 'Test Gift']);
         $claim = Claim::factory()->create(['gift_id' => $gift->id]);
 
-        $event = new GiftClaimed($gift, $claim);
+        $event = new GiftClaimed($gift, $claim, $gift->getConfirmedClaimCount());
         $payload = $event->broadcastWith();
 
         expect($payload)->toHaveKey('gift');
