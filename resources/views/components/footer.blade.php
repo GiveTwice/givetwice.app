@@ -47,6 +47,7 @@
                     <li><a href="{{ route('privacy', ['locale' => $locale]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('Privacy Policy') }}</a></li>
                     <li><a href="{{ route('terms', ['locale' => $locale]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('Terms of Service') }}</a></li>
                     <li><a href="{{ route('transparency', ['locale' => $locale]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('Transparency') }}</a></li>
+                    <li><a href="{{ route('brand', ['locale' => $locale]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('Brand Assets') }}</a></li>
                 </ul>
             </div>
         </div>
