@@ -203,6 +203,10 @@ Route::prefix('{locale}')
         });
     });
 
+Route::middleware('auth')->group(function () {
+    Route::impersonate();
+});
+
 // Admin routes (English only, no locale prefix)
 Route::prefix('admin')
     ->middleware(['auth', 'admin'])
@@ -211,6 +215,12 @@ Route::prefix('admin')
         Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
         Route::get('/users/{user}', [AdminController::class, 'showUser'])->name('admin.users.show');
         Route::post('/users/{user}/toggle-admin', [AdminController::class, 'toggleAdminStatus'])->name('admin.users.toggle-admin');
+        Route::get('/gifts', [AdminController::class, 'gifts'])->name('admin.gifts');
+        Route::get('/gifts/{gift}', [AdminController::class, 'showGift'])->name('admin.gifts.show');
+        Route::post('/gifts/{gift}/refresh', [AdminController::class, 'refreshGift'])->name('admin.gifts.refresh');
+        Route::post('/impersonate/{user}', [AdminController::class, 'impersonateAs'])->name('admin.impersonate');
+        Route::get('/lists', [AdminController::class, 'lists'])->name('admin.lists');
+        Route::get('/health', [AdminController::class, 'health'])->name('admin.health');
     });
 
 // Development-only routes

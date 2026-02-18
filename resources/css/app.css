@@ -117,7 +117,11 @@
 
 /* Standard card container - minimal border, let whitespace define regions */
 .card {
-    @apply bg-white rounded-2xl p-6 shadow-sm;
+    @apply bg-white rounded-2xl p-6 shadow-sm border border-transparent;
+}
+
+.card-link {
+    @apply transition-colors duration-150 hover:border-cream-300;
 }
 
 /* Info box - neutral cream background */
