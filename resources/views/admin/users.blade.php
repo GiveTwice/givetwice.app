@@ -72,10 +72,10 @@
                                 <span class="badge badge-warning text-xs">Unverified</span>
                             @endif
                             @if($user->google_id)
-                                <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">Google</span>
+                                <span class="badge badge-info text-xs">Google</span>
                             @endif
                             @if($user->facebook_id)
-                                <span class="text-xs px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700">Facebook</span>
+                                <span class="badge badge-info text-xs">Facebook</span>
                             @endif
                         </div>
                     </td>
