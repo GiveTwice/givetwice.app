@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Lab404\Impersonate\Models\Impersonate;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
@@ -17,7 +18,11 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class User extends Authenticatable implements HasMedia, MustVerifyEmail
 {
-    use HasFactory, InteractsWithMedia, Notifiable, TwoFactorAuthenticatable;
+    use HasFactory;
+    use Impersonate;
+    use InteractsWithMedia;
+    use Notifiable;
+    use TwoFactorAuthenticatable;
 
     protected $fillable = [
         'name',
@@ -162,7 +167,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
 
     public function hasProfileImage(): bool
     {
-        return $this->hasMedia('profile') || $this->avatar;
+        return $this->hasMedia('profile') || $this->avatar !== null;
     }
 
     public function getInitials(): string
@@ -174,6 +179,16 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         }
 
         return strtoupper(mb_substr($this->name, 0, 2));
+    }
+
+    public function canImpersonate(): bool
+    {
+        return $this->is_admin;
+    }
+
+    public function canBeImpersonated(): bool
+    {
+        return ! $this->is_admin;
     }
 
     public function sendEmailVerificationNotification(): void

@@ -71,6 +71,15 @@
     @stack('styles')
 </head>
 <body class="min-h-screen bg-gradient-warm flex flex-col">
+    @impersonating($guard = null)
+        <div class="bg-coral-500 text-white text-center py-2 px-4 text-sm font-medium sticky top-0 z-[60]">
+            You are impersonating <strong>{{ auth()->user()->name }}</strong>.
+            <a href="{{ route('impersonate.leave') }}" class="underline ml-2 font-bold hover:text-coral-100">
+                Stop impersonating
+            </a>
+        </div>
+    @endImpersonating
+
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-coral-500 focus:text-white focus:rounded-lg focus:font-medium">
         {{ __('Skip to content') }}
     </a>
