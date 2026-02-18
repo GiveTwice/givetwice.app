@@ -22,7 +22,7 @@
 <body class="min-h-screen bg-gradient-warm">
     <div class="flex">
 
-        <aside class="w-64 min-h-screen fixed bg-gray-900">
+        <aside class="w-64 min-h-screen fixed z-10 bg-gray-900">
             <div class="p-5 border-b border-white/10">
                 <div class="flex items-center gap-2.5">
                     <x-heart-icon class="w-5 h-5 flex-shrink-0" />
@@ -111,7 +111,7 @@
             </div>
         </aside>
 
-        <main class="ml-64 flex-1 p-8">
+        <main class="ml-64 flex-1 min-w-0 p-8">
             @if (session('success'))
                 <div class="alert-success">{{ session('success') }}</div>
             @endif
