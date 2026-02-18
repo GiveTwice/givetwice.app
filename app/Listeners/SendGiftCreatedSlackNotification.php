@@ -11,7 +11,9 @@ class SendGiftCreatedSlackNotification
     {
         $gift = $event->gift;
         $title = $gift->title ?: $gift->url;
+        $adminGiftUrl = route('admin.gifts.show', $gift);
+        $adminUserUrl = route('admin.users.show', $gift->user);
 
-        SlackAlert::message("🎁 {$gift->user->email} added a gift: {$title}");
+        SlackAlert::message("🎁 <{$adminUserUrl}|{$gift->user->email}> added a gift: <{$adminGiftUrl}|{$title}>");
     }
 }

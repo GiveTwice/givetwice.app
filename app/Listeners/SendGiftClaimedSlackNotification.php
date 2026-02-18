@@ -13,11 +13,12 @@ class SendGiftClaimedSlackNotification
         $claim = $event->claim;
 
         $claimer = $claim->user
-            ? $claim->user->email
+            ? '<'.route('admin.users.show', $claim->user).'|'.$claim->user->email.'>'
             : $claim->claimer_email;
 
-        $owner = $gift->user->email;
+        $ownerUrl = route('admin.users.show', $gift->user);
+        $giftUrl = route('admin.gifts.show', $gift);
 
-        SlackAlert::message("🎉 {$claimer} claimed \"{$gift->title}\" from {$owner}'s list");
+        SlackAlert::message("🎉 {$claimer} claimed <{$giftUrl}|\"{$gift->title}\"> from <{$ownerUrl}|{$gift->user->email}>'s list");
     }
 }

@@ -161,7 +161,9 @@ class FetchGiftDetailsAction implements ShouldQueue
 
         $this->markAsFailed($this->gift->fetch_error ?? $fallback);
 
-        SlackAlert::message("⚠️ Gift fetch failed for \"{$this->gift->url}\" (gift #{$this->gift->id}, owner: {$this->gift->user->email})");
+        $adminUrl = route('admin.gifts.show', $this->gift);
+
+        SlackAlert::message("⚠️ Gift fetch failed for <{$this->gift->url}|{$this->gift->title}> (<{$adminUrl}|#{$this->gift->id}>, owner: {$this->gift->user->email})");
 
         app(ProcessGiftImageAction::class)->dispatchCompletedEvent($this->gift);
     }

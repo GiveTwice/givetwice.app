@@ -15,6 +15,8 @@ class SendNewUserSlackNotification
 
         $provider = $user->google_id ? 'Google' : ($user->facebook_id ? 'Facebook' : 'email');
 
-        SlackAlert::message("👤 New user registered: {$user->email} (via {$provider})");
+        $adminUrl = route('admin.users.show', $user);
+
+        SlackAlert::message("👤 New user registered: <{$adminUrl}|{$user->email}> (via {$provider})");
     }
 }

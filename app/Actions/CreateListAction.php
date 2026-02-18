@@ -20,7 +20,9 @@ class CreateListAction
         $list->users()->attach($creator->id, ['joined_at' => now()]);
 
         if (! $isDefault) {
-            SlackAlert::message("📋 {$creator->email} created a new list: \"{$name}\"");
+            $adminUserUrl = route('admin.users.show', $creator);
+
+            SlackAlert::message("📋 <{$adminUserUrl}|{$creator->email}> created a new list: \"{$name}\"");
         }
 
         return $list;
