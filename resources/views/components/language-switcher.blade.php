@@ -1,5 +1,6 @@
 @php
     use App\Enums\SupportedLocale;
+    use App\Helpers\OccasionHelper;
 
     $currentLocale = app()->getLocale();
     $currentLocaleEnum = SupportedLocale::tryFrom($currentLocale) ?? SupportedLocale::default();
@@ -8,6 +9,12 @@
     $currentRoute = request()->route();
     $routeName = $currentRoute?->getName();
     $routeParams = $currentRoute?->parameters() ?? [];
+
+    // For occasion pages, determine which locales are available
+    $occasionKey = null;
+    if ($routeName && str_starts_with($routeName, 'occasion.')) {
+        $occasionKey = $currentRoute->parameter('occasion');
+    }
 @endphp
 
 <div class="relative" x-data="{ open: false }" @click.outside="open = false">
@@ -44,6 +51,11 @@
             <div class="py-2">
                 @foreach (SupportedLocale::cases() as $locale)
                     @php
+                        // Skip locales where this occasion page doesn't exist
+                        if ($occasionKey && !OccasionHelper::shouldShow($occasionKey, $locale->value)) {
+                            continue;
+                        }
+
                         $newParams = array_merge($routeParams, ['locale' => $locale->value]);
                         $url = $routeName ? route($routeName, $newParams) : url("/{$locale->value}");
                         $isActive = $locale->value === $currentLocale;
