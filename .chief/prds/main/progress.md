@@ -26,6 +26,10 @@
 - Long action buttons (e.g., "Enable two-factor authentication"): use `w-full sm:w-auto justify-center` to make full-width on mobile, auto-width on desktop
 - For modal button rows: use `flex-col-reverse sm:flex-row sm:justify-end` pattern (same as form actions) — CTA on top on mobile, inline on desktop
 - Settings page sections use `grid grid-cols-1 lg:grid-cols-3 gap-8` — already stacks properly on mobile, no fix needed
+- Static pages extend `layouts.app` directly (not `x-app-content`) — layout provides `px-4 sm:px-6 lg:px-8`, giving 288px content width at 320px
+- Hero heading pattern for static pages: `text-3xl sm:text-4xl lg:text-5xl` with `text-lg sm:text-xl` subtitle and `py-8 sm:py-12 lg:py-16`
+- Card padding pattern for static pages: `p-6 sm:p-8 lg:p-12` for large feature cards, `p-4 sm:p-6` for smaller repeated cards (FAQ items)
+- Pages using `max-w-3xl` (privacy, terms, transparency) are inherently mobile-safe due to narrow max-width — minimal responsive tweaks needed
 
 ---
 
@@ -152,4 +156,23 @@
   - Session rows with badges + "Log out" button are another tight spot — the badge + browser name + button compete for space. Hiding the device icon and allowing badge wrapping solves it cleanly
   - `flex-shrink-0` is essential on toggle switches and action buttons to prevent them from being compressed by flexbox
   - The `app-content` component adds `px-6 sm:px-8` padding, so at 320px the content area is only 272px wide (320 - 24 - 24). Every pixel counts
+---
+
+## 2026-02-20 - US-009
+- Responsive pass on all six static pages: about, FAQ, privacy, terms, contact, transparency
+- **About page**: Reduced hero padding (`py-8 sm:py-12`), heading size (`text-3xl sm:text-4xl`), subtitle size (`text-lg sm:text-xl`), card padding (`p-6 sm:p-8 lg:p-12`), section margins (`mb-12 sm:mb-16`), value card icons (`w-10 h-10 sm:w-12 sm:h-12`), and gaps (`gap-4 sm:gap-5`, `gap-6 sm:gap-8`)
+- **FAQ page**: Same hero treatment, reduced card padding (`p-4 sm:p-6`), tighter FAQ item gap (`gap-3 sm:gap-4`), CTA card padding (`p-6 sm:p-8`)
+- **Contact page**: Same hero treatment, reduced main CTA card padding, community section padding, quick links grid gap (`gap-4 sm:gap-6`)
+- **Privacy, Terms, Transparency pages**: Reduced top container padding (`py-8 sm:py-12 lg:py-16`) — these were already well-structured with `max-w-3xl` and `p-6 lg:p-10` responsive padding
+- Verified no horizontal overflow at 320px on all six pages (both English and Dutch)
+- All 314 tests pass, Pint clean
+- Files changed: `resources/views/pages/about.blade.php`, `resources/views/pages/faq.blade.php`, `resources/views/pages/contact.blade.php`, `resources/views/pages/privacy.blade.php`, `resources/views/pages/terms.blade.php`, `resources/views/pages/transparency.blade.php`
+- **Learnings for future iterations:**
+  - Static pages extend `layouts.app` directly (not `x-app-content`) — the layout provides `px-4 sm:px-6 lg:px-8` padding, so at 320px content area is 288px wide
+  - The six static pages are: about, faq, privacy, terms, contact, transparency (routed via `Route::view()` in `web.php`)
+  - Pages with `max-w-3xl` (privacy, terms, transparency) were already responsive — the narrow max-width prevents content from stretching too wide
+  - Pages with `max-w-4xl` (about, contact) and hero sections needed the most work — `p-8` inner padding on 288px content leaves only 224px for text
+  - The pattern for responsive static page cards: `p-6 sm:p-8 lg:p-12` for large feature cards, `p-4 sm:p-6` for smaller repeated cards (FAQ items)
+  - Hero heading pattern across static pages: `text-3xl sm:text-4xl lg:text-5xl` with `text-lg sm:text-xl` subtitle
+  - The `how-it-works` component used on the about page already handles its own responsiveness (`grid md:grid-cols-3`)
 ---
