@@ -24,6 +24,9 @@ Route::get('/', function () {
     return redirect("/{$locale}", 302);
 });
 
+// Offline fallback page (pre-cached by service worker)
+Route::view('/offline', 'offline');
+
 // Redirect /dashboard to locale-prefixed dashboard
 Route::get('/dashboard', function () {
     $locale = auth()->user()?->locale_preference ?? app()->getLocale();

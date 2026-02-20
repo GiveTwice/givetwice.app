@@ -1,9 +1,9 @@
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const STATIC_CACHE = `givetwice-static-${CACHE_VERSION}`;
 const PAGE_CACHE = `givetwice-pages-${CACHE_VERSION}`;
 
 const PRECACHE_URLS = [
-    // '/offline' will be added by US-016 when the offline page exists
+    '/offline',
 ];
 
 self.addEventListener('install', (event) => {
