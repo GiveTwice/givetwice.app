@@ -6,6 +6,43 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+// PWA standalone mode detection (available globally for Alpine components)
+window.isStandalonePwa = window.matchMedia('(display-mode: standalone)').matches
+    || window.navigator.standalone === true;
+
+// iOS standalone mode: intercept link clicks to fix navigation quirks
+if (window.isStandalonePwa) {
+    document.addEventListener('click', (e) => {
+        const link = e.target.closest('a[href]');
+        if (!link) return;
+
+        const href = link.getAttribute('href');
+        if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
+
+        let url;
+        try {
+            url = new URL(href, window.location.origin);
+        } catch {
+            return;
+        }
+
+        const isExternal = url.origin !== window.location.origin;
+        const isOAuth = url.pathname.match(/^\/[a-z]{2}\/auth\/(google|facebook|apple)$/);
+
+        if (isExternal || isOAuth) {
+            // Open external links and OAuth flows in Safari to prevent
+            // replacing the PWA or polluting the history stack
+            e.preventDefault();
+            window.open(link.href, '_blank');
+        } else if (link.target === '_blank') {
+            // Internal links with target="_blank" should navigate within
+            // the PWA instead of opening a new Safari tab
+            e.preventDefault();
+            window.location.href = link.href;
+        }
+    });
+}
+
 import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;

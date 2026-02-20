@@ -292,7 +292,8 @@
         "Deep links from emails/notifications open within the PWA if installed"
       ],
       "priority": 6,
-      "passes": false
+      "passes": true,
+      "inProgress": false
     },
     {
       "id": "US-020",
