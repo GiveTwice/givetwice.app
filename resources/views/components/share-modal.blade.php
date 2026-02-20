@@ -25,9 +25,9 @@
     }
 }">
     <!-- Share Button -->
-    <button @click="open = true" class="btn-share">
+    <button @click="open = true" class="btn-share" title="{{ __('Share') }}">
         <x-icons.share class="w-5 h-5" />
-        {{ __('Share') }}
+        <span class="hidden sm:inline">{{ __('Share') }}</span>
     </button>
 
     <!-- Modal Backdrop -->

@@ -85,9 +85,10 @@
                             {{ trans_choice(':count gift|:count gifts', $list->gifts_count, ['count' => $list->gifts_count]) }}
                         </p>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <a href="{{ url('/' . app()->getLocale() . '/list/' . $list->slug . '/edit') }}" class="btn-secondary">
-                            {{ __('Edit') }}
+                    <div class="flex items-center flex-wrap gap-2">
+                        <a href="{{ url('/' . app()->getLocale() . '/list/' . $list->slug . '/edit') }}" class="btn-secondary" title="{{ __('Edit') }}">
+                            <x-icons.edit class="w-5 h-5" />
+                            <span class="hidden sm:inline">{{ __('Edit') }}</span>
                         </a>
                         <x-collaborators-button :list="$list" />
                         <x-share-modal :list="$list" />
