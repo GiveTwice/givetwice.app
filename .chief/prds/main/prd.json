@@ -209,7 +209,8 @@
         "App opens without a blank white flash on iOS when launched from home screen"
       ],
       "priority": 4,
-      "passes": false
+      "passes": true,
+      "inProgress": false
     },
     {
       "id": "US-015",

@@ -39,6 +39,9 @@
 - PWA manifest is at `public/site.webmanifest` — linked from both app and guest layouts
 - Maskable icons use separate entries (`"purpose": "maskable"`) — never combine `"any maskable"` on one icon
 - PWA screenshots live in `public/images/pwa/` — use `form_factor: "narrow"` (mobile) and `form_factor: "wide"` (desktop)
+- iOS PWA meta tags and splash screens are in `<x-ios-pwa-tags />` component — included in both app and guest layouts after manifest link
+- Splash screen images are at `public/images/pwa/splash/` — named by device and orientation (e.g., `iphone-16-portrait.png`)
+- Use `rsvg-convert` for SVG→PNG conversion (available on dev machine) — handles gradients cleanly without headless browser
 
 ---
 
@@ -256,4 +259,21 @@
   - Screenshots need `form_factor: "narrow"` for mobile and `form_factor: "wide"` for desktop — Chrome uses these to show a richer install UI on Android
   - Shortcut URLs use `/en/` prefix — these are internal routes that require a locale prefix. Users with different locale preferences will get redirected by the locale middleware
   - The `favicon.ico` returns 404 even though the file exists at `public/favicon.ico` — this is a pre-existing server config issue (possibly Caddy not serving `.ico` files), not related to manifest changes
+---
+
+## 2026-02-20 - US-014
+- Added iOS PWA meta tags (`apple-mobile-web-app-capable`, `apple-mobile-web-app-status-bar-style`, `apple-mobile-web-app-title`) to both app and guest layouts via a `<x-ios-pwa-tags />` Blade component
+- Generated 20 splash screen images (10 portrait + 10 landscape) covering major iPhone and iPad sizes: iPhone SE, 14, 16, 16 Plus, 16 Pro, 16 Pro Max, iPad mini, iPad 10.9", iPad Pro 11", iPad Pro 12.9"
+- Splash screens use GiveTwice branding: cream background (`#fffbf5`) with centered heart icon from the brand SVG
+- Each splash screen is linked with `<link rel="apple-touch-startup-image">` and precise media queries (`device-width`, `device-height`, `-webkit-device-pixel-ratio`, `orientation`)
+- `apple-mobile-web-app-status-bar-style` set to `default` (white status bar) to match the app's white header
+- Created reusable `<x-ios-pwa-tags />` component to keep layouts clean — contains 3 meta tags + 20 splash screen link entries
+- Files changed: `resources/views/components/ios-pwa-tags.blade.php` (new), `resources/views/layouts/app.blade.php`, `resources/views/layouts/guest.blade.php`, `public/images/pwa/splash/*.png` (20 new files)
+- **Learnings for future iterations:**
+  - iOS splash screen images require exact pixel dimensions matching each device's native resolution — using `device-width`, `device-height`, `-webkit-device-pixel-ratio`, and `orientation` in the media query
+  - `apple-mobile-web-app-status-bar-style: default` gives a white status bar (matching the app header); `black-translucent` would extend content behind the status bar
+  - `rsvg-convert` handles SVG-to-PNG conversion cleanly including radial gradients — no need for canvas or headless browser for simple branded images
+  - Extracting iOS PWA tags into a Blade component (`<x-ios-pwa-tags />`) keeps layouts clean — 20 splash screen entries would be 40+ lines of clutter in the layout
+  - Splash screen images only need the heart icon (not the full "GiveTwice" wordmark) — text renders poorly at varying resolutions, and the heart is instantly recognizable
+  - The `apple-mobile-web-app-capable` meta tag is what tells iOS Safari to launch the app in standalone mode (no browser chrome) when added to home screen
 ---
