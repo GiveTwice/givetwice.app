@@ -63,6 +63,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
     <meta name="theme-color" content="#f97066">
+    <x-ios-pwa-tags />
 
     <!-- Hreflang alternate URLs for SEO -->
     <x-hreflang-tags />
