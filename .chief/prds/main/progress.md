@@ -42,6 +42,9 @@
 - iOS PWA meta tags and splash screens are in `<x-ios-pwa-tags />` component — included in both app and guest layouts after manifest link
 - Splash screen images are at `public/images/pwa/splash/` — named by device and orientation (e.g., `iphone-16-portrait.png`)
 - Use `rsvg-convert` for SVG→PNG conversion (available on dev machine) — handles gradients cleanly without headless browser
+- Service worker is at `public/sw.js` — registered from `resources/js/app.js` with `scope: '/'`
+- SW uses two caches: `givetwice-static-v{N}` (static assets, cache-first) and `givetwice-pages-v{N}` (navigation, network-first)
+- Bump `CACHE_VERSION` in `sw.js` when cache structure changes — old caches are auto-cleaned on activate
 
 ---
 
@@ -276,4 +279,24 @@
   - Extracting iOS PWA tags into a Blade component (`<x-ios-pwa-tags />`) keeps layouts clean — 20 splash screen entries would be 40+ lines of clutter in the layout
   - Splash screen images only need the heart icon (not the full "GiveTwice" wordmark) — text renders poorly at varying resolutions, and the heart is instantly recognizable
   - The `apple-mobile-web-app-capable` meta tag is what tells iOS Safari to launch the app in standalone mode (no browser chrome) when added to home screen
+---
+
+## 2026-02-20 - US-015
+- Created service worker at `public/sw.js` with cache-first strategy for static assets and network-first for navigation requests
+- Service worker registered from `resources/js/app.js` with `scope: '/'` — runs on page load after feature-detecting `navigator.serviceWorker`
+- Static assets (under `/build/assets/` or matching CSS/JS/font/image extensions) use cache-first — Vite's hashed filenames ensure immutability
+- Navigation requests use network-first with fallback to cache, then to `/offline` page (to be created in US-016)
+- `PRECACHE_URLS` array is ready for US-016 to add `/offline` — currently empty so install event succeeds cleanly
+- `skipWaiting()` on install + `clients.claim()` on activate for immediate control
+- Old caches cleaned up on activate by filtering cache keys that start with `givetwice-` but don't match current version
+- Push and notificationclick event stubs present for future implementation
+- Excludes `/horizon` and `/admin` routes from caching, and only handles same-origin GET requests
+- Files changed: `public/sw.js` (new), `resources/js/app.js`
+- **Learnings for future iterations:**
+  - Service worker must be at the root (`/sw.js`) for scope `/` — placing it under `/build/` would limit its scope
+  - Vite's hashed filenames (`app-9dA53Jum.js`) are effectively immutable — cache-first is perfect since the hash changes on content change
+  - `skipWaiting()` + `clients.claim()` makes new SW versions take control immediately — no need for "update available" UI for this app
+  - Service worker only caches same-origin GET requests — POST requests, external resources, and admin/horizon routes are excluded
+  - `cache.addAll()` rejects if any URL returns non-2xx — don't precache URLs that don't exist yet. The `PRECACHE_URLS` array is left empty for US-016 to populate
+  - Chrome requires a fetch event handler to consider an app installable — even an empty handler satisfies this
 ---
