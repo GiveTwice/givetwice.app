@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>@yield('title', 'Home') | {{ config('app.name', 'GiveTwice') }}</title>
@@ -72,7 +72,7 @@
 </head>
 <body class="min-h-screen bg-gradient-warm flex flex-col">
     @impersonating($guard = null)
-        <div class="bg-coral-500 text-white text-center py-2 px-4 text-sm font-medium sticky top-0 z-[60]">
+        <div class="bg-coral-500 text-white text-center py-2 px-4 text-sm font-medium sticky top-0 z-[60] safe-area-header safe-area-x">
             You are impersonating <strong>{{ auth()->user()->name }}</strong>.
             <a href="{{ route('impersonate.leave') }}" class="underline ml-2 font-bold hover:text-coral-100">
                 Stop impersonating
@@ -84,7 +84,7 @@
         {{ __('Skip to content') }}
     </a>
 
-    <header class="bg-white border-b border-cream-200 sticky top-0 z-40 md:static md:z-auto">
+    <header class="bg-white border-b border-cream-200 sticky top-0 z-40 md:static md:z-auto safe-area-header safe-area-x">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" x-data="{ mobileOpen: false }" @click.outside="mobileOpen = false">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
@@ -278,7 +278,7 @@
         @endif
     </div>
 
-    <main id="main-content" class="flex-grow">
+    <main id="main-content" class="flex-grow safe-area-x">
         <div class="max-w-7xl mx-auto pt-6 pb-20 px-4 sm:px-6 lg:px-8">
             @yield('content')
         </div>

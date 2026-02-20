@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>@yield('title', 'Welcome') | {{ config('app.name', 'GiveTwice') }}</title>
@@ -74,7 +74,7 @@
         {{ __('Skip to content') }}
     </a>
 
-    <header class="bg-white border-b border-cream-200 sticky top-0 z-40 md:static md:z-auto">
+    <header class="bg-white border-b border-cream-200 sticky top-0 z-40 md:static md:z-auto safe-area-header safe-area-x">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" x-data="{ mobileOpen: false }" @click.outside="mobileOpen = false">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
@@ -172,13 +172,13 @@
         @endif
     </div>
 
-    <main id="main-content" class="flex-grow flex items-center justify-center py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
+    <main id="main-content" class="flex-grow flex items-center justify-center py-6 sm:py-12 px-4 sm:px-6 lg:px-8 safe-area-x">
         <div class="w-full max-w-md">
             @yield('content')
         </div>
     </main>
 
-    <footer class="bg-white border-t border-cream-200 mt-12">
+    <footer class="bg-white border-t border-cream-200 mt-12 safe-area-bottom safe-area-x">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
                 <p class="text-gray-500 text-sm">

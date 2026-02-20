@@ -11,6 +11,27 @@
 }
 
 /* ============================================
+   PWA Safe Area Insets
+   Accounts for notch, Dynamic Island, rounded
+   corners, and home indicator on iOS/Android
+   when running with viewport-fit=cover
+   ============================================ */
+@supports (padding: env(safe-area-inset-top)) {
+    .safe-area-header {
+        padding-top: env(safe-area-inset-top);
+    }
+
+    .safe-area-x {
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+    }
+
+    .safe-area-bottom {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+}
+
+/* ============================================
    Page Background - Living Gradient
    Warmth radiates from top, fading to soft cream
    ============================================ */
