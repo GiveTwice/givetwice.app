@@ -140,8 +140,6 @@ Alpine.data('publicList', (config) => ({
     },
 
     markGiftAsClaimed(gift, isClaimed) {
-        if (!isClaimed) return;
-
         const card = document.querySelector(`[data-gift-id='${gift.id}']`);
         if (!card) return;
 
@@ -163,11 +161,10 @@ Alpine.data('publicList', (config) => ({
             } else if (claimCount) {
                 claimCount.remove();
             }
-            // Don't change available/claimed counts or disable buttons
             return;
         }
 
-        // Regular gift - mark as claimed
+        if (!isClaimed) return;
         this.availableCount = Math.max(0, this.availableCount - 1);
         this.claimedCount++;
         const imgContainer = card.querySelector('[data-gift-image]');
