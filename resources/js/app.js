@@ -2,7 +2,7 @@ import './bootstrap';
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js', { scope: '/' });
+        navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(() => {});
     });
 }
 
@@ -27,7 +27,7 @@ if (window.isStandalonePwa) {
         }
 
         const isExternal = url.origin !== window.location.origin;
-        const isOAuth = url.pathname.match(/^\/[a-z]{2}\/auth\/(google|facebook|apple)$/);
+        const isOAuth = /^\/[a-z]{2}\/auth\/(google|facebook|apple)$/.test(url.pathname);
 
         if (isExternal || isOAuth) {
             // Open external links and OAuth flows in Safari to prevent
@@ -71,7 +71,7 @@ Alpine.data('publicList', (config) => ({
             grid.classList.remove('hidden');
         }
         const self = this;
-        fetch(`/${config.locale}/view/${config.slug}/gifts/${gift.id}/card`)
+        fetch(`/${config.locale}/v/${parseInt(config.slug)}/${config.slug}/gifts/${gift.id}/card`)
             .then(response => response.ok ? response.text() : Promise.reject())
             .then(html => {
                 // HTML is from our own server endpoint, safe to parse

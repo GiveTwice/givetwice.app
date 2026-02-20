@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -12,15 +12,12 @@
 
     @vite(['resources/css/app.css'])
 
-    {{-- Inline fallback styles in case Vite assets aren't cached --}}
     <style>
-        .offline-fallback { font-family: 'Instrument Sans', system-ui, -apple-system, sans-serif; }
-        .offline-fallback body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .offline-fallback { font-family: 'Instrument Sans', system-ui, -apple-system, sans-serif; margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     </style>
 </head>
 <body class="offline-fallback min-h-screen bg-gradient-warm flex flex-col items-center justify-center px-4 safe-area-x">
     <div class="text-center max-w-md mx-auto">
-        {{-- Heart icon --}}
         <div class="mb-6">
             <svg class="w-16 h-16 mx-auto opacity-60" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <defs>
@@ -34,15 +31,12 @@
             </svg>
         </div>
 
-        {{-- Heading --}}
-        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">You're offline</h1>
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">{{ __("You're offline") }}</h1>
 
-        {{-- Message --}}
         <p class="text-gray-600 text-base sm:text-lg mb-8">
-            It looks like you've lost your internet connection. Your recently viewed lists may still be available.
+            {{ __("It looks like you've lost your internet connection. Your recently viewed lists may still be available.") }}
         </p>
 
-        {{-- Retry button --}}
         <button
             onclick="window.location.reload()"
             class="btn-primary inline-flex items-center gap-2"
@@ -50,10 +44,9 @@
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
-            Try again
+            {{ __('Try again') }}
         </button>
 
-        {{-- Subtle branding --}}
         <p class="mt-12 text-sm text-gray-400">
             <span class="font-bold text-gray-500">Give</span><span class="font-bold text-coral-400">Twice</span>
         </p>

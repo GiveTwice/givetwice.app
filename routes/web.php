@@ -24,7 +24,7 @@ Route::get('/', function () {
     return redirect("/{$locale}", 302);
 });
 
-// Offline fallback page (pre-cached by service worker)
+// Must remain at a non-locale-prefixed URL so the service worker can pre-cache it
 Route::view('/offline', 'offline');
 
 // Redirect /dashboard to locale-prefixed dashboard
@@ -33,6 +33,12 @@ Route::get('/dashboard', function () {
 
     return redirect("/{$locale}/dashboard");
 })->middleware('auth')->name('dashboard');
+
+Route::get('/lists/create', function () {
+    $locale = auth()->user()?->locale_preference ?? app()->getLocale();
+
+    return redirect("/{$locale}/lists/create");
+})->middleware('auth');
 
 // Two-factor authentication challenge (no locale prefix - matches Fortify's POST route)
 Route::get('/two-factor-challenge', function () {

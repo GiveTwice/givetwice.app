@@ -10,12 +10,7 @@
     display: none !important;
 }
 
-/* ============================================
-   PWA Safe Area Insets
-   Accounts for notch, Dynamic Island, rounded
-   corners, and home indicator on iOS/Android
-   when running with viewport-fit=cover
-   ============================================ */
+/* Required because viewport-fit=cover extends content behind device chrome */
 @supports (padding: env(safe-area-inset-top)) {
     .safe-area-header {
         padding-top: env(safe-area-inset-top);

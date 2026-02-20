@@ -53,7 +53,7 @@
         {
             "name": "Dashboard",
             "short_name": "Dashboard",
-            "url": "/en/dashboard",
+            "url": "/dashboard",
             "icons": [
                 {
                     "src": "/android-chrome-192x192.png",
@@ -65,7 +65,7 @@
         {
             "name": "Create list",
             "short_name": "New list",
-            "url": "/en/lists/create",
+            "url": "/lists/create",
             "icons": [
                 {
                     "src": "/android-chrome-192x192.png",

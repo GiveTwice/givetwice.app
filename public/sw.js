@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v4';
 const STATIC_CACHE = `givetwice-static-${CACHE_VERSION}`;
 const PAGE_CACHE = `givetwice-pages-${CACHE_VERSION}`;
 const IMAGE_CACHE = `givetwice-images-${CACHE_VERSION}`;
@@ -12,9 +12,7 @@ const PRECACHE_URLS = [
 
 self.addEventListener('install', (event) => {
     event.waitUntil(
-        caches.open(STATIC_CACHE).then((cache) =>
-            PRECACHE_URLS.length > 0 ? cache.addAll(PRECACHE_URLS) : Promise.resolve()
-        )
+        caches.open(STATIC_CACHE).then((cache) => cache.addAll(PRECACHE_URLS))
     );
     self.skipWaiting();
 });
@@ -48,12 +46,12 @@ function isStaticAsset(url) {
     const path = url.pathname;
     if (path.startsWith('/storage/')) return false;
     return path.startsWith('/build/assets/') ||
-        path.match(/\.(css|js|woff2?|ttf|eot|svg|png|jpg|jpeg|gif|webp|ico)$/) !== null;
+        /\.(css|js|woff2?|ttf|eot|svg|png|jpg|jpeg|gif|webp|ico)$/.test(path);
 }
 
 function isGiftImage(url) {
     return url.pathname.startsWith('/storage/') &&
-        url.pathname.match(/\.(png|jpg|jpeg|gif|webp)$/i) !== null;
+        /\.(png|jpg|jpeg|gif|webp)$/i.test(url.pathname);
 }
 
 function isNavigationRequest(request) {
@@ -105,10 +103,14 @@ self.addEventListener('fetch', (event) => {
     }
 
     if (isNavigationRequest(event.request)) {
+        // Don't cache authenticated routes to prevent serving stale user data
+        const authPaths = ['/dashboard', '/settings', '/list/', '/gifts/', '/lists/'];
+        const isAuthRoute = authPaths.some((p) => url.pathname.includes(p));
+
         event.respondWith(
             fetch(event.request)
                 .then((response) => {
-                    if (response.ok) {
+                    if (response.ok && !isAuthRoute) {
                         const clone = response.clone();
                         caches.open(PAGE_CACHE).then((cache) => {
                             cache.put(event.request, clone);
@@ -125,13 +127,4 @@ self.addEventListener('fetch', (event) => {
         );
         return;
     }
-});
-
-self.addEventListener('push', (_event) => {
-    // Stub for future push notification support
-});
-
-self.addEventListener('notificationclick', (event) => {
-    event.notification.close();
-    // Stub for future notification click handling
 });
