@@ -45,6 +45,7 @@
 - Service worker is at `public/sw.js` — registered from `resources/js/app.js` with `scope: '/'`
 - SW uses two caches: `givetwice-static-v{N}` (static assets, cache-first) and `givetwice-pages-v{N}` (navigation, network-first)
 - Bump `CACHE_VERSION` in `sw.js` when cache structure changes — old caches are auto-cleaned on activate
+- Offline fallback page is at `/offline` (Blade view `offline.blade.php`, route in `web.php`) — pre-cached by SW, served when navigation fails with no cached version
 
 ---
 
@@ -299,4 +300,22 @@
   - Service worker only caches same-origin GET requests — POST requests, external resources, and admin/horizon routes are excluded
   - `cache.addAll()` rejects if any URL returns non-2xx — don't precache URLs that don't exist yet. The `PRECACHE_URLS` array is left empty for US-016 to populate
   - Chrome requires a fetch event handler to consider an app installable — even an empty handler satisfies this
+---
+
+## 2026-02-20 - US-016
+- Created offline fallback page at `resources/views/offline.blade.php` with GiveTwice branding (heart icon, cream gradient background, coral accent)
+- Added `/offline` route in `routes/web.php` using `Route::view()` — no locale prefix since it's a utility page pre-cached by the service worker
+- Page shows "You're offline" message with a "Try again" button that reloads the page
+- Uses `@vite(['resources/css/app.css'])` for styling (will be served from cache), plus inline fallback styles in case Vite assets aren't cached
+- Updated `PRECACHE_URLS` in `public/sw.js` to include `/offline` — cached during SW install event
+- Bumped `CACHE_VERSION` from `v1` to `v2` to trigger re-install and cache the new offline page
+- The SW already had the fallback logic in place (from US-015): `caches.match('/offline')` is called when a navigation request fails and no cached version exists
+- All 314 tests pass, Pint clean, build successful
+- Files changed: `resources/views/offline.blade.php` (new), `routes/web.php`, `public/sw.js`
+- **Learnings for future iterations:**
+  - The offline page uses a Blade view served via Laravel route, not a static HTML file — the SW pre-caches the rendered HTML response during install (when online), then serves it from cache when offline
+  - No locale prefix on `/offline` because the SW references `caches.match('/offline')` directly — the page is language-agnostic with hardcoded English text (acceptable since it's a rare edge case)
+  - `caches.match()` without a cache name argument searches ALL caches — the offline page is in `STATIC_CACHE` (via precache) but the SW's fallback in the navigation handler finds it automatically
+  - The inline SVG heart icon is duplicated from `heart-icon.blade.php` — this is intentional so the offline page is self-contained (no component dependencies that might fail)
+  - Bumping `CACHE_VERSION` is essential when changing `PRECACHE_URLS` — without it, the existing SW wouldn't re-install and the new URLs wouldn't be cached
 ---

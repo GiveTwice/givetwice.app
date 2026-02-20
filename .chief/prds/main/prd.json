@@ -243,7 +243,8 @@
         "Service worker serves this page when a navigation request fails and no cached version exists"
       ],
       "priority": 5,
-      "passes": false
+      "passes": true,
+      "inProgress": false
     },
     {
       "id": "US-017",
