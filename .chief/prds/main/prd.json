@@ -310,7 +310,8 @@
         "Offline mode tested: airplane mode after caching pages, verify cached lists load"
       ],
       "priority": 7,
-      "passes": false
+      "passes": true,
+      "inProgress": false
     }
   ]
 }

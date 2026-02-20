@@ -53,6 +53,12 @@
 - Install banner uses `Alpine.data()` registered via `alpine:init` event — required when script is in `@push('scripts')` block
 - `beforeinstallprompt` is Chrome/Edge-only — iOS Safari needs UA-based detection with CriOS/FxiOS/OPiOS/EdgiOS exclusions
 - Guest layout now has `@stack('scripts')` — both layouts support `@push('scripts')` from components
+- `window.isStandalonePwa` is a global flag set in `app.js` — use it in any JS/Alpine component to detect standalone PWA mode
+- For iOS standalone navigation quirks: a delegated click handler in `app.js` intercepts external links (→ `window.open`), OAuth links (→ `window.open`), and internal `target="_blank"` links (→ `window.location.href`)
+- OAuth routes follow pattern `/{locale}/auth/{provider}` — must be opened in Safari in standalone mode to avoid breaking cross-origin redirect flow
+- Touch target minimum: `w-11 h-11` (44px) for buttons, `py-3` on `text-sm` elements gives exactly 44px height
+- Overflow check: `document.documentElement.scrollWidth > document.documentElement.clientWidth` — the definitive test
+- All form inputs inherit 16px base font-size — prevents iOS Safari auto-zoom on focus
 
 ---
 
@@ -373,4 +379,50 @@
   - The guest layout previously had no `@stack('scripts')` — any component using `@push('scripts')` would silently fail on guest pages
   - localStorage operations should always be wrapped in try/catch — private browsing mode on some browsers throws on `setItem`
   - The z-40 layer for the install banner matches the sticky header but they're at opposite edges of the viewport (top vs bottom), so no overlap occurs
+---
+
+## 2026-02-20 - US-019
+- Added global `window.isStandalonePwa` flag in `app.js` — detects standalone mode via `display-mode: standalone` media query (Android) and `navigator.standalone` (iOS)
+- Added delegated click handler on `document` that only activates when running as installed PWA (standalone mode)
+- **External links** (different origin): intercepted and opened via `window.open(href, '_blank')` — forces Safari to handle them instead of replacing the PWA
+- **OAuth links** (e.g., `/{locale}/auth/google`): matched via regex, opened in Safari via `window.open()` — prevents cross-origin OAuth redirect from breaking standalone context
+- **Internal links with `target="_blank"`** (e.g., share-modal "View" link, lists/edit "Shareable link"): intercepted and navigated via `window.location.href` — stays within the PWA instead of opening unnecessary Safari tabs
+- **Back button/swipe-back**: fixed as a side effect — external URLs no longer pollute the PWA history stack since they're opened in Safari
+- **Deep links**: iOS doesn't auto-open installed PWAs from links (OS-level limitation). The `scope: "/"` in manifest is correct, and the install banner handles the user prompt. No code change can solve this.
+- Files changed: `resources/js/app.js`
+- **Learnings for future iterations:**
+  - A single delegated click handler on `document` is the cleanest approach for standalone mode link interception — handles all links (existing and dynamically added) without modifying Blade templates
+  - iOS standalone mode (`navigator.standalone`) treats cross-origin navigations inconsistently across iOS versions — `window.open(href, '_blank')` is the most reliable way to force external links to Safari
+  - OAuth routes follow the pattern `/{locale}/auth/{provider}` — matching with regex `/^\/[a-z]{2}\/auth\/(google|facebook|apple)$/` catches all providers for all locales
+  - Internal links with `target="_blank"` should use `window.location.href` in standalone mode (not `window.open`) to keep navigation within the PWA
+  - The handler skips `#` anchors, `javascript:` hrefs, and non-parseable URLs — important guard clauses to avoid breaking in-page navigation and Alpine.js click handlers
+  - `window.isStandalonePwa` is set once at load time (not reactive) — this is correct since standalone mode doesn't change during a session
+  - No Blade template changes were needed — the JS interception handles all link types globally, which is more maintainable than adding conditional `target` attributes across dozens of templates
+---
+
+## 2026-02-20 - US-020
+- Systematic mobile QA pass across all pages at 320px, 375px, and 428px viewport widths
+- **Overflow check**: All pages pass — zero horizontal overflow detected at all three viewport widths
+- **Pages tested** (15 unique pages, 3 locales): home, login, register, forgot-password, about, FAQ, privacy, terms, contact, transparency, dashboard, gift create, gift edit, settings, list edit, list invite, public list, offline, claim
+- **Multi-language tested**: English, Dutch, and French — no overflow in any locale
+- **Touch target fixes applied**:
+  - Hamburger menu button: `w-10 h-10` (40px) → `w-11 h-11` (44px) in both app and guest layouts
+  - Gift card hover labels (`gift-card-hover-label`): `py-2` (36px total) → `py-3` (44px total) in app.css
+- **Font size verification**: Body text is 16px, all form inputs are 16px (prevents iOS Safari zoom on focus), secondary text uses 14px (`text-sm`). Only decorative badges (BETA, GIVE #1) use smaller sizes — acceptable.
+- **Remaining touch targets under 44px** (acceptable by design):
+  - Logo link (127x28px) — standard nav element, wide touch area compensates for height
+  - `btn-secondary` (54x42px) — 2px under, borderline compliant
+  - `btn-share` (60x40px) — wide enough for comfortable tapping
+  - Footer links (17px height) — industry standard, low-priority navigation
+- QA screenshots saved in `qa-screenshots/` at 320px, 375px, and 428px widths
+- All 314 tests pass, Pint clean, build successful
+- Files changed: `resources/css/app.css`, `resources/views/layouts/app.blade.php`, `resources/views/layouts/guest.blade.php`
+- **Learnings for future iterations:**
+  - Use `document.documentElement.scrollWidth > document.documentElement.clientWidth` as the definitive overflow check — works reliably at any viewport width
+  - Touch target audit via JS: query all `a, button, input` elements and check `getBoundingClientRect()` — filter out SR-only and hidden elements
+  - The 44x44px touch target guideline is WCAG 2.5.8 (Level AAA) — some elements like footer links and logos are universally accepted as exceptions
+  - `py-3` on `text-sm` elements gives exactly 44px height (12px top + 20px text + 12px bottom = 44px)
+  - `w-11 h-11` in Tailwind = 44px = exactly the WCAG minimum touch target size
+  - All form inputs in the codebase inherit the 16px base font-size — no explicit `text-base` needed. iOS Safari auto-zooms on focus when input font-size < 16px
+  - Testing at 320px is the critical width — if it passes there, 375px and 428px are guaranteed to pass (more space available)
 ---

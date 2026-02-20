@@ -961,7 +961,7 @@
 }
 
 .gift-card-hover-label {
-    @apply opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium shadow-lg;
+    @apply opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/95 backdrop-blur-sm px-4 py-3 rounded-full text-sm font-medium shadow-lg;
 }
 
 /* ============================================

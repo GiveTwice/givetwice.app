@@ -101,7 +101,7 @@
                         type="button"
                         @click="mobileOpen = !mobileOpen"
                         :aria-expanded="mobileOpen.toString()"
-                        class="relative w-10 h-10 flex items-center justify-center text-gray-600 hover:text-gray-900 rounded-lg transition-colors"
+                        class="relative w-11 h-11 flex items-center justify-center text-gray-600 hover:text-gray-900 rounded-lg transition-colors"
                         aria-label="{{ __('Toggle navigation') }}"
                     >
                         <x-icons.menu
