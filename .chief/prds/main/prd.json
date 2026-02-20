@@ -103,8 +103,8 @@
         "\"How it works\" steps section stacks vertically on mobile"
       ],
       "priority": 2,
-      "passes": false,
-      "inProgress": true
+      "passes": true,
+      "inProgress": false
     },
     {
       "id": "US-008",

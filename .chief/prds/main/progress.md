@@ -19,6 +19,8 @@
 - For modal close buttons: use `-m-1 p-2` (negative margin + padding) to enlarge touch target without shifting visual position — gives 40px+ tappable area with a 24px icon
 - Use `max-h-[100dvh]` instead of `max-h-screen` or `max-h-[90vh]` on modal containers — dvh accounts for mobile browser chrome (URL bar, toolbar)
 - For input+button rows that overflow on mobile: stack with `space-y-2` (input full-width above, buttons below) instead of `flex gap-2` inline
+- For inline step indicators with translated labels: hide labels on mobile (`hidden sm:inline`) and show just numbered circles — prevents overflow with longer translations
+- Use `gap-3 sm:gap-4` on gift grids to give cards slightly more width at 320px (140px vs 136px per card in 2-col)
 
 ---
 
@@ -105,4 +107,22 @@
   - `dvh` (dynamic viewport height) is critical for mobile — `vh` doesn't account for iOS Safari's URL bar or Android Chrome's toolbar, causing content to be hidden behind browser chrome
   - `p-2.5` on a button with `w-6 h-6` icon gives exactly 44px total touch target (24px icon + 10px padding each side)
   - The confirm modal is small enough (max-w-md) that it doesn't need scroll handling or dvh adjustments
+---
+
+## 2026-02-20 - US-007
+- Reduced gift grid section padding on mobile: `px-6` → `px-4 sm:px-6`, `p-6` → `p-4 sm:p-6`, `py-5` → `py-4 sm:py-5`
+- Made gift grid section header responsive: added `gap-2` to flex row, `text-right` on helper text, reduced heading size to `text-lg sm:text-xl`
+- "How it works" steps: hid text labels on mobile (`hidden sm:inline`), showing just numbered circles (1→2→3) — prevents overflow with longer Dutch/French labels ("Bladeren", "Afstrepen", "Parcourir")
+- Added `flex-shrink-0` to step circles and chevrons to prevent squishing
+- Reduced gap in step row on mobile: `gap-2 sm:gap-3`
+- Tightened gift grid gap on mobile: `gap-3 sm:gap-4` — gives each card ~140px width at 320px (vs 136px with gap-4)
+- Verified at 320px, 375px viewport widths in both English and Dutch — no horizontal overflow
+- Files changed: `resources/views/public/list.blade.php`
+- **Learnings for future iterations:**
+  - The public list view is at `resources/views/public/list.blade.php` (not `show.blade.php`)
+  - Public list URL format is `/{locale}/v/{id}/{slug}` — the `{id}` is separate from `{slug}`
+  - The "How it works" step labels translate to 8-9 char words in Dutch/French — at 320px with circles + labels + chevrons, the row would be ~300px but content area is only 280px, so hiding labels on mobile is necessary
+  - Existing responsive classes on the header (truncate, min-w-0, flex-shrink-0) already prevent overflow — the header is tight at 320px but functional
+  - Gift card badges ("Always available", "Ophalen") use absolute positioning and `text-xs` so they fit within 140px card width
+  - Claim buttons are `w-full` within the card, making them full card width (~140px) — easily tappable even at `py-2` height
 ---
