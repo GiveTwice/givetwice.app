@@ -36,6 +36,9 @@
 - Never use `background-attachment: fixed` without a `@media (min-width: 768px)` guard — iOS Safari re-paints the entire viewport on every scroll frame with this property
 - Safe area CSS utilities: `.safe-area-header` (top), `.safe-area-x` (left/right), `.safe-area-bottom` (bottom) — apply to any element that touches screen edges in PWA standalone mode
 - `viewport-fit=cover` is set on all layouts — `env(safe-area-inset-*)` returns 0 on non-notched devices, so safe area classes are always safe to add
+- PWA manifest is at `public/site.webmanifest` — linked from both app and guest layouts
+- Maskable icons use separate entries (`"purpose": "maskable"`) — never combine `"any maskable"` on one icon
+- PWA screenshots live in `public/images/pwa/` — use `form_factor: "narrow"` (mobile) and `form_factor: "wide"` (desktop)
 
 ---
 
@@ -232,4 +235,25 @@
   - The impersonation banner and header both get `safe-area-header` — during impersonation the extra padding on the header is harmless (just adds spacing) since the banner handles the notch area
   - CSS utility approach (`safe-area-header`, `safe-area-x`, `safe-area-bottom`) is cleaner than inline styles and can be reused across any component that touches screen edges
   - The admin layout also gets `viewport-fit=cover` for consistency, even though admin is rarely used on mobile
+---
+
+## 2026-02-20 - US-013
+- Completed the PWA web app manifest (`public/site.webmanifest`) with all required fields
+- Added `start_url: "/"`, `scope: "/"`, `id: "/"` — root redirects to detected locale, so `/` is the correct start URL
+- Added `description` field: "Create and share wishlists. All affiliate revenue goes to charity."
+- Added `categories: ["shopping", "lifestyle"]`
+- Generated maskable icons (192x192 and 512x512) with cream (#fffbf5) background and 70% icon size to stay within the 80% safe zone circle
+- Added maskable icons to manifest with `"purpose": "maskable"` — kept original icons as `"purpose": "any"` (the default)
+- Took PWA screenshots: mobile (780x1688, 2x DPR at 390x844 viewport) and desktop (1280x720) of the home page
+- Added `screenshots` array with `form_factor: "narrow"` (mobile) and `form_factor: "wide"` (desktop) for richer Android install UI
+- Added `shortcuts` array with "Dashboard" (`/en/dashboard`) and "Create list" (`/en/lists/create`)
+- Validated manifest loads correctly (200) and all fields are present via browser fetch test
+- Files changed: `public/site.webmanifest`, `public/android-chrome-maskable-192x192.png` (new), `public/android-chrome-maskable-512x512.png` (new), `public/images/pwa/screenshot-mobile.png` (new), `public/images/pwa/screenshot-desktop.png` (new)
+- **Learnings for future iterations:**
+  - The manifest file is at `public/site.webmanifest` and linked from both app and guest layouts via `<link rel="manifest">`
+  - Maskable icons need the important content within the inner 80% circle (safe zone) — 70% icon size on a solid background gives comfortable margin
+  - Keep `"purpose": "any"` (default) on original icons and use separate entries for `"purpose": "maskable"` — don't set `"purpose": "any maskable"` on a single icon as it degrades display on platforms that use "any"
+  - Screenshots need `form_factor: "narrow"` for mobile and `form_factor: "wide"` for desktop — Chrome uses these to show a richer install UI on Android
+  - Shortcut URLs use `/en/` prefix — these are internal routes that require a locale prefix. Users with different locale preferences will get redirected by the locale middleware
+  - The `favicon.ico` returns 404 even though the file exists at `public/favicon.ico` — this is a pre-existing server config issue (possibly Caddy not serving `.ico` files), not related to manifest changes
 ---
