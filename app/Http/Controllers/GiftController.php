@@ -229,7 +229,10 @@ class GiftController extends Controller
     {
         $list = GiftList::findOrFail($list);
 
-        // Verify the gift belongs to this list
+        if ($list->slug !== $slug) {
+            abort(404);
+        }
+
         if (! $list->gifts()->where('gifts.id', $gift->id)->exists()) {
             abort(404);
         }

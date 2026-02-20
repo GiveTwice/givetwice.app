@@ -12,9 +12,10 @@ const PRECACHE_URLS = [
 
 self.addEventListener('install', (event) => {
     event.waitUntil(
-        caches.open(STATIC_CACHE).then((cache) => cache.addAll(PRECACHE_URLS))
+        caches.open(STATIC_CACHE)
+            .then((cache) => cache.addAll(PRECACHE_URLS))
+            .then(() => self.skipWaiting())
     );
-    self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
@@ -76,7 +77,7 @@ self.addEventListener('fetch', (event) => {
                         caches.open(STATIC_CACHE).then((cache) => cache.put(event.request, clone));
                     }
                     return response;
-                });
+                }).catch(() => caches.match(event.request));
             })
         );
         return;
@@ -104,8 +105,9 @@ self.addEventListener('fetch', (event) => {
 
     if (isNavigationRequest(event.request)) {
         // Don't cache authenticated routes to prevent serving stale user data
+        const pathWithoutLocale = url.pathname.replace(/^\/[a-z]{2}\//, '/');
         const authPaths = ['/dashboard', '/settings', '/list/', '/gifts/', '/lists/'];
-        const isAuthRoute = authPaths.some((p) => url.pathname.includes(p));
+        const isAuthRoute = authPaths.some((p) => pathWithoutLocale.startsWith(p));
 
         event.respondWith(
             fetch(event.request)
@@ -121,7 +123,7 @@ self.addEventListener('fetch', (event) => {
                 })
                 .catch(() =>
                     caches.match(event.request).then((cached) =>
-                        cached || caches.match('/offline')
+                        cached || caches.match('/offline').then((r) => r || new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/plain' } }))
                     )
                 )
         );

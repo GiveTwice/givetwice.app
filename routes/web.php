@@ -14,6 +14,8 @@ use App\Http\Controllers\PublicListController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\ShowOccasionController;
 use App\Http\Middleware\SetLocale;
+use App\Models\User;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Route;
 
 // Redirect root to detected locale
@@ -25,7 +27,7 @@ Route::get('/', function () {
 });
 
 // Must remain at a non-locale-prefixed URL so the service worker can pre-cache it
-Route::view('/offline', 'offline');
+Route::view('/offline', 'offline')->name('offline');
 
 // Redirect /dashboard to locale-prefixed dashboard
 Route::get('/dashboard', function () {
@@ -38,7 +40,7 @@ Route::get('/lists/create', function () {
     $locale = auth()->user()?->locale_preference ?? app()->getLocale();
 
     return redirect("/{$locale}/lists/create");
-})->middleware('auth');
+})->middleware('auth')->name('lists.create.redirect');
 
 // Two-factor authentication challenge (no locale prefix - matches Fortify's POST route)
 Route::get('/two-factor-challenge', function () {
@@ -115,7 +117,7 @@ Route::prefix('{locale}')
                     abort(401);
                 }
 
-                $user = \App\Models\User::findOrFail($id);
+                $user = User::findOrFail($id);
 
                 if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
                     abort(403);
@@ -123,7 +125,7 @@ Route::prefix('{locale}')
 
                 if (! $user->hasVerifiedEmail()) {
                     $user->markEmailAsVerified();
-                    event(new \Illuminate\Auth\Events\Verified($user));
+                    event(new Verified($user));
                 }
 
                 return redirect()->route('dashboard.locale', ['locale' => $locale]);

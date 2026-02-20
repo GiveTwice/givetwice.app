@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <title>Offline | {{ config('app.name', 'GiveTwice') }}</title>
+    <title>{{ __("You're offline") }} | {{ config('app.name', 'GiveTwice') }}</title>
     <meta name="robots" content="noindex">
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -12,6 +12,7 @@
 
     @vite(['resources/css/app.css'])
 
+    {{-- Fallback styles when Vite CSS is not cached by the service worker --}}
     <style>
         .offline-fallback { font-family: 'Instrument Sans', system-ui, -apple-system, sans-serif; margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     </style>

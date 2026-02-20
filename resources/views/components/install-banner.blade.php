@@ -51,7 +51,7 @@ document.addEventListener('alpine:init', () => {
         instructionText: '',
 
         init() {
-            if (this.isStandalone() || this.isDismissed()) return;
+            if (window.isStandalonePwa || this.isDismissed()) return;
 
             this.trackPageVisit();
             if (this.getPageVisits() < 2) return;
@@ -66,10 +66,7 @@ document.addEventListener('alpine:init', () => {
                 this.deferredPrompt = e;
                 this.canInstallNative = true;
                 this.instructionText = @js(__('Add to your home screen for quick access'));
-
-                if (this.getPageVisits() >= 2 && !this.isDismissed()) {
-                    this.visible = true;
-                }
+                this.visible = true;
             });
 
             window.addEventListener('appinstalled', () => {
@@ -92,7 +89,7 @@ document.addEventListener('alpine:init', () => {
             this.visible = false;
             try {
                 localStorage.setItem('givetwice_install_dismissed', Date.now().toString());
-            } catch (e) {}
+            } catch {}
         },
 
         isDismissed() {
@@ -101,7 +98,7 @@ document.addEventListener('alpine:init', () => {
                 if (!dismissed) return false;
                 const sevenDays = 7 * 24 * 60 * 60 * 1000;
                 return (Date.now() - parseInt(dismissed, 10)) < sevenDays;
-            } catch (e) {
+            } catch {
                 return false;
             }
         },
@@ -110,19 +107,15 @@ document.addEventListener('alpine:init', () => {
             try {
                 const count = parseInt(localStorage.getItem('givetwice_page_visits') || '0', 10);
                 localStorage.setItem('givetwice_page_visits', (count + 1).toString());
-            } catch (e) {}
+            } catch {}
         },
 
         getPageVisits() {
             try {
                 return parseInt(localStorage.getItem('givetwice_page_visits') || '0', 10);
-            } catch (e) {
+            } catch {
                 return 0;
             }
-        },
-
-        isStandalone() {
-            return window.isStandalonePwa;
         },
 
         isIosSafari() {

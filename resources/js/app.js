@@ -1,4 +1,5 @@
 import './bootstrap';
+import Alpine from 'alpinejs';
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -42,8 +43,6 @@ if (window.isStandalonePwa) {
         }
     });
 }
-
-import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;
 
