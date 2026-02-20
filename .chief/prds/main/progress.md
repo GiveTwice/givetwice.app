@@ -21,6 +21,11 @@
 - For input+button rows that overflow on mobile: stack with `space-y-2` (input full-width above, buttons below) instead of `flex gap-2` inline
 - For inline step indicators with translated labels: hide labels on mobile (`hidden sm:inline`) and show just numbered circles — prevents overflow with longer translations
 - Use `gap-3 sm:gap-4` on gift grids to give cards slightly more width at 320px (140px vs 136px per card in 2-col)
+- For cramped icon + text + toggle rows at 320px: hide decorative icons on mobile (`hidden sm:flex`) and add `flex-shrink-0` to the toggle/action element
+- For session/device rows with badges: use `flex-wrap` on the badge container so badges wrap below the label on narrow screens, hide decorative device icons on mobile
+- Long action buttons (e.g., "Enable two-factor authentication"): use `w-full sm:w-auto justify-center` to make full-width on mobile, auto-width on desktop
+- For modal button rows: use `flex-col-reverse sm:flex-row sm:justify-end` pattern (same as form actions) — CTA on top on mobile, inline on desktop
+- Settings page sections use `grid grid-cols-1 lg:grid-cols-3 gap-8` — already stacks properly on mobile, no fix needed
 
 ---
 
@@ -125,4 +130,26 @@
   - Existing responsive classes on the header (truncate, min-w-0, flex-shrink-0) already prevent overflow — the header is tight at 320px but functional
   - Gift card badges ("Always available", "Ophalen") use absolute positioning and `text-xs` so they fit within 140px card width
   - Claim buttons are `w-full` within the card, making them full card width (~140px) — easily tappable even at `py-2` height
+---
+
+## 2026-02-20 - US-008
+- Responsive pass on the settings page (`settings.blade.php`)
+- Notification toggle row: hid decorative icon circle on mobile (`hidden sm:flex`), added `gap-3` and `flex-shrink-0` to toggle wrapper — gives text more room beside the toggle at 320px
+- Session rows: hid device icon on mobile (`hidden sm:flex`), added `flex-wrap` to badge container so "This device" badge wraps below platform name, added `min-w-0` for text truncation safety, `flex-shrink-0` on "Log out" button
+- 2FA buttons: made "Enable two-factor authentication" and "Disable two-factor authentication" full-width on mobile (`w-full sm:w-auto justify-center`)
+- "Log out other browser sessions" button: same full-width mobile treatment
+- Danger zone "Delete account" button: full-width on mobile (`w-full sm:w-auto justify-center`)
+- Delete account modal buttons: stacked on mobile using `flex-col-reverse sm:flex-row sm:justify-end` pattern (CTA on top)
+- Verified: all form sections already stack in single column on mobile via `grid grid-cols-1 lg:grid-cols-3` — no changes needed
+- Verified: profile photo upload area (96px circle + text) fits well at 320px — touch-friendly and no overflow
+- Verified: no horizontal overflow at 320px and 375px viewports
+- All 314 tests pass, Pint clean
+- Files changed: `resources/views/settings.blade.php`
+- **Learnings for future iterations:**
+  - The settings page is a single 1136-line Blade file with six sections — all use the same `grid grid-cols-1 lg:grid-cols-3 gap-8` pattern which already handles mobile stacking
+  - There is no "connected accounts" section in the settings page (mentioned in AC but doesn't exist in the codebase)
+  - The notification toggle row is the tightest spot at 320px — icon (40px) + gap (12px) + text + gap (12px) + toggle (44px) = ~108px overhead before text starts. Hiding the icon on mobile frees 52px
+  - Session rows with badges + "Log out" button are another tight spot — the badge + browser name + button compete for space. Hiding the device icon and allowing badge wrapping solves it cleanly
+  - `flex-shrink-0` is essential on toggle switches and action buttons to prevent them from being compressed by flexbox
+  - The `app-content` component adds `px-6 sm:px-8` padding, so at 320px the content area is only 272px wide (320 - 24 - 24). Every pixel counts
 ---
