@@ -172,7 +172,7 @@
         @endif
     </div>
 
-    <main id="main-content" class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <main id="main-content" class="flex-grow flex items-center justify-center py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
         <div class="w-full max-w-md">
             @yield('content')
         </div>

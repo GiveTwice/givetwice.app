@@ -8,7 +8,7 @@
 
 @section('content')
 @if(config('app.allow_registration'))
-    <div class="bg-white p-8 sm:p-10 rounded-2xl shadow-sm border border-cream-200" x-data="{ showEmailForm: {{ old('name') || old('email') || $errors->any() ? 'true' : 'false' }} }">
+    <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-cream-200" x-data="{ showEmailForm: {{ old('name') || old('email') || $errors->any() ? 'true' : 'false' }} }">
         {{-- Header section with generous spacing --}}
         <div class="flex items-center gap-4 mb-8">
             <div class="flex-shrink-0 w-12 h-12 bg-sunny-100 text-sunny-600 rounded-xl text-2xl flex items-center justify-center transform rotate-3">
@@ -132,14 +132,14 @@
     </div>
 @else
     {{-- Coming soon / Registration disabled --}}
-    <div class="relative">
+    <div class="relative overflow-hidden">
         {{-- Decorative floating elements --}}
         <div class="absolute -top-6 -left-6 w-12 h-12 rounded-full bg-coral-100/60 blur-xl coming-soon-float-1"></div>
         <div class="absolute -top-4 -right-8 w-16 h-16 rounded-full bg-sunny-100/50 blur-xl coming-soon-float-2"></div>
         <div class="absolute -bottom-8 -left-4 w-14 h-14 rounded-full bg-teal-100/50 blur-xl coming-soon-float-3"></div>
         <div class="absolute -bottom-6 -right-6 w-10 h-10 rounded-full bg-coral-100/40 blur-xl coming-soon-float-1"></div>
 
-        <div class="relative bg-white p-8 rounded-2xl shadow-sm border border-cream-200 overflow-hidden">
+        <div class="relative bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-cream-200 overflow-hidden">
             {{-- Subtle background pattern --}}
             <div class="absolute inset-0 opacity-[0.03]" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22><circle cx=%2230%22 cy=%2230%22 r=%222%22 fill=%22%23E8614D%22/></svg>');"></div>
 
