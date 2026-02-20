@@ -73,8 +73,8 @@
         "No horizontal overflow at 320px viewport width"
       ],
       "priority": 2,
-      "passes": false,
-      "inProgress": true
+      "passes": true,
+      "inProgress": false
     },
     {
       "id": "US-006",
@@ -88,7 +88,8 @@
         "Modals use max-h-[100dvh] instead of max-h-screen to account for mobile browser chrome"
       ],
       "priority": 2,
-      "passes": false
+      "passes": true,
+      "inProgress": false
     },
     {
       "id": "US-007",
@@ -102,7 +103,8 @@
         "\"How it works\" steps section stacks vertically on mobile"
       ],
       "priority": 2,
-      "passes": false
+      "passes": false,
+      "inProgress": true
     },
     {
       "id": "US-008",
