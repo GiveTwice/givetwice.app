@@ -5,7 +5,7 @@
 @section('description', __('meta.transparency'))
 
 @section('content')
-<div class="max-w-3xl mx-auto py-12 lg:py-16">
+<div class="max-w-3xl mx-auto py-8 sm:py-12 lg:py-16">
 
     <div class="mb-10">
         <div class="inline-flex items-center justify-center w-14 h-14 bg-teal-100 text-teal-600 rounded-2xl text-2xl mb-6">

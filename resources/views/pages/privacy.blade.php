@@ -5,7 +5,7 @@
 @section('description', __('meta.privacy'))
 
 @section('content')
-<div class="max-w-3xl mx-auto py-12 lg:py-16">
+<div class="max-w-3xl mx-auto py-8 sm:py-12 lg:py-16">
 
     <div class="mb-10">
         <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">{{ __('Privacy Policy for :app', ['app' => config('app.name')]) }}</h1>

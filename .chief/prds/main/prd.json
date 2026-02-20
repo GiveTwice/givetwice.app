@@ -132,7 +132,8 @@
         "No horizontal overflow on any static page at 320px"
       ],
       "priority": 3,
-      "passes": false
+      "passes": false,
+      "inProgress": true
     },
     {
       "id": "US-010",

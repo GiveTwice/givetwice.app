@@ -6,19 +6,19 @@
 
 @section('content')
 
-<div class="text-center py-12 lg:py-16">
+<div class="text-center py-8 sm:py-12 lg:py-16">
     <div class="inline-flex items-center justify-center w-16 h-16 bg-sunny-100 text-sunny-600 rounded-2xl text-3xl mb-6 transform -rotate-3">
         &#10067;
     </div>
-    <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">{{ __('Questions & answers') }}</h1>
-    <p class="text-xl text-gray-600 max-w-2xl mx-auto">{{ __('The short version of how GiveTwice works') }}</p>
+    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">{{ __('Questions & answers') }}</h1>
+    <p class="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">{{ __('The short version of how GiveTwice works') }}</p>
 </div>
 
 <div class="max-w-3xl mx-auto pb-16">
     <div class="space-y-4">
 
-        <div class="bg-white border border-cream-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex items-start gap-4">
+        <div class="bg-white border border-cream-200 rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-start gap-3 sm:gap-4">
                 <div class="flex-shrink-0 w-10 h-10 bg-coral-100 text-coral-500 rounded-xl flex items-center justify-center font-bold">
                     1
                 </div>
@@ -29,8 +29,8 @@
             </div>
         </div>
 
-        <div class="bg-white border border-cream-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex items-start gap-4">
+        <div class="bg-white border border-cream-200 rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-start gap-3 sm:gap-4">
                 <div class="flex-shrink-0 w-10 h-10 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center font-bold">
                     2
                 </div>
@@ -41,8 +41,8 @@
             </div>
         </div>
 
-        <div class="bg-white border border-cream-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex items-start gap-4">
+        <div class="bg-white border border-cream-200 rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-start gap-3 sm:gap-4">
                 <div class="flex-shrink-0 w-10 h-10 bg-sunny-100 text-sunny-600 rounded-xl flex items-center justify-center font-bold">
                     3
                 </div>
@@ -53,8 +53,8 @@
             </div>
         </div>
 
-        <div class="bg-white border border-cream-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex items-start gap-4">
+        <div class="bg-white border border-cream-200 rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-start gap-3 sm:gap-4">
                 <div class="flex-shrink-0 w-10 h-10 bg-coral-100 text-coral-500 rounded-xl flex items-center justify-center font-bold">
                     4
                 </div>
@@ -65,8 +65,8 @@
             </div>
         </div>
 
-        <div class="bg-white border border-cream-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex items-start gap-4">
+        <div class="bg-white border border-cream-200 rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-start gap-3 sm:gap-4">
                 <div class="flex-shrink-0 w-10 h-10 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center font-bold">
                     5
                 </div>
@@ -77,8 +77,8 @@
             </div>
         </div>
 
-        <div class="bg-white border border-cream-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex items-start gap-4">
+        <div class="bg-white border border-cream-200 rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-start gap-3 sm:gap-4">
                 <div class="flex-shrink-0 w-10 h-10 bg-sunny-100 text-sunny-600 rounded-xl flex items-center justify-center font-bold">
                     6
                 </div>
@@ -89,8 +89,8 @@
             </div>
         </div>
 
-        <div class="bg-white border border-cream-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex items-start gap-4">
+        <div class="bg-white border border-cream-200 rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-start gap-3 sm:gap-4">
                 <div class="flex-shrink-0 w-10 h-10 bg-coral-100 text-coral-500 rounded-xl flex items-center justify-center font-bold">
                     7
                 </div>
@@ -101,8 +101,8 @@
             </div>
         </div>
 
-        <div class="bg-white border border-cream-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex items-start gap-4">
+        <div class="bg-white border border-cream-200 rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-start gap-3 sm:gap-4">
                 <div class="flex-shrink-0 w-10 h-10 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center font-bold">
                     8
                 </div>
@@ -113,8 +113,8 @@
             </div>
         </div>
 
-        <div class="bg-white border border-cream-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex items-start gap-4">
+        <div class="bg-white border border-cream-200 rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-start gap-3 sm:gap-4">
                 <div class="flex-shrink-0 w-10 h-10 bg-coral-100 text-coral-500 rounded-xl flex items-center justify-center font-bold">
                     9
                 </div>
@@ -125,8 +125,8 @@
             </div>
         </div>
 
-        <div class="bg-white border border-cream-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex items-start gap-4">
+        <div class="bg-white border border-cream-200 rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-start gap-3 sm:gap-4">
                 <div class="flex-shrink-0 w-10 h-10 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center font-bold">
                     10
                 </div>
@@ -137,8 +137,8 @@
             </div>
         </div>
 
-        <div class="bg-white border border-cream-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex items-start gap-4">
+        <div class="bg-white border border-cream-200 rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-start gap-3 sm:gap-4">
                 <div class="flex-shrink-0 w-10 h-10 bg-sunny-100 text-sunny-600 rounded-xl flex items-center justify-center font-bold">
                     11
                 </div>
@@ -150,7 +150,7 @@
         </div>
     </div>
 
-    <div class="mt-12 bg-gradient-to-r from-coral-50 to-sunny-50 rounded-2xl p-8 text-center border border-coral-100">
+    <div class="mt-12 bg-gradient-to-r from-coral-50 to-sunny-50 rounded-2xl p-6 sm:p-8 text-center border border-coral-100">
         <div class="text-3xl mb-4">&#128172;</div>
         <h2 class="text-xl font-bold text-gray-900 mb-2">{{ __('Something else?') }}</h2>
         <p class="text-gray-600 mb-6">{{ __('Questions? Email us. We typically respond within a day.') }}</p>

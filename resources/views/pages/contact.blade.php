@@ -6,17 +6,17 @@
 
 @section('content')
 
-<div class="text-center py-12 lg:py-16">
+<div class="text-center py-8 sm:py-12 lg:py-16">
     <div class="inline-flex items-center justify-center w-16 h-16 bg-coral-100 text-coral-500 rounded-2xl text-3xl mb-6 transform -rotate-3">
         &#9993;
     </div>
-    <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">{{ __('Contact Us') }}</h1>
-    <p class="text-xl text-gray-600 max-w-2xl mx-auto">{{ __('Have questions or feedback? We\'d love to hear from you!') }}</p>
+    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">{{ __('Contact Us') }}</h1>
+    <p class="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">{{ __('Have questions or feedback? We\'d love to hear from you!') }}</p>
 </div>
 
 <div class="max-w-4xl mx-auto pb-16">
 
-    <div class="bg-gradient-to-br from-coral-50 to-sunny-50 rounded-3xl p-8 lg:p-12 mb-12 border border-coral-100">
+    <div class="bg-gradient-to-br from-coral-50 to-sunny-50 rounded-3xl p-6 sm:p-8 lg:p-12 mb-12 border border-coral-100">
         <div class="flex flex-col md:flex-row items-center gap-8">
             <div class="flex-shrink-0">
                 <div class="w-24 h-24 bg-white rounded-2xl shadow-sm flex items-center justify-center text-5xl transform rotate-3">
@@ -44,7 +44,7 @@
 
     <div class="mb-12">
         <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">{{ __('Quick Links') }}</h2>
-        <div class="grid md:grid-cols-3 gap-6">
+        <div class="grid md:grid-cols-3 gap-4 sm:gap-6">
             <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="block bg-white border border-cream-200 rounded-2xl p-6 hover:border-coral-300 hover:shadow-md transition-all group">
                 <div class="w-12 h-12 bg-sunny-100 text-sunny-600 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:transform group-hover:rotate-3 transition-transform">
                     &#10067;
@@ -71,7 +71,7 @@
         </div>
     </div>
 
-    <div class="bg-cream-100 rounded-3xl p-8 text-center mb-12">
+    <div class="bg-cream-100 rounded-3xl p-6 sm:p-8 text-center mb-12">
         <div class="text-4xl mb-4">&#127873;</div>
         <h2 class="text-xl font-bold text-gray-900 mb-2">{{ __('Join Our Community') }}</h2>
         <p class="text-gray-600 mb-6 max-w-xl mx-auto">{{ __('Follow us for updates, gift-giving tips, and to see how your wishlists are making a difference for charity.') }}</p>

@@ -6,18 +6,18 @@
 
 @section('content')
 
-<div class="text-center py-12 lg:py-16">
+<div class="text-center py-8 sm:py-12 lg:py-16">
     <div class="inline-flex items-center justify-center w-16 h-16 bg-coral-100 text-coral-500 rounded-2xl text-3xl mb-6 transform rotate-3">
         &#10084;&#65039;
     </div>
-    <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">{{ __('About GiveTwice') }}</h1>
-    <p class="text-xl text-gray-600 max-w-2xl mx-auto">{{ __('A wishlist app where 100% of our profits go to charity.') }}</p>
+    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">{{ __('About GiveTwice') }}</h1>
+    <p class="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">{{ __('A wishlist app where 100% of our profits go to charity.') }}</p>
 </div>
 
 <div class="max-w-4xl mx-auto">
 
     {{-- The "Twice" Explainer --}}
-    <div class="bg-gradient-to-br from-coral-50 to-sunny-50 rounded-3xl p-8 lg:p-12 mb-16 border border-coral-100">
+    <div class="bg-gradient-to-br from-coral-50 to-sunny-50 rounded-3xl p-6 sm:p-8 lg:p-12 mb-12 sm:mb-16 border border-coral-100">
         <h2 class="text-2xl font-bold text-gray-900 mb-6">{{ __('Why "Twice"?') }}</h2>
 
         <div class="space-y-4 text-lg text-gray-700 leading-relaxed mb-8">
@@ -35,7 +35,7 @@
     </div>
 
     {{-- How the money works --}}
-    <div class="bg-white rounded-2xl border border-cream-200 p-8 lg:p-10 mb-16">
+    <div class="bg-white rounded-2xl border border-cream-200 p-6 sm:p-8 lg:p-10 mb-12 sm:mb-16">
         <h2 class="text-2xl font-bold text-gray-900 mb-6">{{ __('How the money works') }}</h2>
 
         <div class="space-y-4 text-gray-700 leading-relaxed mb-8">
@@ -67,10 +67,10 @@
     </div>
 
     {{-- Why We Built This --}}
-    <div class="mb-16">
+    <div class="mb-12 sm:mb-16">
         <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">{{ __('Why we built this') }}</h2>
 
-        <div class="grid lg:grid-cols-2 gap-8">
+        <div class="grid lg:grid-cols-2 gap-6 sm:gap-8">
             {{-- Reason 1: Transparency --}}
             <div class="bg-white rounded-2xl border border-cream-200 shadow-sm overflow-hidden">
                 <div class="bg-gradient-to-r from-teal-500 to-teal-600 p-4">
@@ -123,11 +123,11 @@
 <div class="max-w-4xl mx-auto pb-16">
 
     {{-- Our Values --}}
-    <div class="mb-16">
+    <div class="mb-12 sm:mb-16">
         <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">{{ __('What we care about') }}</h2>
         <div class="space-y-4">
-            <div class="flex items-start gap-5 bg-white rounded-2xl border border-cream-200 p-5 transition-all hover:border-coral-200 hover:shadow-sm">
-                <div class="shrink-0 w-12 h-12 bg-coral-100 text-coral-500 rounded-xl flex items-center justify-center text-xl">
+            <div class="flex items-start gap-4 sm:gap-5 bg-white rounded-2xl border border-cream-200 p-4 sm:p-5 transition-all hover:border-coral-200 hover:shadow-sm">
+                <div class="shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-coral-100 text-coral-500 rounded-xl flex items-center justify-center text-lg sm:text-xl">
                     &#10084;
                 </div>
                 <div class="pt-0.5">
@@ -135,8 +135,8 @@
                     <p class="text-gray-600 text-sm leading-relaxed">{{ __('100% of profits go to charity. We cover costs, nothing more.') }}</p>
                 </div>
             </div>
-            <div class="flex items-start gap-5 bg-white rounded-2xl border border-cream-200 p-5 transition-all hover:border-teal-200 hover:shadow-sm">
-                <div class="shrink-0 w-12 h-12 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center text-xl">
+            <div class="flex items-start gap-4 sm:gap-5 bg-white rounded-2xl border border-cream-200 p-4 sm:p-5 transition-all hover:border-teal-200 hover:shadow-sm">
+                <div class="shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center text-lg sm:text-xl">
                     &#128065;
                 </div>
                 <div class="pt-0.5">
@@ -144,8 +144,8 @@
                     <p class="text-gray-600 text-sm leading-relaxed">{{ __('Clear about how we make money. No hidden tracking. No selling your data.') }}</p>
                 </div>
             </div>
-            <div class="flex items-start gap-5 bg-white rounded-2xl border border-cream-200 p-5 transition-all hover:border-sunny-200 hover:shadow-sm">
-                <div class="shrink-0 w-12 h-12 bg-sunny-100 text-sunny-600 rounded-xl flex items-center justify-center text-xl">
+            <div class="flex items-start gap-4 sm:gap-5 bg-white rounded-2xl border border-cream-200 p-4 sm:p-5 transition-all hover:border-sunny-200 hover:shadow-sm">
+                <div class="shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-sunny-100 text-sunny-600 rounded-xl flex items-center justify-center text-lg sm:text-xl">
                     &#9734;
                 </div>
                 <div class="pt-0.5">
@@ -157,7 +157,7 @@
     </div>
 
     {{-- The Promise --}}
-    <div class="bg-cream-100 rounded-3xl p-8 lg:p-10 mb-16">
+    <div class="bg-cream-100 rounded-3xl p-6 sm:p-8 lg:p-10 mb-12 sm:mb-16">
         <div class="max-w-2xl mx-auto text-center">
             <h2 class="text-2xl font-bold text-gray-900 mb-4">{{ __('Our promise') }}</h2>
             <p class="text-gray-700 leading-relaxed mb-6">{{ __('GiveTwice will always be free. We\'ll never sell your data. After covering basic costs, every cent of profit goes to charity. We\'ll keep improving it - on our own time - because we think gift-giving should be simple and meaningful.') }}</p>
