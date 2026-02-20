@@ -160,7 +160,8 @@
         "Scrolling is smooth on iOS Safari"
       ],
       "priority": 3,
-      "passes": false
+      "passes": true,
+      "inProgress": false
     },
     {
       "id": "US-012",

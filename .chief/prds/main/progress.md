@@ -33,6 +33,7 @@
 - Auth pages (7 files in `resources/views/auth/`) all extend `layouts.guest` — card padding pattern is `p-6 sm:p-8` (no `lg:` needed since constrained by `max-w-md`)
 - Guest layout main content uses `py-6 sm:py-12` for vertical padding — reduced on mobile to keep auth cards above the fold
 - Use `flex-wrap gap-2` on side-by-side text items that may vary in length across languages — wraps gracefully when translated text is longer
+- Never use `background-attachment: fixed` without a `@media (min-width: 768px)` guard — iOS Safari re-paints the entire viewport on every scroll frame with this property
 
 ---
 
@@ -198,4 +199,17 @@
   - Form inputs inherit the 16px base font-size (no explicit `text-sm` or `text-base` override) — this prevents iOS Safari from auto-zooming on focus (zoom triggers at font-size < 16px)
   - The `flex-wrap gap-2` pattern on the Remember/Forgot row is better than `flex-col` because in languages where both items fit on one line (English, Dutch), they stay inline
   - Auth pages that don't exist in user-facing flows (reset-password requires a token, verify-email requires auth, confirm-password requires auth, two-factor-challenge requires partial auth) can't be easily browser-tested but share the same card structure
+---
+
+## 2026-02-20 - US-011
+- Fixed iOS `background-attachment: fixed` scroll jank on the `bg-gradient-warm` class
+- Moved `background-attachment: fixed` behind a `@media (min-width: 768px)` query — on mobile the gradient scrolls with the page (visually negligible since it's a subtle cream gradient), on desktop the fixed behavior is preserved
+- This is the standard fix for iOS Safari's poor `background-attachment: fixed` performance — iOS re-paints the entire viewport on every scroll frame when this property is active
+- Files changed: `resources/css/app.css`
+- **Learnings for future iterations:**
+  - iOS Safari does not support `background-attachment: fixed` performantly — it triggers full-viewport repaints on scroll, causing visible jank
+  - The simplest fix is a media query to disable `background-attachment: fixed` on mobile — no pseudo-elements or JS needed
+  - For subtle gradients like `bg-gradient-warm` (cream tones), the visual difference between fixed and scrolling background is imperceptible on mobile, so removing `fixed` on small screens has zero visual impact
+  - Alternative approaches (pseudo-element with `position: fixed`, or `will-change: transform`) are more complex and not needed for this case
+  - The 768px breakpoint matches the `md` breakpoint used throughout the codebase for mobile/desktop splits
 ---
