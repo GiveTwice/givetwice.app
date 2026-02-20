@@ -30,6 +30,9 @@
 - Hero heading pattern for static pages: `text-3xl sm:text-4xl lg:text-5xl` with `text-lg sm:text-xl` subtitle and `py-8 sm:py-12 lg:py-16`
 - Card padding pattern for static pages: `p-6 sm:p-8 lg:p-12` for large feature cards, `p-4 sm:p-6` for smaller repeated cards (FAQ items)
 - Pages using `max-w-3xl` (privacy, terms, transparency) are inherently mobile-safe due to narrow max-width — minimal responsive tweaks needed
+- Auth pages (7 files in `resources/views/auth/`) all extend `layouts.guest` — card padding pattern is `p-6 sm:p-8` (no `lg:` needed since constrained by `max-w-md`)
+- Guest layout main content uses `py-6 sm:py-12` for vertical padding — reduced on mobile to keep auth cards above the fold
+- Use `flex-wrap gap-2` on side-by-side text items that may vary in length across languages — wraps gracefully when translated text is longer
 
 ---
 
@@ -175,4 +178,24 @@
   - The pattern for responsive static page cards: `p-6 sm:p-8 lg:p-12` for large feature cards, `p-4 sm:p-6` for smaller repeated cards (FAQ items)
   - Hero heading pattern across static pages: `text-3xl sm:text-4xl lg:text-5xl` with `text-lg sm:text-xl` subtitle
   - The `how-it-works` component used on the about page already handles its own responsiveness (`grid md:grid-cols-3`)
+---
+
+## 2026-02-20 - US-010
+- Responsive pass on all 7 auth pages: login, register, forgot-password, reset-password, verify-email, confirm-password, two-factor-challenge
+- **All auth pages**: Reduced card padding from `p-8 sm:p-10` to `p-6 sm:p-8` — at 320px viewport with `px-4` layout padding, this gives 240px inner content width (vs 224px before), a meaningful improvement for form usability
+- **Guest layout**: Reduced main content vertical padding from `py-12` to `py-6 sm:py-12` — prevents auth cards from being pushed below the fold on short mobile screens (iPhone SE: 568px tall)
+- **Login page**: Added `flex-wrap gap-2` to the "Remember me" / "Forgot password?" row — in French ("Se souvenir de moi" + "Mot de passe oublié ?") these items are too wide for one line at 320px, so they now gracefully wrap
+- **Register "coming soon" variant**: Added `overflow-hidden` to outer decorative container — the absolute-positioned blurred blobs extend 8px beyond the container with negative offsets (`-right-8`, `-left-6`), which could cause horizontal scrollbar on narrow screens
+- Verified no horizontal overflow at 320px on all auth pages in English, Dutch, and French
+- All 314 tests pass, Pint clean
+- Files changed: `resources/views/auth/login.blade.php`, `resources/views/auth/register.blade.php`, `resources/views/auth/forgot-password.blade.php`, `resources/views/auth/reset-password.blade.php`, `resources/views/auth/verify-email.blade.php`, `resources/views/auth/confirm-password.blade.php`, `resources/views/auth/two-factor-challenge.blade.php`, `resources/views/layouts/guest.blade.php`
+- **Learnings for future iterations:**
+  - The 7 auth pages all extend `layouts.guest` and are located at `resources/views/auth/`
+  - Auth pages use a two-step flow (social buttons → email form) rather than a traditional "or continue with" divider — social and email options are never shown simultaneously
+  - The guest layout wraps content in `max-w-md` (448px) centered container — at 320px this becomes 288px (after `px-4` layout padding)
+  - Auth card padding pattern: `p-6 sm:p-8` (not `p-6 sm:p-8 lg:p-10` — cards are already constrained by `max-w-md` so large breakpoint padding isn't needed)
+  - The `form-input` CSS class includes `w-full` by default — all form inputs are inherently full-width on auth pages
+  - Form inputs inherit the 16px base font-size (no explicit `text-sm` or `text-base` override) — this prevents iOS Safari from auto-zooming on focus (zoom triggers at font-size < 16px)
+  - The `flex-wrap gap-2` pattern on the Remember/Forgot row is better than `flex-col` because in languages where both items fit on one line (English, Dutch), they stay inline
+  - Auth pages that don't exist in user-facing flows (reset-password requires a token, verify-email requires auth, confirm-password requires auth, two-factor-challenge requires partial auth) can't be easily browser-tested but share the same card structure
 ---
