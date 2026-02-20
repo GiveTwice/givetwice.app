@@ -311,6 +311,8 @@
 
     <x-footer />
 
+    <x-install-banner />
+
     @stack('scripts')
 </body>
 </html>

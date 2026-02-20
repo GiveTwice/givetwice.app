@@ -50,6 +50,9 @@
 - `trimCache(cacheName, maxItems)` in `sw.js` enforces size limits by evicting oldest entries via `cache.keys()` insertion order
 - Gift images from `/storage/` are excluded from `isStaticAsset()` and handled by `isGiftImage()` — keeps build assets separate from user content
 - "Viewing offline" indicator uses Alpine.js `navigator.onLine` + event listeners — fixed bottom-center pill, z-50, cream styling
+- Install banner uses `Alpine.data()` registered via `alpine:init` event — required when script is in `@push('scripts')` block
+- `beforeinstallprompt` is Chrome/Edge-only — iOS Safari needs UA-based detection with CriOS/FxiOS/OPiOS/EdgiOS exclusions
+- Guest layout now has `@stack('scripts')` — both layouts support `@push('scripts')` from components
 
 ---
 
@@ -343,4 +346,31 @@
   - Gift images are served from `/storage/` via Spatie Media Library on the `public` disk — external `original_image_url` images (cross-origin) are already skipped by the SW's origin check
   - Network-first for gift images (not cache-first) ensures users see the latest image when online while still having cached fallback offline — images can be updated when gift details are re-fetched
   - The `/{locale}/list/{slug}` route only exists for edit/update/delete — there is no read-only authenticated list detail page. Dashboard and public list views are the cacheable read-only pages
+---
+
+## 2026-02-20 - US-018
+- Created `<x-install-banner />` Blade component (`resources/views/components/install-banner.blade.php`) for smart PWA install prompting
+- **Android/Chrome**: Intercepts `beforeinstallprompt` event, stores deferred prompt, shows "Install" button that triggers native install dialog
+- **iOS Safari**: Detects iOS Safari (excluding Chrome/Firefox/Edge on iOS) and shows "Tap Share, then Add to Home Screen" instruction text
+- **Dismissal**: Stores dismissal timestamp in localStorage (`givetwice_install_dismissed`), suppresses banner for 7 days after dismissal
+- **Page visit gating**: Tracks page visits in localStorage (`givetwice_page_visits`), only shows banner after 2+ visits
+- **Standalone detection**: Checks both `display-mode: standalone` media query (Android) and `navigator.standalone` (iOS) — hides banner if app is already installed
+- **Branding**: White card with cream border, coral CTA button (`btn-primary-sm`), 🎁 emoji icon, rounded-2xl corners
+- **Positioning**: Fixed bottom-6, left-4/right-4, max-w-lg centered, z-40 (same as sticky header, no overlap since different screen edges)
+- **Layout integration**: Added to both `app.blade.php` and `guest.blade.php` layouts
+- **Guest layout**: Added `@stack('scripts')` to support `@push('scripts')` from the component (app layout already had it)
+- Alpine.js `x-data` with `alpine:init` pattern — registers as `Alpine.data('installBanner')` to avoid inline script issues
+- Listens for `appinstalled` event to auto-hide banner when user installs
+- Added translations for 5 new strings in en/nl/fr
+- All 314 tests pass, Pint clean, build successful
+- Files changed: `resources/views/components/install-banner.blade.php` (new), `resources/views/layouts/app.blade.php`, `resources/views/layouts/guest.blade.php`, `lang/en.json`, `lang/nl.json`, `lang/fr.json`
+- **Learnings for future iterations:**
+  - `beforeinstallprompt` is Chrome/Edge-only — Safari (iOS and macOS) never fires it, so iOS needs separate detection via user agent
+  - iOS Safari detection must exclude Chrome/Firefox/Edge on iOS (`CriOS`, `FxiOS`, `OPiOS`, `EdgiOS`) — all report "Safari" in their UA string
+  - iPad detection needs `navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1` since iPadOS reports as desktop Safari
+  - `navigator.standalone` is an iOS-only property (undefined on Android) — use it alongside `display-mode: standalone` media query for cross-platform standalone detection
+  - `Alpine.data()` registration must happen inside `alpine:init` event listener when the script is in a `@push('scripts')` block — ensures Alpine is loaded before data registration
+  - The guest layout previously had no `@stack('scripts')` — any component using `@push('scripts')` would silently fail on guest pages
+  - localStorage operations should always be wrapped in try/catch — private browsing mode on some browsers throws on `setItem`
+  - The z-40 layer for the install banner matches the sticky header but they're at opposite edges of the viewport (top vs bottom), so no overlap occurs
 ---

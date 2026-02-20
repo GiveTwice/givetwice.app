@@ -277,7 +277,8 @@
         "Banner is positioned at the bottom of the screen, above the footer, and doesn't block content"
       ],
       "priority": 6,
-      "passes": false
+      "passes": true,
+      "inProgress": false
     },
     {
       "id": "US-019",
