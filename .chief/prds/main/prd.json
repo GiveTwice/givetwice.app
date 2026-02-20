@@ -44,7 +44,8 @@
         "On desktop, header behavior remains unchanged (static)"
       ],
       "priority": 2,
-      "passes": false
+      "passes": true,
+      "inProgress": false
     },
     {
       "id": "US-004",
@@ -57,7 +58,8 @@
         "No horizontal scrolling on the dashboard at 320px viewport width"
       ],
       "priority": 2,
-      "passes": false
+      "passes": true,
+      "inProgress": false
     },
     {
       "id": "US-005",
@@ -71,7 +73,8 @@
         "No horizontal overflow at 320px viewport width"
       ],
       "priority": 2,
-      "passes": false
+      "passes": false,
+      "inProgress": true
     },
     {
       "id": "US-006",
