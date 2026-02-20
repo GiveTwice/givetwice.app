@@ -84,7 +84,7 @@
         {{ __('Skip to content') }}
     </a>
 
-    <header class="bg-white border-b border-cream-200">
+    <header class="bg-white border-b border-cream-200 sticky top-0 z-40 md:static md:z-auto">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" x-data="{ mobileOpen: false }" @click.outside="mobileOpen = false">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
