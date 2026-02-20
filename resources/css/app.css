@@ -21,7 +21,12 @@
         oklch(0.98 0.02 70) 50%,
         oklch(0.99 0.01 80) 100%
     );
-    background-attachment: fixed;
+}
+
+@media (min-width: 768px) {
+    .bg-gradient-warm {
+        background-attachment: fixed;
+    }
 }
 
 /* ============================================
