@@ -225,9 +225,9 @@ class GiftController extends Controller
         ]);
     }
 
-    public function cardHtml(string $locale, int $list, string $slug, Gift $gift): Response
+    public function cardHtml(string $locale, int $listId, string $slug, Gift $gift): Response
     {
-        $list = GiftList::findOrFail($list);
+        $list = GiftList::findOrFail($listId);
 
         if ($list->slug !== $slug) {
             abort(404);

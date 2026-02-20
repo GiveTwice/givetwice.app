@@ -79,10 +79,11 @@ document.addEventListener('alpine:init', () => {
             if (!this.deferredPrompt) return;
             this.deferredPrompt.prompt();
             const { outcome } = await this.deferredPrompt.userChoice;
+            this.deferredPrompt = null;
+            this.canInstallNative = false;
             if (outcome === 'accepted') {
                 this.visible = false;
             }
-            this.deferredPrompt = null;
         },
 
         dismiss() {

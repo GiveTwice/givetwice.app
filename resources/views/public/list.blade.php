@@ -16,6 +16,7 @@
 
 <div
     x-data="publicList({
+        listId: {{ $list->id }},
         slug: '{{ $list->slug }}',
         locale: '{{ app()->getLocale() }}',
         availableCount: {{ $availableGifts }},

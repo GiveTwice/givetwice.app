@@ -70,7 +70,7 @@ Alpine.data('publicList', (config) => ({
             grid.classList.remove('hidden');
         }
         const self = this;
-        fetch(`/${config.locale}/v/${parseInt(config.slug)}/${config.slug}/gifts/${gift.id}/card`)
+        fetch(`/${config.locale}/v/${config.listId}/${config.slug}/gifts/${gift.id}/card`)
             .then(response => response.ok ? response.text() : Promise.reject())
             .then(html => {
                 // HTML is from our own server endpoint, safe to parse
@@ -140,6 +140,8 @@ Alpine.data('publicList', (config) => ({
     },
 
     markGiftAsClaimed(gift, isClaimed) {
+        if (!isClaimed) return;
+
         const card = document.querySelector(`[data-gift-id='${gift.id}']`);
         if (!card) return;
 
@@ -178,22 +180,15 @@ Alpine.data('publicList', (config) => ({
             badgeWrapper.appendChild(badgeSpan);
             imgContainer.appendChild(badgeWrapper);
         }
-        const claimForm = card.querySelector('form[action*="/claim"]');
-        const claimLink = card.querySelector('a[href*="/claim"]');
-        if (claimForm) {
+        const claimTarget = card.querySelector('form[action*="/claim"]')
+            || card.querySelector('a[href*="/claim"]');
+        if (claimTarget) {
             const disabledBtn = document.createElement('button');
             disabledBtn.type = 'button';
             disabledBtn.disabled = true;
             disabledBtn.className = 'w-full text-xs bg-cream-200 text-cream-500 px-3 py-2 rounded-lg cursor-not-allowed';
             disabledBtn.textContent = config.translations.alreadyClaimed;
-            claimForm.replaceWith(disabledBtn);
-        } else if (claimLink) {
-            const disabledBtn = document.createElement('button');
-            disabledBtn.type = 'button';
-            disabledBtn.disabled = true;
-            disabledBtn.className = 'w-full text-xs bg-cream-200 text-cream-500 px-3 py-2 rounded-lg cursor-not-allowed';
-            disabledBtn.textContent = config.translations.alreadyClaimed;
-            claimLink.replaceWith(disabledBtn);
+            claimTarget.replaceWith(disabledBtn);
         }
     }
 }));

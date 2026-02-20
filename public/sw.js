@@ -56,8 +56,7 @@ function isGiftImage(url) {
 }
 
 function isNavigationRequest(request) {
-    return request.mode === 'navigate' ||
-        (request.method === 'GET' && request.headers.get('accept')?.includes('text/html'));
+    return request.mode === 'navigate';
 }
 
 self.addEventListener('fetch', (event) => {
