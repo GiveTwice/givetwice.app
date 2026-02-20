@@ -34,6 +34,8 @@
 - Guest layout main content uses `py-6 sm:py-12` for vertical padding — reduced on mobile to keep auth cards above the fold
 - Use `flex-wrap gap-2` on side-by-side text items that may vary in length across languages — wraps gracefully when translated text is longer
 - Never use `background-attachment: fixed` without a `@media (min-width: 768px)` guard — iOS Safari re-paints the entire viewport on every scroll frame with this property
+- Safe area CSS utilities: `.safe-area-header` (top), `.safe-area-x` (left/right), `.safe-area-bottom` (bottom) — apply to any element that touches screen edges in PWA standalone mode
+- `viewport-fit=cover` is set on all layouts — `env(safe-area-inset-*)` returns 0 on non-notched devices, so safe area classes are always safe to add
 
 ---
 
@@ -212,4 +214,22 @@
   - For subtle gradients like `bg-gradient-warm` (cream tones), the visual difference between fixed and scrolling background is imperceptible on mobile, so removing `fixed` on small screens has zero visual impact
   - Alternative approaches (pseudo-element with `position: fixed`, or `will-change: transform`) are more complex and not needed for this case
   - The 768px breakpoint matches the `md` breakpoint used throughout the codebase for mobile/desktop splits
+---
+
+## 2026-02-20 - US-012
+- Added `viewport-fit=cover` to viewport meta tags in all 3 layouts (app, guest, admin)
+- Created CSS utility classes in `app.css` for safe area insets: `.safe-area-header` (top), `.safe-area-x` (left/right), `.safe-area-bottom` (bottom) — wrapped in `@supports (padding: env(safe-area-inset-top))` for progressive enhancement
+- Applied `safe-area-header safe-area-x` to headers in both app and guest layouts — pushes header content below notch/Dynamic Island
+- Applied `safe-area-x` to `<main>` in both layouts — accounts for landscape notch on left/right
+- Applied `safe-area-bottom safe-area-x` to footers (both the `footer.blade.php` component and guest layout inline footer) — accounts for home indicator bar
+- Applied `safe-area-header safe-area-x` to impersonation banner in app layout — when present, the banner (z-[60]) handles the top safe area
+- Files changed: `resources/css/app.css`, `resources/views/layouts/app.blade.php`, `resources/views/layouts/guest.blade.php`, `resources/views/admin/layout.blade.php`, `resources/views/components/footer.blade.php`
+- **Learnings for future iterations:**
+  - `viewport-fit=cover` must be in the viewport meta tag for `env(safe-area-inset-*)` to return non-zero values — without it, the browser handles insets automatically and CSS env vars return 0
+  - `env(safe-area-inset-top)` is ~47px on iPhone 14, ~59px on iPhone 14 Pro (Dynamic Island) — this is significant and would hide header content without compensation
+  - `@supports (padding: env(safe-area-inset-top))` is a no-op on older browsers that don't understand env() — they simply ignore the block, which is the desired fallback
+  - On non-notched devices and in normal browser mode, `env(safe-area-inset-*)` returns `0px`, so adding these classes has zero visual impact on standard screens
+  - The impersonation banner and header both get `safe-area-header` — during impersonation the extra padding on the header is harmless (just adds spacing) since the banner handles the notch area
+  - CSS utility approach (`safe-area-header`, `safe-area-x`, `safe-area-bottom`) is cleaner than inline styles and can be reused across any component that touches screen edges
+  - The admin layout also gets `viewport-fit=cover` for consistency, even though admin is rarely used on mobile
 ---

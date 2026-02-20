@@ -174,7 +174,8 @@
         "Works correctly in both portrait and landscape orientation"
       ],
       "priority": 3,
-      "passes": false
+      "passes": true,
+      "inProgress": false
     },
     {
       "id": "US-013",
