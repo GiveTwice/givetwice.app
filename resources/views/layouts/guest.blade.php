@@ -75,19 +75,73 @@
     </a>
 
     <header class="bg-white border-b border-cream-200">
-        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" x-data="{ mobileOpen: false }" @click.outside="mobileOpen = false">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
                     <x-logo />
                 </div>
 
-                <div class="flex items-center space-x-6">
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="text-gray-600 hover:text-gray-900 transition-colors">{{ __('How it works') }}</a>
+                    <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="text-gray-600 hover:text-gray-900 transition-colors">{{ __('About') }}</a>
+
+                    <span class="text-cream-300">|</span>
+
                     <a href="{{ url('/' . app()->getLocale() . '/login') }}" class="text-gray-600 hover:text-coral-600 transition-colors">{{ __('Login') }}</a>
                     @if(config('app.allow_registration'))
                         <x-nav-button href="{{ url('/' . app()->getLocale() . '/register') }}">{{ __('Sign Up') }}</x-nav-button>
                     @endif
 
                     <x-language-switcher />
+                </div>
+
+                <div class="md:hidden flex items-center">
+                    <button
+                        type="button"
+                        @click="mobileOpen = !mobileOpen"
+                        :aria-expanded="mobileOpen.toString()"
+                        class="relative w-10 h-10 flex items-center justify-center text-gray-600 hover:text-gray-900 rounded-lg transition-colors"
+                        aria-label="{{ __('Toggle navigation') }}"
+                    >
+                        <x-icons.menu
+                            class="h-6 w-6 absolute transition-all duration-200"
+                            x-bind:class="mobileOpen ? 'opacity-0 rotate-90 scale-75' : 'opacity-100 rotate-0 scale-100'"
+                            aria-hidden="true"
+                        />
+                        <x-icons.close
+                            class="h-6 w-6 absolute transition-all duration-200"
+                            x-bind:class="mobileOpen ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-75'"
+                            aria-hidden="true"
+                        />
+                    </button>
+                </div>
+            </div>
+
+            <div
+                x-show="mobileOpen"
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 -translate-y-2"
+                x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100 translate-y-0"
+                x-transition:leave-end="opacity-0 -translate-y-2"
+                x-cloak
+                class="md:hidden pb-4">
+                <div class="space-y-2">
+                    <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('How it works') }}</a>
+                    <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('About') }}</a>
+
+                    <div class="border-t border-cream-200 my-2"></div>
+
+                    <a href="{{ url('/' . app()->getLocale() . '/login') }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('Login') }}</a>
+                    @if(config('app.allow_registration'))
+                        <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="block px-3 py-2 bg-coral-500 text-white rounded-lg text-center font-medium">{{ __('Sign Up') }}</a>
+                    @endif
+
+                    <div class="border-t border-cream-200 my-2"></div>
+                    <div class="px-3 py-2">
+                        <x-language-switcher />
+                    </div>
                 </div>
             </div>
         </nav>

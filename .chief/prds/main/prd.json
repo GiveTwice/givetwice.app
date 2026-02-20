@@ -29,7 +29,8 @@
         "All existing auth pages render correctly with the updated layout"
       ],
       "priority": 1,
-      "passes": false
+      "passes": true,
+      "inProgress": false
     },
     {
       "id": "US-003",
