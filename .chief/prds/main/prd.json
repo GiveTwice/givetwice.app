@@ -260,7 +260,8 @@
         "Cache is invalidated/refreshed when the user visits the page while online"
       ],
       "priority": 5,
-      "passes": false
+      "passes": true,
+      "inProgress": false
     },
     {
       "id": "US-018",

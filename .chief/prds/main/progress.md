@@ -46,6 +46,10 @@
 - SW uses two caches: `givetwice-static-v{N}` (static assets, cache-first) and `givetwice-pages-v{N}` (navigation, network-first)
 - Bump `CACHE_VERSION` in `sw.js` when cache structure changes — old caches are auto-cleaned on activate
 - Offline fallback page is at `/offline` (Blade view `offline.blade.php`, route in `web.php`) — pre-cached by SW, served when navigation fails with no cached version
+- SW now uses three caches: `givetwice-static-v{N}` (build assets, cache-first, unbounded), `givetwice-pages-v{N}` (navigation, network-first, max 50), `givetwice-images-v{N}` (gift images from `/storage/`, network-first, max 100)
+- `trimCache(cacheName, maxItems)` in `sw.js` enforces size limits by evicting oldest entries via `cache.keys()` insertion order
+- Gift images from `/storage/` are excluded from `isStaticAsset()` and handled by `isGiftImage()` — keeps build assets separate from user content
+- "Viewing offline" indicator uses Alpine.js `navigator.onLine` + event listeners — fixed bottom-center pill, z-50, cream styling
 
 ---
 
@@ -318,4 +322,25 @@
   - `caches.match()` without a cache name argument searches ALL caches — the offline page is in `STATIC_CACHE` (via precache) but the SW's fallback in the navigation handler finds it automatically
   - The inline SVG heart icon is duplicated from `heart-icon.blade.php` — this is intentional so the offline page is self-contained (no component dependencies that might fail)
   - Bumping `CACHE_VERSION` is essential when changing `PRECACHE_URLS` — without it, the existing SW wouldn't re-install and the new URLs wouldn't be cached
+---
+
+## 2026-02-20 - US-017
+- Added dedicated `IMAGE_CACHE` (`givetwice-images-v3`) for gift images from `/storage/` paths, with network-first strategy and LRU eviction at 100 images
+- Modified `isStaticAsset()` to exclude `/storage/` paths — gift images now route to the separate IMAGE_CACHE instead of the unbounded STATIC_CACHE
+- Added `isGiftImage()` function to match `/storage/*.{png,jpg,jpeg,gif,webp}` files
+- Added `trimCache()` helper that enforces size limits by evicting oldest entries (insertion-order via `cache.keys()`)
+- Added LRU trimming to the existing navigation handler — page cache now capped at 50 entries
+- Bumped `CACHE_VERSION` from `v2` to `v3` to trigger old cache cleanup on activate
+- Added "Viewing offline" indicator to the app layout — Alpine.js component using `navigator.onLine` + `online`/`offline` events, positioned as a fixed bottom-center pill badge
+- Added translation strings: "Viewing offline" → "Viewing offline" (en) / "Offline modus" (nl) / "Mode hors ligne" (fr)
+- All 314 tests pass, Pint clean, build successful
+- Files changed: `public/sw.js`, `resources/views/layouts/app.blade.php`, `lang/en.json`, `lang/nl.json`, `lang/fr.json`
+- **Learnings for future iterations:**
+  - The SW's `isStaticAsset()` previously caught ALL images (including `/storage/` gift images) in an unbounded static cache — splitting gift images into a separate size-limited cache prevents unbounded growth
+  - Cache API's `cache.keys()` returns entries in insertion order — deleting the first N entries effectively evicts the oldest (least recently added) items
+  - For true LRU (least recently used), you'd need to re-insert entries on every cache hit — insertion-order eviction is close enough and much simpler
+  - `navigator.onLine` + `online`/`offline` events are well-supported and work reactively with Alpine.js — no need for SW-side HTML injection
+  - Gift images are served from `/storage/` via Spatie Media Library on the `public` disk — external `original_image_url` images (cross-origin) are already skipped by the SW's origin check
+  - Network-first for gift images (not cache-first) ensures users see the latest image when online while still having cached fallback offline — images can be updated when gift details are re-fetched
+  - The `/{locale}/list/{slug}` route only exists for edit/update/delete — there is no read-only authenticated list detail page. Dashboard and public list views are the cacheable read-only pages
 ---

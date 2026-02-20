@@ -279,6 +279,30 @@
         @endif
     </div>
 
+    <div
+        x-data="{
+            online: navigator.onLine,
+            init() {
+                window.addEventListener('online', () => this.online = true);
+                window.addEventListener('offline', () => this.online = false);
+            }
+        }"
+        x-show="!online"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 translate-y-4"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 translate-y-4"
+        x-cloak
+        class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 bg-cream-100 border border-cream-300 rounded-full shadow-lg flex items-center gap-2"
+        role="status"
+        aria-live="polite"
+    >
+        <span class="w-2 h-2 bg-gray-400 rounded-full"></span>
+        <span class="text-sm font-medium text-gray-600">{{ __('Viewing offline') }}</span>
+    </div>
+
     <main id="main-content" class="flex-grow safe-area-x">
         <div class="max-w-7xl mx-auto pt-6 pb-20 px-4 sm:px-6 lg:px-8">
             @yield('content')
