@@ -45,3 +45,8 @@ Schedule::command('sitemap:generate')
 Schedule::command('friends:send-digest')
     ->dailyAt('13:00')
     ->monitorName('Friend Digest Emails');
+
+// Prune expired invitations, password tokens, and stale sessions
+Schedule::command('app:prune-expired-data')
+    ->daily()
+    ->monitorName('Prune Expired Data');
