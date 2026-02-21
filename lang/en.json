@@ -1126,7 +1126,6 @@
     "Share your list casually. Your partner gets ideas without the awkward \"what do you want?\" conversation.": "Share your list casually. Your partner gets ideas without the awkward \"what do you want?\" conversation.",
     "Share your list early and let everyone shop at their own pace. No more December 23rd panic.": "Share your list early and let everyone shop at their own pace. No more December 23rd panic.",
     "Share your list with family so everyone can coordinate. No duplicate presents under the pakjesavond tree.": "Share your list with family so everyone can coordinate. No duplicate presents under the pakjesavond tree.",
-    "Share your wishlist": "Share your wishlist",
     "Shareable link": "Shareable link",
     "Sharing what you want isn't demanding. It's helping your family show their love in ways you'll appreciate.": "Sharing what you want isn't demanding. It's helping your family show their love in ways you'll appreciate.",
     "Shoe gifts that give twice": "Shoe gifts that give twice",
@@ -1718,5 +1717,14 @@
     "Back to Privacy Policy": "Back to Privacy Policy",
     "Your data": "Your data",
     "Download a copy of all personal data we hold about you in a machine-readable format (JSON).": "Download a copy of all personal data we hold about you in a machine-readable format (JSON).",
-    "Export my data": "Export my data"
+    "Export my data": "Export my data",
+    "Your GiveTwice account will be deleted soon": "Your GiveTwice account will be deleted soon",
+    "Your account will be deleted soon": "Your account will be deleted soon",
+    "We noticed you haven't used your GiveTwice account in a while. To protect your privacy, we automatically delete inactive accounts after 24 months.": "We noticed you haven't used your GiveTwice account in a while. To protect your privacy, we automatically delete inactive accounts after 24 months.",
+    "What happens next?": "What happens next?",
+    "If you don't log in within the next 2 months, your account and all associated data will be permanently deleted.": "If you don't log in within the next 2 months, your account and all associated data will be permanently deleted.",
+    "Want to keep your account? Simply log in and your account will stay active.": "Want to keep your account? Simply log in and your account will stay active.",
+    "Log in to keep your account": "Log in to keep your account",
+    "You can also export your data before deletion from your": "You can also export your data before deletion from your",
+    "settings page": "settings page"
 }

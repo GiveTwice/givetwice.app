@@ -50,3 +50,8 @@ Schedule::command('friends:send-digest')
 Schedule::command('app:prune-expired-data')
     ->daily()
     ->monitorName('Prune Expired Data');
+
+// Warn users inactive for 22+ months about upcoming account deletion
+Schedule::command('app:warn-inactive-accounts')
+    ->weekly()
+    ->monitorName('Warn Inactive Accounts');

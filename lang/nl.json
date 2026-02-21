@@ -1126,7 +1126,6 @@
     "Share your list casually. Your partner gets ideas without the awkward \"what do you want?\" conversation.": "Share your list casually. Your partner gets ideas without the awkward \"what do you want?\" conversation.",
     "Share your list early and let everyone shop at their own pace. No more December 23rd panic.": "Deel je lijst vroeg en laat iedereen op hun eigen tempo winkelen. Geen 23 december paniek meer.",
     "Share your list with family so everyone can coordinate. No duplicate presents under the pakjesavond tree.": "Share your list with family so everyone can coordinate. No duplicate presents under the pakjesavond tree.",
-    "Share your wishlist": "Deel je verlanglijstje",
     "Shareable link": "Deelbare link",
     "Sharing what you want isn't demanding. It's helping your family show their love in ways you'll appreciate.": "Delen wat je wilt is niet veeleisend. Het helpt je familie hun liefde te tonen op manieren die je waardeert.",
     "Shoe gifts that give twice": "Schoencadeaus die dubbel geven",
@@ -1718,5 +1717,14 @@
     "Back to Privacy Policy": "Terug naar Privacybeleid",
     "Your data": "Je gegevens",
     "Download a copy of all personal data we hold about you in a machine-readable format (JSON).": "Download een kopie van alle persoonlijke gegevens die we over je bewaren in een machineleesbaar formaat (JSON).",
-    "Export my data": "Exporteer mijn gegevens"
+    "Export my data": "Exporteer mijn gegevens",
+    "Your GiveTwice account will be deleted soon": "Je GiveTwice-account wordt binnenkort verwijderd",
+    "Your account will be deleted soon": "Je account wordt binnenkort verwijderd",
+    "We noticed you haven't used your GiveTwice account in a while. To protect your privacy, we automatically delete inactive accounts after 24 months.": "We hebben gemerkt dat je je GiveTwice-account al een tijdje niet hebt gebruikt. Om je privacy te beschermen, verwijderen we inactieve accounts automatisch na 24 maanden.",
+    "What happens next?": "Wat gebeurt er nu?",
+    "If you don't log in within the next 2 months, your account and all associated data will be permanently deleted.": "Als je niet binnen 2 maanden inlogt, worden je account en alle bijbehorende gegevens permanent verwijderd.",
+    "Want to keep your account? Simply log in and your account will stay active.": "Wil je je account behouden? Log gewoon in en je account blijft actief.",
+    "Log in to keep your account": "Log in om je account te behouden",
+    "You can also export your data before deletion from your": "Je kunt ook je gegevens exporteren voor verwijdering vanuit je",
+    "settings page": "instellingenpagina"
 }
