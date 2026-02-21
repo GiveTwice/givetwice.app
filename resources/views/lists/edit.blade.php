@@ -92,14 +92,12 @@
     </div>
 </x-app-content>
 
-@unless($list->is_default)
-    <x-danger-zone
-        id="delete-list"
-        :description="__('Once you delete a list, there is no going back. Gifts in this list will not be deleted.')"
-        :buttonText="__('Delete List')"
-        :modalTitle="__('Delete List')"
-        :modalMessage="__('Are you sure you want to delete this list? This action cannot be undone. Gifts in this list will not be deleted.')"
-        :action="url('/' . app()->getLocale() . '/list/' . $list->slug)"
-    />
-@endunless
+<x-danger-zone
+    id="delete-list"
+    :description="__('Once you delete a list, there is no going back. Gifts in this list will not be deleted.')"
+    :buttonText="__('Delete List')"
+    :modalTitle="__('Delete List')"
+    :modalMessage="__('Are you sure you want to delete this list? This action cannot be undone. Gifts in this list will not be deleted.')"
+    :action="url('/' . app()->getLocale() . '/list/' . $list->slug)"
+/>
 @endsection

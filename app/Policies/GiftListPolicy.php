@@ -29,10 +29,6 @@ class GiftListPolicy
 
     public function delete(User $user, GiftList $giftList): bool
     {
-        if ($giftList->is_default) {
-            return false;
-        }
-
         return $giftList->hasUser($user);
     }
 
@@ -58,10 +54,6 @@ class GiftListPolicy
 
     public function forceDelete(User $user, GiftList $giftList): bool
     {
-        if ($giftList->is_default) {
-            return false;
-        }
-
         return $giftList->hasUser($user) && $user->is_admin;
     }
 }
