@@ -1715,5 +1715,8 @@
     "Error messages (no personal data)": "Foutmeldingen (geen persoonsgegevens)",
     "This list was last reviewed on": "Deze lijst is voor het laatst beoordeeld op",
     "We will update this page when we add or remove subprocessors. For questions, please": "We zullen deze pagina bijwerken wanneer we subverwerkers toevoegen of verwijderen. Voor vragen kun je",
-    "Back to Privacy Policy": "Terug naar Privacybeleid"
+    "Back to Privacy Policy": "Terug naar Privacybeleid",
+    "Your data": "Je gegevens",
+    "Download a copy of all personal data we hold about you in a machine-readable format (JSON).": "Download een kopie van alle persoonlijke gegevens die we over je bewaren in een machineleesbaar formaat (JSON).",
+    "Export my data": "Exporteer mijn gegevens"
 }

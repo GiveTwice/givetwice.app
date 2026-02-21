@@ -198,6 +198,9 @@ Route::prefix('{locale}')
             Route::delete('/settings/account', [SettingsController::class, 'destroyAccount'])
                 ->middleware('throttle:3,10')
                 ->name('settings.account.destroy');
+            Route::post('/settings/data-export', [SettingsController::class, 'exportData'])
+                ->middleware('throttle:5,60')
+                ->name('settings.data.export');
 
             // Friends routes
             Route::get('/friends', [FriendsController::class, 'index'])->name('friends.index');

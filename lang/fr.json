@@ -1715,5 +1715,8 @@
     "Error messages (no personal data)": "Messages d'erreur (aucune donnée personnelle)",
     "This list was last reviewed on": "Cette liste a été révisée pour la dernière fois le",
     "We will update this page when we add or remove subprocessors. For questions, please": "Nous mettrons cette page à jour lorsque nous ajouterons ou supprimerons des sous-traitants. Pour toute question, tu peux",
-    "Back to Privacy Policy": "Retour à la Politique de confidentialité"
+    "Back to Privacy Policy": "Retour à la Politique de confidentialité",
+    "Your data": "Tes données",
+    "Download a copy of all personal data we hold about you in a machine-readable format (JSON).": "Télécharge une copie de toutes les données personnelles que nous détenons à ton sujet dans un format lisible par machine (JSON).",
+    "Export my data": "Exporter mes données"
 }

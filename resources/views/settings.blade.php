@@ -694,6 +694,25 @@
             </div>
         </div>
 
+        <div class="border-t border-gray-200"></div>
+
+        {{-- Your Data --}}
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div>
+                <h2 class="text-lg font-semibold text-gray-900">{{ __('Your data') }}</h2>
+                <p class="mt-1 text-sm text-gray-600">{{ __('Download a copy of all personal data we hold about you in a machine-readable format (JSON).') }}</p>
+            </div>
+            <div class="lg:col-span-2">
+                <form method="POST" action="{{ route('settings.data.export', ['locale' => app()->getLocale()]) }}">
+                    @csrf
+                    <button type="submit" class="btn-secondary">
+                        <x-icons.shield-check class="w-5 h-5" />
+                        {{ __('Export my data') }}
+                    </button>
+                </form>
+            </div>
+        </div>
+
     </div>
 </x-app-content>
 
