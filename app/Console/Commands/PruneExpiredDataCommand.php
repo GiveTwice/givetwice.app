@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\ListInvitation;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 class PruneExpiredDataCommand extends Command
@@ -26,7 +27,7 @@ class PruneExpiredDataCommand extends Command
     {
         $count = ListInvitation::query()
             ->where('created_at', '<', now()->subDays(60))
-            ->where(function ($query) {
+            ->where(function (Builder $query) {
                 $query->whereNotNull('accepted_at')
                     ->orWhereNotNull('declined_at')
                     ->orWhere('expires_at', '<', now());

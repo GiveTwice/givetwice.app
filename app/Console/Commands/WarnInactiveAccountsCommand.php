@@ -21,13 +21,23 @@ class WarnInactiveAccountsCommand extends Command
             ->where('is_admin', false)
             ->get();
 
-        foreach ($users as $user) {
-            Mail::to($user->email)->send(new InactiveAccountWarningMail($user));
+        $sent = 0;
 
-            $user->updateQuietly(['inactive_warning_sent_at' => now()]);
+        foreach ($users as $user) {
+            $this->info("Sending inactive warning to {$user->email}...");
+
+            try {
+                Mail::to($user->email)
+                    ->locale($user->locale_preference ?? 'en')
+                    ->send(new InactiveAccountWarningMail($user));
+                $user->updateQuietly(['inactive_warning_sent_at' => now()]);
+                $sent++;
+            } catch (\Exception $e) {
+                $this->error("Failed to send warning to {$user->email}: {$e->getMessage()}");
+            }
         }
 
-        $this->info("Sent {$users->count()} inactive account warning(s).");
+        $this->comment("Sent {$sent} inactive account warning(s).");
 
         return Command::SUCCESS;
     }

@@ -14,7 +14,7 @@ class InactiveAccountWarningMail extends Mailable
     use Queueable, SerializesModels;
 
     public function __construct(
-        public User $user
+        public User $user,
     ) {}
 
     public function envelope(): Envelope
@@ -27,15 +27,12 @@ class InactiveAccountWarningMail extends Mailable
     public function content(): Content
     {
         $locale = $this->user->locale_preference ?? 'en';
-        $loginUrl = url('/'.$locale.'/login');
-        $exportUrl = url('/'.$locale.'/settings');
 
         return new Content(
             view: 'emails.inactive-account-warning',
             with: [
-                'user' => $this->user,
-                'loginUrl' => $loginUrl,
-                'exportUrl' => $exportUrl,
+                'loginUrl' => route('login', ['locale' => $locale]),
+                'exportUrl' => route('settings', ['locale' => $locale]),
             ],
         );
     }

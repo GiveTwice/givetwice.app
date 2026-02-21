@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Support\Carbon;
 
 describe('Track last activity', function () {
     it('updates last_active_at on authenticated request', function () {
@@ -47,6 +48,19 @@ describe('Track last activity', function () {
         expect($user->last_active_at)->not->toBeNull();
         expect($user->updated_at->toDateTimeString())->toBe($user->created_at->toDateTimeString());
     });
+
+    it('clears inactive_warning_sent_at when a warned user returns', function () {
+        $user = User::factory()->create([
+            'last_active_at' => now()->subMonths(23),
+            'inactive_warning_sent_at' => now()->subWeek(),
+        ]);
+
+        $this->actingAs($user)->get('/en/dashboard');
+
+        $user->refresh();
+        expect($user->inactive_warning_sent_at)->toBeNull();
+        expect($user->last_active_at)->not->toBeNull();
+    });
 });
 
 describe('Migration backfill', function () {
@@ -57,8 +71,8 @@ describe('Migration backfill', function () {
         ]);
 
         $user->refresh();
-        expect($user->last_active_at)->toBeInstanceOf(\Illuminate\Support\Carbon::class);
-        expect($user->inactive_warning_sent_at)->toBeInstanceOf(\Illuminate\Support\Carbon::class);
+        expect($user->last_active_at)->toBeInstanceOf(Carbon::class);
+        expect($user->inactive_warning_sent_at)->toBeInstanceOf(Carbon::class);
     });
 
     it('allows nullable last_active_at and inactive_warning_sent_at', function () {

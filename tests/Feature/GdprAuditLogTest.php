@@ -40,9 +40,9 @@ describe('GDPR audit log', function () {
         expect(GdprAuditLog::where('action', 'account_deletion')->count())->toBe(1);
 
         $log = GdprAuditLog::where('action', 'account_deletion')->first();
-        expect($log->user_id)->toBeNull(); // nullOnDelete after user is deleted
+        expect($log->user_id)->toBeNull();
         expect($log->user_email)->toBe($email);
-        expect($log->details)->toBeNull();
+        expect($log->details)->toBe('User-initiated account deletion');
         expect($log->performed_by)->toBeNull();
     });
 
@@ -74,12 +74,13 @@ describe('GDPR audit log', function () {
         GdprAuditLog::log('test_action', $user, 'test details', 'test_actor');
 
         $log = GdprAuditLog::first();
-        expect($log->user_id)->toBe($user->id);
-        expect($log->user_email)->toBe($user->email);
-        expect($log->action)->toBe('test_action');
-        expect($log->details)->toBe('test details');
-        expect($log->performed_by)->toBe('test_actor');
-        expect($log->created_at)->not->toBeNull();
+        expect($log)
+            ->user_id->toBe($user->id)
+            ->user_email->toBe($user->email)
+            ->action->toBe('test_action')
+            ->details->toBe('test details')
+            ->performed_by->toBe('test_actor')
+            ->created_at->not->toBeNull();
     });
 
     it('preserves user_email even after user is deleted', function () {

@@ -10,3 +10,4 @@ parameters:
           paths:
             - app/Models/Gift.php
             - app/Models/User.php
+        - message: '#Call to an undefined method Illuminate\\Database\\Eloquent\\Relations\\HasMany.*::withTrashed\(\)#'

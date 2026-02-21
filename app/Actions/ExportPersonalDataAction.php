@@ -2,6 +2,8 @@
 
 namespace App\Actions;
 
+use App\Models\Claim;
+use App\Models\GdprAuditLog;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -10,6 +12,8 @@ class ExportPersonalDataAction
 {
     public function execute(User $user): array
     {
+        GdprAuditLog::log('data_export', $user);
+
         return [
             'exported_at' => now()->toIso8601String(),
             'account' => $this->accountData($user),
@@ -33,6 +37,7 @@ class ExportPersonalDataAction
             'email_verified' => $user->email_verified_at !== null,
             'email_verified_at' => $user->email_verified_at?->toIso8601String(),
             'two_factor_enabled' => $user->two_factor_secret !== null,
+            'last_active_at' => $user->last_active_at?->toIso8601String(),
             'created_at' => $user->created_at?->toIso8601String(),
             'updated_at' => $user->updated_at?->toIso8601String(),
         ];
@@ -48,7 +53,7 @@ class ExportPersonalDataAction
 
     protected function wishlists(User $user): array
     {
-        return $user->lists()->get()->map(fn ($list) => [
+        return $user->lists->map(fn ($list) => [
             'name' => $list->name,
             'description' => $list->description,
             'is_default' => (bool) $list->is_default,
@@ -81,9 +86,9 @@ class ExportPersonalDataAction
 
     protected function claimsOnUserGifts(User $user): array
     {
-        $giftIds = $user->gifts()->pluck('id');
+        $giftIds = $user->gifts()->withTrashed()->pluck('id');
 
-        return \App\Models\Claim::whereIn('gift_id', $giftIds)
+        return Claim::whereIn('gift_id', $giftIds)
             ->with('gift')
             ->get()
             ->map(fn ($claim) => [

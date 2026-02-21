@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\ListInvitation;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -102,7 +103,7 @@ describe('Prune expired data', function () {
     });
 
     it('prunes authenticated sessions older than 30 days', function () {
-        $userId = \App\Models\User::factory()->create()->id;
+        $userId = User::factory()->create()->id;
 
         DB::table('sessions')->insert([
             'id' => Str::random(40),

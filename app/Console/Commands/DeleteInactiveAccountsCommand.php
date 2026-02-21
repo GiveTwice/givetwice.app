@@ -15,7 +15,6 @@ class DeleteInactiveAccountsCommand extends Command
     public function handle(DeleteAccountAction $action): int
     {
         $users = User::query()
-            ->with('gifts')
             ->where('last_active_at', '<', now()->subMonths(24))
             ->whereNotNull('inactive_warning_sent_at')
             ->where('inactive_warning_sent_at', '<', now()->subMonths(2))
@@ -32,11 +31,19 @@ class DeleteInactiveAccountsCommand extends Command
             return Command::SUCCESS;
         }
 
+        $deleted = 0;
+
         foreach ($users as $user) {
-            $action->execute($user, 'Inactive 24+ months', 'system');
+            try {
+                $this->info("Deleting inactive account {$user->email}...");
+                $action->execute($user, 'Inactive 24+ months', 'system');
+                $deleted++;
+            } catch (\Exception $e) {
+                $this->error("Failed to delete {$user->email}: {$e->getMessage()}");
+            }
         }
 
-        $this->info("Deleted {$users->count()} inactive account(s).");
+        $this->comment("Deleted {$deleted} inactive account(s).");
 
         return Command::SUCCESS;
     }

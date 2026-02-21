@@ -15,19 +15,23 @@ class DeleteAccountAction
         $email = $user->email;
         $userId = $user->id;
 
-        GdprAuditLog::log('account_deletion', $user, $auditDetails, $auditPerformedBy);
+        $gifts = $user->gifts()->withTrashed()->get();
 
-        foreach ($user->gifts as $gift) {
+        DB::transaction(function () use ($user, $userId, $auditDetails, $auditPerformedBy) {
+            GdprAuditLog::log('account_deletion', $user, $auditDetails, $auditPerformedBy);
+            $user->delete();
+            DB::table('sessions')->where('user_id', $userId)->delete();
+        });
+
+        foreach ($gifts as $gift) {
             /** @var Gift $gift */
             $gift->clearMediaCollection('image');
         }
 
-        $user->delete();
+        $message = $auditPerformedBy === 'system'
+            ? "🗑️ {$email} account deleted (inactive 24+ months)"
+            : "👋 {$email} deleted their account";
 
-        DB::table('sessions')
-            ->where('user_id', $userId)
-            ->delete();
-
-        SlackAlert::message("👋 {$email} deleted their account");
+        SlackAlert::message($message);
     }
 }
