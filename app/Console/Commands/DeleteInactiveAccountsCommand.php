@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Actions\DeleteAccountAction;
 use App\Models\User;
+use Exception;
 use Illuminate\Console\Command;
 
 class DeleteInactiveAccountsCommand extends Command
@@ -38,7 +39,7 @@ class DeleteInactiveAccountsCommand extends Command
                 $this->info("Deleting inactive account {$user->email}...");
                 $action->execute($user, 'Inactive 24+ months', 'system');
                 $deleted++;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->error("Failed to delete {$user->email}: {$e->getMessage()}");
             }
         }

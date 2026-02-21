@@ -16,16 +16,16 @@ class DeleteAccountAction
 
         $gifts = $user->gifts()->withTrashed()->get();
 
-        DB::transaction(function () use ($user, $userId, $auditDetails, $auditPerformedBy) {
+        DB::transaction(function () use ($user, $userId, $email, $auditDetails, $auditPerformedBy) {
             $logger = activity()
                 ->performedOn($user)
                 ->useLog('gdpr')
                 ->event('account_deletion')
                 ->withProperties(array_filter([
-                    'user_email' => $user->email,
+                    'user_email' => $email,
                     'details' => $auditDetails,
                     'performed_by' => $auditPerformedBy,
-                ]));
+                ], fn ($value) => $value !== null));
 
             if ($auditPerformedBy !== 'system') {
                 $logger->causedBy($user);

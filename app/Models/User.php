@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 use Lab404\Impersonate\Models\Impersonate;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Spatie\Image\Enums\Fit;
@@ -17,10 +18,11 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
- * @property \Illuminate\Support\Carbon|null $email_verified_at
- * @property \Illuminate\Support\Carbon|null $last_active_at
- * @property \Illuminate\Support\Carbon|null $inactive_warning_sent_at
- * @property \Illuminate\Support\Carbon|null $last_friend_digest_at
+ * @property Carbon|null $email_verified_at
+ * @property Carbon|null $last_active_at
+ * @property Carbon|null $inactive_warning_sent_at
+ * @property Carbon|null $last_friend_digest_at
+ * @property string|null $apple_id
  */
 class User extends Authenticatable implements HasMedia, MustVerifyEmail
 {

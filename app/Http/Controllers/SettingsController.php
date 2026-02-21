@@ -191,7 +191,7 @@ class SettingsController extends Controller
         $data = $action->execute($user);
 
         $filename = 'givetwice-data-export-'.now()->format('Y-m-d').'.json';
-        $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
 
         return response($json, 200, [
             'Content-Type' => 'application/json',

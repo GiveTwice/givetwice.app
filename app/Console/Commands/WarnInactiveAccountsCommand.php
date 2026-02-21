@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Mail\InactiveAccountWarningMail;
 use App\Models\User;
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 
@@ -32,7 +33,7 @@ class WarnInactiveAccountsCommand extends Command
                     ->send(new InactiveAccountWarningMail($user));
                 $user->updateQuietly(['inactive_warning_sent_at' => now()]);
                 $sent++;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->error("Failed to send warning to {$user->email}: {$e->getMessage()}");
             }
         }

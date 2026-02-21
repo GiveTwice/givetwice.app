@@ -56,6 +56,7 @@ class ExportPersonalDataAction
         return [
             'google_connected' => $user->google_id !== null,
             'facebook_connected' => $user->facebook_id !== null,
+            'apple_connected' => $user->apple_id !== null,
         ];
     }
 
