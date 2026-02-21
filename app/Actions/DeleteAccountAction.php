@@ -2,7 +2,6 @@
 
 namespace App\Actions;
 
-use App\Models\GdprAuditLog;
 use App\Models\Gift;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +17,22 @@ class DeleteAccountAction
         $gifts = $user->gifts()->withTrashed()->get();
 
         DB::transaction(function () use ($user, $userId, $auditDetails, $auditPerformedBy) {
-            GdprAuditLog::log('account_deletion', $user, $auditDetails, $auditPerformedBy);
+            $logger = activity()
+                ->performedOn($user)
+                ->useLog('gdpr')
+                ->event('account_deletion')
+                ->withProperties(array_filter([
+                    'user_email' => $user->email,
+                    'details' => $auditDetails,
+                    'performed_by' => $auditPerformedBy,
+                ]));
+
+            if ($auditPerformedBy !== 'system') {
+                $logger->causedBy($user);
+            }
+
+            $logger->log('Account deleted');
+
             $user->delete();
             DB::table('sessions')->where('user_id', $userId)->delete();
         });

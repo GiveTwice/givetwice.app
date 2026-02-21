@@ -3,7 +3,9 @@
 namespace App\Actions;
 
 use App\Models\Claim;
-use App\Models\GdprAuditLog;
+use App\Models\FollowedList;
+use App\Models\Gift;
+use App\Models\GiftList;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -12,7 +14,13 @@ class ExportPersonalDataAction
 {
     public function execute(User $user): array
     {
-        GdprAuditLog::log('data_export', $user);
+        activity()
+            ->performedOn($user)
+            ->causedBy($user)
+            ->useLog('gdpr')
+            ->event('data_export')
+            ->withProperties(['user_email' => $user->email])
+            ->log('Personal data exported');
 
         return [
             'exported_at' => now()->toIso8601String(),
@@ -53,7 +61,7 @@ class ExportPersonalDataAction
 
     protected function wishlists(User $user): array
     {
-        return $user->lists->map(fn ($list) => [
+        return $user->lists->map(fn (GiftList $list) => [
             'name' => $list->name,
             'description' => $list->description,
             'is_default' => (bool) $list->is_default,
@@ -64,7 +72,7 @@ class ExportPersonalDataAction
 
     protected function gifts(User $user): array
     {
-        return $user->gifts()->withTrashed()->get()->map(fn ($gift) => [
+        return $user->gifts()->withTrashed()->get()->map(fn (Gift $gift) => [
             'title' => $gift->title,
             'description' => $gift->description,
             'url' => $gift->url,
@@ -76,7 +84,7 @@ class ExportPersonalDataAction
 
     protected function claimsMade(User $user): array
     {
-        return $user->claims()->with('gift')->get()->map(fn ($claim) => [
+        return $user->claims()->with('gift')->get()->map(fn (Claim $claim) => [
             'gift_title' => $claim->gift?->title,
             'confirmed_at' => $claim->confirmed_at?->toIso8601String(),
             'notes' => $claim->notes,
@@ -91,7 +99,7 @@ class ExportPersonalDataAction
         return Claim::whereIn('gift_id', $giftIds)
             ->with('gift')
             ->get()
-            ->map(fn ($claim) => [
+            ->map(fn (Claim $claim) => [
                 'gift_title' => $claim->gift?->title,
                 'claimer_name' => $claim->claimer_name,
                 'claimer_email' => $claim->claimer_email,
@@ -105,15 +113,15 @@ class ExportPersonalDataAction
         return $user->lists()
             ->where('creator_id', '!=', $user->id)
             ->get()
-            ->map(fn ($list) => [
+            ->map(fn (GiftList $list) => [
                 'list_name' => $list->name,
-                'joined_at' => $list->pivot->joined_at,
+                'joined_at' => $list->pivot->joined_at, // @phpstan-ignore property.notFound (BelongsToMany pivot)
             ])->all();
     }
 
     protected function followedLists(User $user): array
     {
-        return $user->followedLists()->with('list')->get()->map(fn ($follow) => [
+        return $user->followedLists()->with('list')->get()->map(fn (FollowedList $follow) => [
             'list_name' => $follow->list?->name,
             'notifications' => (bool) $follow->notifications,
             'created_at' => $follow->created_at?->toIso8601String(),

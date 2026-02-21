@@ -16,6 +16,12 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
+/**
+ * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property \Illuminate\Support\Carbon|null $last_active_at
+ * @property \Illuminate\Support\Carbon|null $inactive_warning_sent_at
+ * @property \Illuminate\Support\Carbon|null $last_friend_digest_at
+ */
 class User extends Authenticatable implements HasMedia, MustVerifyEmail
 {
     use HasFactory;
@@ -73,6 +79,9 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         return $this->hasMany(Gift::class);
     }
 
+    /**
+     * @return BelongsToMany<GiftList, $this>
+     */
     public function lists(): BelongsToMany
     {
         return $this->belongsToMany(GiftList::class, 'list_user', 'user_id', 'list_id')
@@ -103,6 +112,9 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         return $this->pendingListInvitations()->exists();
     }
 
+    /**
+     * @return HasMany<Claim, $this>
+     */
     public function claims(): HasMany
     {
         return $this->hasMany(Claim::class);
