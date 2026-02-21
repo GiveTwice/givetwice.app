@@ -55,3 +55,8 @@ Schedule::command('app:prune-expired-data')
 Schedule::command('app:warn-inactive-accounts')
     ->weekly()
     ->monitorName('Warn Inactive Accounts');
+
+// Delete accounts inactive for 24+ months (warned 2+ months ago)
+Schedule::command('app:delete-inactive-accounts')
+    ->weekly()
+    ->monitorName('Delete Inactive Accounts');
