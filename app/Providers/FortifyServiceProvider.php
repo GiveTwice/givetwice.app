@@ -13,6 +13,7 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -33,6 +34,15 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
+
+        // Social auth users have no password — skip password confirmation for them
+        Fortify::confirmPasswordsUsing(function ($user, ?string $password) {
+            if (is_null($user->password)) {
+                return true;
+            }
+
+            return Hash::check($password, $user->password);
+        });
 
         ResetPassword::createUrlUsing(function ($notifiable, string $token) {
             $locale = $notifiable->locale_preference ?? config('app.locale', 'en');

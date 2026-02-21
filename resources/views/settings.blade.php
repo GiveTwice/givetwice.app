@@ -958,6 +958,7 @@ function twoFactorAuth() {
         password: '',
         passwordError: null,
         passwordLoading: false,
+        hasPassword: @js((bool) auth()->user()->password),
 
         async enableTwoFactor() {
             this.loading = true;
@@ -976,10 +977,14 @@ function twoFactorAuth() {
                     await this.fetchQrCode();
                     await this.fetchSecretKey();
                 } else if (response.status === 423) {
-                    // Password confirmation required
-                    this.showPasswordConfirm = true;
-                    this.password = '';
-                    this.passwordError = null;
+                    if (!this.hasPassword) {
+                        // Social auth user — auto-confirm (backend allows it)
+                        await this.confirmPassword();
+                    } else {
+                        this.showPasswordConfirm = true;
+                        this.password = '';
+                        this.passwordError = null;
+                    }
                 }
             } catch (error) {
                 console.error('Error enabling 2FA:', error);
