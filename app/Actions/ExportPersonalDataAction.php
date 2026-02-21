@@ -95,9 +95,7 @@ class ExportPersonalDataAction
 
     protected function claimsOnUserGifts(User $user): array
     {
-        $giftIds = $user->gifts()->withTrashed()->pluck('id');
-
-        return Claim::whereIn('gift_id', $giftIds)
+        return Claim::whereIn('gift_id', $user->gifts()->withTrashed()->select('id'))
             ->with('gift')
             ->get()
             ->map(fn (Claim $claim) => [

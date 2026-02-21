@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExportPersonalDataController;
 use App\Http\Controllers\FriendsController;
 use App\Http\Controllers\GiftController;
 use App\Http\Controllers\ListController;
@@ -198,7 +199,7 @@ Route::prefix('{locale}')
             Route::delete('/settings/account', [SettingsController::class, 'destroyAccount'])
                 ->middleware('throttle:3,10')
                 ->name('settings.account.destroy');
-            Route::post('/settings/data-export', [SettingsController::class, 'exportData'])
+            Route::post('/settings/data-export', ExportPersonalDataController::class)
                 ->middleware('throttle:5,60')
                 ->name('settings.data.export');
 

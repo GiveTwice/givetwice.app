@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Actions\DeleteAccountAction;
 use App\Actions\DeleteUserProfileImageAction;
-use App\Actions\ExportPersonalDataAction;
 use App\Actions\UpdatePasswordAction;
 use App\Actions\UploadUserProfileImageAction;
 use App\Enums\SupportedLocale;
@@ -13,7 +12,6 @@ use App\Rules\MatchesUserEmail;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -183,20 +181,6 @@ class SettingsController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('home', ['locale' => app()->getLocale()])->with('status', 'account-deleted');
-    }
-
-    public function exportData(Request $request, ExportPersonalDataAction $action): Response
-    {
-        $user = $request->user();
-        $data = $action->execute($user);
-
-        $filename = 'givetwice-data-export-'.now()->format('Y-m-d').'.json';
-        $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
-
-        return response($json, 200, [
-            'Content-Type' => 'application/json',
-            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
-        ]);
     }
 
     protected function getSessionsForUser(Request $request): array

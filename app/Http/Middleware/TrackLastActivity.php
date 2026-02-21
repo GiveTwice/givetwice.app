@@ -25,7 +25,13 @@ class TrackLastActivity
                 $updates['inactive_warning_sent_at'] = null;
             }
 
-            $user->updateQuietly($updates);
+            User::where('id', $user->id)
+                ->where(function ($query) {
+                    $query->whereNull('last_active_at')
+                        ->orWhere('last_active_at', '<', now()->subHour());
+                })
+                ->toBase()
+                ->update($updates);
         }
 
         return $next($request);

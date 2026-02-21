@@ -23,6 +23,7 @@ class DeleteAccountAction
                 ->event('account_deletion')
                 ->withProperties(array_filter([
                     'user_email' => $email,
+                    'user_id' => $userId,
                     'details' => $auditDetails,
                     'performed_by' => $auditPerformedBy,
                 ], fn ($value) => $value !== null));
