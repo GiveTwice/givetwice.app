@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Models\GdprAuditLog;
 use App\Models\Gift;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -9,10 +10,12 @@ use Spatie\SlackAlerts\Facades\SlackAlert;
 
 class DeleteAccountAction
 {
-    public function execute(User $user): void
+    public function execute(User $user, ?string $auditDetails = null, ?string $auditPerformedBy = null): void
     {
         $email = $user->email;
         $userId = $user->id;
+
+        GdprAuditLog::log('account_deletion', $user, $auditDetails, $auditPerformedBy);
 
         foreach ($user->gifts as $gift) {
             /** @var Gift $gift */

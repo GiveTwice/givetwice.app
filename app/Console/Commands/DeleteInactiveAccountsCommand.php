@@ -33,7 +33,7 @@ class DeleteInactiveAccountsCommand extends Command
         }
 
         foreach ($users as $user) {
-            $action->execute($user);
+            $action->execute($user, 'Inactive 24+ months', 'system');
         }
 
         $this->info("Deleted {$users->count()} inactive account(s).");

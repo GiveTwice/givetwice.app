@@ -9,6 +9,7 @@ use App\Actions\UpdatePasswordAction;
 use App\Actions\UploadUserProfileImageAction;
 use App\Enums\SupportedLocale;
 use App\Events\ProfileImageUpdated;
+use App\Models\GdprAuditLog;
 use App\Rules\MatchesUserEmail;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -188,6 +189,8 @@ class SettingsController extends Controller
     public function exportData(Request $request, ExportPersonalDataAction $action): Response
     {
         $data = $action->execute($request->user());
+
+        GdprAuditLog::log('data_export', $request->user());
 
         $filename = 'givetwice-data-export-'.now()->format('Y-m-d').'.json';
         $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
