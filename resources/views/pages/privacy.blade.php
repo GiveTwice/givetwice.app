@@ -62,7 +62,7 @@
                 </ul>
                 <p class="text-gray-600 leading-relaxed mt-3"><strong>{{ __('Gift claims:') }}</strong> {{ __('When someone claims a gift from your wishlist, you will receive their name and email address so you can coordinate the gift-giving. Similarly, if you claim a gift, your name and email will be shared with the wishlist owner.') }}</p>
                 <p class="text-gray-600 leading-relaxed mt-3"><strong>{{ __('Third-party services:') }}</strong> {{ __('If you choose to sign in using Google, Facebook, or Apple, their respective privacy policies apply to the data they collect during authentication. We only receive your basic profile information (name, email, profile picture) from these services.') }}</p>
-                <p class="text-gray-600 leading-relaxed mt-3"><strong>{{ __('Subprocessors:') }}</strong> {{ __('We use a limited number of third-party service providers to operate GiveTwice. For a complete list, see our') }} <a href="/{{ app()->getLocale() }}/subprocessors" class="text-coral-600 hover:text-coral-700 underline">{{ __('subprocessors page') }}</a>.</p>
+                <p class="text-gray-600 leading-relaxed mt-3"><strong>{{ __('Subprocessors:') }}</strong> {{ __('We use a limited number of third-party service providers to operate GiveTwice. For a complete list, see our') }} <a href="{{ route('subprocessors', ['locale' => app()->getLocale()]) }}" class="text-coral-600 hover:text-coral-700 underline">{{ __('subprocessors page') }}</a>.</p>
             </section>
 
             <section class="mb-8">

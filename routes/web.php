@@ -63,6 +63,7 @@ Route::prefix('{locale}')
         Route::view('transparency', 'pages.transparency')->name('transparency');
         Route::view('contact', 'pages.contact')->name('contact');
         Route::view('brand', 'pages.brand')->name('brand');
+        Route::view('subprocessors', 'pages.subprocessors')->name('subprocessors');
 
         // Occasion marketing pages
         foreach (OccasionHelper::all() as $key => $occasion) {
