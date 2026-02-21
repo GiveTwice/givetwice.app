@@ -83,8 +83,9 @@ Route::prefix('{locale}')
         Route::get('/gifts/{gift}/claimed/{token?}', [ClaimController::class, 'showConfirmed'])->name('claim.confirmed');
 
         // Gift card HTML (for real-time updates on public lists)
-        Route::get('/v/{list}/{slug}/gifts/{gift}/card', [GiftController::class, 'cardHtml'])
+        Route::get('/v/{list}/{slug}/gifts/{giftId}/card', [GiftController::class, 'cardHtml'])
             ->whereNumber('list')
+            ->whereNumber('giftId')
             ->name('gifts.card-html');
 
         // Auth view routes (GET only - POST handled by Fortify)
@@ -113,10 +114,6 @@ Route::prefix('{locale}')
             })->name('verification.notice');
 
             Route::get('/verify-email/{id}/{hash}', function ($locale, $id, $hash) {
-                if (! request()->hasValidSignature()) {
-                    abort(401);
-                }
-
                 $user = User::findOrFail($id);
 
                 if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {

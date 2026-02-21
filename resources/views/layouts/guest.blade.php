@@ -33,10 +33,10 @@
     @endif
     <meta property="og:image" content="{{ asset('images/og-image.png') }}">
     <meta property="og:site_name" content="{{ config('app.name', 'GiveTwice') }}">
-    @php $currentLocale = \App\Enums\SupportedLocale::tryFrom(app()->getLocale()); @endphp
+    @php use App\Enums\SupportedLocale; $currentLocale = SupportedLocale::tryFrom(app()->getLocale()); @endphp
     @if($currentLocale)
         <meta property="og:locale" content="{{ $currentLocale->ogLocale() }}">
-        @foreach(\App\Enums\SupportedLocale::cases() as $locale)
+        @foreach(SupportedLocale::cases() as $locale)
             @if($locale !== $currentLocale)
                 <meta property="og:locale:alternate" content="{{ $locale->ogLocale() }}">
             @endif
@@ -100,20 +100,20 @@
             </div>
 
             <x-mobile-menu-panel>
-                    <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('How it works') }}</a>
-                    <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('About') }}</a>
+                <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('How it works') }}</a>
+                <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('About') }}</a>
 
-                    <div class="border-t border-cream-200 my-2"></div>
+                <div class="border-t border-cream-200 my-2"></div>
 
-                    <a href="{{ url('/' . app()->getLocale() . '/login') }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('Login') }}</a>
-                    @if(config('app.allow_registration'))
-                        <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="block px-3 py-2 bg-coral-500 text-white rounded-lg text-center font-medium">{{ __('Sign Up') }}</a>
-                    @endif
+                <a href="{{ url('/' . app()->getLocale() . '/login') }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('Login') }}</a>
+                @if(config('app.allow_registration'))
+                    <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="block px-3 py-2 bg-coral-500 text-white rounded-lg text-center font-medium">{{ __('Sign Up') }}</a>
+                @endif
 
-                    <div class="border-t border-cream-200 my-2"></div>
-                    <div class="px-3 py-2">
-                        <x-language-switcher />
-                    </div>
+                <div class="border-t border-cream-200 my-2"></div>
+                <div class="px-3 py-2">
+                    <x-language-switcher />
+                </div>
             </x-mobile-menu-panel>
         </nav>
     </header>

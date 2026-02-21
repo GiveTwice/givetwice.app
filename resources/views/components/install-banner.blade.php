@@ -53,8 +53,7 @@ document.addEventListener('alpine:init', () => {
         init() {
             if (window.isStandalonePwa || this.isDismissed()) return;
 
-            this.trackPageVisit();
-            if (this.getPageVisits() < 2) return;
+            if (this.incrementAndGetPageVisits() < 2) return;
 
             if (this.isIosSafari()) {
                 this.instructionText = @js(__('Tap Share, then "Add to Home Screen"'));
@@ -104,16 +103,11 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
-        trackPageVisit() {
+        incrementAndGetPageVisits() {
             try {
-                const count = parseInt(localStorage.getItem('givetwice_page_visits') || '0', 10);
-                localStorage.setItem('givetwice_page_visits', (count + 1).toString());
-            } catch {}
-        },
-
-        getPageVisits() {
-            try {
-                return parseInt(localStorage.getItem('givetwice_page_visits') || '0', 10);
+                const count = parseInt(localStorage.getItem('givetwice_page_visits') || '0', 10) + 1;
+                localStorage.setItem('givetwice_page_visits', count.toString());
+                return count;
             } catch {
                 return 0;
             }
@@ -121,7 +115,7 @@ document.addEventListener('alpine:init', () => {
 
         isIosSafari() {
             const ua = window.navigator.userAgent;
-            const isIos = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            const isIos = /iPad|iPhone|iPod/.test(ua) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(ua));
             const isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|OPiOS|EdgiOS/.test(ua);
             return isIos && isSafari && !window.navigator.standalone;
         }

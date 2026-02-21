@@ -33,10 +33,10 @@
     @endif
     <meta property="og:image" content="{{ asset('images/og-image.png') }}">
     <meta property="og:site_name" content="{{ config('app.name', 'GiveTwice') }}">
-    @php $currentLocale = \App\Enums\SupportedLocale::tryFrom(app()->getLocale()); @endphp
+    @php use App\Enums\SupportedLocale; $currentLocale = SupportedLocale::tryFrom(app()->getLocale()); @endphp
     @if($currentLocale)
         <meta property="og:locale" content="{{ $currentLocale->ogLocale() }}">
-        @foreach(\App\Enums\SupportedLocale::cases() as $locale)
+        @foreach(SupportedLocale::cases() as $locale)
             @if($locale !== $currentLocale)
                 <meta property="og:locale:alternate" content="{{ $locale->ogLocale() }}">
             @endif
@@ -118,73 +118,72 @@
             </div>
 
             <x-mobile-menu-panel>
-                    <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('How it works') }}</a>
-                    <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('About') }}</a>
+                <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('How it works') }}</a>
+                <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('About') }}</a>
 
-                    <div class="border-t border-cream-200 my-2"></div>
+                <div class="border-t border-cream-200 my-2"></div>
 
-                    @auth
-                        @php
-                            $mobileUser = auth()->user();
-                            $mobileHasImage = $mobileUser->hasProfileImage();
-                            $mobileImageUrl = $mobileUser->getProfileImageUrl('thumb');
-                            $mobileInitials = $mobileUser->getInitials();
-                        @endphp
-                        {{-- User info --}}
+                @auth
+                    @php
+                        $mobileUser = auth()->user();
+                        $mobileHasImage = $mobileUser->hasProfileImage();
+                        $mobileImageUrl = $mobileUser->getProfileImageUrl('thumb');
+                        $mobileInitials = $mobileUser->getInitials();
+                    @endphp
+                    <div
+                        class="px-3 py-3 flex items-center gap-3"
+                        x-data="{
+                            hasImage: @js($mobileHasImage),
+                            imageUrl: @js($mobileImageUrl),
+                            initials: @js($mobileInitials)
+                        }"
+                        @profile-image-updated.window="hasImage = $event.detail.hasImage; imageUrl = $event.detail.imageUrl; initials = $event.detail.initials"
+                    >
                         <div
-                            class="px-3 py-3 flex items-center gap-3"
-                            x-data="{
-                                hasImage: @js($mobileHasImage),
-                                imageUrl: @js($mobileImageUrl),
-                                initials: @js($mobileInitials)
-                            }"
-                            @profile-image-updated.window="hasImage = $event.detail.hasImage; imageUrl = $event.detail.imageUrl; initials = $event.detail.initials"
+                            class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center overflow-hidden"
+                            :class="hasImage ? 'ring-2 ring-cream-200' : 'bg-gradient-to-br from-coral-400 to-coral-500'"
                         >
-                            <div
-                                class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center overflow-hidden"
-                                :class="hasImage ? 'ring-2 ring-cream-200' : 'bg-gradient-to-br from-coral-400 to-coral-500'"
-                            >
-                                <template x-if="hasImage">
-                                    <img :src="imageUrl" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
-                                </template>
-                                <template x-if="!hasImage">
-                                    <span class="text-white font-bold text-sm tracking-tight" x-text="initials"></span>
-                                </template>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-semibold text-gray-900 truncate">{{ auth()->user()->name }}</p>
-                                <p class="text-xs text-gray-500 truncate">{{ auth()->user()->email }}</p>
-                            </div>
+                            <template x-if="hasImage">
+                                <img :src="imageUrl" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
+                            </template>
+                            <template x-if="!hasImage">
+                                <span class="text-white font-bold text-sm tracking-tight" x-text="initials"></span>
+                            </template>
                         </div>
-
-                        <div class="border-t border-cream-200 my-2"></div>
-
-                        <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">
-                            <x-icons.home class="w-5 h-5" />
-                            <span>{{ __('Dashboard') }}</span>
-                        </a>
-                        <a href="{{ url('/' . app()->getLocale() . '/settings') }}" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">
-                            <x-icons.settings class="w-5 h-5" />
-                            <span>{{ __('Settings') }}</span>
-                        </a>
-                        <form method="POST" action="{{ url('/logout') }}">
-                            @csrf
-                            <button type="submit" class="flex items-center gap-3 w-full px-3 py-2 text-gray-600 hover:text-red-700 hover:bg-red-50 rounded-lg">
-                                <x-icons.logout class="w-5 h-5" />
-                                <span>{{ __('Log out') }}</span>
-                            </button>
-                        </form>
-                    @else
-                        <a href="{{ url('/' . app()->getLocale() . '/login') }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('Login') }}</a>
-                        @if(config('app.allow_registration'))
-                            <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="block px-3 py-2 bg-coral-500 text-white rounded-lg text-center font-medium">{{ __('Sign Up') }}</a>
-                        @endif
-                    @endauth
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold text-gray-900 truncate">{{ auth()->user()->name }}</p>
+                            <p class="text-xs text-gray-500 truncate">{{ auth()->user()->email }}</p>
+                        </div>
+                    </div>
 
                     <div class="border-t border-cream-200 my-2"></div>
-                    <div class="px-3 py-2">
-                        <x-language-switcher />
-                    </div>
+
+                    <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">
+                        <x-icons.home class="w-5 h-5" />
+                        <span>{{ __('Dashboard') }}</span>
+                    </a>
+                    <a href="{{ url('/' . app()->getLocale() . '/settings') }}" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">
+                        <x-icons.settings class="w-5 h-5" />
+                        <span>{{ __('Settings') }}</span>
+                    </a>
+                    <form method="POST" action="{{ url('/logout') }}">
+                        @csrf
+                        <button type="submit" class="flex items-center gap-3 w-full px-3 py-2 text-gray-600 hover:text-red-700 hover:bg-red-50 rounded-lg">
+                            <x-icons.logout class="w-5 h-5" />
+                            <span>{{ __('Log out') }}</span>
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ url('/' . app()->getLocale() . '/login') }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('Login') }}</a>
+                    @if(config('app.allow_registration'))
+                        <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="block px-3 py-2 bg-coral-500 text-white rounded-lg text-center font-medium">{{ __('Sign Up') }}</a>
+                    @endif
+                @endauth
+
+                <div class="border-t border-cream-200 my-2"></div>
+                <div class="px-3 py-2">
+                    <x-language-switcher />
+                </div>
             </x-mobile-menu-panel>
         </nav>
     </header>

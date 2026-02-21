@@ -7,18 +7,18 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// PWA standalone mode detection (available globally for Alpine components)
 window.isStandalonePwa = window.matchMedia('(display-mode: standalone)').matches
     || window.navigator.standalone === true;
 
-// iOS standalone mode: intercept link clicks to fix navigation quirks
+// Standalone PWA: intercept link clicks to fix navigation quirks
 if (window.isStandalonePwa) {
     document.addEventListener('click', (e) => {
         const link = e.target.closest('a[href]');
         if (!link) return;
 
         const href = link.getAttribute('href');
-        if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
+        if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+        if (link.hasAttribute('download')) return;
 
         let url;
         try {

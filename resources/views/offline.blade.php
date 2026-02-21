@@ -15,6 +15,8 @@
     {{-- Fallback styles when Vite CSS is not cached by the service worker --}}
     <style>
         .offline-fallback { font-family: 'Instrument Sans', system-ui, -apple-system, sans-serif; margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .offline-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: #f97066; color: #fff; border: none; border-radius: 0.75rem; font-weight: 600; font-size: 1rem; cursor: pointer; }
+        .offline-btn:hover { background: #ef5a50; }
     </style>
 </head>
 <body class="offline-fallback min-h-screen bg-gradient-warm flex flex-col items-center justify-center px-4 safe-area-x">
@@ -40,7 +42,7 @@
 
         <button
             onclick="window.location.reload()"
-            class="btn-primary inline-flex items-center gap-2"
+            class="btn-primary offline-btn inline-flex items-center gap-2"
         >
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />

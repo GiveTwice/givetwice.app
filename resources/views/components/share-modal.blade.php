@@ -60,7 +60,7 @@
         <div class="relative bg-white rounded-xl shadow-xl max-w-xl w-full max-h-[100dvh] overflow-y-auto p-6" @click.stop>
             <!-- Header -->
             <div class="flex justify-between items-start mb-4">
-                <h2 class="text-xl font-bold text-gray-900">{{ __('Share Your Wishlist') }}</h2>
+                <h2 class="text-xl font-bold text-gray-900">{{ __('Share your wishlist') }}</h2>
                 <button @click="open = false" class="-m-1 p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors" aria-label="{{ __('Close') }}">
                     <x-icons.close class="w-6 h-6" />
                 </button>
@@ -112,7 +112,7 @@
                             <x-icons.external-link class="w-3.5 h-3.5" />
                         </a>
                         <button
-                            @click="copyToClipboard('{{ $publicUrl }}', 'url')"
+                            @click="copyToClipboard(@js($publicUrl), 'url')"
                             class="flex-1 px-4 py-2 bg-coral-500 text-white rounded-lg hover:bg-coral-600 transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap"
                         >
                             <template x-if="!copiedUrl">
@@ -143,7 +143,7 @@
                         class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none"
                     >
                     <button
-                        @click="copyToClipboard(`{{ $shareMessage }}`, 'message')"
+                        @click="copyToClipboard(@js($shareMessage), 'message')"
                         class="w-full px-4 py-2 bg-coral-500 text-white rounded-lg hover:bg-coral-600 transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap"
                     >
                         <template x-if="!copiedMessage">

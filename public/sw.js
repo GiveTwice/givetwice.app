@@ -70,13 +70,15 @@ self.addEventListener('fetch', (event) => {
         event.respondWith(
             caches.match(event.request).then((cached) => {
                 if (cached) return cached;
-                return fetch(event.request).then((response) => {
-                    if (response.ok) {
-                        const clone = response.clone();
-                        caches.open(STATIC_CACHE).then((cache) => cache.put(event.request, clone));
-                    }
-                    return response;
-                }).catch(() => caches.match(event.request));
+                return fetch(event.request)
+                    .then((response) => {
+                        if (response.ok) {
+                            const clone = response.clone();
+                            caches.open(STATIC_CACHE).then((cache) => cache.put(event.request, clone));
+                        }
+                        return response;
+                    })
+                    .catch(() => caches.match(event.request));
             })
         );
         return;
@@ -105,7 +107,7 @@ self.addEventListener('fetch', (event) => {
     if (isNavigationRequest(event.request)) {
         // Don't cache authenticated routes to prevent serving stale user data
         const pathWithoutLocale = url.pathname.replace(/^\/[a-z]{2}\//, '/');
-        const authPaths = ['/dashboard', '/settings', '/list/', '/gifts/', '/lists/'];
+        const authPaths = ['/dashboard', '/settings', '/list/', '/gifts/', '/lists/', '/friends', '/claim'];
         const isAuthRoute = authPaths.some((p) => pathWithoutLocale.startsWith(p));
 
         event.respondWith(

@@ -49,3 +49,4 @@ frankenphp
 frankenphp-worker.php
 .mcp.json
 boost.json
+.chief/
