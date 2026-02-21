@@ -36,6 +36,8 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         'email_verified_at',
         'friend_notifications_enabled',
         'last_friend_digest_at',
+        'last_active_at',
+        'inactive_warning_sent_at',
     ];
 
     /**
@@ -61,6 +63,8 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
             'is_admin' => 'boolean',
             'friend_notifications_enabled' => 'boolean',
             'last_friend_digest_at' => 'datetime',
+            'last_active_at' => 'datetime',
+            'inactive_warning_sent_at' => 'datetime',
         ];
     }
 
