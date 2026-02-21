@@ -17,7 +17,10 @@ class WarnInactiveAccountsCommand extends Command
     public function handle(): int
     {
         $users = User::query()
-            ->where('last_active_at', '<', now()->subMonths(22))
+            ->where(function ($query) {
+                $query->where('last_active_at', '<', now()->subMonths(22))
+                    ->orWhereNull('last_active_at');
+            })
             ->whereNull('inactive_warning_sent_at')
             ->where('is_admin', false)
             ->get();

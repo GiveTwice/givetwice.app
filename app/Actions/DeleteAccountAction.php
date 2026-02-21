@@ -40,7 +40,11 @@ class DeleteAccountAction
 
         foreach ($gifts as $gift) {
             /** @var Gift $gift */
-            $gift->clearMediaCollection('image');
+            try {
+                $gift->clearMediaCollection('image');
+            } catch (\Throwable $e) {
+                report($e);
+            }
         }
 
         $message = $auditPerformedBy === 'system'

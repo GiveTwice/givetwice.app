@@ -62,7 +62,7 @@ class ExportPersonalDataAction
 
     protected function wishlists(User $user): array
     {
-        return $user->lists->map(fn (GiftList $list) => [
+        return $user->lists()->get()->map(fn (GiftList $list) => [
             'name' => $list->name,
             'description' => $list->description,
             'is_default' => (bool) $list->is_default,

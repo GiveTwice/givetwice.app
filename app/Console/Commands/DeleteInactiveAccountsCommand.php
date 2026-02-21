@@ -16,7 +16,10 @@ class DeleteInactiveAccountsCommand extends Command
     public function handle(DeleteAccountAction $action): int
     {
         $users = User::query()
-            ->where('last_active_at', '<', now()->subMonths(24))
+            ->where(function ($query) {
+                $query->where('last_active_at', '<', now()->subMonths(24))
+                    ->orWhereNull('last_active_at');
+            })
             ->whereNotNull('inactive_warning_sent_at')
             ->where('inactive_warning_sent_at', '<', now()->subMonths(2))
             ->where('is_admin', false)

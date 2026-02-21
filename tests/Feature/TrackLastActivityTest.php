@@ -39,7 +39,7 @@ describe('Track last activity', function () {
         expect(User::count())->toBe(0);
     });
 
-    it('uses updateQuietly so updated_at is not changed by the middleware', function () {
+    it('does not touch updated_at when tracking activity', function () {
         $user = User::factory()->create(['last_active_at' => null]);
 
         $this->actingAs($user)->get('/en/dashboard');
