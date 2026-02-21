@@ -1,6 +1,48 @@
 import './bootstrap';
-
 import Alpine from 'alpinejs';
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(() => {});
+    });
+}
+
+window.isStandalonePwa = window.matchMedia('(display-mode: standalone)').matches
+    || window.navigator.standalone === true;
+
+// Standalone PWA: intercept link clicks to fix navigation quirks
+if (window.isStandalonePwa) {
+    document.addEventListener('click', (e) => {
+        const link = e.target.closest('a[href]');
+        if (!link) return;
+
+        const href = link.getAttribute('href');
+        if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+        if (link.hasAttribute('download')) return;
+
+        let url;
+        try {
+            url = new URL(href, window.location.origin);
+        } catch {
+            return;
+        }
+
+        const isExternal = url.origin !== window.location.origin;
+        const isOAuth = /^\/[a-z]{2}\/auth\/(google|facebook|apple)$/.test(url.pathname);
+
+        if (isExternal || isOAuth) {
+            // Open external links and OAuth flows in Safari to prevent
+            // replacing the PWA or polluting the history stack
+            e.preventDefault();
+            window.open(link.href, '_blank');
+        } else if (link.target === '_blank') {
+            // Internal links with target="_blank" should navigate within
+            // the PWA instead of opening a new Safari tab
+            e.preventDefault();
+            window.location.href = link.href;
+        }
+    });
+}
 
 window.Alpine = Alpine;
 
@@ -28,7 +70,7 @@ Alpine.data('publicList', (config) => ({
             grid.classList.remove('hidden');
         }
         const self = this;
-        fetch(`/${config.locale}/view/${config.slug}/gifts/${gift.id}/card`)
+        fetch(`/${config.locale}/v/${config.listId}/${config.slug}/gifts/${gift.id}/card`)
             .then(response => response.ok ? response.text() : Promise.reject())
             .then(html => {
                 // HTML is from our own server endpoint, safe to parse
@@ -119,11 +161,10 @@ Alpine.data('publicList', (config) => ({
             } else if (claimCount) {
                 claimCount.remove();
             }
-            // Don't change available/claimed counts or disable buttons
             return;
         }
 
-        // Regular gift - mark as claimed
+        if (!isClaimed) return;
         this.availableCount = Math.max(0, this.availableCount - 1);
         this.claimedCount++;
         const imgContainer = card.querySelector('[data-gift-image]');
@@ -136,22 +177,15 @@ Alpine.data('publicList', (config) => ({
             badgeWrapper.appendChild(badgeSpan);
             imgContainer.appendChild(badgeWrapper);
         }
-        const claimForm = card.querySelector('form[action*="/claim"]');
-        const claimLink = card.querySelector('a[href*="/claim"]');
-        if (claimForm) {
+        const claimTarget = card.querySelector('form[action*="/claim"]')
+            || card.querySelector('a[href*="/claim"]');
+        if (claimTarget) {
             const disabledBtn = document.createElement('button');
             disabledBtn.type = 'button';
             disabledBtn.disabled = true;
             disabledBtn.className = 'w-full text-xs bg-cream-200 text-cream-500 px-3 py-2 rounded-lg cursor-not-allowed';
             disabledBtn.textContent = config.translations.alreadyClaimed;
-            claimForm.replaceWith(disabledBtn);
-        } else if (claimLink) {
-            const disabledBtn = document.createElement('button');
-            disabledBtn.type = 'button';
-            disabledBtn.disabled = true;
-            disabledBtn.className = 'w-full text-xs bg-cream-200 text-cream-500 px-3 py-2 rounded-lg cursor-not-allowed';
-            disabledBtn.textContent = config.translations.alreadyClaimed;
-            claimLink.replaceWith(disabledBtn);
+            claimTarget.replaceWith(disabledBtn);
         }
     }
 }));

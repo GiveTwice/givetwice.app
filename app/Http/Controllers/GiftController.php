@@ -225,16 +225,18 @@ class GiftController extends Controller
         ]);
     }
 
-    public function cardHtml(string $locale, int $list, string $slug, Gift $gift): Response
+    public function cardHtml(string $locale, int $list, string $slug, int $giftId): Response
     {
-        $list = GiftList::findOrFail($list);
+        $giftList = GiftList::findOrFail($list);
 
-        // Verify the gift belongs to this list
-        if (! $list->gifts()->where('gifts.id', $gift->id)->exists()) {
+        if ($giftList->slug !== $slug) {
             abort(404);
         }
 
+        $gift = $giftList->gifts()->findOrFail($giftId);
+
         $gift->loadCount('claims');
+        $gift->load(['claims' => fn ($q) => $q->whereNotNull('confirmed_at')]);
 
         $html = view('components.gift-card', [
             'gift' => $gift,

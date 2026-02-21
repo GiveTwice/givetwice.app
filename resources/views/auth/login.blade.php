@@ -7,7 +7,7 @@
 @section('robots', 'noindex, nofollow')
 
 @section('content')
-<div class="bg-white p-8 sm:p-10 rounded-2xl shadow-sm border border-cream-200" x-data="{ showEmailForm: {{ old('email') || $errors->any() ? 'true' : 'false' }} }">
+<div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-cream-200" x-data="{ showEmailForm: {{ old('email') || $errors->any() ? 'true' : 'false' }} }">
     {{-- Header section with generous spacing --}}
     <div class="flex items-center gap-4 mb-8">
         <div class="flex-shrink-0 w-12 h-12 bg-coral-100 text-coral-500 rounded-xl text-2xl flex items-center justify-center transform -rotate-3">
@@ -92,7 +92,7 @@
                            class="form-input">
                 </div>
 
-                <div class="flex items-center justify-between">
+                <div class="flex flex-wrap items-center justify-between gap-2">
                     <div class="flex items-center">
                         <input type="checkbox" name="remember" id="remember" class="w-4 h-4 text-coral-500 border-cream-300 rounded focus:ring-coral-400">
                         <label for="remember" class="ml-2 text-gray-600 text-sm">{{ __('Remember me') }}</label>

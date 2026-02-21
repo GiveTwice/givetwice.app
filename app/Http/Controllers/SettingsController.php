@@ -119,16 +119,16 @@ class SettingsController extends Controller
         return back()->with('status', 'password-updated');
     }
 
-    public function destroySession(Request $request, string $sessionId): RedirectResponse
+    public function destroySession(Request $request, string $locale, string $session): RedirectResponse
     {
         $currentSessionId = $request->session()->getId();
 
-        if ($sessionId === $currentSessionId) {
+        if ($session === $currentSessionId) {
             return back()->with('error', __('You cannot log out of your current session from here.'));
         }
 
         DB::table('sessions')
-            ->where('id', $sessionId)
+            ->where('id', $session)
             ->where('user_id', $request->user()->id)
             ->delete();
 

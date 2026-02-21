@@ -161,11 +161,11 @@
                     </div>
                 </details>
 
-                <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-100">
-                    <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="btn-cancel">
+                <div class="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 pt-6 border-t border-gray-100">
+                    <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="btn-cancel text-center">
                         {{ __('Cancel') }}
                     </a>
-                    <button type="submit" class="btn-primary">
+                    <button type="submit" class="btn-primary justify-center">
                         <x-icons.plus class="w-5 h-5" />
                         {{ __('Add Gift') }}
                     </button>

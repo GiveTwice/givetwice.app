@@ -16,6 +16,7 @@
 
 <div
     x-data="publicList({
+        listId: {{ $list->id }},
         slug: '{{ $list->slug }}',
         locale: '{{ app()->getLocale() }}',
         availableCount: {{ $availableGifts }},
@@ -97,20 +98,20 @@
         <div class="px-5 sm:px-6 py-4 bg-cream-50/50 border-t border-cream-100">
             <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
 
-                <div class="flex items-center gap-3 text-sm">
+                <div class="flex items-center gap-2 sm:gap-3 text-sm">
                     <span class="flex items-center gap-1.5">
-                        <span class="w-6 h-6 bg-coral-100 text-coral-600 rounded-full flex items-center justify-center text-xs font-bold shadow-sm">1</span>
-                        <span class="text-gray-600 font-medium">{{ __('Browse') }}</span>
+                        <span class="w-6 h-6 bg-coral-100 text-coral-600 rounded-full flex items-center justify-center text-xs font-bold shadow-sm flex-shrink-0">1</span>
+                        <span class="text-gray-600 font-medium hidden sm:inline">{{ __('Browse') }}</span>
                     </span>
-                    <x-icons.chevron-right class="w-4 h-4 text-gray-300" />
+                    <x-icons.chevron-right class="w-4 h-4 text-gray-300 flex-shrink-0" />
                     <span class="flex items-center gap-1.5">
-                        <span class="w-6 h-6 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center text-xs font-bold shadow-sm">2</span>
-                        <span class="text-gray-600 font-medium">{{ __('Claim') }}</span>
+                        <span class="w-6 h-6 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center text-xs font-bold shadow-sm flex-shrink-0">2</span>
+                        <span class="text-gray-600 font-medium hidden sm:inline">{{ __('Claim') }}</span>
                     </span>
-                    <x-icons.chevron-right class="w-4 h-4 text-gray-300" />
+                    <x-icons.chevron-right class="w-4 h-4 text-gray-300 flex-shrink-0" />
                     <span class="flex items-center gap-1.5">
-                        <span class="w-6 h-6 bg-sunny-200 text-sunny-700 rounded-full flex items-center justify-center text-xs font-bold shadow-sm">3</span>
-                        <span class="text-gray-600 font-medium">{{ __('Gift') }}</span>
+                        <span class="w-6 h-6 bg-sunny-200 text-sunny-700 rounded-full flex items-center justify-center text-xs font-bold shadow-sm flex-shrink-0">3</span>
+                        <span class="text-gray-600 font-medium hidden sm:inline">{{ __('Gift') }}</span>
                     </span>
                 </div>
 
@@ -141,16 +142,16 @@
 
 <div class="bg-white rounded-2xl shadow-sm border border-cream-200/60 overflow-hidden">
 
-    <div class="px-6 py-5 border-b border-gray-100">
-        <div class="flex items-center justify-between">
-            <h2 class="text-xl font-bold text-gray-900">{{ __('Gift Ideas') }}</h2>
+    <div class="px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-100">
+        <div class="flex items-center justify-between gap-2">
+            <h2 class="text-lg sm:text-xl font-bold text-gray-900">{{ __('Gift Ideas') }}</h2>
             @unless($isOwner)
-                <p class="text-sm text-gray-500">{{ __('Click a gift for details') }}</p>
+                <p class="text-sm text-gray-500 text-right">{{ __('Click a gift for details') }}</p>
             @endunless
         </div>
     </div>
 
-    <div class="p-6">
+    <div class="p-4 sm:p-6">
         @if($gifts->isEmpty())
             <div class="py-12 text-center" data-empty-state>
                 <div class="w-20 h-20 bg-cream-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -159,9 +160,9 @@
                 <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ __('No gifts yet') }}</h3>
                 <p class="text-gray-500">{{ __(':name hasn\'t added any gifts to this list yet.', ['name' => $list->creator->name]) }}</p>
             </div>
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 hidden" data-gift-grid></div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 hidden" data-gift-grid></div>
         @else
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4" data-gift-grid>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4" data-gift-grid>
                 @foreach($gifts as $gift)
                     <x-gift-card :gift="$gift" :showClaimActions="true" :isOwner="$isOwner" :openModal="true" />
                 @endforeach

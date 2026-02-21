@@ -1,6 +1,14 @@
 {
     "name": "GiveTwice",
     "short_name": "GiveTwice",
+    "description": "Create and share wishlists. All affiliate revenue goes to charity.",
+    "id": "/",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "theme_color": "#f97066",
+    "background_color": "#fffbf5",
+    "categories": ["shopping", "lifestyle"],
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
@@ -11,9 +19,60 @@
             "src": "/android-chrome-512x512.png",
             "sizes": "512x512",
             "type": "image/png"
+        },
+        {
+            "src": "/android-chrome-maskable-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/android-chrome-maskable-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
         }
     ],
-    "theme_color": "#f97066",
-    "background_color": "#fffbf5",
-    "display": "standalone"
+    "screenshots": [
+        {
+            "src": "/images/pwa/screenshot-mobile.png",
+            "sizes": "780x1688",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "GiveTwice home page on mobile"
+        },
+        {
+            "src": "/images/pwa/screenshot-desktop.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "GiveTwice home page on desktop"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Dashboard",
+            "short_name": "Dashboard",
+            "url": "/dashboard",
+            "icons": [
+                {
+                    "src": "/android-chrome-192x192.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                }
+            ]
+        },
+        {
+            "name": "Create list",
+            "short_name": "New list",
+            "url": "/lists/create",
+            "icons": [
+                {
+                    "src": "/android-chrome-192x192.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                }
+            ]
+        }
+    ]
 }

@@ -289,9 +289,9 @@
 
             <div class="lg:col-span-2">
                 <div class="space-y-4">
-                    <div class="flex items-center justify-between p-4 bg-cream-50 rounded-xl">
+                    <div class="flex items-center justify-between gap-3 p-4 bg-cream-50 rounded-xl">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-coral-100 flex items-center justify-center">
+                            <div class="hidden sm:flex w-10 h-10 rounded-full bg-coral-100 flex-shrink-0 items-center justify-center">
                                 <x-icons.users class="w-5 h-5 text-coral-600" />
                             </div>
                             <div>
@@ -299,7 +299,7 @@
                                 <p class="text-sm text-gray-500">{{ __('Receive daily updates when friends update their wishlists') }}</p>
                             </div>
                         </div>
-                        <div class="relative">
+                        <div class="relative flex-shrink-0">
                             <button
                                 type="button"
                                 x-on:click="toggleNotifications()"
@@ -365,7 +365,7 @@
                                 type="button"
                                 x-on:click="enableTwoFactor()"
                                 :disabled="loading"
-                                class="inline-flex items-center gap-2 bg-teal-600 text-white px-5 py-2.5 rounded-xl hover:bg-teal-700 transition-colors font-medium disabled:opacity-50"
+                                class="w-full sm:w-auto justify-center inline-flex items-center gap-2 bg-teal-600 text-white px-5 py-2.5 rounded-xl hover:bg-teal-700 transition-colors font-medium disabled:opacity-50"
                             >
                                 <x-icons.shield-check class="w-5 h-5" />
                                 <span x-show="!loading">{{ __('Enable two-factor authentication') }}</span>
@@ -584,7 +584,7 @@
                                 <button
                                     type="button"
                                     x-on:click="$dispatch('open-confirm-disable-2fa')"
-                                    class="inline-flex items-center gap-2 bg-gray-100 text-gray-700 px-4 py-2.5 rounded-xl hover:bg-gray-200 transition-colors font-medium"
+                                    class="w-full sm:w-auto justify-center inline-flex items-center gap-2 bg-gray-100 text-gray-700 px-4 py-2.5 rounded-xl hover:bg-gray-200 transition-colors font-medium"
                                 >
                                     {{ __('Disable two-factor authentication') }}
                                 </button>
@@ -638,9 +638,9 @@
 
                 <div class="space-y-4 mb-6">
                     @foreach($sessions as $session)
-                        <div class="flex items-center justify-between p-4 bg-cream-50 rounded-xl">
-                            <div class="flex items-center gap-4">
-                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-white flex items-center justify-center border border-cream-200">
+                        <div class="flex items-start sm:items-center justify-between gap-3 p-4 bg-cream-50 rounded-xl">
+                            <div class="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0">
+                                <div class="hidden sm:flex flex-shrink-0 w-10 h-10 rounded-full bg-white items-center justify-center border border-cream-200">
                                     @if($session->device === 'Mobile' || $session->device === 'iPhone')
                                         <x-icons.device-mobile class="w-5 h-5 text-gray-500" />
                                     @elseif($session->device === 'Tablet' || $session->device === 'iPad')
@@ -649,8 +649,8 @@
                                         <x-icons.device-desktop class="w-5 h-5 text-gray-500" />
                                     @endif
                                 </div>
-                                <div>
-                                    <div class="flex items-center gap-2">
+                                <div class="min-w-0">
+                                    <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
                                         <span class="font-medium text-gray-900">
                                             {{ $session->platform }} - {{ $session->browser }}
                                         </span>
@@ -668,7 +668,7 @@
                                 <form method="POST" action="{{ route('settings.sessions.destroy', ['locale' => app()->getLocale(), 'session' => $session->id]) }}">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-sm text-gray-500 hover:text-red-600 transition-colors font-medium">
+                                    <button type="submit" class="flex-shrink-0 text-sm text-gray-500 hover:text-red-600 transition-colors font-medium">
                                         {{ __('Log out') }}
                                     </button>
                                 </form>
@@ -684,7 +684,7 @@
                         <button
                             type="button"
                             x-on:click="$dispatch('open-confirm-logout-sessions')"
-                            class="inline-flex items-center gap-2 bg-gray-100 text-gray-700 px-4 py-2.5 rounded-xl hover:bg-gray-200 transition-colors font-medium"
+                            class="w-full sm:w-auto justify-center inline-flex items-center gap-2 bg-gray-100 text-gray-700 px-4 py-2.5 rounded-xl hover:bg-gray-200 transition-colors font-medium"
                         >
                             <x-icons.logout class="w-5 h-5" />
                             {{ __('Log out other browser sessions') }}
@@ -707,7 +707,7 @@
         <button
             type="button"
             x-on:click="$dispatch('open-confirm-delete-account')"
-            class="inline-flex items-center gap-2 bg-red-600 text-white px-5 py-2.5 rounded-xl hover:bg-red-700 transition-colors font-medium whitespace-nowrap"
+            class="w-full sm:w-auto justify-center inline-flex items-center gap-2 bg-red-600 text-white px-5 py-2.5 rounded-xl hover:bg-red-700 transition-colors font-medium"
         >
             <x-icons.trash class="w-5 h-5" />
             {{ __('Delete account') }}
@@ -763,17 +763,17 @@
             </div>
         @endif
 
-        <div class="flex items-center justify-end gap-3">
+        <div class="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3">
             <button
                 type="button"
                 x-on:click="open = false"
-                class="px-4 py-2.5 text-gray-700 font-medium hover:bg-gray-100 rounded-xl transition-colors"
+                class="px-4 py-2.5 text-gray-700 font-medium hover:bg-gray-100 rounded-xl transition-colors text-center"
             >
                 {{ __('Cancel') }}
             </button>
             <button
                 type="submit"
-                class="inline-flex items-center gap-2 bg-red-600 text-white px-4 py-2.5 rounded-xl hover:bg-red-700 transition-colors font-medium"
+                class="inline-flex items-center justify-center gap-2 bg-red-600 text-white px-4 py-2.5 rounded-xl hover:bg-red-700 transition-colors font-medium"
             >
                 <x-icons.trash class="w-5 h-5" />
                 {{ __('Delete account') }}

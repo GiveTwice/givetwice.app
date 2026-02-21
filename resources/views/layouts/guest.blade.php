@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>@yield('title', 'Welcome') | {{ config('app.name', 'GiveTwice') }}</title>
@@ -33,10 +33,10 @@
     @endif
     <meta property="og:image" content="{{ asset('images/og-image.png') }}">
     <meta property="og:site_name" content="{{ config('app.name', 'GiveTwice') }}">
-    @php $currentLocale = \App\Enums\SupportedLocale::tryFrom(app()->getLocale()); @endphp
+    @php use App\Enums\SupportedLocale; $currentLocale = SupportedLocale::tryFrom(app()->getLocale()); @endphp
     @if($currentLocale)
         <meta property="og:locale" content="{{ $currentLocale->ogLocale() }}">
-        @foreach(\App\Enums\SupportedLocale::cases() as $locale)
+        @foreach(SupportedLocale::cases() as $locale)
             @if($locale !== $currentLocale)
                 <meta property="og:locale:alternate" content="{{ $locale->ogLocale() }}">
             @endif
@@ -63,6 +63,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
     <meta name="theme-color" content="#f97066">
+    <x-ios-pwa-tags />
 
     <!-- Hreflang alternate URLs for SEO -->
     <x-hreflang-tags />
@@ -74,14 +75,19 @@
         {{ __('Skip to content') }}
     </a>
 
-    <header class="bg-white border-b border-cream-200">
-        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header class="bg-white border-b border-cream-200 sticky top-0 z-40 md:static md:z-auto safe-area-header safe-area-x">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" x-data="{ mobileOpen: false }" @click.outside="mobileOpen = false">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
                     <x-logo />
                 </div>
 
-                <div class="flex items-center space-x-6">
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="text-gray-600 hover:text-gray-900 transition-colors">{{ __('How it works') }}</a>
+                    <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="text-gray-600 hover:text-gray-900 transition-colors">{{ __('About') }}</a>
+
+                    <span class="text-cream-300">|</span>
+
                     <a href="{{ url('/' . app()->getLocale() . '/login') }}" class="text-gray-600 hover:text-coral-600 transition-colors">{{ __('Login') }}</a>
                     @if(config('app.allow_registration'))
                         <x-nav-button href="{{ url('/' . app()->getLocale() . '/register') }}">{{ __('Sign Up') }}</x-nav-button>
@@ -89,7 +95,26 @@
 
                     <x-language-switcher />
                 </div>
+
+                <x-mobile-menu-toggle />
             </div>
+
+            <x-mobile-menu-panel>
+                <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('How it works') }}</a>
+                <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('About') }}</a>
+
+                <div class="border-t border-cream-200 my-2"></div>
+
+                <a href="{{ url('/' . app()->getLocale() . '/login') }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('Login') }}</a>
+                @if(config('app.allow_registration'))
+                    <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="block px-3 py-2 bg-coral-500 text-white rounded-lg text-center font-medium">{{ __('Sign Up') }}</a>
+                @endif
+
+                <div class="border-t border-cream-200 my-2"></div>
+                <div class="px-3 py-2">
+                    <x-language-switcher />
+                </div>
+            </x-mobile-menu-panel>
         </nav>
     </header>
 
@@ -118,13 +143,13 @@
         @endif
     </div>
 
-    <main id="main-content" class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <main id="main-content" class="flex-grow flex items-center justify-center py-6 sm:py-12 px-4 sm:px-6 lg:px-8 safe-area-x">
         <div class="w-full max-w-md">
             @yield('content')
         </div>
     </main>
 
-    <footer class="bg-white border-t border-cream-200 mt-12">
+    <footer class="bg-white border-t border-cream-200 mt-12 safe-area-bottom safe-area-x">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
                 <p class="text-gray-500 text-sm">
@@ -145,5 +170,7 @@
             </div>
         </div>
     </footer>
+
+    @stack('scripts')
 </body>
 </html>

@@ -5,7 +5,7 @@
 @section('robots', 'noindex, nofollow')
 
 @section('content')
-<div class="bg-white p-8 sm:p-10 rounded-2xl shadow-sm border border-cream-200">
+<div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-cream-200">
     <div class="text-center mb-6">
         <div class="inline-flex items-center justify-center w-14 h-14 bg-sunny-100 text-sunny-600 rounded-2xl text-2xl mb-4 transform rotate-3">
             &#128273;

@@ -41,13 +41,13 @@
         class="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
     >
         <div
-            class="relative bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden pointer-events-auto"
+            class="relative bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[100dvh] overflow-hidden pointer-events-auto"
             x-on:click.stop
         >
 
             <button
                 x-on:click="open = false"
-                class="absolute top-3 right-3 z-10 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+                class="absolute top-2 right-2 z-10 p-2.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
                 aria-label="{{ __('Close') }}"
             >
                 <x-icons.close class="w-6 h-6" />
@@ -79,7 +79,7 @@
                     </button>
                 </div>
 
-                <div class="md:w-1/2 p-6 md:p-8 flex flex-col overflow-y-auto max-h-[50vh] md:max-h-[90vh]">
+                <div class="md:w-1/2 p-6 md:p-8 flex flex-col overflow-y-auto max-h-[50dvh] md:max-h-[100dvh]">
 
                     <h2 class="text-2xl md:text-3xl font-bold text-coral-600 leading-tight mb-3">
                         {{ $gift->title ?: __('Untitled gift') }}

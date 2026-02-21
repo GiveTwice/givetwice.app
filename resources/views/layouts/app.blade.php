@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>@yield('title', 'Home') | {{ config('app.name', 'GiveTwice') }}</title>
@@ -33,10 +33,10 @@
     @endif
     <meta property="og:image" content="{{ asset('images/og-image.png') }}">
     <meta property="og:site_name" content="{{ config('app.name', 'GiveTwice') }}">
-    @php $currentLocale = \App\Enums\SupportedLocale::tryFrom(app()->getLocale()); @endphp
+    @php use App\Enums\SupportedLocale; $currentLocale = SupportedLocale::tryFrom(app()->getLocale()); @endphp
     @if($currentLocale)
         <meta property="og:locale" content="{{ $currentLocale->ogLocale() }}">
-        @foreach(\App\Enums\SupportedLocale::cases() as $locale)
+        @foreach(SupportedLocale::cases() as $locale)
             @if($locale !== $currentLocale)
                 <meta property="og:locale:alternate" content="{{ $locale->ogLocale() }}">
             @endif
@@ -63,6 +63,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
     <meta name="theme-color" content="#f97066">
+    <x-ios-pwa-tags />
 
     <!-- Hreflang alternate URLs for SEO -->
     <x-hreflang-tags />
@@ -72,7 +73,7 @@
 </head>
 <body class="min-h-screen bg-gradient-warm flex flex-col">
     @impersonating($guard = null)
-        <div class="bg-coral-500 text-white text-center py-2 px-4 text-sm font-medium sticky top-0 z-[60]">
+        <div class="bg-coral-500 text-white text-center py-2 px-4 text-sm font-medium sticky top-0 z-[60] safe-area-header safe-area-x">
             You are impersonating <strong>{{ auth()->user()->name }}</strong>.
             <a href="{{ route('impersonate.leave') }}" class="underline ml-2 font-bold hover:text-coral-100">
                 Stop impersonating
@@ -84,8 +85,8 @@
         {{ __('Skip to content') }}
     </a>
 
-    <header class="bg-white border-b border-cream-200">
-        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header class="bg-white border-b border-cream-200 sticky top-0 z-40 md:static md:z-auto safe-area-header safe-area-x">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" x-data="{ mobileOpen: false }" @click.outside="mobileOpen = false">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
                     <x-logo />
@@ -113,84 +114,77 @@
                     @endauth
                 </div>
 
-                <div class="md:hidden flex items-center">
-                    <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="text-gray-600 hover:text-gray-900" aria-label="{{ __('Toggle navigation') }}">
-                        <x-icons.menu class="h-6 w-6" aria-hidden="true" />
-                    </button>
-                </div>
+                <x-mobile-menu-toggle />
             </div>
 
-            <div id="mobile-menu" class="hidden md:hidden pb-4">
-                <div class="space-y-2">
-                    <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('How it works') }}</a>
-                    <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('About') }}</a>
+            <x-mobile-menu-panel>
+                <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('How it works') }}</a>
+                <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('About') }}</a>
 
-                    <div class="border-t border-cream-200 my-2"></div>
+                <div class="border-t border-cream-200 my-2"></div>
 
-                    @auth
-                        @php
-                            $mobileUser = auth()->user();
-                            $mobileHasImage = $mobileUser->hasProfileImage();
-                            $mobileImageUrl = $mobileUser->getProfileImageUrl('thumb');
-                            $mobileInitials = $mobileUser->getInitials();
-                        @endphp
-                        {{-- User info --}}
+                @auth
+                    @php
+                        $mobileUser = auth()->user();
+                        $mobileHasImage = $mobileUser->hasProfileImage();
+                        $mobileImageUrl = $mobileUser->getProfileImageUrl('thumb');
+                        $mobileInitials = $mobileUser->getInitials();
+                    @endphp
+                    <div
+                        class="px-3 py-3 flex items-center gap-3"
+                        x-data="{
+                            hasImage: @js($mobileHasImage),
+                            imageUrl: @js($mobileImageUrl),
+                            initials: @js($mobileInitials)
+                        }"
+                        @profile-image-updated.window="hasImage = $event.detail.hasImage; imageUrl = $event.detail.imageUrl; initials = $event.detail.initials"
+                    >
                         <div
-                            class="px-3 py-3 flex items-center gap-3"
-                            x-data="{
-                                hasImage: @js($mobileHasImage),
-                                imageUrl: @js($mobileImageUrl),
-                                initials: @js($mobileInitials)
-                            }"
-                            @profile-image-updated.window="hasImage = $event.detail.hasImage; imageUrl = $event.detail.imageUrl; initials = $event.detail.initials"
+                            class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center overflow-hidden"
+                            :class="hasImage ? 'ring-2 ring-cream-200' : 'bg-gradient-to-br from-coral-400 to-coral-500'"
                         >
-                            <div
-                                class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center overflow-hidden"
-                                :class="hasImage ? 'ring-2 ring-cream-200' : 'bg-gradient-to-br from-coral-400 to-coral-500'"
-                            >
-                                <template x-if="hasImage">
-                                    <img :src="imageUrl" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
-                                </template>
-                                <template x-if="!hasImage">
-                                    <span class="text-white font-bold text-sm tracking-tight" x-text="initials"></span>
-                                </template>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-semibold text-gray-900 truncate">{{ auth()->user()->name }}</p>
-                                <p class="text-xs text-gray-500 truncate">{{ auth()->user()->email }}</p>
-                            </div>
+                            <template x-if="hasImage">
+                                <img :src="imageUrl" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
+                            </template>
+                            <template x-if="!hasImage">
+                                <span class="text-white font-bold text-sm tracking-tight" x-text="initials"></span>
+                            </template>
                         </div>
-
-                        <div class="border-t border-cream-200 my-2"></div>
-
-                        <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">
-                            <x-icons.home class="w-5 h-5" />
-                            <span>{{ __('Dashboard') }}</span>
-                        </a>
-                        <a href="{{ url('/' . app()->getLocale() . '/settings') }}" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">
-                            <x-icons.settings class="w-5 h-5" />
-                            <span>{{ __('Settings') }}</span>
-                        </a>
-                        <form method="POST" action="{{ url('/logout') }}">
-                            @csrf
-                            <button type="submit" class="flex items-center gap-3 w-full px-3 py-2 text-gray-600 hover:text-red-700 hover:bg-red-50 rounded-lg">
-                                <x-icons.logout class="w-5 h-5" />
-                                <span>{{ __('Log out') }}</span>
-                            </button>
-                        </form>
-                    @else
-                        <a href="{{ url('/' . app()->getLocale() . '/login') }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('Login') }}</a>
-                        @if(config('app.allow_registration'))
-                            <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="block px-3 py-2 bg-coral-500 text-white rounded-lg text-center font-medium">{{ __('Sign Up') }}</a>
-                        @endif
-                    @endauth
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold text-gray-900 truncate">{{ auth()->user()->name }}</p>
+                            <p class="text-xs text-gray-500 truncate">{{ auth()->user()->email }}</p>
+                        </div>
+                    </div>
 
                     <div class="border-t border-cream-200 my-2"></div>
-                    <div class="px-3 py-2">
-                        <x-language-switcher />
-                    </div>
+
+                    <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">
+                        <x-icons.home class="w-5 h-5" />
+                        <span>{{ __('Dashboard') }}</span>
+                    </a>
+                    <a href="{{ url('/' . app()->getLocale() . '/settings') }}" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">
+                        <x-icons.settings class="w-5 h-5" />
+                        <span>{{ __('Settings') }}</span>
+                    </a>
+                    <form method="POST" action="{{ url('/logout') }}">
+                        @csrf
+                        <button type="submit" class="flex items-center gap-3 w-full px-3 py-2 text-gray-600 hover:text-red-700 hover:bg-red-50 rounded-lg">
+                            <x-icons.logout class="w-5 h-5" />
+                            <span>{{ __('Log out') }}</span>
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ url('/' . app()->getLocale() . '/login') }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('Login') }}</a>
+                    @if(config('app.allow_registration'))
+                        <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="block px-3 py-2 bg-coral-500 text-white rounded-lg text-center font-medium">{{ __('Sign Up') }}</a>
+                    @endif
+                @endauth
+
+                <div class="border-t border-cream-200 my-2"></div>
+                <div class="px-3 py-2">
+                    <x-language-switcher />
                 </div>
-            </div>
+            </x-mobile-menu-panel>
         </nav>
     </header>
 
@@ -254,13 +248,39 @@
         @endif
     </div>
 
-    <main id="main-content" class="flex-grow">
+    <div
+        x-data="{
+            online: navigator.onLine,
+            init() {
+                window.addEventListener('online', () => this.online = true);
+                window.addEventListener('offline', () => this.online = false);
+            }
+        }"
+        x-show="!online"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 translate-y-4"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 translate-y-4"
+        x-cloak
+        class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 bg-cream-100 border border-cream-300 rounded-full shadow-lg flex items-center gap-2"
+        role="status"
+        aria-live="polite"
+    >
+        <span class="w-2 h-2 bg-gray-400 rounded-full"></span>
+        <span class="text-sm font-medium text-gray-600">{{ __('Viewing offline') }}</span>
+    </div>
+
+    <main id="main-content" class="flex-grow safe-area-x">
         <div class="max-w-7xl mx-auto pt-6 pb-20 px-4 sm:px-6 lg:px-8">
             @yield('content')
         </div>
     </main>
 
     <x-footer />
+
+    <x-install-banner />
 
     @stack('scripts')
 </body>

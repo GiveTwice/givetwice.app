@@ -25,9 +25,9 @@
     }
 }">
     <!-- Share Button -->
-    <button @click="open = true" class="btn-share">
+    <button @click="open = true" class="btn-share" title="{{ __('Share') }}">
         <x-icons.share class="w-5 h-5" />
-        {{ __('Share') }}
+        <span class="hidden sm:inline">{{ __('Share') }}</span>
     </button>
 
     <!-- Modal Backdrop -->
@@ -57,11 +57,11 @@
         class="fixed inset-0 z-50 flex items-center justify-center p-4"
         @click.self="open = false"
     >
-        <div class="relative bg-white rounded-xl shadow-xl max-w-xl w-full p-6" @click.stop>
+        <div class="relative bg-white rounded-xl shadow-xl max-w-xl w-full max-h-[100dvh] overflow-y-auto p-6" @click.stop>
             <!-- Header -->
             <div class="flex justify-between items-start mb-4">
-                <h2 class="text-xl font-bold text-gray-900">{{ __('Share Your Wishlist') }}</h2>
-                <button @click="open = false" class="text-gray-400 hover:text-gray-600">
+                <h2 class="text-xl font-bold text-gray-900">{{ __('Share your wishlist') }}</h2>
+                <button @click="open = false" class="-m-1 p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors" aria-label="{{ __('Close') }}">
                     <x-icons.close class="w-6 h-6" />
                 </button>
             </div>
@@ -94,55 +94,57 @@
             <!-- Public URL -->
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Public Link') }}</label>
-                <div class="flex gap-2">
+                <div class="space-y-2">
                     <input
                         type="text"
                         value="{{ $publicUrl }}"
                         readonly
-                        class="flex-1 min-w-0 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none"
+                        class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none"
                     >
-                    <a
-                        href="{{ $publicUrl }}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="px-3 py-2 bg-sunny-200 text-sunny-800 rounded-lg hover:bg-sunny-300 transition-colors flex items-center gap-1.5 whitespace-nowrap font-medium"
-                    >
-                        {{ __('View') }}
-                        <x-icons.external-link class="w-3.5 h-3.5" />
-                    </a>
-                    <button
-                        @click="copyToClipboard('{{ $publicUrl }}', 'url')"
-                        class="w-[88px] px-4 py-2 bg-coral-500 text-white rounded-lg hover:bg-coral-600 transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap"
-                    >
-                        <template x-if="!copiedUrl">
-                            <span class="flex items-center gap-1.5">
-                                <x-icons.copy class="w-4 h-4" />
-                                {{ __('Copy') }}
-                            </span>
-                        </template>
-                        <template x-if="copiedUrl">
-                            <span class="flex items-center gap-1.5 text-white">
-                                <x-icons.checkmark class="w-4 h-4" />
-                                {{ __('Copied!') }}
-                            </span>
-                        </template>
-                    </button>
+                    <div class="flex gap-2">
+                        <a
+                            href="{{ $publicUrl }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="flex-1 px-3 py-2 bg-sunny-200 text-sunny-800 rounded-lg hover:bg-sunny-300 transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap font-medium"
+                        >
+                            {{ __('View') }}
+                            <x-icons.external-link class="w-3.5 h-3.5" />
+                        </a>
+                        <button
+                            @click="copyToClipboard(@js($publicUrl), 'url')"
+                            class="flex-1 px-4 py-2 bg-coral-500 text-white rounded-lg hover:bg-coral-600 transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap"
+                        >
+                            <template x-if="!copiedUrl">
+                                <span class="flex items-center gap-1.5">
+                                    <x-icons.copy class="w-4 h-4" />
+                                    {{ __('Copy') }}
+                                </span>
+                            </template>
+                            <template x-if="copiedUrl">
+                                <span class="flex items-center gap-1.5 text-white">
+                                    <x-icons.checkmark class="w-4 h-4" />
+                                    {{ __('Copied!') }}
+                                </span>
+                            </template>
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <!-- Ready-to-send message -->
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Ready-to-send message') }}</label>
-                <div class="flex gap-2">
+                <div class="space-y-2">
                     <input
                         type="text"
                         value="{{ $shareMessage }}"
                         readonly
-                        class="flex-1 min-w-0 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none"
+                        class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none"
                     >
                     <button
-                        @click="copyToClipboard(`{{ $shareMessage }}`, 'message')"
-                        class="w-[88px] px-4 py-2 bg-coral-500 text-white rounded-lg hover:bg-coral-600 transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap"
+                        @click="copyToClipboard(@js($shareMessage), 'message')"
+                        class="w-full px-4 py-2 bg-coral-500 text-white rounded-lg hover:bg-coral-600 transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap"
                     >
                         <template x-if="!copiedMessage">
                             <span class="flex items-center gap-1.5">
