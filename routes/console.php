@@ -46,14 +46,17 @@ Schedule::command('friends:send-digest')
     ->dailyAt('13:00')
     ->monitorName('Friend Digest Emails');
 
+// Prune expired invitations, tokens, and sessions daily
 Schedule::command('app:prune-expired-data')
     ->daily()
     ->monitorName('Prune Expired Data');
 
+// Warn users inactive for 22+ months (GDPR account lifecycle)
 Schedule::command('app:warn-inactive-accounts')
     ->weekly()
     ->monitorName('Warn Inactive Accounts');
 
+// Delete accounts inactive for 24+ months after 2-month warning period
 Schedule::command('app:delete-inactive-accounts')
     ->weekly()
     ->monitorName('Delete Inactive Accounts');

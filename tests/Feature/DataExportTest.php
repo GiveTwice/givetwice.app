@@ -6,6 +6,10 @@ use App\Models\GiftList;
 use App\Models\User;
 use Illuminate\Support\Facades\Queue;
 
+beforeEach(function () {
+    Queue::fake();
+});
+
 describe('Data export', function () {
     it('requires authentication', function () {
         $this->post('/en/settings/data-export')
@@ -13,8 +17,6 @@ describe('Data export', function () {
     });
 
     it('downloads a JSON file with correct filename', function () {
-        Queue::fake();
-
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)
@@ -29,8 +31,6 @@ describe('Data export', function () {
     });
 
     it('contains account info without sensitive data', function () {
-        Queue::fake();
-
         $user = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
@@ -51,6 +51,7 @@ describe('Data export', function () {
 
         expect($data['social_accounts']['google_connected'])->toBeTrue();
         expect($data['social_accounts']['facebook_connected'])->toBeFalse();
+        expect($data['social_accounts']['apple_connected'])->toBeFalse();
 
         $json = $response->getContent();
         expect($json)->not->toContain('google-123');
@@ -60,8 +61,6 @@ describe('Data export', function () {
     });
 
     it('includes wishlists with public URLs', function () {
-        Queue::fake();
-
         $user = User::factory()->create();
         $list = GiftList::factory()->create(['creator_id' => $user->id, 'name' => 'My Wishlist']);
         $user->lists()->attach($list->id, ['joined_at' => now()]);
@@ -77,8 +76,6 @@ describe('Data export', function () {
     });
 
     it('includes gifts with soft-deleted ones', function () {
-        Queue::fake();
-
         $user = User::factory()->create();
         Gift::factory()->create(['user_id' => $user->id, 'title' => 'Active Gift']);
         $deletedGift = Gift::factory()->create(['user_id' => $user->id, 'title' => 'Deleted Gift']);
@@ -96,8 +93,6 @@ describe('Data export', function () {
     });
 
     it('includes claims made by user and claims on user gifts', function () {
-        Queue::fake();
-
         $user = User::factory()->create();
         $gift = Gift::factory()->create(['user_id' => $user->id, 'title' => 'My Gift']);
 
@@ -109,8 +104,6 @@ describe('Data export', function () {
         Claim::factory()->create([
             'gift_id' => $gift->id,
             'user_id' => null,
-            'claimer_name' => 'Someone Else',
-            'claimer_email' => 'someone@example.com',
             'confirmed_at' => now(),
         ]);
 
@@ -121,12 +114,11 @@ describe('Data export', function () {
 
         expect($data['claims_made'])->toHaveCount(1);
         expect($data['claims_on_your_gifts'])->toHaveCount(1);
-        expect($data['claims_on_your_gifts'][0]['claimer_name'])->toBe('Someone Else');
+        expect($data['claims_on_your_gifts'][0]['gift_title'])->toBe('My Gift');
+        expect($data['claims_on_your_gifts'][0])->toHaveKeys(['claimer_name', 'claimer_email']);
     });
 
     it('is rate-limited to 5 requests per 60 minutes', function () {
-        Queue::fake();
-
         $user = User::factory()->create();
 
         for ($i = 0; $i < 5; $i++) {

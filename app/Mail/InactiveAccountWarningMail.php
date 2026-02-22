@@ -3,7 +3,6 @@
 namespace App\Mail;
 
 use App\Models\User;
-use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -11,7 +10,6 @@ use Illuminate\Queue\SerializesModels;
 
 class InactiveAccountWarningMail extends Mailable
 {
-    use Queueable;
     use SerializesModels;
 
     public function __construct(
@@ -27,13 +25,13 @@ class InactiveAccountWarningMail extends Mailable
 
     public function content(): Content
     {
-        $locale = $this->user->locale_preference ?? 'en';
+        $locale = $this->user->locale_preference ?? config('app.locale');
 
         return new Content(
             view: 'emails.inactive-account-warning',
             with: [
                 'loginUrl' => route('login', ['locale' => $locale]),
-                'exportUrl' => route('settings', ['locale' => $locale]),
+                'settingsUrl' => route('settings', ['locale' => $locale]),
             ],
         );
     }

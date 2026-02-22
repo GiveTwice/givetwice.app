@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -91,6 +93,9 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
             ->withTimestamps();
     }
 
+    /**
+     * @return HasMany<GiftList, $this>
+     */
     public function createdLists(): HasMany
     {
         return $this->hasMany(GiftList::class, 'creator_id');
@@ -214,5 +219,19 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         $this->notify(
             (new VerifyEmail)->locale($this->locale_preference ?? config('app.locale'))
         );
+    }
+
+    #[Scope]
+    protected function inactiveSince(Builder $query, int $months): Builder
+    {
+        $cutoff = now()->subMonths($months);
+
+        return $query->where(function (Builder $q) use ($cutoff) {
+            $q->where('last_active_at', '<', $cutoff)
+                ->orWhere(function (Builder $q) use ($cutoff) {
+                    $q->whereNull('last_active_at')
+                        ->where('created_at', '<', $cutoff);
+                });
+        })->where('is_admin', false);
     }
 }

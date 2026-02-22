@@ -23,6 +23,6 @@
     </p>
 
     <p style="color: #6b7280; font-size: 14px;">
-        {{ __('You can also export your data before deletion from your') }} <a href="{{ $exportUrl }}" style="color: #E8614D; text-decoration: none; font-weight: 500;">{{ __('settings page') }}</a>.
+        {{ __('You can also export your data before deletion from your') }} <a href="{{ $settingsUrl }}" style="color: #E8614D; text-decoration: none; font-weight: 500;">{{ __('settings page') }}</a>.
     </p>
 @endsection

@@ -5,9 +5,11 @@ use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 
 describe('Warn inactive accounts', function () {
-    it('sends warning to users inactive for 22+ months', function () {
+    beforeEach(function () {
         Mail::fake();
+    });
 
+    it('sends warning to users inactive for 22+ months', function () {
         $user = User::factory()->create([
             'last_active_at' => now()->subMonths(23),
             'inactive_warning_sent_at' => null,
@@ -22,8 +24,6 @@ describe('Warn inactive accounts', function () {
     });
 
     it('does not warn users active within 22 months', function () {
-        Mail::fake();
-
         User::factory()->create([
             'last_active_at' => now()->subMonths(21),
             'inactive_warning_sent_at' => null,
@@ -36,8 +36,6 @@ describe('Warn inactive accounts', function () {
     });
 
     it('does not warn users who already received a warning', function () {
-        Mail::fake();
-
         User::factory()->create([
             'last_active_at' => now()->subMonths(23),
             'inactive_warning_sent_at' => now()->subWeeks(2),
@@ -50,8 +48,6 @@ describe('Warn inactive accounts', function () {
     });
 
     it('does not warn admin users', function () {
-        Mail::fake();
-
         User::factory()->create([
             'last_active_at' => now()->subMonths(23),
             'inactive_warning_sent_at' => null,
@@ -64,8 +60,6 @@ describe('Warn inactive accounts', function () {
     });
 
     it('sets inactive_warning_sent_at after sending', function () {
-        Mail::fake();
-
         $user = User::factory()->create([
             'last_active_at' => now()->subMonths(23),
             'inactive_warning_sent_at' => null,
@@ -79,8 +73,6 @@ describe('Warn inactive accounts', function () {
     });
 
     it('outputs the count of warnings sent', function () {
-        Mail::fake();
-
         User::factory()->create([
             'last_active_at' => now()->subMonths(23),
             'inactive_warning_sent_at' => null,

@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\User;
 use Closure;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -18,7 +19,9 @@ class TrackLastActivity
             return $next($request);
         }
 
-        if (! $user->last_active_at || $user->last_active_at->lt(now()->subHour())) {
+        $threshold = now()->subHour();
+
+        if (! $user->last_active_at || $user->last_active_at->lt($threshold)) {
             $updates = ['last_active_at' => now()];
 
             if ($user->inactive_warning_sent_at) {
@@ -26,9 +29,9 @@ class TrackLastActivity
             }
 
             User::where('id', $user->id)
-                ->where(function ($query) {
+                ->where(function (Builder $query) use ($threshold) {
                     $query->whereNull('last_active_at')
-                        ->orWhere('last_active_at', '<', now()->subHour());
+                        ->orWhere('last_active_at', '<', $threshold);
                 })
                 ->toBase()
                 ->update($updates);

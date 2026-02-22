@@ -62,7 +62,7 @@ class ExportPersonalDataAction
 
     protected function wishlists(User $user): array
     {
-        return $user->lists()->get()->map(fn (GiftList $list) => [
+        return $user->createdLists()->get()->map(fn (GiftList $list) => [
             'name' => $list->name,
             'description' => $list->description,
             'is_default' => (bool) $list->is_default,
@@ -134,6 +134,7 @@ class ExportPersonalDataAction
             ->get()
             ->map(fn ($session) => [
                 'ip_address' => $session->ip_address,
+                'user_agent' => $session->user_agent,
                 'last_activity' => Carbon::createFromTimestamp($session->last_activity)->toIso8601String(),
             ])->all();
     }

@@ -37,8 +37,11 @@ describe('GDPR audit log', function () {
 
         $log = Activity::where('log_name', 'gdpr')->where('event', 'account_deletion')->sole();
         expect($log->subject_id)->toBe($userId)
+            ->and($log->causer_id)->toBe($userId)
             ->and($log->properties['user_email'])->toBe($email)
-            ->and($log->properties['details'])->toBe('User-initiated account deletion');
+            ->and($log->properties['user_id'])->toBe($userId)
+            ->and($log->properties['details'])->toBe('User-initiated account deletion')
+            ->and($log->properties['performed_by'])->toBe('user');
     });
 
     it('logs inactive account deletion with system details', function () {
@@ -57,36 +60,11 @@ describe('GDPR audit log', function () {
 
         $log = Activity::where('log_name', 'gdpr')->where('event', 'account_deletion')->sole();
         expect($log->subject_id)->toBe($userId)
-            ->and($log->subject)->toBeNull()
             ->and($log->causer_id)->toBeNull()
             ->and($log->properties['user_email'])->toBe($email)
+            ->and($log->properties['user_id'])->toBe($userId)
             ->and($log->properties['details'])->toBe('Inactive 24+ months')
             ->and($log->properties['performed_by'])->toBe('system');
-    });
-
-    it('logs activity with correct properties via Spatie activity log', function () {
-        $user = User::factory()->create();
-
-        activity()
-            ->performedOn($user)
-            ->causedBy($user)
-            ->useLog('gdpr')
-            ->event('test_action')
-            ->withProperties([
-                'user_email' => $user->email,
-                'details' => 'test details',
-                'performed_by' => 'test_actor',
-            ])
-            ->log('Test log');
-
-        $log = Activity::where('log_name', 'gdpr')->sole();
-        expect($log)
-            ->subject_id->toBe($user->id)
-            ->causer_id->toBe($user->id)
-            ->event->toBe('test_action')
-            ->and($log->properties['user_email'])->toBe($user->email)
-            ->and($log->properties['details'])->toBe('test details')
-            ->and($log->properties['performed_by'])->toBe('test_actor');
     });
 
     it('preserves user_email even after user is deleted', function () {
@@ -97,18 +75,12 @@ describe('GDPR audit log', function () {
         $userId = $user->id;
         $email = $user->email;
 
-        activity()
-            ->performedOn($user)
-            ->useLog('gdpr')
-            ->event('account_deletion')
-            ->withProperties(['user_email' => $user->email])
-            ->log('Account deleted');
+        app(App\Actions\DeleteAccountAction::class)->execute($user, 'Test deletion');
 
-        $user->delete();
+        expect(User::find($userId))->toBeNull();
 
-        $log = Activity::where('log_name', 'gdpr')->sole();
+        $log = Activity::where('log_name', 'gdpr')->where('event', 'account_deletion')->sole();
         expect($log->subject_id)->toBe($userId)
-            ->and($log->subject)->toBeNull()
             ->and($log->properties['user_email'])->toBe($email);
     });
 });

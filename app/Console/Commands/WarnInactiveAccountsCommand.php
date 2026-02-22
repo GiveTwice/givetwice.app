@@ -4,9 +4,9 @@ namespace App\Console\Commands;
 
 use App\Mail\InactiveAccountWarningMail;
 use App\Models\User;
-use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
+use Throwable;
 
 class WarnInactiveAccountsCommand extends Command
 {
@@ -17,12 +17,8 @@ class WarnInactiveAccountsCommand extends Command
     public function handle(): int
     {
         $users = User::query()
-            ->where(function ($query) {
-                $query->where('last_active_at', '<', now()->subMonths(22))
-                    ->orWhereNull('last_active_at');
-            })
+            ->inactiveSince(22)
             ->whereNull('inactive_warning_sent_at')
-            ->where('is_admin', false)
             ->get();
 
         $sent = 0;
@@ -32,11 +28,12 @@ class WarnInactiveAccountsCommand extends Command
 
             try {
                 Mail::to($user->email)
-                    ->locale($user->locale_preference ?? 'en')
+                    ->locale($user->locale_preference ?? config('app.locale'))
                     ->send(new InactiveAccountWarningMail($user));
                 $user->updateQuietly(['inactive_warning_sent_at' => now()]);
                 $sent++;
-            } catch (Exception $e) {
+            } catch (Throwable $e) {
+                report($e);
                 $this->error("Failed to send warning to {$user->email}: {$e->getMessage()}");
             }
         }

@@ -6,48 +6,54 @@ use App\Models\Gift;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Spatie\SlackAlerts\Facades\SlackAlert;
+use Throwable;
 
 class DeleteAccountAction
 {
-    public function execute(User $user, ?string $auditDetails = null, ?string $auditPerformedBy = null): void
+    public function execute(User $user, ?string $auditDetails = null, bool $isSystemAction = false): void
     {
         $email = $user->email;
         $userId = $user->id;
 
         $gifts = $user->gifts()->withTrashed()->get();
 
-        DB::transaction(function () use ($user, $userId, $email, $auditDetails, $auditPerformedBy) {
-            $logger = activity()
+        $properties = [
+            'user_email' => $email,
+            'user_id' => $userId,
+            'performed_by' => $isSystemAction ? 'system' : 'user',
+        ];
+
+        if ($auditDetails !== null) {
+            $properties['details'] = $auditDetails;
+        }
+
+        DB::transaction(function () use ($user, $userId, $isSystemAction, $properties, $gifts) {
+            $log = activity()
                 ->performedOn($user)
                 ->useLog('gdpr')
                 ->event('account_deletion')
-                ->withProperties(array_filter([
-                    'user_email' => $email,
-                    'user_id' => $userId,
-                    'details' => $auditDetails,
-                    'performed_by' => $auditPerformedBy,
-                ], fn ($value) => $value !== null));
+                ->withProperties($properties);
 
-            if ($auditPerformedBy !== 'system') {
-                $logger->causedBy($user);
+            if (! $isSystemAction) {
+                $log->causedBy($user);
             }
 
-            $logger->log('Account deleted');
+            $log->log('Account deleted');
+
+            foreach ($gifts as $gift) {
+                /** @var Gift $gift */
+                try {
+                    $gift->clearMediaCollection('image');
+                } catch (Throwable $e) {
+                    report($e);
+                }
+            }
 
             $user->delete();
             DB::table('sessions')->where('user_id', $userId)->delete();
         });
 
-        foreach ($gifts as $gift) {
-            /** @var Gift $gift */
-            try {
-                $gift->clearMediaCollection('image');
-            } catch (\Throwable $e) {
-                report($e);
-            }
-        }
-
-        $message = $auditPerformedBy === 'system'
+        $message = $isSystemAction
             ? "🗑️ {$email} account deleted (inactive 24+ months)"
             : "👋 {$email} deleted their account";
 
