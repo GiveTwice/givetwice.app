@@ -87,6 +87,34 @@ describe('Delete inactive accounts', function () {
         expect(User::find($user->id))->not->toBeNull();
     });
 
+    it('does not delete users with null last_active_at and recent created_at', function () {
+        $user = User::factory()->create([
+            'last_active_at' => null,
+            'created_at' => now()->subMonths(1),
+            'inactive_warning_sent_at' => now()->subMonths(3),
+            'is_admin' => false,
+        ]);
+
+        $this->artisan('app:delete-inactive-accounts')->assertSuccessful();
+
+        expect(User::find($user->id))->not->toBeNull();
+    });
+
+    it('deletes users with null last_active_at and old created_at', function () {
+        $user = User::factory()->create([
+            'last_active_at' => null,
+            'created_at' => now()->subMonths(25),
+            'inactive_warning_sent_at' => now()->subMonths(3),
+            'is_admin' => false,
+        ]);
+
+        $this->artisan('app:delete-inactive-accounts')
+            ->expectsOutputToContain('Deleted 1 inactive account(s)')
+            ->assertSuccessful();
+
+        expect(User::find($user->id))->toBeNull();
+    });
+
     it('outputs the count of deleted accounts', function () {
         User::factory()->create([
             'last_active_at' => now()->subMonths(25),

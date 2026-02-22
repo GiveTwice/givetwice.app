@@ -72,6 +72,34 @@ describe('Warn inactive accounts', function () {
         expect($user->inactive_warning_sent_at)->not->toBeNull();
     });
 
+    it('does not warn users with null last_active_at and recent created_at', function () {
+        User::factory()->create([
+            'last_active_at' => null,
+            'created_at' => now()->subMonths(1),
+            'inactive_warning_sent_at' => null,
+            'is_admin' => false,
+        ]);
+
+        $this->artisan('app:warn-inactive-accounts')->assertSuccessful();
+
+        Mail::assertNothingSent();
+    });
+
+    it('warns users with null last_active_at and old created_at', function () {
+        $user = User::factory()->create([
+            'last_active_at' => null,
+            'created_at' => now()->subMonths(23),
+            'inactive_warning_sent_at' => null,
+            'is_admin' => false,
+        ]);
+
+        $this->artisan('app:warn-inactive-accounts')->assertSuccessful();
+
+        Mail::assertSent(InactiveAccountWarningMail::class, function ($mail) use ($user) {
+            return $mail->hasTo($user->email);
+        });
+    });
+
     it('outputs the count of warnings sent', function () {
         User::factory()->create([
             'last_active_at' => now()->subMonths(23),
