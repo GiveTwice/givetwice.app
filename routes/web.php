@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExportPersonalDataController;
 use App\Http\Controllers\FriendsController;
 use App\Http\Controllers\GiftController;
 use App\Http\Controllers\ListController;
@@ -63,6 +64,7 @@ Route::prefix('{locale}')
         Route::view('transparency', 'pages.transparency')->name('transparency');
         Route::view('contact', 'pages.contact')->name('contact');
         Route::view('brand', 'pages.brand')->name('brand');
+        Route::view('subprocessors', 'pages.subprocessors')->name('subprocessors');
 
         // Occasion marketing pages
         foreach (OccasionHelper::all() as $key => $occasion) {
@@ -197,6 +199,9 @@ Route::prefix('{locale}')
             Route::delete('/settings/account', [SettingsController::class, 'destroyAccount'])
                 ->middleware('throttle:3,10')
                 ->name('settings.account.destroy');
+            Route::post('/settings/data-export', ExportPersonalDataController::class)
+                ->middleware('throttle:5,60')
+                ->name('settings.data.export');
 
             // Friends routes
             Route::get('/friends', [FriendsController::class, 'index'])->name('friends.index');

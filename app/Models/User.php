@@ -4,11 +4,14 @@ namespace App\Models;
 
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 use Lab404\Impersonate\Models\Impersonate;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Spatie\Image\Enums\Fit;
@@ -16,6 +19,13 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
+/**
+ * @property Carbon|null $email_verified_at
+ * @property Carbon|null $last_active_at
+ * @property Carbon|null $inactive_warning_sent_at
+ * @property Carbon|null $last_friend_digest_at
+ * @property string|null $apple_id
+ */
 class User extends Authenticatable implements HasMedia, MustVerifyEmail
 {
     use HasFactory;
@@ -36,6 +46,8 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         'email_verified_at',
         'friend_notifications_enabled',
         'last_friend_digest_at',
+        'last_active_at',
+        'inactive_warning_sent_at',
     ];
 
     /**
@@ -61,6 +73,8 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
             'is_admin' => 'boolean',
             'friend_notifications_enabled' => 'boolean',
             'last_friend_digest_at' => 'datetime',
+            'last_active_at' => 'datetime',
+            'inactive_warning_sent_at' => 'datetime',
         ];
     }
 
@@ -69,6 +83,9 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         return $this->hasMany(Gift::class);
     }
 
+    /**
+     * @return BelongsToMany<GiftList, $this>
+     */
     public function lists(): BelongsToMany
     {
         return $this->belongsToMany(GiftList::class, 'list_user', 'user_id', 'list_id')
@@ -76,6 +93,9 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
             ->withTimestamps();
     }
 
+    /**
+     * @return HasMany<GiftList, $this>
+     */
     public function createdLists(): HasMany
     {
         return $this->hasMany(GiftList::class, 'creator_id');
@@ -99,6 +119,9 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         return $this->pendingListInvitations()->exists();
     }
 
+    /**
+     * @return HasMany<Claim, $this>
+     */
     public function claims(): HasMany
     {
         return $this->hasMany(Claim::class);
@@ -196,5 +219,19 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         $this->notify(
             (new VerifyEmail)->locale($this->locale_preference ?? config('app.locale'))
         );
+    }
+
+    #[Scope]
+    protected function inactiveSince(Builder $query, int $months): Builder
+    {
+        $cutoff = now()->subMonths($months);
+
+        return $query->where(function (Builder $q) use ($cutoff) {
+            $q->where('last_active_at', '<', $cutoff)
+                ->orWhere(function (Builder $q) use ($cutoff) {
+                    $q->whereNull('last_active_at')
+                        ->where('created_at', '<', $cutoff);
+                });
+        })->where('is_admin', false);
     }
 }

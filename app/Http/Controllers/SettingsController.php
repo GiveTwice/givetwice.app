@@ -174,7 +174,7 @@ class SettingsController extends Controller
             ]);
         }
 
-        $action->execute($user);
+        $action->execute($user, auditDetails: 'User-initiated account deletion');
 
         Auth::logout();
         $request->session()->invalidate();
