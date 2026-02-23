@@ -5,10 +5,13 @@
     $currentLocale = app()->getLocale();
     $currentLocaleEnum = SupportedLocale::tryFrom($currentLocale) ?? SupportedLocale::default();
 
-    // Get current route name and parameters
+    // Get current route name and only the parameters defined in the route URI
     $currentRoute = request()->route();
     $routeName = $currentRoute?->getName();
-    $routeParams = $currentRoute?->parameters() ?? [];
+    $routeParams = $currentRoute ? array_intersect_key(
+        $currentRoute->parameters(),
+        array_flip($currentRoute->parameterNames())
+    ) : [];
 
     // For occasion pages, determine which locales are available
     $occasionKey = null;
