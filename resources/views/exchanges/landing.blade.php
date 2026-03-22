@@ -13,43 +13,25 @@
 @section('description', __('meta.exchange'))
 
 @section('content')
-<div class="text-center py-8 sm:py-12 lg:py-16">
-    <div class="inline-flex items-center justify-center w-16 h-16 bg-coral-100 text-coral-500 rounded-2xl text-3xl mb-6 transform -rotate-3">
-        🎲
-    </div>
-    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">{{ $title }}</h1>
-    <p class="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">{{ __('Draw names. Buy gifts. Donate to charity. All without anyone knowing who got whom.') }}</p>
-</div>
+<div class="max-w-2xl mx-auto">
 
-<div class="max-w-4xl mx-auto">
-    {{-- How it works --}}
-    <div class="grid md:grid-cols-3 gap-6 mb-12">
-        <div class="text-center p-6">
-            <div class="w-12 h-12 bg-coral-100 rounded-xl flex items-center justify-center text-2xl mx-auto mb-4">1</div>
-            <h3 class="font-semibold text-gray-900 mb-2">{{ __('Create a group') }}</h3>
-            <p class="text-gray-600 text-sm">{{ __('Add everyone\'s name and email. Set a budget if you want.') }}</p>
-        </div>
-        <div class="text-center p-6">
-            <div class="w-12 h-12 bg-sunny-100 rounded-xl flex items-center justify-center text-2xl mx-auto mb-4">2</div>
-            <h3 class="font-semibold text-gray-900 mb-2">{{ __('Draw names') }}</h3>
-            <p class="text-gray-600 text-sm">{{ __('We shake the hat and send everyone an email with their person. No peeking.') }}</p>
-        </div>
-        <div class="text-center p-6">
-            <div class="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center text-2xl mx-auto mb-4">3</div>
-            <h3 class="font-semibold text-gray-900 mb-2">{{ __('Give twice') }}</h3>
-            <p class="text-gray-600 text-sm">{{ __('Buy from their wishlist. We donate our commission to charity. Everyone wins.') }}</p>
-        </div>
+    {{-- Compact header — not a wall of marketing --}}
+    <div class="text-center pt-6 pb-4">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">🎲 {{ $title }}</h1>
+        <p class="text-gray-600">{{ __('Draw names. Buy gifts. Donate to charity. All without anyone knowing who got whom.') }}</p>
     </div>
 
-    {{-- Create form --}}
-    @auth
-    <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6 sm:p-8 mb-12">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6">{{ __('Start a group') }}</h2>
+    {{-- The form is always visible — guest or authenticated --}}
+    <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6 sm:p-8 mb-8">
 
+        @auth
         <form method="POST" action="{{ route('exchanges.store', ['locale' => $locale, 'exchangeType' => $exchangeType]) }}" x-data="exchangeForm()">
             @csrf
+        @else
+        <form x-data="exchangeForm()" @submit.prevent="showAuthPrompt = true">
+        @endauth
 
-            <div class="space-y-6">
+            <div class="space-y-5">
                 <div>
                     <label for="name" class="form-label">{{ __('Group name') }}</label>
                     <input type="text" name="name" id="name" class="form-input" placeholder="{{ __('e.g. Family Van der Berg') }}" value="{{ old('name') }}" required>
@@ -101,34 +83,51 @@
                     <label for="organizer_participates" class="text-gray-700 text-sm">{{ __('I\'m participating too') }}</label>
                 </div>
 
+                @auth
                 <div class="form-actions">
-                    <button type="submit" class="btn-primary">{{ __('Create group') }}</button>
+                    <button type="submit" class="btn-primary w-full sm:w-auto">{{ __('Create group') }}</button>
                 </div>
+                @else
+                {{-- Auth prompt appears when guest tries to submit --}}
+                <div>
+                    <button type="submit" class="btn-primary w-full sm:w-auto">{{ __('Create group') }}</button>
+                </div>
+
+                <div x-show="showAuthPrompt" x-transition x-cloak class="mt-4 bg-coral-50 border border-coral-200 rounded-xl p-5 text-center">
+                    <p class="font-semibold text-gray-900 mb-1">{{ __('Almost there!') }}</p>
+                    <p class="text-gray-600 text-sm mb-4">{{ __('Create a free account to save your group and draw names.') }}</p>
+                    <div class="flex flex-col sm:flex-row gap-2 justify-center">
+                        <a href="{{ route('register', ['locale' => $locale]) }}?intended={{ urlencode(route('exchanges.landing', ['locale' => $locale, 'exchangeType' => $exchangeType])) }}" class="btn-primary">{{ __('Sign up — it\'s free') }}</a>
+                        <a href="{{ route('login', ['locale' => $locale]) }}?intended={{ urlencode(route('exchanges.landing', ['locale' => $locale, 'exchangeType' => $exchangeType])) }}" class="btn-secondary">{{ __('Log in') }}</a>
+                    </div>
+                </div>
+                @endauth
             </div>
         </form>
     </div>
-    @else
-    <div class="text-center py-8">
-        <p class="text-gray-600 mb-4">{{ __('Sign up to create your group. It takes about a minute.') }}</p>
-        <a href="{{ route('register', ['locale' => $locale]) }}" class="btn-primary">{{ __('Create an account') }}</a>
-        <p class="mt-3 text-sm text-gray-500">{{ __('Already have one?') }} <a href="{{ route('login', ['locale' => $locale]) }}" class="text-coral-500 hover:text-coral-600">{{ __('Log in') }}</a></p>
+
+    {{-- How it works — below the form, not above it --}}
+    <div class="grid grid-cols-3 gap-4 mb-8">
+        <div class="text-center p-4">
+            <div class="w-10 h-10 bg-coral-100 rounded-lg flex items-center justify-center text-lg mx-auto mb-2 font-bold text-coral-600">1</div>
+            <p class="text-gray-600 text-xs">{{ __('Add everyone\'s name and email. Set a budget if you want.') }}</p>
+        </div>
+        <div class="text-center p-4">
+            <div class="w-10 h-10 bg-sunny-100 rounded-lg flex items-center justify-center text-lg mx-auto mb-2 font-bold text-sunny-600">2</div>
+            <p class="text-gray-600 text-xs">{{ __('We shake the hat and send everyone an email with their person. No peeking.') }}</p>
+        </div>
+        <div class="text-center p-4">
+            <div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center text-lg mx-auto mb-2 font-bold text-teal-600">3</div>
+            <p class="text-gray-600 text-xs">{{ __('Buy from their wishlist. We donate our commission to charity. Everyone wins.') }}</p>
+        </div>
     </div>
-    @endauth
 
     {{-- Charity angle --}}
-    <div class="bg-gradient-to-r from-coral-50 to-sunny-50 rounded-2xl p-6 lg:p-8 max-w-3xl mx-auto mb-12 border border-coral-100">
-        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div class="flex items-center gap-4">
-                <div class="text-4xl">&#10084;&#65039;</div>
-                <div>
-                    <p class="font-semibold text-gray-900">{{ __('Every gift gives twice') }}</p>
-                    <p class="text-gray-600">{{ __('When someone buys from a wishlist, we donate our commission. You pay nothing extra.') }}</p>
-                </div>
-            </div>
-            <a href="{{ route('about', ['locale' => $locale]) }}" class="inline-flex items-center px-5 py-2 bg-white text-gray-700 rounded-full hover:bg-gray-50 font-medium transition-colors border border-gray-200 whitespace-nowrap">
-                {{ __('How it works') }} &rarr;
-            </a>
-        </div>
+    <div class="bg-gradient-to-r from-coral-50 to-sunny-50 rounded-2xl p-5 border border-coral-100 text-center mb-8">
+        <p class="text-gray-600 text-sm">
+            ❤️ {{ __('When someone buys from a wishlist, we donate our commission. You pay nothing extra.') }}
+            <a href="{{ route('about', ['locale' => $locale]) }}" class="text-coral-500 hover:text-coral-600 font-medium">{{ __('How it works') }} →</a>
+        </p>
     </div>
 </div>
 
@@ -136,6 +135,7 @@
 <script>
 function exchangeForm() {
     return {
+        showAuthPrompt: false,
         participants: [
             { name: '', email: '' },
             { name: '', email: '' },

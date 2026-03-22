@@ -8,12 +8,20 @@ use App\Models\GiftExchange;
 use App\Models\GiftExchangeParticipant;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 
 class GiftExchangeController extends Controller
 {
     public function landing(string $locale, string $exchangeType): View
     {
+        if (! auth()->check()) {
+            Session::put('url.intended', route('exchanges.landing', [
+                'locale' => $locale,
+                'exchangeType' => $exchangeType,
+            ]));
+        }
+
         return view('exchanges.landing', [
             'exchangeType' => $exchangeType,
             'locale' => $locale,

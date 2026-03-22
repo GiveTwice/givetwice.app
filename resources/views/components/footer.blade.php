@@ -13,11 +13,18 @@
                 <p class="text-gray-500 text-sm mt-4">{{ __('Create and share wishlists. All affiliate profits go to charity.') }}</p>
             </div>
 
+            @php
+                $footerExchangeSlugs = ['en' => 'secret-santa', 'nl' => 'lootjes-trekken', 'fr' => 'tirage-au-sort'];
+                $footerExchangeSlug = $footerExchangeSlugs[$locale] ?? 'secret-santa';
+                $footerExchangeLabels = ['en' => __('Secret Santa'), 'nl' => __('Lootjes trekken'), 'fr' => __('Tirage au sort')];
+                $footerExchangeLabel = $footerExchangeLabels[$locale] ?? __('Secret Santa');
+            @endphp
             <div>
                 <p class="font-semibold text-gray-900 mb-3 md:mb-4">{{ __('Product') }}</p>
                 <ul class="space-y-2 text-sm">
                     <li><a href="{{ route('faq', ['locale' => $locale]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('How it works') }}</a></li>
                     <li><a href="{{ route('register', ['locale' => $locale]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __('Create Wishlist') }}</a></li>
+                    <li><a href="{{ route('exchanges.landing', ['locale' => $locale, 'exchangeType' => $footerExchangeSlug]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">🎲 {{ $footerExchangeLabel }}</a></li>
                 </ul>
             </div>
 

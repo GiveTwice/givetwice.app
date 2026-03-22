@@ -60,6 +60,13 @@
                         }
 
                         $newParams = array_merge($routeParams, ['locale' => $locale->value]);
+
+                        // Exchange pages use locale-specific slugs
+                        if (isset($newParams['exchangeType'])) {
+                            $exchangeSlugs = ['en' => 'secret-santa', 'nl' => 'lootjes-trekken', 'fr' => 'tirage-au-sort'];
+                            $newParams['exchangeType'] = $exchangeSlugs[$locale->value] ?? 'secret-santa';
+                        }
+
                         $url = $routeName ? route($routeName, $newParams) : url("/{$locale->value}");
                         $isActive = $locale->value === $currentLocale;
                     @endphp
