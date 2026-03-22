@@ -95,7 +95,7 @@
 </div>
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+@vite('resources/js/confetti-reveal.js')
 <script>
 function revealAnimation() {
     return {

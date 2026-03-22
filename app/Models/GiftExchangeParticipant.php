@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 
 class GiftExchangeParticipant extends Model
@@ -54,10 +55,9 @@ class GiftExchangeParticipant extends Model
         return $this->belongsTo(self::class, 'assigned_to_participant_id');
     }
 
-    public function assignedBy(): BelongsTo
+    public function assignedBy(): HasOne
     {
-        return $this->belongsTo(self::class, 'assigned_to_participant_id', 'assigned_to_participant_id')
-            ->where('id', '!=', $this->id);
+        return $this->hasOne(self::class, 'assigned_to_participant_id', 'id');
     }
 
     public function defaultWishlist(): ?GiftList

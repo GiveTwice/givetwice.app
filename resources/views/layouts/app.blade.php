@@ -93,6 +93,11 @@
                 </div>
 
                 <div class="hidden md:flex items-center space-x-6">
+                    @php
+                        $navExchangeSlugs = ['en' => 'secret-santa', 'nl' => 'lootjes-trekken', 'fr' => 'tirage-au-sort'];
+                        $navExchangeSlug = $navExchangeSlugs[app()->getLocale()] ?? 'secret-santa';
+                    @endphp
+                    <a href="{{ route('exchanges.landing', ['locale' => app()->getLocale(), 'exchangeType' => $navExchangeSlug]) }}" class="text-gray-600 hover:text-gray-900 transition-colors">🎲 {{ __('Secret Santa') }}</a>
                     <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="text-gray-600 hover:text-gray-900 transition-colors">{{ __('How it works') }}</a>
                     <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="text-gray-600 hover:text-gray-900 transition-colors">{{ __('About') }}</a>
 
@@ -118,6 +123,7 @@
             </div>
 
             <x-mobile-menu-panel>
+                <a href="{{ route('exchanges.landing', ['locale' => app()->getLocale(), 'exchangeType' => $navExchangeSlug ?? 'secret-santa']) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">🎲 {{ __('Secret Santa') }}</a>
                 <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('How it works') }}</a>
                 <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('About') }}</a>
 
