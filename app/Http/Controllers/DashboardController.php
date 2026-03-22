@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GiftExchange;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -21,8 +22,14 @@ class DashboardController extends Controller
             ->orderBy('lists.created_at', 'asc')
             ->get();
 
+        $exchanges = GiftExchange::where('organizer_id', $request->user()->id)
+            ->withCount('participants')
+            ->orderByDesc('created_at')
+            ->get();
+
         return view('dashboard', [
             'lists' => $lists,
+            'exchanges' => $exchanges,
         ]);
     }
 }
