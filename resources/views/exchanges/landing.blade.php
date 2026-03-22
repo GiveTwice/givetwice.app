@@ -65,11 +65,11 @@
                     <div>
                         <label for="budget_amount" class="form-label">{{ __('Budget per person') }} <span class="text-gray-400">({{ __('optional') }})</span></label>
                         <div class="flex gap-2">
-                            <select name="budget_currency" class="form-select w-20">
+                            <select name="budget_currency" class="form-select shrink-0 !w-16">
                                 <option value="EUR">€</option>
                                 <option value="USD">$</option>
                             </select>
-                            <input type="number" name="budget_amount" id="budget_amount" class="form-input flex-1" placeholder="25" value="{{ old('budget_amount') }}" min="0" step="0.01">
+                            <input type="number" name="budget_amount" id="budget_amount" class="form-input min-w-0 flex-1" placeholder="25" value="{{ old('budget_amount') }}" min="0" step="0.01">
                         </div>
                         @error('budget_amount') <p class="form-error">{{ $message }}</p> @enderror
                     </div>
