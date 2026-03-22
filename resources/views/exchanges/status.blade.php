@@ -1,0 +1,95 @@
+@extends('layouts.app')
+
+@section('title', $exchange->name)
+
+@section('content')
+<div class="max-w-3xl mx-auto">
+    <div class="mb-8">
+        <nav class="breadcrumb">
+            <a href="{{ route('dashboard.locale', ['locale' => app()->getLocale()]) }}" class="breadcrumb-link">{{ __('Dashboard') }}</a>
+            <span class="text-gray-400 mx-2">/</span>
+            <span class="text-gray-600">{{ $exchange->name }}</span>
+        </nav>
+    </div>
+
+    @if(session('success'))
+        <div class="alert-success mb-6">{{ session('success') }}</div>
+    @endif
+
+    {{-- Header --}}
+    <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6 sm:p-8 mb-6">
+        <div class="flex items-start justify-between mb-4">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">{{ $exchange->name }}</h1>
+                <div class="flex flex-wrap gap-4 mt-2 text-sm text-gray-500">
+                    <span>📅 {{ $exchange->event_date->format('M j, Y') }}</span>
+                    @if($exchange->formatBudget())
+                        <span>💰 {{ $exchange->formatBudget() }}</span>
+                    @endif
+                    <span>👥 {{ $exchange->participants->count() }} {{ __('participants') }}</span>
+                </div>
+            </div>
+            @if($exchange->isDrawn())
+                <span class="badge badge-success">{{ __('Names drawn') }}</span>
+            @else
+                <span class="badge badge-warning">{{ __('Draft') }}</span>
+            @endif
+        </div>
+
+        @if($exchange->isDraft())
+            <form method="POST" action="{{ route('exchanges.draw', ['locale' => app()->getLocale(), 'exchange' => $exchange->slug]) }}" class="mt-4">
+                @csrf
+                <button type="submit" class="btn-primary" onclick="return confirm('{{ __('Draw names and send invites? This can\'t be undone.') }}')">
+                    🎲 {{ __('Draw names & send invites') }}
+                </button>
+            </form>
+        @endif
+    </div>
+
+    {{-- Impact counter --}}
+    @if($exchange->isDrawn() && $claimCount > 0)
+    <div class="bg-gradient-to-r from-teal-50 to-teal-100 rounded-2xl p-6 mb-6 border border-teal-200">
+        <div class="flex items-center gap-4">
+            <div class="text-3xl">✨</div>
+            <div>
+                <p class="font-semibold text-gray-900">{{ __('Your group is giving twice') }}</p>
+                <p class="text-gray-600">{{ $claimCount }} {{ trans_choice('gift claimed|gifts claimed', $claimCount) }} · ~€{{ $claimCount * 3 }} {{ __('estimated donation') }}</p>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    {{-- Participants --}}
+    <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6 sm:p-8">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Participants') }}</h2>
+
+        <div class="divide-y divide-cream-100">
+            @foreach($exchange->participants as $participant)
+            <div class="flex items-center justify-between py-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-cream-100 rounded-full flex items-center justify-center text-sm font-semibold text-gray-600">
+                        {{ strtoupper(substr($participant->name, 0, 1)) }}
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900">{{ $participant->name }}</p>
+                        <p class="text-sm text-gray-500">{{ $participant->email }}</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    @if($participant->hasViewed())
+                        <span class="badge badge-success text-xs">{{ __('Viewed') }}</span>
+                    @elseif($exchange->isDrawn())
+                        <span class="badge badge-warning text-xs">{{ __('Invited') }}</span>
+                    @else
+                        <span class="badge badge-info text-xs">{{ __('Added') }}</span>
+                    @endif
+                    @if($participant->user_id && $participant->defaultWishlist())
+                        <span class="badge badge-success text-xs">{{ __('Has wishlist') }}</span>
+                    @endif
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</div>
+@endsection
