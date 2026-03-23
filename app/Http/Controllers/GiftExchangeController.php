@@ -87,7 +87,7 @@ class GiftExchangeController extends Controller
     {
         $this->authorize('viewStatus', $exchange);
 
-        $exchange->load('participants.user');
+        $exchange->load('participants.user', 'participants.assignedTo.user');
 
         $claimCount = 0;
         /** @var \App\Models\GiftExchangeParticipant $participant */
@@ -102,9 +102,20 @@ class GiftExchangeController extends Controller
             }
         }
 
+        $myDraw = null;
+        if ($exchange->isDrawn()) {
+            $myParticipant = $exchange->participants
+                ->firstWhere('user_id', auth()->id());
+
+            if ($myParticipant) {
+                $myDraw = $myParticipant->assignedTo;
+            }
+        }
+
         return view('exchanges.status', [
             'exchange' => $exchange,
             'claimCount' => $claimCount,
+            'myDraw' => $myDraw,
         ]);
     }
 

@@ -48,6 +48,26 @@
         @endif
     </div>
 
+    {{-- Your draw (shown to organizer who is also a participant) --}}
+    @if($myDraw)
+    <div class="bg-gradient-to-r from-coral-50 to-sunny-50 rounded-2xl p-6 sm:p-8 mb-6 border border-coral-100">
+        <p class="text-sm text-gray-500 mb-1">{{ __('You\'re buying a gift for') }}</p>
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-lg font-bold text-coral-500 shadow-sm">
+                    {{ strtoupper(substr($myDraw->name, 0, 1)) }}
+                </div>
+                <p class="text-xl font-bold text-gray-900">{{ $myDraw->name }}</p>
+            </div>
+            @if($myDraw->user_id && $myDraw->defaultWishlist())
+                <a href="{{ route('public.list', ['locale' => app()->getLocale(), 'list' => $myDraw->defaultWishlist()->id, 'slug' => $myDraw->defaultWishlist()->slug]) }}" class="btn-primary-sm">
+                    {{ __('See wishlist') }} →
+                </a>
+            @endif
+        </div>
+    </div>
+    @endif
+
     {{-- Join link (draft only) --}}
     @if($exchange->isDraft() && $exchange->join_token)
     <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6 sm:p-8 mb-6" x-data="{ copied: false }">
