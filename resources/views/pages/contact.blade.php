@@ -11,7 +11,7 @@
         &#9993;
     </div>
     <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">{{ __('Contact Us') }}</h1>
-    <p class="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">{{ __('Have questions or feedback? We\'d love to hear from you!') }}</p>
+    <p class="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">{{ __('Got a question? Found a bug? Just want to say hi? We read everything.') }}</p>
 </div>
 
 <div class="max-w-4xl mx-auto pb-16">
@@ -25,7 +25,7 @@
             </div>
             <div class="text-center md:text-left">
                 <h2 class="text-2xl font-bold text-gray-900 mb-4">{{ __('Get in Touch') }}</h2>
-                <p class="text-lg text-gray-700 leading-relaxed mb-4">{{ __('Whether you have a question about features, need help with your wishlist, or just want to say hello - we\'re here for you.') }}</p>
+                <p class="text-lg text-gray-700 leading-relaxed mb-4">{{ __('Whether it\'s a feature question, a wishlist problem, or just a friendly wave — we\'re real people and we actually reply.') }}</p>
                 <a href="mailto:hello@givetwice.com" class="inline-flex items-center text-xl font-semibold text-coral-600 hover:text-coral-700 transition-colors">
                     <span class="mr-2">&#9993;</span> hello@givetwice.com
                 </a>
@@ -38,7 +38,7 @@
             <div class="w-10 h-10 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center text-xl">
                 &#9201;
             </div>
-            <p class="text-gray-700">{{ __('We typically respond within 24-48 hours.') }}</p>
+            <p class="text-gray-700">{{ __('We usually reply within a day or two.') }}</p>
         </div>
     </div>
 
@@ -74,7 +74,7 @@
     <div class="bg-cream-100 rounded-3xl p-6 sm:p-8 text-center mb-12">
         <div class="text-4xl mb-4">&#127873;</div>
         <h2 class="text-xl font-bold text-gray-900 mb-2">{{ __('Join Our Community') }}</h2>
-        <p class="text-gray-600 mb-6 max-w-xl mx-auto">{{ __('Follow us for updates, gift-giving tips, and to see how your wishlists are making a difference for charity.') }}</p>
+        <p class="text-gray-600 mb-6 max-w-xl mx-auto">{{ __('Follow along for updates and to see how your wishlists are making a difference.') }}</p>
         <div class="flex justify-center gap-4">
             <a href="#" class="w-12 h-12 bg-white border border-cream-200 rounded-xl flex items-center justify-center text-gray-600 hover:text-coral-500 hover:border-coral-300 transition-colors">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>

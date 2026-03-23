@@ -17,7 +17,7 @@
     </div>
 
     <p style="color: #6b7280; font-size: 14px;">
-        {{ __("As a collaborator, you'll be able to add, edit, and manage gifts on this list together.", locale: $locale) }}
+        {{ __("You'll be able to add and edit gifts on this list together.", locale: $locale) }}
     </p>
 
     @if($isExistingUser)
@@ -36,7 +36,7 @@
             </a>
         </p>
         <p style="color: #9ca3af; font-size: 13px; text-align: center;">
-            {{ __('Create a free account to start collaborating.', locale: $locale) }}
+            {{ __('Create a free account and start adding gifts together.', locale: $locale) }}
         </p>
     @endif
 

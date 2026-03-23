@@ -11,7 +11,7 @@
 @section('content')
 <x-app-content
     :title="__('Add Gift')"
-    :description="__('Paste a product URL and we\'ll fetch the details automatically.')"
+    :description="__('Paste a link and we\'ll grab the details for you.')"
     :breadcrumbs="[
         ['label' => __('Dashboard'), 'url' => url('/' . app()->getLocale() . '/dashboard')],
         ['label' => __('Add Gift')]
@@ -60,7 +60,7 @@
                 <details class="mb-6 group" @if($errors->hasAny(['title', 'description', 'price', 'currency'])) open @endif>
                     <summary class="cursor-pointer text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors flex items-center gap-2">
                         <x-icons.chevron-right class="w-4 h-4 transition-transform group-open:rotate-90" />
-                        {{ __('Optional: Add details manually') }}
+                        {{ __('Or describe it yourself') }}
                     </summary>
 
                     <div class="mt-4 space-y-4 pl-6 border-l-2 border-gray-100">
@@ -154,7 +154,7 @@
                                     {{ __('Allow multiple claims') }}
                                 </label>
                                 <p class="form-help mt-1">
-                                    {{ __('Enable for gift cards or items that multiple people can give.') }}
+                                    {{ __('Useful for gift cards or big-ticket items.') }}
                                 </p>
                             </div>
                         </div>
@@ -175,22 +175,22 @@
 
         <div class="lg:col-span-2">
             <div class="bg-cream-50 rounded-xl p-6">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('How do I find a product URL?') }}</h2>
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('How does this work?') }}</h2>
 
                 <div class="space-y-4">
 
                     <div class="flex gap-3">
                         <div class="icon-circle bg-coral-100 text-coral-600 text-sm font-semibold">1</div>
                         <div>
-                            <p class="text-gray-700 font-medium">{{ __('Find the product') }}</p>
-                            <p class="form-help mt-0">{{ __('Go to the product page in your favorite online store.') }}</p>
+                            <p class="text-gray-700 font-medium">{{ __('Find it') }}</p>
+                            <p class="form-help mt-0">{{ __('Go to the product page in any online store.') }}</p>
                         </div>
                     </div>
 
                     <div class="flex gap-3">
                         <div class="icon-circle bg-teal-100 text-teal-600 text-sm font-semibold">2</div>
                         <div>
-                            <p class="text-gray-700 font-medium">{{ __('Copy the URL') }}</p>
+                            <p class="text-gray-700 font-medium">{{ __('Copy the link') }}</p>
                             <p class="form-help mt-0">{{ __('Copy the URL from your browser\'s address bar.') }}</p>
                         </div>
                     </div>
@@ -199,7 +199,7 @@
                         <div class="icon-circle bg-sunny-200 text-sunny-700 text-sm font-semibold">3</div>
                         <div>
                             <p class="text-gray-700 font-medium">{{ __('Paste it here') }}</p>
-                            <p class="form-help mt-0">{{ __('Paste the URL in the field and we\'ll fetch the details.') }}</p>
+                            <p class="form-help mt-0">{{ __("We'll grab the title, image, and price automatically.") }}</p>
                         </div>
                     </div>
                 </div>
@@ -209,7 +209,7 @@
                         <div class="icon-circle bg-teal-100 text-teal-600">
                             <x-icons.checkmark class="w-4 h-4" />
                         </div>
-                        <p class="text-gray-600">{{ __('Works with any online store!') }}</p>
+                        <p class="text-gray-600">{{ __('Works with pretty much any store.') }}</p>
                     </div>
                 </div>
             </div>

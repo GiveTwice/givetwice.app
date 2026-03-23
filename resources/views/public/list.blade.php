@@ -118,7 +118,7 @@
                 <div class="hidden sm:block w-px h-4 bg-gray-200"></div>
 
                 <p class="text-gray-400 text-sm">
-                    {{ __(':name won\'t see who claimed what.', ['name' => $list->creator->name]) }}
+                    {{ __(':name won\'t know who\'s getting what. The surprise stays a surprise.', ['name' => $list->creator->name]) }}
                 </p>
             </div>
         </div>
@@ -130,7 +130,7 @@
                 <div class="flex items-center gap-2">
                     <x-icons.eye class="w-4 h-4 text-sunny-600" />
                     <span class="text-sunny-800 text-sm font-medium">{{ __('Preview Mode') }}</span>
-                    <span class="text-sunny-700 text-sm hidden sm:inline">— {{ __('This is how others will see your wishlist.') }}</span>
+                    <span class="text-sunny-700 text-sm hidden sm:inline">— {{ __('This is what your friends see.') }}</span>
                 </div>
                 <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="text-sm font-medium text-sunny-700 hover:text-sunny-900 underline underline-offset-2">
                     {{ __('Back to dashboard') }}
@@ -146,7 +146,7 @@
         <div class="flex items-center justify-between gap-2">
             <h2 class="text-lg sm:text-xl font-bold text-gray-900">{{ __('Gift Ideas') }}</h2>
             @unless($isOwner)
-                <p class="text-sm text-gray-500 text-right">{{ __('Click a gift for details') }}</p>
+                <p class="text-sm text-gray-500 text-right">{{ __('Tap a gift to see details') }}</p>
             @endunless
         </div>
     </div>
@@ -158,7 +158,7 @@
                     <span class="text-4xl">&#127873;</span>
                 </div>
                 <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ __('No gifts yet') }}</h3>
-                <p class="text-gray-500">{{ __(':name hasn\'t added any gifts to this list yet.', ['name' => $list->creator->name]) }}</p>
+                <p class="text-gray-500">{{ __(':name hasn\'t added anything yet. Maybe give them a nudge?', ['name' => $list->creator->name]) }}</p>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 hidden" data-gift-grid></div>
         @else
@@ -195,24 +195,24 @@
                         <span>&#10084;&#65039;</span>
                         {{ __('Gifting That Gives Back') }}
                     </div>
-                    <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{{ __('Every gift makes a difference') }}</h2>
-                    <p class="text-coral-100 text-lg">{{ __('When you buy gifts through our links, we donate 100% of our affiliate profits to charity. No extra cost to you, just extra good in the world.') }}</p>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{{ __('One gift. Two smiles.') }}</h2>
+                    <p class="text-coral-100 text-lg">{{ __("When you buy through our links, we donate 100% of our profits to charity. You don't pay a cent extra. You're basically a hero. Cape not included.") }}</p>
                 </div>
 
                 <div class="flex-shrink-0 text-center lg:text-left">
                     @guest
                         @if(config('app.allow_registration'))
                             <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-coral-600 rounded-xl hover:bg-coral-50 font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-                                <span>{{ __('Create Your Wishlist') }}</span>
+                                <span>{{ __('Make your own wishlist') }}</span>
                                 <x-icons.arrow-right class="w-5 h-5" />
                             </a>
-                            <p class="mt-3 text-coral-200 text-sm">{{ __('Free forever. Share with anyone.') }}</p>
+                            <p class="mt-3 text-coral-200 text-sm">{{ __('Free. No ads. All profits go to charity.') }}</p>
                         @else
                             <a href="{{ url('/' . app()->getLocale() . '/contact') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-coral-600 rounded-xl hover:bg-coral-50 font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
                                 <span>{{ __('Get in touch') }}</span>
                                 <x-icons.arrow-right class="w-5 h-5" />
                             </a>
-                            <p class="mt-3 text-coral-200 text-sm">{{ __('Launching soon') }}</p>
+                            <p class="mt-3 text-coral-200 text-sm">{{ __('Coming soon') }}</p>
                         @endif
                     @else
                         <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-coral-600 rounded-xl hover:bg-coral-50 font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">

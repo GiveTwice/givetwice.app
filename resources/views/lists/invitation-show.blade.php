@@ -15,7 +15,7 @@
             {{ __('You\'re invited!') }}
         </h1>
         <p class="text-gray-500 mt-2 text-lg">
-            {{ __(':name wants to collaborate with you.', ['name' => $inviter->name]) }}
+            {{ __(':name wants your help with their wishlist.', ['name' => $inviter->name]) }}
         </p>
     </div>
 
@@ -32,7 +32,7 @@
                 @endif
                 <div class="flex-1 min-w-0">
                     <p class="font-semibold text-gray-900">{{ $inviter->name }}</p>
-                    <p class="text-sm text-gray-500">{{ __('invited you to collaborate on:') }}</p>
+                    <p class="text-sm text-gray-500">{{ __('wants you to help with:') }}</p>
                 </div>
             </div>
 
@@ -45,7 +45,7 @@
 
             <div class="mt-6 p-4 bg-cream-50 rounded-xl">
                 <p class="text-sm text-gray-600">
-                    {{ __('As a collaborator, you\'ll be able to add, edit, and manage gifts on this list together.') }}
+                    {{ __('You\'ll be able to add and edit gifts on this list together.') }}
                 </p>
             </div>
         </div>
@@ -70,7 +70,7 @@
     </div>
 
     <p class="text-center text-sm text-gray-400 mt-6">
-        {{ __('This invitation expires :date.', ['date' => $invitation->expires_at->diffForHumans()]) }}
+        {{ __('This invite expires :date.', ['date' => $invitation->expires_at->diffForHumans()]) }}
     </p>
 
 </div>

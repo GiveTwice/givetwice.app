@@ -82,7 +82,7 @@
                 <div class="flex-1">
                     <p class="font-semibold text-sunny-900">{{ __('Time to buy the gift!') }}</p>
                     <p class="text-sm text-sunny-700 mt-0.5">
-                        {{ __('We don\'t purchase gifts for you. Head to the store and complete your order.') }}
+                        {{ __('Now head to the store and buy it. We handle the charity part.') }}
                     </p>
                 </div>
             </div>
@@ -128,14 +128,14 @@
                     {{ __('Create Your Own') }}
                 </div>
                 <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{{ __('Want your own wishlist?') }}</h2>
-                <p class="text-coral-100 text-lg mb-6">{{ __('Create a free wishlist and share it with friends and family. All affiliate profits go to charity!') }}</p>
+                <p class="text-coral-100 text-lg mb-6">{{ __('Make a wishlist. Share it with your people. Every gift donates to charity.') }}</p>
 
                 @guest
                     <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-coral-600 rounded-xl hover:bg-coral-50 font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-                        <span>{{ __('Create Your Wishlist') }}</span>
+                        <span>{{ __('Make your own wishlist') }}</span>
                         <x-icons.arrow-right class="w-5 h-5" />
                     </a>
-                    <p class="mt-3 text-coral-200 text-sm">{{ __('Free forever. Share with anyone.') }}</p>
+                    <p class="mt-3 text-coral-200 text-sm">{{ __('Free. No ads. All profits go to charity.') }}</p>
                 @else
                     <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-coral-600 rounded-xl hover:bg-coral-50 font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
                         <span>{{ __('Go to My Wishlists') }}</span>

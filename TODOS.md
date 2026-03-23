@@ -18,13 +18,13 @@
 
 ## Brand & Growth
 
-### Voice rebrand of existing pages
-**What:** Rewrite ~50 translation strings across homepage, about page, auth pages, and existing emails to match the Reynolds/Williams/Adams voice DNA defined in the lootjes trekken design doc.
-**Why:** Participants arriving via lootjes trekken experience the new voice. If they visit the homepage and see generic SaaS copy, the inconsistency erodes trust.
-**Effort:** S (human: ~3 hours / CC: ~45 min). Requires translation into 3 languages (en/nl/fr).
-**Priority:** P2 — do after lootjes trekken ships, before Sinterklaas campaign.
-**Depends on:** Lootjes trekken shipped (so the voice DNA is proven in production first).
-**Added:** 2026-03-22 via /plan-ceo-review
+### ~~Voice rebrand of existing pages~~ → IN PROGRESS: Voice Everywhere
+**What:** Full voice consistency pass across all 35 user-facing files. ~200+ translation strings rewritten in EN/NL/FR with full key rotation. Consolidates duplicate keys. Includes consistency pass on already-warm pages.
+**Why:** Participants arriving via lootjes trekken experience the new voice. The rest of the app should match.
+**Effort:** L (human: ~2 weeks / CC: ~3-4 hours). 6 sprints: auth → dashboard → lists/gifts → claims → emails → components.
+**Priority:** P1 — in progress on `feature/voice-everywhere` branch.
+**Design doc:** `~/.gstack/projects/GiveTwice-givetwice.app/mattias-main-design-20260323-160339.md`
+**Added:** 2026-03-22 via /plan-ceo-review | **Updated:** 2026-03-23 via /plan-eng-review
 
 ### Browser extension / bookmarklet
 **What:** Chrome extension that adds "Add to GiveTwice" button on any product page. Extracts title, image, price, URL. Bookmarklet fallback for Firefox/Safari.

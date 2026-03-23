@@ -11,8 +11,8 @@
             <x-icons.shield-check class="w-7 h-7" />
         </div>
         <h1 class="text-2xl font-bold text-gray-900">{{ __('Two-factor authentication') }}</h1>
-        <p class="text-gray-600 mt-1" x-show="!useRecoveryCode">{{ __('Enter the authentication code from your authenticator app.') }}</p>
-        <p class="text-gray-600 mt-1" x-show="useRecoveryCode" x-cloak>{{ __('Enter one of your emergency recovery codes.') }}</p>
+        <p class="text-gray-600 mt-1" x-show="!useRecoveryCode">{{ __('Enter the code from your authenticator app.') }}</p>
+        <p class="text-gray-600 mt-1" x-show="useRecoveryCode" x-cloak>{{ __('Enter one of your recovery codes.') }}</p>
     </div>
 
     @if ($errors->any())

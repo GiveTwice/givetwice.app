@@ -94,17 +94,17 @@
                         <x-share-modal :list="$list" />
                         <a href="{{ url('/' . app()->getLocale() . '/gifts/create') }}?list={{ $list->id }}" class="btn-primary">
                             <x-icons.plus class="w-5 h-5" />
-                            {{ __('Add a Gift') }}
+                            {{ __('Drop a hint') }}
                         </a>
                     </div>
                 </div>
 
                 @if($list->gifts->isEmpty())
                     <div class="bg-cream-50 rounded-xl p-8 text-center">
-                        <p class="text-gray-500 mb-4">{{ __('No gifts in this list yet.') }}</p>
+                        <p class="text-gray-500 mb-4">{{ __('This list is wide open. Time to fill it.') }}</p>
                         <a href="{{ url('/' . app()->getLocale() . '/gifts/create') }}?list={{ $list->id }}" class="btn-link">
                             <x-icons.plus class="w-4 h-4" />
-                            {{ __('Add your first gift') }}
+                            {{ __('Drop your first hint') }}
                         </a>
                     </div>
                 @else
@@ -121,10 +121,10 @@
                     <div class="w-20 h-20 bg-coral-100 rounded-full flex items-center justify-center mx-auto mb-6">
                         <span class="text-4xl">&#127873;</span>
                     </div>
-                    <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ __('You don\'t have any lists yet.') }}</h3>
-                    <p class="text-gray-500 mb-6">{{ __('Create your first wishlist to get started.') }}</p>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ __('No wishlists yet. Not even one?') }}</h3>
+                    <p class="text-gray-500 mb-6">{{ __('Every great gift starts with a great hint.') }}</p>
                     <a href="{{ url('/' . app()->getLocale() . '/lists/create') }}" class="btn-primary">
-                        {{ __('Create your first list') }}
+                        {{ __('Create your first wishlist') }}
                     </a>
                 </div>
             </div>
@@ -195,8 +195,8 @@
         <div class="mt-8">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white/60 backdrop-blur-sm rounded-2xl border border-cream-200/60 p-6">
                 <div>
-                    <h3 class="font-semibold text-gray-900">{{ __('Need another list?') }}</h3>
-                    <p class="text-sm text-gray-500 mt-1">{{ __('Create lists for different occasions or recipients.') }}</p>
+                    <h3 class="font-semibold text-gray-900">{{ __('Want another wishlist?') }}</h3>
+                    <p class="text-sm text-gray-500 mt-1">{{ __("Birthdays, holidays, 'just because' — make a list for each.") }}</p>
                 </div>
                 <a href="{{ url('/' . app()->getLocale() . '/lists/create') }}" class="btn-secondary whitespace-nowrap">
                     <x-icons.plus class="w-4 h-4" />

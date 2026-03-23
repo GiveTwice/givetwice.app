@@ -93,7 +93,7 @@
         @else
             <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="btn-primary">
                 <x-icons.plus class="w-5 h-5" />
-                {{ __('Create Your Wishlist') }}
+                {{ __('Make your own wishlist') }}
             </a>
             <a href="{{ url('/' . app()->getLocale() . '/login') }}" class="btn-secondary">
                 {{ __('Sign In') }}

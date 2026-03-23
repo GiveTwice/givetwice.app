@@ -15,8 +15,8 @@
                 &#127873;
             </div>
             <div>
-                <h1 class="text-xl font-bold text-gray-900">{{ __('Create your account') }}</h1>
-                <p class="text-gray-500 text-sm mt-0.5">{{ __('Start creating wishlists in minutes') }}</p>
+                <h1 class="text-xl font-bold text-gray-900">{{ __('Make a wishlist. Do some good.') }}</h1>
+                <p class="text-gray-500 text-sm mt-0.5">{{ __('No catch. No ads. All affiliate profits go to charity.') }}</p>
             </div>
         </div>
 
@@ -171,12 +171,12 @@
 
                 {{-- Main heading with brand colors --}}
                 <h1 class="text-2xl font-bold text-gray-900 mb-2">
-                    {{ __('Something special is coming') }}
+                    {{ __('Something good is brewing') }}
                 </h1>
 
                 {{-- Subheading --}}
                 <p class="text-gray-600 mb-8 max-w-xs mx-auto leading-relaxed">
-                    {{ __("We're putting the finishing touches on GiveTwice. Sign up will be available soon!") }}
+                    {{ __("We're almost ready. Come back soon — it'll be worth the wait.") }}
                 </p>
 
                 {{-- Status indicator --}}
@@ -185,7 +185,7 @@
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
                     </span>
-                    <span class="text-sm text-gray-600 font-medium">{{ __('Launching soon') }}</span>
+                    <span class="text-sm text-gray-600 font-medium">{{ __('Coming soon') }}</span>
                 </div>
 
                 {{-- Divider --}}
@@ -194,13 +194,13 @@
                         <div class="w-full border-t border-cream-200"></div>
                     </div>
                     <div class="relative flex justify-center">
-                        <span class="px-4 bg-white text-gray-400 text-sm">{{ __('Want early access?') }}</span>
+                        <span class="px-4 bg-white text-gray-400 text-sm">{{ __("Can't wait?") }}</span>
                     </div>
                 </div>
 
                 {{-- Contact CTA --}}
                 <p class="text-gray-600 text-sm mb-4">
-                    {{ __('Reach out and let us know why you want to try GiveTwice early.') }}
+                    {{ __("Drop us a line — we love enthusiasm.") }}
                 </p>
 
                 <a href="{{ url('/' . app()->getLocale() . '/contact') }}"
