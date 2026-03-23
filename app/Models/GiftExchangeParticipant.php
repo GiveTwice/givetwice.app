@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 
@@ -58,6 +59,16 @@ class GiftExchangeParticipant extends Model
     public function assignedBy(): HasOne
     {
         return $this->hasOne(self::class, 'assigned_to_participant_id', 'id');
+    }
+
+    public function exclusionsAsGiver(): HasMany
+    {
+        return $this->hasMany(GiftExchangeExclusion::class, 'giver_id');
+    }
+
+    public function exclusionsAsReceiver(): HasMany
+    {
+        return $this->hasMany(GiftExchangeExclusion::class, 'receiver_id');
     }
 
     public function defaultWishlist(): ?GiftList
