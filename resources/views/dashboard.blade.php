@@ -132,6 +132,65 @@
         </div>
     </x-app-content>
 
+    {{-- Gift exchanges section --}}
+    @php
+        $exchangeSlugs = ['en' => 'secret-santa', 'nl' => 'lootjes-trekken', 'fr' => 'tirage-au-sort'];
+        $exchangeSlug = $exchangeSlugs[app()->getLocale()] ?? 'secret-santa';
+        $exchangeLabels = ['en' => __('Secret Santa'), 'nl' => __('Lootjes trekken'), 'fr' => __('Tirage au sort')];
+        $exchangeLabel = $exchangeLabels[app()->getLocale()] ?? __('Secret Santa');
+    @endphp
+
+    <div class="mt-10">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-bold text-gray-900">🎲 {{ $exchangeLabel }}</h2>
+            <a href="{{ route('exchanges.landing', ['locale' => app()->getLocale(), 'exchangeType' => $exchangeSlug]) }}" class="btn-primary-sm">
+                <x-icons.plus class="w-4 h-4" />
+                {{ __('New group') }}
+            </a>
+        </div>
+
+        @if($exchanges->isEmpty())
+            <div class="bg-gradient-to-r from-coral-50 to-sunny-50 rounded-2xl p-6 border border-coral-100">
+                <div class="flex flex-col sm:flex-row items-center gap-4">
+                    <div class="text-4xl">🎲</div>
+                    <div class="flex-1 text-center sm:text-left">
+                        <p class="font-semibold text-gray-900">{{ $exchangeLabel }}</p>
+                        <p class="text-gray-600 text-sm">{{ __('Draw names. Buy gifts. Donate to charity. All without anyone knowing who got whom.') }}</p>
+                    </div>
+                    <a href="{{ route('exchanges.landing', ['locale' => app()->getLocale(), 'exchangeType' => $exchangeSlug]) }}" class="btn-primary whitespace-nowrap">
+                        {{ __('Start a group') }}
+                    </a>
+                </div>
+            </div>
+        @else
+            <div class="space-y-3">
+                @foreach($exchanges as $exchange)
+                <a href="{{ route('exchanges.status', ['locale' => app()->getLocale(), 'exchange' => $exchange->slug]) }}" class="block bg-white rounded-xl border border-cream-200 p-4 hover:border-coral-200 hover:shadow-sm transition-all">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="font-semibold text-gray-900">{{ $exchange->name }}</p>
+                            <div class="flex gap-3 mt-1 text-sm text-gray-500">
+                                @if($exchange->event_date)
+                                    <span>📅 {{ $exchange->event_date->format('M j, Y') }}</span>
+                                @endif
+                                <span>👥 {{ $exchange->participants_count }}</span>
+                                @if($exchange->formatBudget())
+                                    <span>💰 {{ $exchange->formatBudget() }}</span>
+                                @endif
+                            </div>
+                        </div>
+                        @if($exchange->isDrawn())
+                            <span class="badge badge-success">{{ __('Names drawn') }}</span>
+                        @else
+                            <span class="badge badge-warning">{{ __('Draft') }}</span>
+                        @endif
+                    </div>
+                </a>
+                @endforeach
+            </div>
+        @endif
+    </div>
+
     @if($lists->isNotEmpty())
         <div class="mt-8">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white/60 backdrop-blur-sm rounded-2xl border border-cream-200/60 p-6">
