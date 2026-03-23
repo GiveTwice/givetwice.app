@@ -15,7 +15,7 @@
         </div>
         <div>
             <h1 class="text-xl font-bold text-gray-900">{{ __('Welcome back!') }}</h1>
-            <p class="text-gray-500 text-sm mt-0.5">{{ __('Sign in to manage your wishlists') }}</p>
+            <p class="text-gray-500 text-sm mt-0.5">{{ __('Your wishlists missed you. Probably.') }}</p>
         </div>
     </div>
 
@@ -112,7 +112,7 @@
     @if(config('app.allow_registration'))
         {{-- Register link - generous top spacing --}}
         <div class="mt-8 pt-6 border-t border-cream-200 text-center">
-            <span class="text-gray-600 text-sm">{{ __("Don't have an account?") }}</span>
+            <span class="text-gray-600 text-sm">{{ __('New here?') }}</span>
             <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="text-coral-600 hover:text-coral-700 font-medium ml-1.5 text-sm">
                 {{ __('Sign Up') }}
             </a>

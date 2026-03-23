@@ -7,7 +7,7 @@
 
     <p>{{ __('Hello') }}{{ $claim->claimer_name ? ' ' . $claim->claimer_name : '' }},</p>
 
-    <p>{{ __('You requested to claim the following gift:') }}</p>
+    <p>{{ __('You want to claim this gift:') }}</p>
 
     <div style="background: #FEF7F5; padding: 16px; border-radius: 12px; margin: 20px 0; border: 1px solid #FECDC7;">
         <strong style="color: #C4493A;">{{ $gift->title ?: __('Untitled gift') }}</strong>
@@ -16,7 +16,7 @@
         @endif
     </div>
 
-    <p>{{ __('Please click the button below to confirm your claim:') }}</p>
+    <p>{{ __('One click to confirm:') }}</p>
 
     <p style="text-align: center; margin: 30px 0;">
         <a href="{{ $confirmUrl }}" style="background: #E8614D; color: white; padding: 14px 28px; text-decoration: none; border-radius: 12px; display: inline-block; font-weight: 600;">
@@ -29,6 +29,6 @@
     </p>
 
     <p style="color: #6b7280; font-size: 14px;">
-        {{ __('This link will expire if someone else claims the gift first.') }}
+        {{ __('Heads up: if someone else claims it first, this link stops working.') }}
     </p>
 @endsection

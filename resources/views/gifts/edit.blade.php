@@ -11,7 +11,7 @@
 @section('content')
 <x-app-content
     :title="__('Edit Gift')"
-    :description="__('Update the details of your gift.')"
+    :description="__('Tweak the details.')"
     :breadcrumbs="[
         ['label' => __('Dashboard'), 'url' => url('/' . app()->getLocale() . '/dashboard')],
         ['label' => __('Edit Gift')]
@@ -58,7 +58,7 @@
                             x-cloak
                             class="text-xs text-gray-400"
                         >
-                            {{ __("Details will be refetched on save") }}
+                            {{ __("We'll re-fetch the details when you save") }}
                         </span>
                     </div>
                 </div>
@@ -155,7 +155,7 @@
                             {{ __('Allow multiple claims') }}
                         </label>
                         <p class="form-help mt-1">
-                            {{ __('Enable for gift cards or items that multiple people can give.') }}
+                            {{ __('Useful for gift cards or big-ticket items.') }}
                         </p>
                     </div>
                 </div>
@@ -224,7 +224,7 @@
 
             <div class="bg-cream-50 rounded-xl p-6">
                 <h2 class="text-lg font-semibold text-gray-900 mb-3">{{ __('Fetch Status') }}</h2>
-                <p class="text-sm text-gray-500 mb-4">{{ __('We automatically fetch the product image, description, and price from the URL in the background.') }}</p>
+                <p class="text-sm text-gray-500 mb-4">{{ __('We grab the image, description, and price from the URL automatically.') }}</p>
 
                 <div class="space-y-3">
                     <div class="flex items-center justify-between">
@@ -277,10 +277,10 @@
 
 <x-danger-zone
     id="delete-gift"
-    :description="__('Once you delete a gift, there is no going back.')"
+    :description="__('Deleting a gift is permanent.')"
     :buttonText="__('Delete Gift')"
     :modalTitle="__('Delete Gift')"
-    :modalMessage="__('Are you sure you want to delete this gift? This action cannot be undone.')"
+    :modalMessage="__('This can\'t be undone. Sure?')"
     :action="url('/' . app()->getLocale() . '/gifts/' . $gift->id)"
 />
 

@@ -44,7 +44,7 @@
                         <a href="{{ route('contact', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center justify-center px-8 py-3 bg-coral-500 text-white rounded-full hover:bg-coral-600 font-semibold text-lg transition-colors shadow-md hover:shadow-lg">
                             {{ __('Get in touch') }}
                         </a>
-                        <p class="mt-3 text-gray-500 text-sm">{{ __('Launching soon') }}</p>
+                        <p class="mt-3 text-gray-500 text-sm">{{ __('Coming soon') }}</p>
                     @endif
                 @else
                     <a href="{{ route('dashboard.locale', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center justify-center px-8 py-3 bg-coral-500 text-white rounded-full hover:bg-coral-600 font-semibold text-lg transition-colors shadow-md hover:shadow-lg">
@@ -197,7 +197,7 @@
             <a href="{{ route('contact', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center px-10 py-4 bg-coral-500 text-white rounded-full hover:bg-coral-600 font-bold text-xl transition-colors shadow-lg hover:shadow-xl">
                 {{ __('Get in touch') }}
             </a>
-            <p class="mt-4 text-gray-500">{{ __('Launching soon') }}</p>
+            <p class="mt-4 text-gray-500">{{ __('Coming soon') }}</p>
         @endif
     @else
         <a href="{{ route('dashboard.locale', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center px-10 py-4 bg-coral-500 text-white rounded-full hover:bg-coral-600 font-bold text-xl transition-colors shadow-lg hover:shadow-xl">

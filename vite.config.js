@@ -11,6 +11,7 @@ export default defineConfig({
                 'resources/css/confetti.css',
                 'resources/js/confetti.js',
                 'resources/js/admin-charts.js',
+                'resources/js/confetti-reveal.js',
             ],
             refresh: true,
         }),

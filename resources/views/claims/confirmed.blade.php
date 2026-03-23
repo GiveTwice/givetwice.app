@@ -16,16 +16,35 @@
 
 <div class="max-w-2xl mx-auto">
 
-    <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-teal-100 to-teal-200 mb-4">
-            <x-icons.checkmark class="w-10 h-10 text-teal-600" />
+    {{-- Buyer's high: You just gave twice --}}
+    <div class="bg-gradient-to-br from-teal-50 to-teal-100 rounded-2xl p-6 sm:p-8 mb-8 border border-teal-200 text-center">
+        <div class="text-4xl mb-3">✨</div>
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">{{ __('You just gave twice.') }}</h1>
+        <p class="text-gray-600 text-lg mb-6">{{ __('One gift. Two smiles.') }}</p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto mb-6">
+            <div class="flex-1 bg-white rounded-xl p-4 shadow-sm">
+                <div class="text-2xl mb-1">🎁</div>
+                <p class="font-semibold text-gray-900 text-sm line-clamp-1">{{ $gift->title ?: __('A gift') }}</p>
+                <p class="text-gray-500 text-xs">{{ __('For someone special') }}</p>
+            </div>
+            <div class="flex-1 bg-white rounded-xl p-4 shadow-sm">
+                <div class="text-2xl mb-1">❤️</div>
+                <p class="font-semibold text-teal-600">~€2-5</p>
+                <p class="text-gray-500 text-xs">{{ __('Donated to charity') }}</p>
+            </div>
         </div>
-        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">
-            {{ __('You\'re all set!') }}
-        </h1>
-        <p class="text-gray-500 mt-2 text-lg">
-            {{ __('This gift is now marked as claimed. No duplicates here!') }}
-        </p>
+
+        <p class="text-gray-500 text-sm mb-4">{{ __('You didn\'t pay a cent extra. The store\'s commission? We donated all of it. Cape not included.') }}</p>
+
+        <div class="flex flex-wrap gap-2 justify-center">
+            <a href="https://wa.me/?text={{ urlencode(__('I just gave twice on GiveTwice! One gift for a friend, one donation to charity.') . ' ' . config('app.url')) }}" target="_blank" class="inline-flex items-center gap-1.5 px-4 py-2 bg-white text-gray-700 rounded-full hover:bg-gray-50 text-sm font-medium border border-gray-200 transition-colors">
+                📱 {{ __('WhatsApp') }}
+            </a>
+            <button onclick="navigator.clipboard.writeText('{{ config('app.url') }}?utm_source=givetwice&utm_medium=share&utm_campaign=gave-twice')" class="inline-flex items-center gap-1.5 px-4 py-2 bg-white text-gray-700 rounded-full hover:bg-gray-50 text-sm font-medium border border-gray-200 transition-colors">
+                📋 {{ __('Copy link') }}
+            </button>
+        </div>
     </div>
 
     <div class="bg-white rounded-2xl shadow-sm border border-cream-400 overflow-hidden highlight-sunny-pulse">
@@ -63,7 +82,7 @@
                 <div class="flex-1">
                     <p class="font-semibold text-sunny-900">{{ __('Time to buy the gift!') }}</p>
                     <p class="text-sm text-sunny-700 mt-0.5">
-                        {{ __('We don\'t purchase gifts for you. Head to the store and complete your order.') }}
+                        {{ __('Now head to the store and buy it. We handle the charity part.') }}
                     </p>
                 </div>
             </div>
@@ -109,14 +128,14 @@
                     {{ __('Create Your Own') }}
                 </div>
                 <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{{ __('Want your own wishlist?') }}</h2>
-                <p class="text-coral-100 text-lg mb-6">{{ __('Create a free wishlist and share it with friends and family. All affiliate profits go to charity!') }}</p>
+                <p class="text-coral-100 text-lg mb-6">{{ __('Make a wishlist. Share it with your people. Every gift donates to charity.') }}</p>
 
                 @guest
                     <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-coral-600 rounded-xl hover:bg-coral-50 font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-                        <span>{{ __('Create Your Wishlist') }}</span>
+                        <span>{{ __('Make your own wishlist') }}</span>
                         <x-icons.arrow-right class="w-5 h-5" />
                     </a>
-                    <p class="mt-3 text-coral-200 text-sm">{{ __('Free forever. Share with anyone.') }}</p>
+                    <p class="mt-3 text-coral-200 text-sm">{{ __('Free. No ads. All profits go to charity.') }}</p>
                 @else
                     <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-coral-600 rounded-xl hover:bg-coral-50 font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
                         <span>{{ __('Go to My Wishlists') }}</span>

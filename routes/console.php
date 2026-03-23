@@ -60,3 +60,8 @@ Schedule::command('app:warn-inactive-accounts')
 Schedule::command('app:delete-inactive-accounts')
     ->weekly()
     ->monitorName('Delete Inactive Accounts');
+
+// Send gift exchange reminder emails (reveal + wishlist nudge)
+Schedule::command('exchanges:send-reminders')
+    ->dailyAt('10:00')
+    ->monitorName('Exchange Reminders');

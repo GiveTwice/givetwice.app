@@ -50,6 +50,7 @@ frankenphp-worker.php
 .mcp.json
 boost.json
 .chief/
+.gstack/
 
 # AI Ops (local state, not tracked)
 .ai-ops/

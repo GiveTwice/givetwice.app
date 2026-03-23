@@ -9,6 +9,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExportPersonalDataController;
 use App\Http\Controllers\FriendsController;
 use App\Http\Controllers\GiftController;
+use App\Http\Controllers\GiftExchangeController;
 use App\Http\Controllers\ListController;
 use App\Http\Controllers\ListInvitationController;
 use App\Http\Controllers\PublicListController;
@@ -77,6 +78,24 @@ Route::prefix('{locale}')
         Route::get('/v/{list}/{slug?}', [PublicListController::class, 'show'])
             ->whereNumber('list')
             ->name('public.list');
+
+        // Gift exchange landing pages (public — SEO entry points)
+        Route::get('/{exchangeType}', [GiftExchangeController::class, 'landing'])
+            ->where('exchangeType', 'lootjes-trekken|secret-santa|tirage-au-sort')
+            ->name('exchanges.landing');
+
+        // Gift exchange reveal (token-based, no auth required)
+        Route::get('/exchange/{token}', [GiftExchangeController::class, 'reveal'])
+            ->middleware('throttle:30,1')
+            ->name('exchanges.reveal');
+
+        // Gift exchange join link (public, rate-limited)
+        Route::get('/exchange/join/{joinToken}', [GiftExchangeController::class, 'showJoinForm'])
+            ->middleware('throttle:30,1')
+            ->name('exchanges.join');
+        Route::post('/exchange/join/{joinToken}', [GiftExchangeController::class, 'join'])
+            ->middleware('throttle:10,1')
+            ->name('exchanges.join.store');
 
         // Claim routes (guest + authenticated)
         Route::get('/gifts/{gift}/claim', [ClaimController::class, 'showAnonymousForm'])->name('claim.anonymous.form');
@@ -202,6 +221,15 @@ Route::prefix('{locale}')
             Route::post('/settings/data-export', ExportPersonalDataController::class)
                 ->middleware('throttle:5,60')
                 ->name('settings.data.export');
+
+            // Gift exchange routes (auth-required actions)
+            Route::post('/{exchangeType}', [GiftExchangeController::class, 'store'])
+                ->where('exchangeType', 'lootjes-trekken|secret-santa|tirage-au-sort')
+                ->name('exchanges.store');
+            Route::post('/exchange/{exchange}/draw', [GiftExchangeController::class, 'draw'])
+                ->name('exchanges.draw');
+            Route::get('/exchange/{exchange}/status', [GiftExchangeController::class, 'status'])
+                ->name('exchanges.status');
 
             // Friends routes
             Route::get('/friends', [FriendsController::class, 'index'])->name('friends.index');

@@ -7,7 +7,7 @@
 @section('content')
 <x-app-content
     :title="__('Edit List')"
-    :description="__('Update the details of your list.')"
+    :description="__('Tweak your list details.')"
     :breadcrumbs="[
         ['label' => __('Dashboard'), 'url' => url('/' . app()->getLocale() . '/dashboard')],
         ['label' => __('Edit :name', ['name' => $list->name])]
@@ -46,7 +46,7 @@
                         id="description"
                         name="description"
                         rows="3"
-                        placeholder="{{ __('Optional description for your list') }}"
+                        placeholder="{{ __("What's this list for? (optional)") }}"
                         class="form-textarea @error('description') border-red-500 @enderror"
                     >{{ old('description', $list->description) }}</textarea>
                     @error('description')
@@ -94,10 +94,10 @@
 
 <x-danger-zone
     id="delete-list"
-    :description="__('Once you delete a list, there is no going back. Gifts in this list will not be deleted.')"
+    :description="__('Deleting a list is permanent. Your gifts stay — they just won\'t be grouped anymore.')"
     :buttonText="__('Delete List')"
     :modalTitle="__('Delete List')"
-    :modalMessage="__('Are you sure you want to delete this list? This action cannot be undone. Gifts in this list will not be deleted.')"
+    :modalMessage="__('This can\'t be undone. Your gifts won\'t be deleted, just ungrouped.')"
     :action="url('/' . app()->getLocale() . '/list/' . $list->slug)"
 />
 @endsection
