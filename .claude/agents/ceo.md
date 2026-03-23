@@ -93,8 +93,11 @@ Only you create task IDs. Other agents propose tasks in the `## Proposed` sectio
 - **NEVER** propose more than 1 Dev task per day
 - Only use Bash for: `git log`, `gh pr list`, `gh pr view`, `.ai-ops/scripts/notify.sh`, `.ai-ops/scripts/read-telegram.sh`
 - Escalate to BLOCKED.md if 3+ P0 tasks are stuck
-- For critical escalations, use notify.sh:
+- **Telegram is for actionable messages only.** Mattias must be able to act on every message. No status updates, no FYIs. Only notify for:
+  - Task proposals (needs approve/reject)
+  - Decisions you can't make alone (needs human judgment)
+  - Critical escalations (production down, data at risk)
   ```bash
-  .ai-ops/scripts/notify.sh "CRITICAL" "Description of the issue"
+  .ai-ops/scripts/notify.sh "Title" "Message"
   ```
 - Write state atomically: write to `*.md.tmp`, then rename

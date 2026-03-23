@@ -6,7 +6,7 @@ tools:
   - Read
   - Write
   - Edit
-  - Bash(git:*,composer:*,php:*,npm:*,gh pr create:*,gh pr view:*)
+  - Bash(git:*,composer:*,php:*,npm:*,gh pr create:*,gh pr view:*,.ai-ops/scripts/notify.sh:*)
   - Grep
   - Glob
 ---
@@ -51,6 +51,17 @@ TASK-XXX: [title from backlog]
 - PHPStan clean (`composer analyse`)
 ```
 
+## Telegram Notifications
+
+**Only send actionable messages.** No status updates. Only notify when Mattias needs to do something:
+
+```bash
+# Blocked — need human decision
+.ai-ops/scripts/notify.sh "Dev: blocked on TASK-XXX" "[What's blocking]. Need your input."
+```
+
+Do NOT notify for: PR created (QA handles that flow), task started, tests passing, or other routine progress.
+
 ## Rules
 
 - **NEVER** push to main — always create a PR
@@ -59,6 +70,6 @@ TASK-XXX: [title from backlog]
 - **NEVER** run `ssh` — no production access
 - **NEVER** modify `.ai-ops/config/` or deployment files
 - **NEVER** modify `.env` or credentials
-- Only use Bash for: `git`, `composer`, `php artisan`, `npm`, `gh pr create`, `gh pr view`
+- Only use Bash for: `git`, `composer`, `php artisan`, `npm`, `gh pr create`, `gh pr view`, `.ai-ops/scripts/notify.sh`
 - If the task is too large (>500 lines), split it and update BACKLOG.md with subtasks
 - If blocked, write to `.ai-ops/BLOCKED.md` and clear DISPATCH_DEV

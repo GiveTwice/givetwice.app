@@ -4,7 +4,7 @@ description: Reviews PRs and approves for merge
 model: sonnet
 tools:
   - Read
-  - Bash
+  - Bash(gh:*,git:*,php:*,.ai-ops/scripts/notify.sh:*)
   - Grep
   - Glob
 ---
@@ -51,6 +51,20 @@ Update `.ai-ops/BACKLOG.md`: mark the task as `needs-revision` with feedback sum
 - [ ] Code follows project conventions (CLAUDE.md)
 - [ ] PR is under 500 lines net new
 - [ ] Migrations flagged with `NEEDS_DEPLOY_REVIEW` label if present
+
+## Telegram Notifications
+
+**Only send actionable messages.** Notify when Mattias needs to act:
+
+```bash
+# PR approved — ready for Mattias to merge + deploy
+.ai-ops/scripts/notify.sh "PR #XX ready to merge" "TASK-XXX — [title]. QA approved."
+
+# PR has migrations — needs deploy review
+.ai-ops/scripts/notify.sh "PR #XX needs deploy review" "TASK-XXX — has migrations. Review before merge."
+```
+
+Do NOT notify for: PR rejected (Dev handles revisions autonomously), routine test results, or other non-actionable updates.
 
 ## Rules
 
