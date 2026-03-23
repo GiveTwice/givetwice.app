@@ -25,7 +25,7 @@
     <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6 sm:p-8 mb-8">
 
         @auth
-        <form method="POST" action="{{ route('exchanges.store', ['locale' => $locale, 'exchangeType' => $exchangeType]) }}" x-data="exchangeForm()">
+        <form method="POST" action="{{ route('exchanges.store', ['locale' => $locale, 'exchangeType' => $exchangeType]) }}" x-data="exchangeForm()" @submit="clearSaved()">
             @csrf
         @else
         <form x-data="exchangeForm()" @submit.prevent="showAuthPrompt = true">
@@ -34,24 +34,24 @@
             <div class="space-y-5">
                 <div>
                     <label for="name" class="form-label">{{ __('Group name') }}</label>
-                    <input type="text" name="name" id="name" class="form-input" placeholder="{{ __('e.g. Family Van der Berg') }}" value="{{ old('name') }}" required>
+                    <input type="text" name="name" id="name" class="form-input" placeholder="{{ __('e.g. Family Van der Berg') }}" x-model="groupName" required>
                     @error('name') <p class="form-error">{{ $message }}</p> @enderror
                 </div>
 
                 <div class="grid sm:grid-cols-2 gap-4">
                     <div>
                         <label for="event_date" class="form-label">{{ __('Event date') }}</label>
-                        <input type="date" name="event_date" id="event_date" class="form-input" value="{{ old('event_date') }}" min="{{ now()->addDay()->format('Y-m-d') }}" required>
+                        <input type="date" name="event_date" id="event_date" class="form-input" x-model="eventDate" min="{{ now()->addDay()->format('Y-m-d') }}" required>
                         @error('event_date') <p class="form-error">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label for="budget_amount" class="form-label">{{ __('Budget per person') }} <span class="text-gray-400">({{ __('optional') }})</span></label>
                         <div class="flex gap-2">
-                            <select name="budget_currency" class="form-select shrink-0 !w-16">
+                            <select name="budget_currency" class="form-select shrink-0 !w-16" x-model="budgetCurrency">
                                 <option value="EUR">€</option>
                                 <option value="USD">$</option>
                             </select>
-                            <input type="number" name="budget_amount" id="budget_amount" class="form-input min-w-0 flex-1" placeholder="25" value="{{ old('budget_amount') }}" min="0" step="0.01">
+                            <input type="number" name="budget_amount" id="budget_amount" class="form-input min-w-0 flex-1" placeholder="25" x-model="budgetAmount" min="0" step="0.01">
                         </div>
                         @error('budget_amount') <p class="form-error">{{ $message }}</p> @enderror
                     </div>
@@ -79,7 +79,7 @@
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <input type="checkbox" name="organizer_participates" id="organizer_participates" value="1" class="rounded border-gray-300 text-coral-500 focus:ring-coral-500" checked>
+                    <input type="checkbox" name="organizer_participates" id="organizer_participates" value="1" class="rounded border-gray-300 text-coral-500 focus:ring-coral-500" x-model="organizerParticipates">
                     <label for="organizer_participates" class="text-gray-700 text-sm">{{ __('I\'m participating too') }}</label>
                 </div>
 
@@ -134,12 +134,41 @@
 @push('scripts')
 <script>
 function exchangeForm() {
+    const storageKey = 'exchange_form_draft';
+    const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
+
     return {
         showAuthPrompt: false,
-        participants: [
+        groupName: saved?.groupName || '{{ old('name', '') }}',
+        eventDate: saved?.eventDate || '{{ old('event_date', '') }}',
+        budgetAmount: saved?.budgetAmount || '{{ old('budget_amount', '') }}',
+        budgetCurrency: saved?.budgetCurrency || '{{ old('budget_currency', 'EUR') }}',
+        organizerParticipates: saved?.organizerParticipates ?? true,
+        participants: saved?.participants || [
             { name: '', email: '' },
             { name: '', email: '' },
         ],
+        init() {
+            this.$watch('groupName', () => this.save());
+            this.$watch('eventDate', () => this.save());
+            this.$watch('budgetAmount', () => this.save());
+            this.$watch('budgetCurrency', () => this.save());
+            this.$watch('organizerParticipates', () => this.save());
+            this.$watch('participants', () => this.save(), { deep: true });
+        },
+        save() {
+            localStorage.setItem(storageKey, JSON.stringify({
+                groupName: this.groupName,
+                eventDate: this.eventDate,
+                budgetAmount: this.budgetAmount,
+                budgetCurrency: this.budgetCurrency,
+                organizerParticipates: this.organizerParticipates,
+                participants: this.participants,
+            }));
+        },
+        clearSaved() {
+            localStorage.removeItem(storageKey);
+        },
         addParticipant() {
             this.participants.push({ name: '', email: '' });
         },
