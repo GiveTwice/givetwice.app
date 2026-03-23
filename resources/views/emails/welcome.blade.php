@@ -8,7 +8,7 @@
 
     <p style="font-size: 16px; color: #374151;">{{ __('Hi :name,', ['name' => $user->name]) }}</p>
 
-    <p style="font-size: 16px; color: #374151;">{{ __('Your wishlist is ready and waiting for you!') }}</p>
+    <p style="font-size: 16px; color: #374151;">{{ __("You're in! Your wishlist is ready.") }}</p>
 
     <p style="text-align: center; margin: 30px 0;">
         <a href="{{ $wishlistUrl }}" style="background: #E8614D; color: white; padding: 14px 28px; text-decoration: none; border-radius: 12px; display: inline-block; font-weight: 600; font-size: 16px;">
@@ -17,7 +17,7 @@
     </p>
 
     <div style="background: #FEF7F5; border-radius: 12px; padding: 24px; margin: 30px 0; border: 1px solid #FECDC7;">
-        <h2 style="color: #374151; font-size: 18px; margin-top: 0; margin-bottom: 20px;">{{ __('Get started in 3 easy steps:') }}</h2>
+        <h2 style="color: #374151; font-size: 18px; margin-top: 0; margin-bottom: 20px;">{{ __("Here's how it works:") }}</h2>
 
         <table style="width: 100%; margin-bottom: 16px;" cellpadding="0" cellspacing="0">
             <tr>
@@ -28,7 +28,7 @@
                 </td>
                 <td style="vertical-align: top; padding-left: 12px;">
                     <p style="margin: 0; font-weight: 600; color: #374151;">{{ __('1. Add your favorite items') }}</p>
-                    <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 14px;">{{ __('Paste product URLs from any online store') }}</p>
+                    <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 14px;">{{ __('Paste a link from any store — we grab the details') }}</p>
                 </td>
             </tr>
         </table>
@@ -42,7 +42,7 @@
                 </td>
                 <td style="vertical-align: top; padding-left: 12px;">
                     <p style="margin: 0; font-weight: 600; color: #374151;">{{ __('2. Share with friends & family') }}</p>
-                    <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 14px;">{{ __('Send your wishlist link via email, chat, or social media') }}</p>
+                    <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 14px;">{{ __('Send the link however you want — text, email, carrier pigeon') }}</p>
                 </td>
             </tr>
         </table>
