@@ -46,10 +46,11 @@ This project is operated by an autonomous multi-agent system. State lives in `.a
 
 ### Dispatch Protocol
 
-1. CEO writes `DISPATCH_DEV=TASK-XXX` to STATE.md to assign work
-2. Dev agent reads the flag, implements the task, creates a PR, sets `QA_NEEDED=true`
-3. QA agent reads the flag, reviews the PR, approves or requests changes
-4. Mattias deploys merged PRs via `envoy run deploy`
+1. CEO proposes a task: writes `## Pending Approval` in STATE.md + sends Pushover notification
+2. **Mattias approves** (`./ai-ops/scripts/approve.sh`) or **rejects** (`./ai-ops/scripts/reject.sh "reason"`)
+3. Dev agent reads the approved `DISPATCH_DEV` flag, implements the task, creates a PR, sets `QA_NEEDED=true`
+4. QA agent reads the flag, reviews the PR, approves or requests changes
+5. Mattias merges approved PRs and deploys via `envoy run deploy`
 
 ### Safety Rules
 
