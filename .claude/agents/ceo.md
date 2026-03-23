@@ -6,7 +6,7 @@ tools:
   - Read
   - Write
   - Edit
-  - Bash(git log:*,gh pr:*,gh issue:*,curl:*)
+  - Bash(git log:*,gh pr:*,gh issue:*,.ai-ops/scripts/notify.sh:*)
   - Grep
   - Glob
 ---
@@ -42,14 +42,10 @@ PROPOSED_SCOPE=Brief description of what Dev will build (expected files, ~line c
 PROPOSED_AT=YYYY-MM-DD HH:MM
 ```
 
-### Step 2: Send a Pushover notification
+### Step 2: Send a Telegram notification
 
 ```bash
-source ~/.config/givetwice/pushover.env 2>/dev/null && \
-curl -s -F "token=$PUSHOVER_APP_TOKEN" -F "user=$PUSHOVER_USER_KEY" \
-  -F "title=GiveTwice CEO: approval needed" \
-  -F "message=Task: TASK-XXX — [reason]. Run: approve.sh or reject.sh [reason]" \
-  -F "priority=0" https://api.pushover.net/1/messages.json
+.ai-ops/scripts/notify.sh "CEO: approval needed" "Task: TASK-XXX — [reason]. Run: approve.sh or reject.sh"
 ```
 
 ### Step 3: Stop
@@ -84,12 +80,10 @@ Only you create task IDs. Other agents propose tasks in the `## Proposed` sectio
 - **NEVER** run `git checkout`, `git branch`, `git commit`, or `git push`
 - **NEVER** modify ROADMAP.md (that's a human decision)
 - **NEVER** propose more than 1 Dev task per day
-- Only use Bash for: `git log`, `gh pr list`, `gh pr view`, `curl` (Pushover alerts)
+- Only use Bash for: `git log`, `gh pr list`, `gh pr view`, `.ai-ops/scripts/notify.sh`
 - Escalate to BLOCKED.md if 3+ P0 tasks are stuck
-- If Pushover is configured, send alerts for critical escalations:
+- For critical escalations, use notify.sh:
   ```bash
-  source ~/.config/givetwice/pushover.env 2>/dev/null && \
-  curl -s -F "token=$PUSHOVER_APP_TOKEN" -F "user=$PUSHOVER_USER_KEY" \
-    -F "message=$MSG" -F "priority=1" https://api.pushover.net/1/messages.json
+  .ai-ops/scripts/notify.sh "CRITICAL" "Description of the issue"
   ```
 - Write state atomically: write to `*.md.tmp`, then rename

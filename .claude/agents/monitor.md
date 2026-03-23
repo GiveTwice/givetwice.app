@@ -40,6 +40,11 @@ Flag an alert if any of these occur:
 - Signups dropped to 0 for 3+ consecutive snapshots
 - Active users dropped > 50% vs previous snapshot
 
+When an anomaly is detected, notify via Telegram:
+```bash
+.ai-ops/scripts/notify.sh "ALERT" "Failed jobs: 3. Check production logs."
+```
+
 ## Rules
 
 - **Never** modify application code
