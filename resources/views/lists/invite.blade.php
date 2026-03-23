@@ -7,7 +7,7 @@
 @section('content')
 <x-app-content
     :title="__('Invite collaborators')"
-    :description="__('Share this list with others so they can add and manage gifts together.')"
+    :description="__('Invite someone to help manage this list. Two heads, better gifts.')"
     :breadcrumbs="[
         ['label' => __('Dashboard'), 'url' => url('/' . app()->getLocale() . '/dashboard')],
         ['label' => $list->name, 'url' => url('/' . app()->getLocale() . '/list/' . $list->slug . '/edit')],
@@ -36,7 +36,7 @@
                     @error('email')
                         <p class="form-error">{{ $message }}</p>
                     @enderror
-                    <p class="form-help">{{ __('They will receive an email invitation to collaborate on this list.') }}</p>
+                    <p class="form-help">{{ __("They'll get an email with an invite link.") }}</p>
                 </div>
 
                 <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-100">

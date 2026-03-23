@@ -7,7 +7,7 @@
 @section('content')
 <x-app-content
     :title="__('Create List')"
-    :description="__('Create a new wishlist for a specific occasion or recipient.')"
+    :description="__('A wishlist for every occasion. Or no occasion at all.')"
     :breadcrumbs="[
         ['label' => __('Dashboard'), 'url' => url('/' . app()->getLocale() . '/dashboard')],
         ['label' => __('Create List')]
@@ -45,7 +45,7 @@
                         id="description"
                         name="description"
                         rows="3"
-                        placeholder="{{ __('Optional description for your list') }}"
+                        placeholder="{{ __("What's this list for? (optional)") }}"
                         class="form-textarea @error('description') border-red-500 @enderror"
                     >{{ old('description') }}</textarea>
                     @error('description')
@@ -77,8 +77,8 @@
                             </svg>
                         </div>
                         <div>
-                            <p class="text-gray-700 font-medium">{{ __('Organize your wishes') }}</p>
-                            <p class="form-help mt-0">{{ __('Create separate lists for different occasions like birthdays, holidays, or events.') }}</p>
+                            <p class="text-gray-700 font-medium">{{ __('One list or many') }}</p>
+                            <p class="form-help mt-0">{{ __('Birthdays, holidays, secret wishlists — keep them separate or lump them together.') }}</p>
                         </div>
                     </div>
 
@@ -89,8 +89,8 @@
                             </svg>
                         </div>
                         <div>
-                            <p class="text-gray-700 font-medium">{{ __('Share with different people') }}</p>
-                            <p class="form-help mt-0">{{ __('Each list has its own shareable link, so you can send different lists to different people.') }}</p>
+                            <p class="text-gray-700 font-medium">{{ __('Share with whoever') }}</p>
+                            <p class="form-help mt-0">{{ __('Each list gets its own link. Send your birthday list to friends, your holiday list to family.') }}</p>
                         </div>
                     </div>
 
@@ -100,7 +100,7 @@
                         </div>
                         <div>
                             <p class="text-gray-700 font-medium">{{ __('Keep it simple') }}</p>
-                            <p class="form-help mt-0">{{ __('Most people only need one list. Create more only if you need them!') }}</p>
+                            <p class="form-help mt-0">{{ __('Most people only need one list. You do you.') }}</p>
                         </div>
                     </div>
                 </div>
