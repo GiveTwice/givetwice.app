@@ -89,6 +89,14 @@ Route::prefix('{locale}')
             ->middleware('throttle:30,1')
             ->name('exchanges.reveal');
 
+        // Gift exchange join link (public, rate-limited)
+        Route::get('/exchange/join/{joinToken}', [GiftExchangeController::class, 'showJoinForm'])
+            ->middleware('throttle:30,1')
+            ->name('exchanges.join');
+        Route::post('/exchange/join/{joinToken}', [GiftExchangeController::class, 'join'])
+            ->middleware('throttle:10,1')
+            ->name('exchanges.join.store');
+
         // Claim routes (guest + authenticated)
         Route::get('/gifts/{gift}/claim', [ClaimController::class, 'showAnonymousForm'])->name('claim.anonymous.form');
         Route::post('/gifts/{gift}/claim-anonymous', [ClaimController::class, 'storeAnonymous'])->name('claim.anonymous.store');

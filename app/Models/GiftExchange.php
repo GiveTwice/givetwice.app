@@ -19,6 +19,7 @@ class GiftExchange extends Model
         'budget_currency',
         'event_date',
         'slug',
+        'join_token',
         'status',
         'draw_completed_at',
         'locale',
@@ -38,6 +39,9 @@ class GiftExchange extends Model
         static::creating(function (GiftExchange $exchange) {
             if (empty($exchange->slug)) {
                 $exchange->slug = Str::uuid()->toString();
+            }
+            if (empty($exchange->join_token)) {
+                $exchange->join_token = Str::random(32);
             }
             if (empty($exchange->status)) {
                 $exchange->status = 'draft';
@@ -92,6 +96,14 @@ class GiftExchange extends Model
         $symbol = $this->budget_currency === 'USD' ? '$' : '€';
 
         return $symbol.number_format($amount, $amount == intval($amount) ? 0 : 2);
+    }
+
+    public function getJoinUrl(?string $locale = null): string
+    {
+        return route('exchanges.join', [
+            'locale' => $locale ?? $this->locale,
+            'joinToken' => $this->join_token,
+        ]);
     }
 
     public function exchangeTypeSlugs(): array

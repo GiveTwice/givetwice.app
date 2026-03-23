@@ -186,4 +186,76 @@ describe('Gift Exchange Feature', function () {
                 ->assertGone();
         });
     });
+
+    describe('join link', function () {
+        it('generates join_token on creation', function () {
+            $exchange = GiftExchange::factory()->create();
+
+            expect($exchange->join_token)->not->toBeNull();
+            expect(strlen($exchange->join_token))->toBe(32);
+        });
+
+        it('shows join form for draft exchange', function () {
+            $exchange = GiftExchange::factory()->create();
+
+            $this->get("/en/exchange/join/{$exchange->join_token}")
+                ->assertOk()
+                ->assertViewIs('exchanges.join')
+                ->assertSee($exchange->name);
+        });
+
+        it('returns 410 for drawn exchange join link', function () {
+            $exchange = GiftExchange::factory()->drawn()->create();
+
+            $this->get("/en/exchange/join/{$exchange->join_token}")
+                ->assertGone();
+        });
+
+        it('allows joining a draft exchange', function () {
+            $exchange = GiftExchange::factory()->create();
+            GiftExchangeParticipant::factory()->count(3)->create(['exchange_id' => $exchange->id]);
+
+            $this->post("/en/exchange/join/{$exchange->join_token}", [
+                'name' => 'New Person',
+                'email' => 'new@example.com',
+            ])->assertRedirect();
+
+            expect($exchange->participants()->where('email', 'new@example.com')->exists())->toBeTrue();
+        });
+
+        it('prevents duplicate email from joining', function () {
+            $exchange = GiftExchange::factory()->create();
+            GiftExchangeParticipant::factory()->create([
+                'exchange_id' => $exchange->id,
+                'email' => 'existing@example.com',
+            ]);
+
+            $this->post("/en/exchange/join/{$exchange->join_token}", [
+                'name' => 'Duplicate',
+                'email' => 'existing@example.com',
+            ])->assertSessionHasErrors('email');
+        });
+
+        it('prevents joining a drawn exchange', function () {
+            $exchange = GiftExchange::factory()->drawn()->create();
+
+            $this->post("/en/exchange/join/{$exchange->join_token}", [
+                'name' => 'Late Joiner',
+                'email' => 'late@example.com',
+            ])->assertGone();
+        });
+
+        it('links to existing user when joining', function () {
+            $user = User::factory()->create(['email' => 'known@example.com']);
+            $exchange = GiftExchange::factory()->create();
+
+            $this->post("/en/exchange/join/{$exchange->join_token}", [
+                'name' => 'Known User',
+                'email' => 'known@example.com',
+            ]);
+
+            $participant = $exchange->participants()->where('email', 'known@example.com')->first();
+            expect($participant->user_id)->toBe($user->id);
+        });
+    });
 });

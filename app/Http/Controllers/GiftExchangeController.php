@@ -6,6 +6,7 @@ use App\Actions\CreateGiftExchangeAction;
 use App\Actions\PerformDrawAction;
 use App\Models\GiftExchange;
 use App\Models\GiftExchangeParticipant;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -103,6 +104,55 @@ class GiftExchangeController extends Controller
             'exchange' => $exchange,
             'claimCount' => $claimCount,
         ]);
+    }
+
+    public function showJoinForm(string $locale, string $joinToken): View
+    {
+        $exchange = GiftExchange::where('join_token', $joinToken)->firstOrFail();
+
+        if (! $exchange->isDraft()) {
+            abort(410, __('This group has already drawn names. You can no longer join.'));
+        }
+
+        $exchange->load('participants');
+
+        return view('exchanges.join', [
+            'exchange' => $exchange,
+            'joinToken' => $joinToken,
+        ]);
+    }
+
+    public function join(Request $request, string $locale, string $joinToken): RedirectResponse
+    {
+        $exchange = GiftExchange::where('join_token', $joinToken)->firstOrFail();
+
+        if (! $exchange->isDraft()) {
+            abort(410, __('This group has already drawn names. You can no longer join.'));
+        }
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+        ]);
+
+        $email = strtolower(trim($validated['email']));
+
+        if ($exchange->participants()->where('email', $email)->exists()) {
+            return back()->withInput()->withErrors([
+                'email' => __('This email is already in the group.'),
+            ]);
+        }
+
+        $existingUser = User::where('email', $email)->first();
+
+        GiftExchangeParticipant::create([
+            'exchange_id' => $exchange->id,
+            'user_id' => $existingUser?->id,
+            'name' => trim($validated['name']),
+            'email' => $email,
+        ]);
+
+        return back()->with('success', __('You\'ve joined :name!', ['name' => $exchange->name]));
     }
 
     public function reveal(string $locale, string $token): View
