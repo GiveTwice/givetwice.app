@@ -7,11 +7,6 @@ use App\Models\User;
 
 class GiftExchangePolicy
 {
-    public function view(User $user, GiftExchange $exchange): bool
-    {
-        return $exchange->organizer_id === $user->id;
-    }
-
     public function create(User $user): bool
     {
         return true;

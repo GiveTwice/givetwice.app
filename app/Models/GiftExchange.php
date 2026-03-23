@@ -106,7 +106,7 @@ class GiftExchange extends Model
         ]);
     }
 
-    public function exchangeTypeSlugs(): array
+    public static function exchangeTypeSlugs(): array
     {
         return [
             'en' => 'secret-santa',
@@ -119,6 +119,6 @@ class GiftExchange extends Model
     {
         $locale = $locale ?? $this->locale;
 
-        return $this->exchangeTypeSlugs()[$locale] ?? 'secret-santa';
+        return static::exchangeTypeSlugs()[$locale] ?? 'secret-santa';
     }
 }

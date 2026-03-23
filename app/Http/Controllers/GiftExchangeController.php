@@ -35,12 +35,14 @@ class GiftExchangeController extends Controller
         string $exchangeType,
         CreateGiftExchangeAction $action,
     ): RedirectResponse {
+        $minParticipants = $request->boolean('organizer_participates') ? 2 : 3;
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'event_date' => ['required', 'date', 'after:today'],
             'budget_amount' => ['nullable', 'numeric', 'min:0'],
             'budget_currency' => ['nullable', 'string', 'in:EUR,USD'],
-            'participants' => ['required', 'array', 'min:2'],
+            'participants' => ['required', 'array', "min:{$minParticipants}"],
             'participants.*.name' => ['required', 'string', 'max:255'],
             'participants.*.email' => ['required', 'email', 'max:255'],
             'organizer_participates' => ['nullable', 'boolean'],
@@ -176,10 +178,7 @@ class GiftExchangeController extends Controller
         $wishlist = $assignedTo?->defaultWishlist();
         $wishlistGiftCount = $wishlist?->gifts()->count() ?? 0;
 
-        $participantHasWishlist = false;
-        if ($participant->user_id !== null) {
-            $participantHasWishlist = (bool) $participant->defaultWishlist();
-        }
+        $participantHasWishlist = $participant->user_id !== null && (bool) $participant->defaultWishlist();
 
         return view('exchanges.reveal', [
             'participant' => $participant,

@@ -35,6 +35,7 @@ class SendExchangeReminders extends Command
             ->with('exchange')
             ->get();
 
+        $sent = 0;
         foreach ($participants as $participant) {
             if ($participant->isTokenExpired()) {
                 continue;
@@ -44,9 +45,10 @@ class SendExchangeReminders extends Command
             $exchange = $participant->exchange;
             Mail::to($participant->email)
                 ->queue(new ExchangeRevealReminderMail($participant, $exchange));
+            $sent++;
         }
 
-        $this->info("Sent {$participants->count()} reveal reminders.");
+        $this->info("Sent {$sent} reveal reminders.");
     }
 
     private function sendWishlistNudges(): void

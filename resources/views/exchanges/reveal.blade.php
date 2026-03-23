@@ -80,7 +80,7 @@
                 @if(!$participantHasWishlist)
                 <div class="text-center pt-2">
                     <p class="text-gray-600 text-sm mb-2">{{ __('Want your own wishlist?') }}</p>
-                    <a href="{{ route('register', ['locale' => app()->getLocale()]) }}?utm_source=givetwice&utm_medium=exchange&utm_campaign=reveal" class="btn-secondary-sm">
+                    <a href="{{ route('register', ['locale' => app()->getLocale()]) }}?utm_source=givetwice&utm_medium=exchange&utm_campaign=reveal" class="btn-secondary">
                         {{ __('Create a wishlist — it\'s free') }}
                     </a>
                 </div>

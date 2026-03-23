@@ -46,9 +46,11 @@ class PerformDrawAction
                 'draw_completed_at' => now(),
             ]);
 
-            event(new GiftExchangeDrawCompleted($exchange->fresh()));
+            $exchange = $exchange->fresh();
 
-            return $exchange->fresh();
+            event(new GiftExchangeDrawCompleted($exchange));
+
+            return $exchange;
         });
     }
 }
