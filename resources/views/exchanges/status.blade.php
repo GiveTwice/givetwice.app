@@ -22,7 +22,9 @@
             <div>
                 <h1 class="text-2xl font-bold text-gray-900">{{ $exchange->name }}</h1>
                 <div class="flex flex-wrap gap-4 mt-2 text-sm text-gray-500">
-                    <span>📅 {{ $exchange->event_date->format('M j, Y') }}</span>
+                    @if($exchange->event_date)
+                        <span>📅 {{ $exchange->event_date->format('M j, Y') }}</span>
+                    @endif
                     @if($exchange->formatBudget())
                         <span>💰 {{ $exchange->formatBudget() }}</span>
                     @endif

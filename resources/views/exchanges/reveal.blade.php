@@ -42,7 +42,9 @@
                     @if($exchange->formatBudget())
                         <span>{{ __('Budget') }}: {{ $exchange->formatBudget() }}</span>
                     @endif
-                    <span>{{ $exchange->event_date->format('M j') }}</span>
+                    @if($exchange->event_date)
+                        <span>{{ $exchange->event_date->format('M j') }}</span>
+                    @endif
                 </div>
             </div>
 

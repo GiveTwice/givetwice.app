@@ -18,6 +18,8 @@
 </div>
 
 <p style="font-size: 13px; color: #9ca3af; text-align: center;">
-    {{ __('We\'re not saying there\'s a deadline. But there\'s definitely a deadline.') }} ({{ $exchange->event_date->format('M j') }})
+    @if($exchange->event_date)
+        {{ __('We\'re not saying there\'s a deadline. But there\'s definitely a deadline.') }} ({{ $exchange->event_date->format('M j') }})
+    @endif
 </p>
 @endsection

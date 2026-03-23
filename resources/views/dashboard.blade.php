@@ -170,7 +170,9 @@
                         <div>
                             <p class="font-semibold text-gray-900">{{ $exchange->name }}</p>
                             <div class="flex gap-3 mt-1 text-sm text-gray-500">
-                                <span>📅 {{ $exchange->event_date->format('M j, Y') }}</span>
+                                @if($exchange->event_date)
+                                    <span>📅 {{ $exchange->event_date->format('M j, Y') }}</span>
+                                @endif
                                 <span>👥 {{ $exchange->participants_count }}</span>
                                 @if($exchange->formatBudget())
                                     <span>💰 {{ $exchange->formatBudget() }}</span>

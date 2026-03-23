@@ -17,7 +17,9 @@
         @endif
 
         <div class="flex flex-wrap gap-4 mb-6 text-sm text-gray-500 justify-center">
-            <span>📅 {{ $exchange->event_date->format('M j, Y') }}</span>
+            @if($exchange->event_date)
+                <span>📅 {{ $exchange->event_date->format('M j, Y') }}</span>
+            @endif
             @if($exchange->formatBudget())
                 <span>💰 {{ $exchange->formatBudget() }}</span>
             @endif

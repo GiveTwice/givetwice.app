@@ -13,7 +13,7 @@ class CreateGiftExchangeAction
     public function execute(
         User $organizer,
         string $name,
-        string $eventDate,
+        ?string $eventDate,
         string $locale,
         array $participants,
         ?int $budgetAmount = null,

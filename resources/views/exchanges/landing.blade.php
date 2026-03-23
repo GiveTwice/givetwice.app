@@ -40,8 +40,8 @@
 
                 <div class="grid sm:grid-cols-2 gap-4">
                     <div>
-                        <label for="event_date" class="form-label">{{ __('Event date') }}</label>
-                        <input type="date" name="event_date" id="event_date" class="form-input" x-model="eventDate" min="{{ now()->addDay()->format('Y-m-d') }}" required>
+                        <label for="event_date" class="form-label">{{ __('Event date') }} <span class="text-gray-400">({{ __('optional') }})</span></label>
+                        <input type="date" name="event_date" id="event_date" class="form-input" x-model="eventDate" min="{{ now()->addDay()->format('Y-m-d') }}">
                         @error('event_date') <p class="form-error">{{ $message }}</p> @enderror
                     </div>
                     <div>
@@ -80,7 +80,13 @@
 
                 <div class="flex items-center gap-3">
                     <input type="checkbox" name="organizer_participates" id="organizer_participates" value="1" class="rounded border-gray-300 text-coral-500 focus:ring-coral-500" x-model="organizerParticipates">
-                    <label for="organizer_participates" class="text-gray-700 text-sm">{{ __('I\'m participating too') }}</label>
+                    <label for="organizer_participates" class="text-gray-700 text-sm">
+                        @auth
+                            {{ __('I\'m participating too') }} <span class="text-gray-400">({{ auth()->user()->name }})</span>
+                        @else
+                            {{ __('I\'m participating too') }}
+                        @endauth
+                    </label>
                 </div>
 
                 @auth
@@ -88,8 +94,7 @@
                     <button type="submit" class="btn-primary w-full sm:w-auto">{{ __('Create group') }}</button>
                 </div>
                 @else
-                {{-- Auth prompt appears when guest tries to submit --}}
-                <div>
+                <div class="form-actions">
                     <button type="submit" class="btn-primary w-full sm:w-auto">{{ __('Create group') }}</button>
                 </div>
 

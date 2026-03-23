@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('name');
             $table->unsignedInteger('budget_amount')->nullable();
             $table->string('budget_currency', 3)->default('EUR');
-            $table->date('event_date');
+            $table->date('event_date')->nullable();
             $table->string('slug')->unique();
             $table->string('join_token', 32)->unique()->nullable();
             $table->enum('status', ['draft', 'drawn'])->default('draft');

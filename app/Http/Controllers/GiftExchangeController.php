@@ -39,7 +39,7 @@ class GiftExchangeController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'event_date' => ['required', 'date', 'after:today'],
+            'event_date' => ['nullable', 'date', 'after:today'],
             'budget_amount' => ['nullable', 'numeric', 'min:0'],
             'budget_currency' => ['nullable', 'string', 'in:EUR,USD'],
             'participants' => ['required', 'array', "min:{$minParticipants}"],
@@ -55,7 +55,7 @@ class GiftExchangeController extends Controller
         $exchange = $action->execute(
             organizer: $request->user(),
             name: $validated['name'],
-            eventDate: $validated['event_date'],
+            eventDate: $validated['event_date'] ?? null,
             locale: $locale,
             participants: $validated['participants'],
             budgetAmount: $budgetAmount,

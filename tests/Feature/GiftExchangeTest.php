@@ -85,7 +85,7 @@ describe('Gift Exchange Feature', function () {
 
             $this->actingAs($user)
                 ->post('/nl/lootjes-trekken', [])
-                ->assertSessionHasErrors(['name', 'event_date', 'participants']);
+                ->assertSessionHasErrors(['name', 'participants']);
         });
     });
 
