@@ -14,6 +14,65 @@ use Illuminate\View\View;
 
 class GiftExchangeController extends Controller
 {
+    public function addParticipant(Request $request, string $locale, GiftExchange $exchange): RedirectResponse
+    {
+        $this->authorize('manage', $exchange);
+
+        if ($exchange->participants()->count() >= 50) {
+            return back()->withErrors(['participant' => __('This group has reached its maximum number of participants.')]);
+        }
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+        ]);
+
+        $email = strtolower(trim($validated['email']));
+
+        if ($exchange->participants()->where('email', $email)->exists()) {
+            return back()->withErrors(['email' => __('This email is already in the group.')]);
+        }
+
+        $existingUser = User::where('email', $email)->first();
+
+        GiftExchangeParticipant::create([
+            'exchange_id' => $exchange->id,
+            'user_id' => $existingUser?->id,
+            'name' => trim($validated['name']),
+            'email' => $email,
+        ]);
+
+        return back()->with('success', __(':name has been added to the group.', ['name' => $validated['name']]));
+    }
+
+    public function removeParticipant(string $locale, GiftExchange $exchange, GiftExchangeParticipant $participant): RedirectResponse
+    {
+        $this->authorize('manage', $exchange);
+
+        if ($participant->exchange_id !== $exchange->id) {
+            abort(404);
+        }
+
+        if ($exchange->participants()->count() <= 3) {
+            return back()->withErrors(['participant' => __('A group needs at least 3 participants.')]);
+        }
+
+        $name = $participant->name;
+
+        // Also remove any exclusions involving this participant
+        $exchange->exclusions()
+            ->where('giver_id', $participant->id)
+            ->orWhere(function ($query) use ($exchange, $participant) {
+                $query->where('exchange_id', $exchange->id)
+                    ->where('receiver_id', $participant->id);
+            })
+            ->delete();
+
+        $participant->delete();
+
+        return back()->with('success', __(':name has been removed from the group.', ['name' => $name]));
+    }
+
     public function landing(string $locale, string $exchangeType): View
     {
         if (! auth()->check()) {

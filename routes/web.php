@@ -228,6 +228,10 @@ Route::prefix('{locale}')
                 ->name('exchanges.store');
             Route::post('/exchange/{exchange}/draw', [GiftExchangeController::class, 'draw'])
                 ->name('exchanges.draw');
+            Route::post('/exchange/{exchange}/participants', [GiftExchangeController::class, 'addParticipant'])
+                ->name('exchanges.participants.store');
+            Route::delete('/exchange/{exchange}/participants/{participant}', [GiftExchangeController::class, 'removeParticipant'])
+                ->name('exchanges.participants.destroy');
             Route::get('/exchange/{exchange}/status', [GiftExchangeController::class, 'status'])
                 ->name('exchanges.status');
 
