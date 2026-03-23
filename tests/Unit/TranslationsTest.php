@@ -15,6 +15,16 @@ it('has a translation file for each supported locale', function () {
     }
 });
 
+it('has valid JSON in each translation file', function () {
+    foreach (SupportedLocale::values() as $locale) {
+        $path = lang_path("{$locale}.json");
+        $content = file_get_contents($path);
+        json_decode($content);
+        expect(json_last_error())
+            ->toBe(JSON_ERROR_NONE, "{$locale}.json is not valid JSON: ".json_last_error_msg());
+    }
+});
+
 it('has all Blade template keys in the base English translation file', function () {
     $en = $this->translations['en'] ?? [];
     $missing = [];

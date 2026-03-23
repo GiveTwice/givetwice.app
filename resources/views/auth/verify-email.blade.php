@@ -10,9 +10,9 @@
         <div class="inline-flex items-center justify-center w-14 h-14 bg-sunny-100 text-sunny-600 rounded-2xl text-2xl mb-4 transform -rotate-3">
             &#9993;
         </div>
-        <h1 class="text-2xl font-bold text-gray-900">{{ __('Verify Your Email') }}</h1>
+        <h1 class="text-2xl font-bold text-gray-900">{{ __('Check your inbox') }}</h1>
         <p class="text-gray-600 mt-2 leading-relaxed">
-            {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you?') }}
+            {{ __("We sent you a verification email. One click and you're in.") }}
         </p>
     </div>
 
@@ -20,7 +20,7 @@
         <div class="alert-success">
             <div class="flex items-center">
                 <span class="text-teal-500 mr-2">&#10003;</span>
-                {{ __('A new verification link has been sent to your email address.') }}
+                {{ __('Fresh link sent! Check your inbox.') }}
             </div>
         </div>
     @endif
@@ -28,7 +28,7 @@
     <form method="POST" action="{{ url('/email/verification-notification') }}">
         @csrf
         <button type="submit" class="w-full bg-coral-500 text-white py-3 px-4 rounded-xl hover:bg-coral-600 font-semibold transition-colors shadow-sm">
-            {{ __('Resend Verification Email') }}
+            {{ __('Resend the email') }}
         </button>
     </form>
 

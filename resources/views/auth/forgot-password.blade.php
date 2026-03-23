@@ -1,6 +1,6 @@
 @extends('layouts.guest')
 
-@section('title', __('Forgot Password'))
+@section('title', __('Forgot your password?'))
 
 @section('robots', 'noindex, nofollow')
 
@@ -10,9 +10,9 @@
         <div class="inline-flex items-center justify-center w-14 h-14 bg-sunny-100 text-sunny-600 rounded-2xl text-2xl mb-4 transform rotate-3">
             &#128273;
         </div>
-        <h1 class="text-2xl font-bold text-gray-900">{{ __('Forgot Password') }}</h1>
+        <h1 class="text-2xl font-bold text-gray-900">{{ __('Forgot your password?') }}</h1>
         <p class="text-gray-600 mt-2">
-            {{ __('Enter your email address and we will send you a password reset link.') }}
+            {{ __("No worries. Enter your email and we'll send a reset link.") }}
         </p>
     </div>
 
@@ -42,7 +42,7 @@
         </div>
 
         <button type="submit" class="w-full bg-coral-500 text-white py-3 px-4 rounded-xl hover:bg-coral-600 font-semibold transition-colors shadow-sm">
-            {{ __('Send Password Reset Link') }}
+            {{ __('Send reset link') }}
         </button>
     </form>
 

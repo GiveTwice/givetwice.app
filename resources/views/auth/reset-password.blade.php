@@ -11,7 +11,7 @@
             &#128274;
         </div>
         <h1 class="text-2xl font-bold text-gray-900">{{ __('Reset Password') }}</h1>
-        <p class="text-gray-600 mt-2">{{ __('Enter your new password below') }}</p>
+        <p class="text-gray-600 mt-2">{{ __("Pick something you'll remember this time.") }}</p>
     </div>
 
     @if ($errors->any())

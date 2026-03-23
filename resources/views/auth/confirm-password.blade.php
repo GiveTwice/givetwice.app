@@ -12,7 +12,7 @@
         </div>
         <h1 class="text-2xl font-bold text-gray-900">{{ __('Confirm Password') }}</h1>
         <p class="text-gray-600 mt-2">
-            {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
+            {{ __("Just checking it's really you. Enter your password to continue.") }}
         </p>
     </div>
 
