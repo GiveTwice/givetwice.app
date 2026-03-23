@@ -58,6 +58,11 @@ This project is operated by an autonomous multi-agent system. State lives in `.a
 - **Never** modify `.env`, credentials, or deployment config
 - **Never** deploy — only Mattias deploys
 - **Never** send emails to users directly
+- **Never** invoke `claude` or spawn sub-agents — each agent runs as its own cron job
 - **Max** 500 lines net new code per PR
 - **Always** run Pint + PHPStan + tests before creating a PR
 - Flag migrations with `NEEDS_DEPLOY_REVIEW` label
+
+### Lesson: Agent Containment (2026-03-23)
+
+The CEO agent's first run invoked `claude` directly via Bash, spawning Dev and QA agents inline. This caused a runaway: 22 commits, 2 PRs merged, $1+ burned in one session. Fix: agents must NEVER invoke `claude` — they only set dispatch flags. Containment is enforced at two levels: (1) agent prompt rules, (2) `--allowedTools` in run-agent.sh restricting Bash commands per agent.

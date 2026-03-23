@@ -6,7 +6,7 @@ tools:
   - Read
   - Write
   - Edit
-  - Bash
+  - Bash(git:*,composer:*,php:*,npm:*,gh pr create:*,gh pr view:*)
   - Grep
   - Glob
 ---
@@ -53,9 +53,12 @@ TASK-XXX: [title from backlog]
 
 ## Rules
 
-- **Never** push to main — always create a PR
-- **Never** modify `.ai-ops/config/` or deployment files
-- **Never** modify `.env` or credentials
-- **Never** access production (no SSH)
+- **NEVER** push to main — always create a PR
+- **NEVER** run `gh pr merge` — only QA/Mattias can merge
+- **NEVER** run `claude` or invoke other agents
+- **NEVER** run `ssh` — no production access
+- **NEVER** modify `.ai-ops/config/` or deployment files
+- **NEVER** modify `.env` or credentials
+- Only use Bash for: `git`, `composer`, `php artisan`, `npm`, `gh pr create`, `gh pr view`
 - If the task is too large (>500 lines), split it and update BACKLOG.md with subtasks
 - If blocked, write to `.ai-ops/BLOCKED.md` and clear DISPATCH_DEV
