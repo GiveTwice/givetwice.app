@@ -139,10 +139,10 @@ function exchangeForm() {
 
     return {
         showAuthPrompt: false,
-        groupName: saved?.groupName || '{{ old('name', '') }}',
-        eventDate: saved?.eventDate || '{{ old('event_date', '') }}',
-        budgetAmount: saved?.budgetAmount || '{{ old('budget_amount', '') }}',
-        budgetCurrency: saved?.budgetCurrency || '{{ old('budget_currency', 'EUR') }}',
+        groupName: saved?.groupName || {!! Js::from(old('name', '')) !!},
+        eventDate: saved?.eventDate || {!! Js::from(old('event_date', '')) !!},
+        budgetAmount: saved?.budgetAmount || {!! Js::from(old('budget_amount', '')) !!},
+        budgetCurrency: saved?.budgetCurrency || {!! Js::from(old('budget_currency', 'EUR')) !!},
         organizerParticipates: saved?.organizerParticipates ?? true,
         participants: saved?.participants || [
             { name: '', email: '' },

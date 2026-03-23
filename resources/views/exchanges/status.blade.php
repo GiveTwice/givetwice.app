@@ -52,9 +52,9 @@
         <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ __('Invite link') }}</h2>
         <p class="text-gray-600 text-sm mb-4">{{ __('Share this link so people can add themselves to the group before you draw.') }}</p>
         <div class="flex gap-2">
-            <input type="text" readonly value="{{ $exchange->getJoinUrl() }}" class="form-input flex-1 text-sm bg-gray-50" @click="$el.select()">
+            <input type="text" readonly value="{{ $exchange->getJoinUrl() }}" class="form-input flex-1 text-sm bg-gray-50" x-ref="joinUrl" @click="$el.select()">
             <button type="button"
-                    @click="navigator.clipboard.writeText('{{ $exchange->getJoinUrl() }}'); copied = true; setTimeout(() => copied = false, 2000)"
+                    @click="navigator.clipboard.writeText($refs.joinUrl.value); copied = true; setTimeout(() => copied = false, 2000)"
                     class="btn-secondary shrink-0 text-sm"
                     :class="copied && 'ring-2 ring-teal-300'">
                 <span x-show="!copied">{{ __('Copy') }}</span>
@@ -89,13 +89,13 @@
 
     {{-- Share section (after draw) --}}
     @if($exchange->isDrawn())
-    <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6 sm:p-8 mb-6" x-data="{ copied: false }">
+    @php
+        $whatsappMessage = __(':name on GiveTwice — check your email to see who you got!', ['name' => $exchange->name]);
+    @endphp
+    <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6 sm:p-8 mb-6" x-data="{ copied: false, message: {!! Js::from($whatsappMessage) !!} }">
         <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ __('Let everyone know') }}</h2>
         <p class="text-gray-600 text-sm mb-4">{{ __('Remind participants to check their email for their draw.') }}</p>
         <div class="flex flex-wrap gap-3">
-            @php
-                $whatsappMessage = __(':name on GiveTwice — check your email to see who you got!', ['name' => $exchange->name]);
-            @endphp
             <a href="https://wa.me/?text={{ urlencode($whatsappMessage) }}"
                target="_blank"
                rel="noopener noreferrer"
@@ -104,7 +104,7 @@
                 WhatsApp
             </a>
             <button type="button"
-                    @click="navigator.clipboard.writeText('{{ $whatsappMessage }}'); copied = true; setTimeout(() => copied = false, 2000)"
+                    @click="navigator.clipboard.writeText(message); copied = true; setTimeout(() => copied = false, 2000)"
                     class="btn-secondary text-sm"
                     :class="copied && 'ring-2 ring-teal-300'">
                 <span x-show="!copied">{{ __('Copy message') }}</span>

@@ -130,6 +130,10 @@ class GiftExchangeController extends Controller
             abort(410, __('This group has already drawn names. You can no longer join.'));
         }
 
+        if ($exchange->participants()->count() >= 50) {
+            abort(422, __('This group has reached its maximum number of participants.'));
+        }
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
