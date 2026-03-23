@@ -131,7 +131,7 @@
                 </div>
                 <div>
                     <p class="text-sm font-medium text-teal-800">{{ __('Your claim is anonymous') }}</p>
-                    <p class="text-sm text-teal-700 mt-0.5">{{ __('The list owner will only see that someone claimed this gift, not who.') }}</p>
+                    <p class="text-sm text-teal-700 mt-0.5">{{ __("They'll just see 'someone is getting this' — no names, no hints.") }}</p>
                 </div>
             </div>
 
@@ -156,7 +156,7 @@
     <p class="text-gray-500 text-sm">
         {{ __('Already have an account?') }}
         <a href="{{ url('/' . app()->getLocale() . '/login') }}" class="text-coral-600 hover:text-coral-700 hover:underline font-medium">{{ __('Login') }}</a>
-        {{ __('to claim faster') }}
+        {{ __('to skip this form next time') }}
     </p>
 </div>
 @endsection

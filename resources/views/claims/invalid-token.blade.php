@@ -22,7 +22,7 @@
                     {{ __('Invalid or Expired Link') }}
                 </h1>
                 <p class="text-gray-500 max-w-sm">
-                    {{ __('This confirmation link is invalid or has already been used.') }}
+                    {{ __("This link doesn't work anymore. It might have expired or already been used.") }}
                 </p>
             </div>
         </div>
@@ -34,7 +34,7 @@
                 </div>
                 <div>
                     <p class="text-sm font-medium text-gray-700">{{ __('What happened?') }}</p>
-                    <p class="text-sm text-gray-500 mt-0.5">{{ __('The link may have expired or already been used. Please try claiming the gift again from the wishlist.') }}</p>
+                    <p class="text-sm text-gray-500 mt-0.5">{{ __('Try claiming the gift again from the wishlist. Links are single-use.') }}</p>
                 </div>
             </div>
         </div>

@@ -20,7 +20,7 @@
                     {{ __('Gift Already Claimed') }}
                 </h1>
                 <p class="text-gray-500 max-w-sm">
-                    {{ __('Someone else has already claimed this gift while you were confirming.') }}
+                    {{ __('Someone beat you to it! Great minds think alike.') }}
                 </p>
             </div>
         </div>
@@ -32,7 +32,7 @@
                 </div>
                 <div>
                     <p class="text-sm font-medium text-gray-700">{{ __('No worries!') }}</p>
-                    <p class="text-sm text-gray-500 mt-0.5">{{ __('There might be other gifts available on the list. Go back and choose another one.') }}</p>
+                    <p class="text-sm text-gray-500 mt-0.5">{{ __('There are probably more gifts on the list. Go pick another one!') }}</p>
                 </div>
             </div>
         </div>
