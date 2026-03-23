@@ -104,6 +104,7 @@ class GiftExchangeController extends Controller
 
         $myDraw = null;
         if ($exchange->isDrawn()) {
+            /** @var GiftExchangeParticipant|null $myParticipant */
             $myParticipant = $exchange->participants
                 ->firstWhere('user_id', auth()->id());
 
