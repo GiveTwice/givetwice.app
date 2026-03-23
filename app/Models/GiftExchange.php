@@ -76,6 +76,11 @@ class GiftExchange extends Model
         return $this->hasMany(GiftExchangeParticipant::class, 'exchange_id');
     }
 
+    public function exclusions(): HasMany
+    {
+        return $this->hasMany(GiftExchangeExclusion::class, 'exchange_id');
+    }
+
     public function isDraft(): bool
     {
         return $this->status === 'draft';
