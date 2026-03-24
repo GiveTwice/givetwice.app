@@ -16,6 +16,7 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
+/** @property 'pending'|'fetching'|'completed'|'failed'|'skipped' $fetch_status */
 class Gift extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia, SoftDeletes;
@@ -185,6 +186,11 @@ class Gift extends Model implements HasMedia
     public function isFetchFailed(): bool
     {
         return $this->fetch_status === 'failed';
+    }
+
+    public function isSkipped(): bool
+    {
+        return $this->fetch_status === 'skipped';
     }
 
     public function getImageUrl(?string $conversion = null): ?string

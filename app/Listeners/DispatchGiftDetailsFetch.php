@@ -10,6 +10,10 @@ class DispatchGiftDetailsFetch
 {
     public function handle(GiftCreated|GiftUrlChanged $event): void
     {
+        if ($event->gift->isSkipped()) {
+            return;
+        }
+
         FetchGiftDetailsAction::dispatch($event->gift);
     }
 }

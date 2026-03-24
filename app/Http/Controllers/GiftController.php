@@ -31,15 +31,11 @@ class GiftController extends Controller
             $selectedListId = $defaultList?->id;
         }
 
-        $locale = SupportedLocale::tryFrom(app()->getLocale()) ?? SupportedLocale::default();
-        $defaultCurrency = $locale->defaultCurrency()->value;
-
         return view('gifts.create', [
             'lists' => $lists,
             'defaultList' => $defaultList,
             'selectedListId' => $selectedListId,
             'isSingleListMode' => $lists->count() === 1,
-            'defaultCurrency' => $defaultCurrency,
         ]);
     }
 
@@ -57,37 +53,53 @@ class GiftController extends Controller
         }
 
         $validated = $request->validate([
-            'url' => [
-                'required',
-                'url',
-                'max:2048',
-                function ($attribute, $value, $fail) use ($targetList) {
-                    if ($targetList->gifts()->where('url', $value)->exists()) {
-                        $fail(__("You've already added this gift to this list."));
-                    }
-                },
-            ],
-            'title' => ['nullable', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:1500'],
-            'price' => ['nullable', 'numeric', 'min:0', 'max:9999999.99'],
-            'currency' => ['nullable', 'string', Rule::enum(SupportedCurrency::class)],
+            'input' => ['required', 'string', 'max:2048'],
             'list_id' => ['nullable', 'integer'],
-            'allow_multiple_claims' => ['nullable', 'boolean'],
         ]);
 
-        $priceInCents = isset($validated['price'])
-            ? (int) round($validated['price'] * 100)
-            : null;
+        $input = trim($validated['input']);
 
-        $gift = Gift::create([
-            'user_id' => $request->user()->id,
-            'url' => $validated['url'],
-            'title' => $validated['title'] ?? null,
-            'description' => $validated['description'] ?? null,
-            'price_in_cents' => $priceInCents,
-            'currency' => $validated['currency'] ?? SupportedCurrency::default()->value,
-            'allow_multiple_claims' => $request->boolean('allow_multiple_claims'),
-        ]);
+        if ($input === '') {
+            return back()
+                ->withInput()
+                ->withErrors(['input' => __('validation.required', ['attribute' => 'input'])]);
+        }
+
+        $url = $this->looksLikeUrl($input);
+        $locale = app()->getLocale();
+        $localeCurrency = (SupportedLocale::tryFrom($locale) ?? SupportedLocale::default())
+            ->defaultCurrency()->value;
+
+        if ($url !== null) {
+            // URL path — check for duplicates
+            if ($targetList->gifts()->where('url', $url)->exists()) {
+                return back()
+                    ->withInput()
+                    ->withErrors(['input' => __("You've already added this gift to this list.")]);
+            }
+
+            $gift = Gift::create([
+                'user_id' => $request->user()->id,
+                'url' => $url,
+                'fetch_status' => 'pending',
+                'currency' => $localeCurrency,
+            ]);
+        } else {
+            // Text path — create with title, skip fetching
+            if (mb_strlen($input) > 255) {
+                return back()
+                    ->withInput()
+                    ->withErrors(['input' => __('validation.max.string', ['attribute' => 'input', 'max' => 255])]);
+            }
+
+            $gift = Gift::create([
+                'user_id' => $request->user()->id,
+                'url' => null,
+                'title' => $input,
+                'fetch_status' => 'skipped',
+                'currency' => $localeCurrency,
+            ]);
+        }
 
         $targetList->gifts()->attach($gift->id, [
             'sort_order' => $targetList->gifts()->count(),
@@ -96,12 +108,40 @@ class GiftController extends Controller
 
         GiftAddedToList::dispatch($gift, $targetList);
 
-        $locale = app()->getLocale();
-        $anchor = "#list-{$targetList->id}";
+        if ($url !== null) {
+            return redirect()->route('gifts.fetching', ['locale' => $locale, 'gift' => $gift]);
+        }
 
         return redirect()
-            ->to("/{$locale}/dashboard{$anchor}")
-            ->with('success', __('Gift added successfully! We\'re fetching the details.'));
+            ->route('gifts.edit', ['locale' => $locale, 'gift' => $gift])
+            ->with('gift_context', 'manual_entry');
+    }
+
+    public function fetching(string $locale, Gift $gift): View|RedirectResponse
+    {
+        $this->authorize('update', $gift);
+
+        if ($gift->isFetched()) {
+            return redirect()
+                ->route('gifts.edit', ['locale' => $locale, 'gift' => $gift])
+                ->with('gift_context', 'fetch_success');
+        }
+
+        if ($gift->isFetchFailed()) {
+            return redirect()
+                ->route('gifts.edit', ['locale' => $locale, 'gift' => $gift])
+                ->with('gift_context', 'fetch_failed');
+        }
+
+        if ($gift->isSkipped()) {
+            return redirect()
+                ->route('gifts.edit', ['locale' => $locale, 'gift' => $gift])
+                ->with('gift_context', 'manual_entry');
+        }
+
+        return view('gifts.fetching', [
+            'gift' => $gift,
+        ]);
     }
 
     public function edit(string $locale, Gift $gift): View
@@ -150,14 +190,25 @@ class GiftController extends Controller
             ? (int) round($validated['price'] * 100)
             : $gift->price_in_cents;
 
-        $gift->update([
+        $newUrl = $validated['url'] ?? $gift->url;
+        $urlAdded = $gift->isSkipped() && $newUrl && $newUrl !== $gift->url;
+
+        $updateData = [
             'title' => $validated['title'] ?? $gift->title,
             'description' => $validated['description'] ?? $gift->description,
             'price_in_cents' => $priceInCents,
             'currency' => $validated['currency'] ?? $gift->currency,
-            'url' => $validated['url'] ?? $gift->url,
+            'url' => $newUrl,
             'allow_multiple_claims' => $request->boolean('allow_multiple_claims'),
-        ]);
+        ];
+
+        if ($urlAdded) {
+            $updateData['fetch_status'] = 'pending';
+            $updateData['fetch_error'] = null;
+            $updateData['fetch_attempts'] = 0;
+        }
+
+        $gift->update($updateData);
 
         return redirect()
             ->to("/{$locale}/dashboard")
@@ -247,5 +298,29 @@ class GiftController extends Controller
         ])->render();
 
         return response($html)->header('Content-Type', 'text/html');
+    }
+
+    /**
+     * Detect if user input looks like a URL. Returns normalized URL or null for text.
+     */
+    private function looksLikeUrl(string $input): ?string
+    {
+        if (str_contains($input, ' ')) {
+            return null;
+        }
+
+        if (preg_match('#^https?://#i', $input) && filter_var($input, FILTER_VALIDATE_URL)) {
+            return $input;
+        }
+
+        // Bare domain pattern: something.tld/... (no spaces, no scheme)
+        if (preg_match('#^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z]{2,})+(/\S*)?$#i', $input)) {
+            $withScheme = 'https://'.$input;
+            if (filter_var($withScheme, FILTER_VALIDATE_URL)) {
+                return $withScheme;
+            }
+        }
+
+        return null;
     }
 }

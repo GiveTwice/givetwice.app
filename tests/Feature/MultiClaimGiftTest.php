@@ -207,25 +207,6 @@ describe('CreatePendingClaimAction with multi-claim gifts', function () {
 
 describe('GiftController multi-claim field handling', function () {
 
-    it('can create gift with allow_multiple_claims enabled', function () {
-        $user = User::factory()->create();
-        $list = GiftList::factory()->create(['creator_id' => $user->id]);
-        $user->lists()->attach($list->id);
-
-        $this->actingAs($user)
-            ->post('/en/gifts', [
-                'url' => 'https://example.com/giftcard',
-                'list_id' => $list->id,
-                'allow_multiple_claims' => '1',
-            ])
-            ->assertRedirect();
-
-        $gift = Gift::latest()->first();
-
-        expect($gift)->not->toBeNull();
-        expect($gift->allow_multiple_claims)->toBeTrue();
-    });
-
     it('creates gift with allow_multiple_claims false by default', function () {
         $user = User::factory()->create();
         $list = GiftList::factory()->create(['creator_id' => $user->id]);
@@ -233,7 +214,7 @@ describe('GiftController multi-claim field handling', function () {
 
         $this->actingAs($user)
             ->post('/en/gifts', [
-                'url' => 'https://example.com/product',
+                'input' => 'https://example.com/product',
                 'list_id' => $list->id,
             ])
             ->assertRedirect();
