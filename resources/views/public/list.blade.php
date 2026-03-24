@@ -164,12 +164,12 @@
         @else
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4" data-gift-grid>
                 @foreach($gifts as $gift)
-                    <x-gift-card :gift="$gift" :showClaimActions="true" :isOwner="$isOwner" :openModal="true" />
+                    <x-gift-card :gift="$gift" :showClaimActions="true" :isOwner="$isOwner" :openModal="true" :listId="$list->id" />
                 @endforeach
             </div>
 
             @foreach($gifts as $gift)
-                <x-gift-modal :gift="$gift" :isOwner="$isOwner" />
+                <x-gift-modal :gift="$gift" :isOwner="$isOwner" :listId="$list->id" />
             @endforeach
 
             @if($gifts->hasPages())

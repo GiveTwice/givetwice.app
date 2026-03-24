@@ -3,6 +3,8 @@
 use App\Enums\SupportedLocale;
 use App\Helpers\OccasionHelper;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AffiliateAdminController;
+use App\Http\Controllers\AffiliateRedirectController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\DashboardController;
@@ -31,6 +33,11 @@ Route::get('/', function () {
 
 // Must remain at a non-locale-prefixed URL so the service worker can pre-cache it
 Route::view('/offline', 'offline')->name('offline');
+
+// Affiliate redirect (no locale prefix — utility endpoint)
+Route::get('/go/{gift}', AffiliateRedirectController::class)
+    ->middleware('throttle:60,1')
+    ->name('affiliate.redirect');
 
 // Redirect /dashboard to locale-prefixed dashboard
 Route::get('/dashboard', function () {
@@ -271,6 +278,11 @@ Route::prefix('admin')
         Route::post('/impersonate/{user}', [AdminController::class, 'impersonateAs'])->name('admin.impersonate');
         Route::get('/lists', [AdminController::class, 'lists'])->name('admin.lists');
         Route::get('/health', [AdminController::class, 'health'])->name('admin.health');
+
+        // Affiliate management
+        Route::get('/affiliate', [AffiliateAdminController::class, 'dashboard'])->name('admin.affiliate.dashboard');
+        Route::get('/affiliate/clicks', [AffiliateAdminController::class, 'clicks'])->name('admin.affiliate.clicks');
+        Route::get('/affiliate/commissions', [AffiliateAdminController::class, 'commissions'])->name('admin.affiliate.commissions');
     });
 
 // Development-only routes

@@ -214,6 +214,18 @@ class Gift extends Model implements HasMedia
         return $this->hasMedia('image') || $this->original_image_url;
     }
 
+    public function buyUrl(?int $listId = null): ?string
+    {
+        if (! $this->url) {
+            return null;
+        }
+
+        return route('affiliate.redirect', array_filter([
+            'gift' => $this->id,
+            'list' => $listId,
+        ]));
+    }
+
     public function siteName(): ?string
     {
         if (! $this->url) {

@@ -1,6 +1,7 @@
 @props([
     'gift',
-    'isOwner' => false
+    'isOwner' => false,
+    'listId' => null
 ])
 
 @php
@@ -136,8 +137,8 @@
                                     @endfor
                                 </div>
 
-                                @if($gift->review_count)
-                                    <a href="{{ $gift->url }}" target="_blank" rel="noopener noreferrer" class="text-sm text-teal-600 hover:text-teal-700 hover:underline">
+                                @if($gift->review_count && $gift->buyUrl($listId))
+                                    <a href="{{ $gift->buyUrl($listId) }}" target="_blank" rel="noopener noreferrer" class="text-sm text-teal-600 hover:text-teal-700 hover:underline">
                                         {{ __('See all :count reviews', ['count' => number_format($gift->review_count)]) }}
                                     </a>
                                 @endif
@@ -235,8 +236,8 @@
                                 @endauth
                             @endif
 
-                            @if($gift->siteName())
-                                <a href="{{ $gift->url }}"
+                            @if($gift->buyUrl($listId) && $gift->siteName())
+                                <a href="{{ $gift->buyUrl($listId) }}"
                                    target="_blank"
                                    rel="noopener noreferrer"
                                    class="w-full inline-flex items-center justify-center gap-2 bg-teal-500 text-white px-5 py-3 rounded-xl hover:bg-teal-600 transition-colors font-medium">

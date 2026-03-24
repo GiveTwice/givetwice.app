@@ -3,7 +3,8 @@
     'editable' => false,
     'showClaimActions' => false,
     'isOwner' => false,
-    'openModal' => false
+    'openModal' => false,
+    'listId' => null
 ])
 
 @php
@@ -193,8 +194,8 @@
                     @endauth
                 @endif
 
-                @if($gift->siteName())
-                    <a href="{{ $gift->url }}"
+                @if($gift->buyUrl($listId) && $gift->siteName())
+                    <a href="{{ $gift->buyUrl($listId) }}"
                        target="_blank"
                        rel="noopener noreferrer"
                        class="w-full text-center text-xs px-3 py-2 rounded-lg transition-colors font-medium flex items-center justify-center gap-1.5

@@ -88,10 +88,10 @@
             </div>
         </div>
 
-        @if($gift->url)
+        @if($gift->buyUrl($list->id ?? null))
             <div class="p-6 sm:p-8 border-t border-cream-100">
                 <a
-                    href="{{ $gift->url }}"
+                    href="{{ $gift->buyUrl($list->id ?? null) }}"
                     target="_blank"
                     rel="noopener noreferrer"
                     class="flex items-center justify-center gap-2 w-full px-6 py-4 bg-teal-500 text-white rounded-xl hover:bg-teal-600 transition-colors font-semibold text-lg shadow-sm hover:shadow"

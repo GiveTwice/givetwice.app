@@ -51,4 +51,10 @@ return [
         'proxy' => env('HTTP_PROXY'),
     ],
 
+    'skimlinks' => [
+        'enabled' => env('SKIMLINKS_ENABLED', false),
+        'publisher_id' => env('SKIMLINKS_PUBLISHER_ID'),
+        'api_key' => env('SKIMLINKS_API_KEY'),
+    ],
+
 ];

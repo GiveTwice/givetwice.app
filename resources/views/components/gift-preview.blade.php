@@ -3,6 +3,7 @@
     'variant' => 'vertical', // 'vertical' or 'compact'
     'showDescription' => true,
     'showLink' => true,
+    'listId' => null,
 ])
 
 @if($variant === 'compact')
@@ -30,9 +31,9 @@
                     {{ $gift->formatPrice() }}
                 </p>
             @endif
-            @if($showLink && $gift->siteName())
+            @if($showLink && $gift->buyUrl($listId) && $gift->siteName())
                 <a
-                    href="{{ $gift->url }}"
+                    href="{{ $gift->buyUrl($listId) }}"
                     target="_blank"
                     rel="noopener noreferrer"
                     class="inline-flex items-center gap-1.5 text-sm text-teal-600 hover:text-teal-700 font-medium"
@@ -75,9 +76,9 @@
                 <p class="text-gray-600 text-sm mb-4 line-clamp-3">{{ $gift->description }}</p>
             @endif
 
-            @if($showLink && $gift->siteName())
+            @if($showLink && $gift->buyUrl($listId) && $gift->siteName())
                 <a
-                    href="{{ $gift->url }}"
+                    href="{{ $gift->buyUrl($listId) }}"
                     target="_blank"
                     rel="noopener noreferrer"
                     class="inline-flex items-center gap-2 text-sm text-teal-600 hover:text-teal-700 font-medium"

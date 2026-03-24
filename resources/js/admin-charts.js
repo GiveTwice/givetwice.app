@@ -19,6 +19,8 @@ Chart.register(
     Tooltip
 );
 
+window.Chart = Chart;
+
 const colorMap = {
     signups: { border: 'oklch(0.57 0.19 25)', bg: 'oklch(0.57 0.19 25 / 0.1)' },
     gifts:   { border: 'oklch(0.60 0.11 175)', bg: 'oklch(0.60 0.11 175 / 0.1)' },
