@@ -168,6 +168,26 @@
 <x-breadcrumb-schema :items="[
     ['name' => __($data['page_title'])]
 ]" />
+@if(!empty($data['faqs']))
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "FAQPage",
+    "mainEntity": [
+        @foreach($data['faqs'] as $i => $faq)
+        {
+            "@@type": "Question",
+            "name": {{ Js::from(__($faq['question'])) }},
+            "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": {{ Js::from(__($faq['answer'])) }}
+            }
+        }{{ !$loop->last ? ',' : '' }}
+        @endforeach
+    ]
+}
+</script>
+@endif
 <script type="application/ld+json">
 {
     "@@context": "https://schema.org",

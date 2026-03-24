@@ -137,6 +137,14 @@ class OccasionHelper
                 'page_title' => 'Communion Wishlist',
                 'list_name' => 'My communion wishlist',
             ],
+            'vormsel' => [
+                'slug' => 'vormsel-wishlist',
+                'emoji' => '🕊️',
+                'locales' => ['nl', 'fr'],
+                'category' => 'life-events',
+                'page_title' => 'Vormsel Wishlist',
+                'list_name' => 'My vormsel wishlist',
+            ],
             'graduation' => [
                 'slug' => 'graduation-wishlist',
                 'emoji' => '🎓',
@@ -825,49 +833,134 @@ class OccasionHelper
             'communion' => [
                 'hero' => [
                     'h1_subtitle' => 'communion wishlist',
-                    'description' => 'Help family and friends choose meaningful gifts for this important milestone in faith.',
+                    'description' => 'Your child\'s First Communion is a once-in-a-lifetime moment. Help family and friends choose meaningful gifts — from keepsakes to practical wishes — with a shared list everyone can use.',
                     'bullets' => [
-                        'Meaningful milestone gifts',
-                        'Help guests choose wisely',
-                        'Celebration that gives twice',
+                        'No duplicate gifts from family',
+                        'Grandparents and godparents covered',
+                        'Every gift also helps charity',
                     ],
                     'cta_text' => 'Start my communion wishlist',
                     'cta_emoji' => '&#10013;',
                 ],
                 'hero_gifts' => [
-                    ['emoji' => '📚', 'name' => 'Book Collection', 'price' => 35, 'gradient' => 'from-blue-100 to-blue-200'],
-                    ['emoji' => '✝️', 'name' => 'Cross Necklace', 'price' => 45, 'gradient' => 'from-amber-100 to-amber-200'],
-                    ['emoji' => '🎁', 'name' => 'Special Gift', 'price' => 50, 'gradient' => 'from-purple-100 to-purple-200'],
+                    ['emoji' => '📿', 'name' => 'Rosary or Cross Necklace', 'price' => 45, 'gradient' => 'from-blue-100 to-blue-200'],
+                    ['emoji' => '📚', 'name' => 'Bible or Children\'s Book', 'price' => 30, 'gradient' => 'from-amber-100 to-amber-200'],
+                    ['emoji' => '🎨', 'name' => 'Creative Gift Set', 'price' => 40, 'gradient' => 'from-purple-100 to-purple-200'],
                 ],
                 'why' => [
                     'title' => 'Why a communion wishlist?',
-                    'subtitle' => 'Help guests honor this milestone meaningfully.',
+                    'subtitle' => 'Because dozens of well-meaning relatives all asking the same question shouldn\'t stress you out.',
                     'benefits' => [
-                        ['emoji' => '&#127873;', 'bg' => 'coral', 'title' => 'Meaningful gifts', 'description' => 'Guide family toward gifts that honor this special day and will be treasured.'],
-                        ['emoji' => '&#128101;', 'bg' => 'sunny', 'title' => 'Coordinate family', 'description' => 'Grandparents, godparents, aunts and uncles all want to give. Help them coordinate.'],
-                        ['emoji' => '&#128150;', 'bg' => 'teal', 'title' => 'Focus on celebration', 'description' => 'Less gift stress means more focus on the spiritual significance of the day.'],
+                        ['emoji' => '&#127873;', 'bg' => 'coral', 'title' => 'Gifts they\'ll actually treasure', 'description' => 'Guide family toward gifts that honor this special day — from religious keepsakes to things your child will genuinely love at this age.'],
+                        ['emoji' => '&#128101;', 'bg' => 'sunny', 'title' => 'Coordinate the whole family', 'description' => 'Grandparents, godparents, aunts and uncles all want to give. One shared list means no duplicates and no awkward conversations.'],
+                        ['emoji' => '&#128150;', 'bg' => 'teal', 'title' => 'Focus on what matters', 'description' => 'Less gift stress for everyone means more attention on the spiritual and family significance of the day.'],
                     ],
                 ],
                 'givetwice' => [
                     'gradient' => 'from-blue-50 to-purple-50',
                     'border' => 'border-blue-100',
-                    'title' => 'Faith in action',
-                    'description' => 'Communion celebrates faith and community. When guests buy from your list, we donate our commission to charity. Your celebration extends the spirit of giving to those in need.',
+                    'title' => 'A celebration that gives twice',
+                    'description' => 'Communion celebrates faith, family, and generosity. When guests buy from your list, we donate our commission to charity. Your child\'s special day creates a ripple of kindness for those in need.',
                     'link_text' => 'Learn about our giving',
                     'link_color' => 'coral',
                 ],
                 'tips_title' => 'Tips for your communion wishlist',
                 'tips' => [
-                    ['title' => 'Mix meaningful and practical', 'description' => 'Religious items alongside things they\'ll use everyday.'],
-                    ['title' => 'Include keepsakes', 'description' => "Things they'll treasure as reminders of this special day."],
-                    ['title' => 'Add experiences', 'description' => 'A special outing, nice dinner, or memorable activity.'],
-                    ['title' => 'Range the prices', 'description' => 'Options for close family and casual guests alike.'],
+                    ['title' => 'Mix religious and everyday gifts', 'description' => 'A cross necklace or rosary alongside books, games, or a savings bond. Both are meaningful.'],
+                    ['title' => 'Include keepsakes', 'description' => 'Photo frames, engraved jewelry, a special Bible. Gifts they\'ll treasure as reminders of this milestone.'],
+                    ['title' => 'Think about their age', 'description' => 'A 7 or 8 year old loves creative gifts, books, and experiences — not just religious items.'],
+                    ['title' => 'Add different price points', 'description' => 'Options for close family making big gestures, and for more casual guests with smaller budgets.'],
                 ],
-                'similar' => ['birthday', 'graduation', 'christmas'],
+                'faqs' => [
+                    [
+                        'question' => 'What are good gifts for a First Communion?',
+                        'answer' => 'Popular communion gifts include religious keepsakes (cross necklace, rosary, personalized Bible), savings bonds or a bank account, creative sets (art supplies, craft kits), books, and experience gifts like a special outing. A wishlist helps family choose something the child will actually love.',
+                    ],
+                    [
+                        'question' => 'How much should you give as a communion gift?',
+                        'answer' => 'For close family and godparents, €30–€100 is common. For more distant relatives or family friends, €15–€30 is typical. The most important thing is that the gift is thoughtful — a wishlist makes that easy regardless of budget.',
+                    ],
+                    [
+                        'question' => 'How does a communion wishlist work?',
+                        'answer' => 'You add gifts to your list and share a single link with family. When someone buys a gift, they can mark it as claimed so others don\'t duplicate it. No app download needed — just open the link and shop.',
+                    ],
+                    [
+                        'question' => 'Can parents create a wishlist for their child\'s communion?',
+                        'answer' => 'Yes — most communion wishlists are created by parents on behalf of their child. You add items your child would love, set price ranges, and share the link with grandparents, godparents, and other guests ahead of the celebration.',
+                    ],
+                ],
+                'similar' => ['vormsel', 'birthday', 'graduation', 'christmas'],
                 'final_cta' => [
                     'title' => 'Ready to create your communion wishlist?',
-                    'subtitle' => 'Help guests honor this milestone.',
+                    'subtitle' => 'Takes a minute. Makes the day so much easier for everyone.',
                     'button_text' => 'Create my communion wishlist',
+                ],
+            ],
+
+            'vormsel' => [
+                'hero' => [
+                    'h1_subtitle' => 'vormsel wishlist',
+                    'description' => 'Confirmation is a personal and meaningful milestone. Help family and friends choose the perfect gift for your child — with a shared list that takes the guesswork out for everyone.',
+                    'bullets' => [
+                        'No duplicate gifts from godparents and grandparents',
+                        'Gifts that fit who they actually are at 12',
+                        'Every purchase also helps charity',
+                    ],
+                    'cta_text' => 'Start my vormsel wishlist',
+                    'cta_emoji' => '&#128540;',
+                ],
+                'hero_gifts' => [
+                    ['emoji' => '🎧', 'name' => 'Wireless Earbuds or Headphones', 'price' => 79, 'gradient' => 'from-blue-100 to-blue-200'],
+                    ['emoji' => '📿', 'name' => 'Personal Keepsake', 'price' => 55, 'gradient' => 'from-amber-100 to-amber-200'],
+                    ['emoji' => '📚', 'name' => 'Books or Creative Set', 'price' => 35, 'gradient' => 'from-purple-100 to-purple-200'],
+                ],
+                'why' => [
+                    'title' => 'Why a vormsel wishlist?',
+                    'subtitle' => 'Because a 12-year-old wants very different gifts than an 8-year-old — and that\'s the whole point.',
+                    'benefits' => [
+                        ['emoji' => '&#127873;', 'bg' => 'coral', 'title' => 'Gifts that actually fit', 'description' => 'Your child is 11 or 12 — with real opinions about music, sports, books, or tech. Help family choose something that matches who they are now.'],
+                        ['emoji' => '&#128101;', 'bg' => 'sunny', 'title' => 'No more duplicate surprises', 'description' => 'Godparents, grandparents, aunts and uncles all want to give. One shared list means no three identical gifts.'],
+                        ['emoji' => '&#128150;', 'bg' => 'teal', 'title' => 'More focus on the moment', 'description' => 'Less stress about gifts for everyone means more attention on what the day actually means.'],
+                    ],
+                ],
+                'givetwice' => [
+                    'gradient' => 'from-teal-50 to-blue-50',
+                    'border' => 'border-teal-100',
+                    'title' => 'A celebration that reaches further',
+                    'description' => 'Confirmation is about faith, community, and living generously. When guests buy from your list, we donate our commission to charity. A celebration that gives — twice.',
+                    'link_text' => 'Discover how we give',
+                    'link_color' => 'teal',
+                ],
+                'tips_title' => 'Tips for your vormsel wishlist',
+                'tips' => [
+                    ['title' => 'Think about their actual interests', 'description' => 'A 12-year-old loves music, sport, fashion, books, or tech. Add things that reflect who they really are — not just religious items.'],
+                    ['title' => 'Include a personal keepsake', 'description' => 'An engraved necklace, bracelet, or photo book is a lasting reminder of this milestone.'],
+                    ['title' => 'Mix big and small', 'description' => 'Something larger for close family, smaller options for more distant guests. A range that works for every budget.'],
+                    ['title' => 'Add experiences too', 'description' => 'A concert, a workshop, a day out, or a gift card. Memories are often the best gift at this age.'],
+                ],
+                'faqs' => [
+                    [
+                        'question' => 'What are good gifts for Vormsel?',
+                        'answer' => 'Popular vormsel gifts include personal keepsakes (engraved jewelry, photo book), technology (wireless earbuds, tablet accessories), experiences (concert, workshop, day out), sports gear, or gift cards. A wishlist helps family find something that fits who your child actually is at 12.',
+                    ],
+                    [
+                        'question' => 'How much should you give for Vormsel?',
+                        'answer' => 'For close family and godparents, €30–€100 is typical in Belgium and the Netherlands. For more distant relatives or friends, €15–€30 is common. What matters most is that the gift fits the person.',
+                    ],
+                    [
+                        'question' => 'What is the difference between a communion wishlist and a vormsel wishlist?',
+                        'answer' => 'The difference is age. First Communion is for children around 7-8 years old; Confirmation (Vormsel) is for children around 11-12. A 12-year-old has very different interests and gift preferences than a younger child.',
+                    ],
+                    [
+                        'question' => 'How does a vormsel wishlist work?',
+                        'answer' => 'You add gifts and share a single link with family. When someone buys a gift, they can claim it so others don\'t buy the same thing. No app needed — just open the link and shop.',
+                    ],
+                ],
+                'similar' => ['communion', 'birthday', 'graduation'],
+                'final_cta' => [
+                    'title' => 'Ready to create your vormsel wishlist?',
+                    'subtitle' => 'Done in a minute. Everyone will thank you.',
+                    'button_text' => 'Create my vormsel wishlist',
                 ],
             ],
 
