@@ -136,9 +136,60 @@
     </div>
     @endif
 
+    {{-- Add participant (draft only) --}}
+    @if($exchange->isDraft())
+    <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6 sm:p-8 mb-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ __('Add participant') }}</h2>
+        <p class="text-gray-600 text-sm mb-4">{{ __('Manually add someone to the group.') }}</p>
+
+        <form method="POST" action="{{ route('exchanges.participants.store', ['locale' => app()->getLocale(), 'exchange' => $exchange->slug]) }}">
+            @csrf
+            <div class="flex flex-col sm:flex-row gap-2">
+                <input type="text" name="name" class="form-input flex-1" placeholder="{{ __('Name') }}" value="{{ old('name') }}" required>
+                <input type="email" name="email" class="form-input flex-1" placeholder="{{ __('Email') }}" value="{{ old('email') }}" required>
+                <button type="submit" class="btn-primary shrink-0">{{ __('Add') }}</button>
+            </div>
+            @error('name') <p class="form-error mt-1">{{ $message }}</p> @enderror
+            @error('email') <p class="form-error mt-1">{{ $message }}</p> @enderror
+            @error('participant') <p class="form-error mt-1">{{ $message }}</p> @enderror
+        </form>
+    </div>
+    @endif
+
+    {{-- All assignments (drawn, organizer view) --}}
+    @if($exchange->isDrawn())
+    <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6 sm:p-8 mb-6" x-data="{ open: false }">
+        <div class="flex items-center justify-between">
+            <h2 class="text-lg font-semibold text-gray-900">{{ __('Assignments') }}</h2>
+            <button type="button" @click="open = !open" class="btn-secondary text-sm">
+                <span x-show="!open">{{ __('Show all') }}</span>
+                <span x-show="open" x-cloak>{{ __('Hide') }}</span>
+            </button>
+        </div>
+        <p class="text-gray-500 text-sm mt-1">{{ __('Only you (the organizer) can see this.') }}</p>
+
+        <div x-show="open" x-transition x-cloak class="mt-4 divide-y divide-cream-100">
+            @foreach($exchange->participants as $participant)
+                @if($participant->assignedTo)
+                <div class="flex items-center gap-2 py-3 text-sm">
+                    <span class="font-medium text-gray-900">{{ $participant->name }}</span>
+                    <span class="text-gray-400">→</span>
+                    <span class="text-gray-700">{{ $participant->assignedTo->name }}</span>
+                    @if($participant->hasViewed())
+                        <span class="badge badge-success text-xs ml-auto">{{ __('Viewed') }}</span>
+                    @else
+                        <span class="badge badge-warning text-xs ml-auto">{{ __('Not viewed') }}</span>
+                    @endif
+                </div>
+                @endif
+            @endforeach
+        </div>
+    </div>
+    @endif
+
     {{-- Participants --}}
     <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6 sm:p-8">
-        <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Participants') }}</h2>
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Participants') }} ({{ $exchange->participants->count() }})</h2>
 
         <div class="divide-y divide-cream-100">
             @foreach($exchange->participants as $participant)
@@ -162,6 +213,15 @@
                     @endif
                     @if($participant->user_id && $participant->defaultWishlist())
                         <span class="badge badge-success text-xs">{{ __('Has wishlist') }}</span>
+                    @endif
+                    @if($exchange->isDraft() && $exchange->participants->count() > 3)
+                    <form method="POST" action="{{ route('exchanges.participants.destroy', ['locale' => app()->getLocale(), 'exchange' => $exchange->slug, 'participant' => $participant->id]) }}" class="inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="text-gray-400 hover:text-red-500 text-sm" onclick="return confirm('{{ __('Remove :name from the group?', ['name' => $participant->name]) }}')">
+                            ✕
+                        </button>
+                    </form>
                     @endif
                 </div>
             </div>

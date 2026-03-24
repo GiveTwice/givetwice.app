@@ -12,6 +12,11 @@ class GiftExchangePolicy
         return true;
     }
 
+    public function manage(User $user, GiftExchange $exchange): bool
+    {
+        return $exchange->organizer_id === $user->id && $exchange->isDraft();
+    }
+
     public function draw(User $user, GiftExchange $exchange): bool
     {
         return $exchange->organizer_id === $user->id && $exchange->isDraft();
