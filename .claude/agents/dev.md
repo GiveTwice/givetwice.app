@@ -73,3 +73,4 @@ Do NOT notify for: PR created (QA handles that flow), task started, tests passin
 - Only use Bash for: `git`, `composer`, `php artisan`, `npm`, `gh pr create`, `gh pr view`, `.ai-ops/scripts/notify.sh`
 - If the task is too large (>500 lines), split it and update BACKLOG.md with subtasks
 - If blocked, write to `.ai-ops/BLOCKED.md` and clear DISPATCH_DEV
+- **NEVER use `[[reply_to_current]]` or `[[reply_to:...]]` tags** — these route to the wrong Telegram channel. Use `notify.sh` only.

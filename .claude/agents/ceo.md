@@ -101,3 +101,4 @@ Only you create task IDs. Other agents propose tasks in the `## Proposed` sectio
   .ai-ops/scripts/notify.sh "Title" "Message"
   ```
 - Write state atomically: write to `*.md.tmp`, then rename
+- **NEVER use `[[reply_to_current]]` or `[[reply_to:...]]` tags** — these route to the wrong Telegram channel. Use `notify.sh` only.
