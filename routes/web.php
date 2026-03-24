@@ -13,6 +13,7 @@ use App\Http\Controllers\GiftExchangeController;
 use App\Http\Controllers\ListController;
 use App\Http\Controllers\ListInvitationController;
 use App\Http\Controllers\PublicListController;
+use App\Http\Controllers\ResendGiftExchangeInviteController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\ShowOccasionController;
 use App\Http\Middleware\SetLocale;
@@ -234,6 +235,9 @@ Route::prefix('{locale}')
                 ->name('exchanges.participants.destroy');
             Route::get('/exchange/{exchange}/status', [GiftExchangeController::class, 'status'])
                 ->name('exchanges.status');
+            Route::post('/exchange/{exchange}/resend-invite/{participant}', ResendGiftExchangeInviteController::class)
+                ->middleware('throttle:10,1')
+                ->name('exchanges.resend-invite');
 
             // Friends routes
             Route::get('/friends', [FriendsController::class, 'index'])->name('friends.index');

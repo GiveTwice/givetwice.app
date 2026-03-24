@@ -208,6 +208,12 @@
                         <span class="badge badge-success text-xs">{{ __('Viewed') }}</span>
                     @elseif($exchange->isDrawn())
                         <span class="badge badge-warning text-xs">{{ __('Invited') }}</span>
+                        <form method="POST" action="{{ route('exchanges.resend-invite', ['locale' => app()->getLocale(), 'exchange' => $exchange->slug, 'participant' => $participant->id]) }}">
+                            @csrf
+                            <button type="submit" class="btn-secondary text-xs" onclick="return confirm('{{ __('Resend invite to :name?', ['name' => $participant->name]) }}')">
+                                {{ __('Resend') }}
+                            </button>
+                        </form>
                     @else
                         <span class="badge badge-info text-xs">{{ __('Added') }}</span>
                     @endif
