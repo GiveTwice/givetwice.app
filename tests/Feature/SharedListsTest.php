@@ -49,7 +49,7 @@ describe('Shared Lists Feature', function () {
 
             $this->actingAs($collaborator)
                 ->post('/en/gifts', [
-                    'url' => 'https://example.com/product',
+                    'input' => 'https://example.com/product',
                     'list_id' => $list->id,
                 ])
                 ->assertRedirect();

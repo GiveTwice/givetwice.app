@@ -64,4 +64,36 @@ describe('Gift creation', function () {
         expect($gift->fetch_status)->toBe('pending');
         expect($gift->isPending())->toBeTrue();
     });
+
+    it('does not dispatch FetchGiftDetailsAction for skipped gifts', function () {
+        Queue::fake();
+
+        $user = User::factory()->create();
+
+        Gift::create([
+            'user_id' => $user->id,
+            'url' => null,
+            'title' => 'Contribution to my bike',
+            'fetch_status' => 'skipped',
+        ]);
+
+        Queue::assertNotPushed(FetchGiftDetailsAction::class);
+    });
+
+    it('still emits GiftCreated event for skipped gifts', function () {
+        Event::fake([GiftCreated::class]);
+
+        $user = User::factory()->create();
+
+        $gift = Gift::create([
+            'user_id' => $user->id,
+            'url' => null,
+            'title' => 'A good book',
+            'fetch_status' => 'skipped',
+        ]);
+
+        Event::assertDispatched(GiftCreated::class, function ($event) use ($gift) {
+            return $event->gift->id === $gift->id;
+        });
+    });
 });

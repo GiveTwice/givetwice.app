@@ -59,6 +59,15 @@ class GiftFactory extends Factory
         ]);
     }
 
+    public function skipped(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'url' => null,
+            'fetch_status' => 'skipped',
+            'fetched_at' => null,
+        ]);
+    }
+
     public function withFallbackImage(string $url = 'https://example.com/image.jpg'): static
     {
         return $this->state(fn (array $attributes) => [

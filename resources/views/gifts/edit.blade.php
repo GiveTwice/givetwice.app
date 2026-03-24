@@ -17,6 +17,32 @@
         ['label' => __('Edit Gift')]
     ]"
 >
+    @php
+        $giftContext = session('gift_context') ?? request('context');
+    @endphp
+
+    @if($giftContext === 'fetch_success')
+        <div class="mb-6 flex items-center gap-3 p-4 rounded-xl bg-teal-50 border border-teal-200 text-teal-800">
+            <x-icons.check-circle class="w-5 h-5 text-teal-600 flex-shrink-0" />
+            <p>{{ __("We've filled in the details. Review and tweak as needed.") }}</p>
+        </div>
+    @elseif($giftContext === 'fetch_failed')
+        <div class="mb-6 flex items-center gap-3 p-4 rounded-xl bg-coral-50 border border-coral-200 text-coral-800">
+            <x-icons.warning class="w-5 h-5 text-coral-600 flex-shrink-0" />
+            <p>{{ __("We couldn't grab the details automatically. Fill them in yourself.") }}</p>
+        </div>
+    @elseif($giftContext === 'manual_entry')
+        <div class="mb-6 flex items-center gap-3 p-4 rounded-xl bg-sunny-50 border border-sunny-200 text-sunny-800">
+            <x-icons.edit class="w-5 h-5 text-sunny-600 flex-shrink-0" />
+            <p>{{ __('Fill in the details for your gift.') }}</p>
+        </div>
+    @elseif($giftContext === 'fetch_timeout')
+        <div class="mb-6 flex items-center gap-3 p-4 rounded-xl bg-sunny-50 border border-sunny-200 text-sunny-800">
+            <x-icons.clock class="w-5 h-5 text-sunny-600 flex-shrink-0" />
+            <p>{{ __('Still fetching in the background. Details will appear when ready.') }}</p>
+        </div>
+    @endif
+
     <div
         class="grid grid-cols-1 lg:grid-cols-5 gap-8"
         x-data="giftEdit()"
@@ -251,7 +277,11 @@
                                 {{ __('Failed') }}
                             </span>
 
-                            @if(auth()->user()->is_admin)
+                            <span x-show="gift.fetch_status === 'skipped'" x-cloak class="badge bg-gray-100 text-gray-600">
+                                {{ __('Not applicable') }}
+                            </span>
+
+                            @if(auth()->user()->is_admin && $gift->url)
                                 <button
                                     type="button"
                                     x-on:click="refresh()"

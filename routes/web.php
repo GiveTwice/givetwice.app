@@ -185,6 +185,7 @@ Route::prefix('{locale}')
             // Gift routes
             Route::get('/gifts/create', [GiftController::class, 'create'])->name('gifts.create');
             Route::post('/gifts', [GiftController::class, 'store'])->name('gifts.store');
+            Route::get('/gifts/{gift}/fetching', [GiftController::class, 'fetching'])->name('gifts.fetching');
             Route::get('/gifts/{gift}/edit', [GiftController::class, 'edit'])->name('gifts.edit');
             Route::put('/gifts/{gift}', [GiftController::class, 'update'])->name('gifts.update');
             Route::delete('/gifts/{gift}', [GiftController::class, 'destroy'])->name('gifts.destroy');
