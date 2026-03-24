@@ -10,6 +10,18 @@
 - **Monitoring:** Oh Dear, Flare
 - **Deploy:** Envoy (`envoy run deploy`) — **human-only, never automated**
 
+## Brand Voice
+
+GiveTwice copy is **warm-hearted with dry wit**. Think Ryan Reynolds meets Robin Williams meets Douglas Adams: self-aware about being a wishlist app, finds humor in mundane gift-giving, but always genuine underneath.
+
+- **Short and casual.** UI copy reads like a friend texting, not a manual.
+- **"We" and "you"** — never robotic third-person.
+- **NL:** always informal (je/jij), feels natural, not translated.
+- **FR:** informal (tu/ton) — same warmth as NL, just in French.
+
+Good: "Works with pretty much any store." / "All filled in! Give it a once-over."
+Bad: "The details have been automatically populated." / "Processing complete."
+
 ## Conventions
 
 - Follow existing code patterns — check similar files before writing new ones
