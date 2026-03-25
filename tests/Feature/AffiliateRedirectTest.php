@@ -8,14 +8,15 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
 
 describe('Affiliate redirect', function () {
-    it('redirects to the gift url and dispatches click job', function () {
+    it('returns a redirect page and dispatches click job', function () {
         Queue::fake();
 
         $gift = Gift::factory()->create(['url' => 'https://www.bol.com/nl/p/some-product/123456789/']);
 
         $response = $this->get("/go/{$gift->id}");
 
-        $response->assertRedirect();
+        $response->assertOk();
+        $response->assertViewIs('affiliate.redirect');
         Queue::assertPushed(RecordAffiliateClick::class, function ($job) use ($gift) {
             return $job->giftId === $gift->id
                 && $job->url === $gift->url
@@ -31,7 +32,7 @@ describe('Affiliate redirect', function () {
         $response->assertNotFound();
     });
 
-    it('redirects to skimlinks url when enabled', function () {
+    it('includes skimlinks affiliate url when enabled', function () {
         Queue::fake();
         config([
             'services.skimlinks.enabled' => true,
@@ -42,14 +43,12 @@ describe('Affiliate redirect', function () {
 
         $response = $this->get("/go/{$gift->id}");
 
-        $response->assertRedirect();
-        $location = $response->headers->get('Location');
-        expect($location)->toContain('go.skimresources.com');
-        expect($location)->toContain('TEST123');
-        expect($location)->toContain(urlencode('https://www.bol.com/nl/p/test/999/'));
+        $response->assertOk();
+        $response->assertSee('go.skimresources.com');
+        $response->assertSee('TEST123');
     });
 
-    it('redirects to raw url when skimlinks is disabled', function () {
+    it('uses raw url as both affiliate and fallback when skimlinks is disabled', function () {
         Queue::fake();
         config(['services.skimlinks.enabled' => false]);
 
@@ -57,7 +56,8 @@ describe('Affiliate redirect', function () {
 
         $response = $this->get("/go/{$gift->id}");
 
-        $response->assertRedirect('https://www.coolblue.nl/product/12345/');
+        $response->assertOk();
+        $response->assertSee('https://www.coolblue.nl/product/12345/');
     });
 
     it('is throttled at 60 requests per minute', function () {
@@ -65,10 +65,48 @@ describe('Affiliate redirect', function () {
 
         $gift = Gift::factory()->create(['url' => 'https://www.bol.com/nl/p/test/1/']);
 
-        // The route has throttle:60,1 middleware — just verify it's applied
         $response = $this->get("/go/{$gift->id}");
-        $response->assertRedirect();
+        $response->assertOk();
         expect($response->headers->has('X-RateLimit-Limit'))->toBeTrue();
+    });
+
+    it('includes the fallback url for adblocker resilience', function () {
+        Queue::fake();
+        config([
+            'services.skimlinks.enabled' => true,
+            'services.skimlinks.publisher_id' => 'TEST123',
+        ]);
+
+        $gift = Gift::factory()->create(['url' => 'https://www.bol.com/nl/p/test/999/']);
+
+        $response = $this->get("/go/{$gift->id}");
+
+        $response->assertOk();
+        $response->assertViewHas('fallbackUrl', 'https://www.bol.com/nl/p/test/999/');
+        $response->assertViewHas('affiliateUrl');
+        expect($response->viewData('affiliateUrl'))->toContain('go.skimresources.com');
+    });
+
+    it('includes noscript meta refresh to fallback url', function () {
+        Queue::fake();
+
+        $gift = Gift::factory()->create(['url' => 'https://www.bol.com/nl/p/test/999/']);
+
+        $response = $this->get("/go/{$gift->id}");
+
+        $response->assertOk();
+        $response->assertSee('<meta http-equiv="refresh" content="0;url=https://www.bol.com/nl/p/test/999/">', false);
+    });
+
+    it('includes the store name in the redirect page', function () {
+        Queue::fake();
+
+        $gift = Gift::factory()->create(['url' => 'https://www.bol.com/nl/p/test/999/']);
+
+        $response = $this->get("/go/{$gift->id}");
+
+        $response->assertOk();
+        $response->assertSee('bol.com');
     });
 });
 

@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use App\Jobs\RecordAffiliateClick;
 use App\Models\Gift;
 use App\Services\AffiliateUrlTransformer;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class AffiliateRedirectController extends Controller
 {
-    public function __invoke(Request $request, Gift $gift, AffiliateUrlTransformer $transformer): RedirectResponse
+    public function __invoke(Request $request, Gift $gift, AffiliateUrlTransformer $transformer): Response
     {
         if (! $gift->url) {
             abort(404);
@@ -30,6 +30,10 @@ class AffiliateRedirectController extends Controller
             clickedAt: now(),
         );
 
-        return redirect()->away($affiliateUrl);
+        return response()->view('affiliate.redirect', [
+            'affiliateUrl' => $affiliateUrl,
+            'fallbackUrl' => $gift->url,
+            'storeName' => $gift->siteName() ?? parse_url($gift->url, PHP_URL_HOST) ?? 'the store',
+        ]);
     }
 }
