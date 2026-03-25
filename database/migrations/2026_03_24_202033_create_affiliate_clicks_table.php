@@ -20,6 +20,8 @@ return new class extends Migration
             $table->timestamp('clicked_at');
             $table->timestamps();
 
+            $table->index('gift_id');
+            $table->index('list_id');
             $table->index('retailer_domain');
             $table->index('clicked_at');
         });
