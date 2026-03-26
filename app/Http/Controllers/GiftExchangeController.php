@@ -238,7 +238,10 @@ class GiftExchangeController extends Controller
             ->with(['exchange', 'assignedTo'])
             ->firstOrFail();
 
-        if (! $participant->exchange->isDrawn()) {
+        /** @var GiftExchange $exchange */
+        $exchange = $participant->exchange;
+
+        if (! $exchange->isDrawn()) {
             abort(404);
         }
 
