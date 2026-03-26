@@ -238,6 +238,13 @@ class GiftExchangeController extends Controller
             ->with(['exchange', 'assignedTo'])
             ->firstOrFail();
 
+        /** @var GiftExchange $exchange */
+        $exchange = $participant->exchange;
+
+        if (! $exchange->isDrawn()) {
+            abort(404);
+        }
+
         if ($participant->isTokenExpired()) {
             abort(410, __('This link has expired. Ask the organizer for a new one.'));
         }
