@@ -65,3 +65,9 @@ Schedule::command('app:delete-inactive-accounts')
 Schedule::command('exchanges:send-reminders')
     ->dailyAt('10:00')
     ->monitorName('Exchange Reminders');
+
+// Prune failed queue jobs older than 7 days from the database
+// (Horizon's trim config only cleans Redis data, not the failed_jobs table)
+Schedule::command('queue:prune-failed', ['--hours' => 168])
+    ->daily()
+    ->monitorName('Prune Failed Jobs');
