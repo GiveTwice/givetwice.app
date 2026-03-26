@@ -3,7 +3,7 @@
     "short_name": "GiveTwice",
     "description": "Create and share wishlists. All affiliate revenue goes to charity.",
     "id": "/",
-    "start_url": "/",
+    "start_url": "/dashboard",
     "scope": "/",
     "display": "standalone",
     "theme_color": "#f97066",
