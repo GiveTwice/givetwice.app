@@ -185,6 +185,25 @@ describe('Gift Exchange Feature', function () {
             $this->get("/en/exchange/{$participant->token}")
                 ->assertGone();
         });
+
+        it('still shows reveal page when already viewed', function () {
+            $exchange = GiftExchange::factory()->drawn()->create();
+            $participant = GiftExchangeParticipant::factory()->viewed()->create(['exchange_id' => $exchange->id]);
+            $assignedTo = GiftExchangeParticipant::factory()->create(['exchange_id' => $exchange->id]);
+            $participant->update(['assigned_to_participant_id' => $assignedTo->id]);
+
+            $this->get("/en/exchange/{$participant->token}")
+                ->assertOk()
+                ->assertViewIs('exchanges.reveal');
+        });
+
+        it('returns 404 for valid token on non-drawn exchange', function () {
+            $exchange = GiftExchange::factory()->create(); // draft status
+            $participant = GiftExchangeParticipant::factory()->create(['exchange_id' => $exchange->id]);
+
+            $this->get("/en/exchange/{$participant->token}")
+                ->assertNotFound();
+        });
     });
 
     describe('join link', function () {
