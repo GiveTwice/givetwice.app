@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Enums\SupportedLocale;
+use App\Helpers\ExchangeHelper;
 use App\Helpers\OccasionHelper;
 use Illuminate\Console\Command;
 use Spatie\Sitemap\Sitemap;
@@ -54,11 +55,28 @@ class GenerateSitemap extends Command
         // Add occasion pages (locale-aware)
         $this->addOccasionPages($sitemap, $baseUrl);
 
+        // Add Secret Santa / exchange SEO landing pages (single-locale each)
+        $this->addExchangeLandingPages($sitemap, $baseUrl);
+
         $sitemap->writeToFile(public_path('sitemap.xml'));
 
         $this->info('Sitemap generated successfully at public/sitemap.xml');
 
         return Command::SUCCESS;
+    }
+
+    private function addExchangeLandingPages(Sitemap $sitemap, string $baseUrl): void
+    {
+        foreach (ExchangeHelper::all() as $exchange) {
+            $locale = $exchange['locale'];
+            $slug   = $exchange['slug'];
+
+            $url = Url::create("{$baseUrl}/{$locale}/{$slug}")
+                ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
+                ->setPriority(0.8); // Higher than occasion pages — these are core product pages
+
+            $sitemap->add($url);
+        }
     }
 
     private function addOccasionPages(Sitemap $sitemap, string $baseUrl): void
