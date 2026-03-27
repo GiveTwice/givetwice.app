@@ -69,7 +69,7 @@ class GenerateSitemap extends Command
     {
         foreach (ExchangeHelper::all() as $exchange) {
             $locale = $exchange['locale'];
-            $slug   = $exchange['slug'];
+            $slug = $exchange['slug'];
 
             $url = Url::create("{$baseUrl}/{$locale}/{$slug}")
                 ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)

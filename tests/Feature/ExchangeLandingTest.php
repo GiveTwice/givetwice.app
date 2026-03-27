@@ -1,6 +1,5 @@
 <?php
 
-use App\Console\Commands\GenerateSitemap;
 use App\Helpers\ExchangeHelper;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
