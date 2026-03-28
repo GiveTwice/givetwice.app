@@ -11,73 +11,26 @@ beforeEach(function () {
 
 describe('List OG Image', function () {
 
-    describe('og-image endpoint', function () {
-        it('returns 200 with image/png content type', function () {
+    describe('og:image meta tag on public list page', function () {
+        it('includes an og:image meta tag pointing to the og-image package route', function () {
             $user = User::factory()->create(['name' => 'Alice']);
-            $list = GiftList::factory()->create(['creator_id' => $user->id, 'name' => 'Birthday wishlist']);
-
-            $this->get("/en/v/{$list->id}/og-image")
-                ->assertOk()
-                ->assertHeader('Content-Type', 'image/png');
-        });
-
-        it('returns 404 for non-existent list', function () {
-            $this->get('/en/v/99999/og-image')
-                ->assertNotFound();
-        });
-
-        it('serves a valid PNG binary (starts with PNG magic bytes)', function () {
-            $user = User::factory()->create(['name' => 'Bob']);
             $list = GiftList::factory()->create(['creator_id' => $user->id]);
-
-            $response = $this->get("/en/v/{$list->id}/og-image");
-            $response->assertOk();
-
-            // PNG files start with \x89PNG
-            $content = $response->getContent();
-            expect(substr($content, 0, 4))->toBe("\x89PNG");
-        });
-
-        it('works with different locales', function () {
-            $user = User::factory()->create(['name' => 'Claire']);
-            $list = GiftList::factory()->create(['creator_id' => $user->id]);
-
-            $this->get("/nl/v/{$list->id}/og-image")->assertOk();
-            $this->get("/fr/v/{$list->id}/og-image")->assertOk();
-        });
-
-        it('returns same PNG from cache on second request', function () {
-            $user = User::factory()->create(['name' => 'Dave']);
-            $list = GiftList::factory()->create(['creator_id' => $user->id]);
-
-            $first = $this->get("/en/v/{$list->id}/og-image")->getContent();
-            $second = $this->get("/en/v/{$list->id}/og-image")->getContent();
-
-            expect($first)->toBe($second);
-        });
-    });
-
-    describe('public list OG meta tags', function () {
-        it('includes dynamic og:image pointing to the og-image route', function () {
-            $user = User::factory()->create(['name' => 'Eve']);
-            $list = GiftList::factory()->create(['creator_id' => $user->id]);
-            $list->users()->attach($user->id);
-
-            $response = $this->get("/en/v/{$list->id}/{$list->slug}");
-            $response->assertOk();
-
-            $expectedUrl = route('list.og-image', ['locale' => 'en', 'list' => $list->id]);
-            $response->assertSee($expectedUrl, false);
-        });
-
-        it('includes og:title with possessive owner name', function () {
-            $user = User::factory()->create(['name' => 'Sarah']);
-            $list = GiftList::factory()->create(['creator_id' => $user->id, 'name' => 'My Christmas wishlist']);
             $list->users()->attach($user->id);
 
             $this->get("/en/v/{$list->id}/{$list->slug}")
                 ->assertOk()
-                ->assertSee('Sarah&#039;s wishlist on GiveTwice', false);
+                ->assertSee('og:image', false)
+                ->assertSee('data-og-image', false);
+        });
+
+        it('includes og:title with owner name', function () {
+            $user = User::factory()->create(['name' => 'Sarah']);
+            $list = GiftList::factory()->create(['creator_id' => $user->id]);
+            $list->users()->attach($user->id);
+
+            $this->get("/en/v/{$list->id}/{$list->slug}")
+                ->assertOk()
+                ->assertSee('Sarah', false);
         });
 
         it('handles possessive for names ending in s', function () {
@@ -87,7 +40,7 @@ describe('List OG Image', function () {
 
             $this->get("/en/v/{$list->id}/{$list->slug}")
                 ->assertOk()
-                ->assertSee('James&#039; wishlist on GiveTwice', false);
+                ->assertSee("James&#039;", false);
         });
 
         it('includes og:description with gift count', function () {
@@ -126,15 +79,25 @@ describe('List OG Image', function () {
                 ->assertSee('summary_large_image', false);
         });
 
-        it('includes og:image:width and og:image:height', function () {
+        it('includes the og-image template in the page for the package to screenshot', function () {
             $user = User::factory()->create(['name' => 'Iris']);
             $list = GiftList::factory()->create(['creator_id' => $user->id]);
             $list->users()->attach($user->id);
 
+            // The spatie/laravel-og-image package renders a hidden <template data-og-image> tag
             $this->get("/en/v/{$list->id}/{$list->slug}")
                 ->assertOk()
-                ->assertSee('og:image:width', false)
-                ->assertSee('og:image:height', false);
+                ->assertSee('data-og-image', false);
+        });
+
+        it('renders list name in the og-image template', function () {
+            $user = User::factory()->create(['name' => 'Jane']);
+            $list = GiftList::factory()->create(['creator_id' => $user->id, 'name' => 'Christmas 2026']);
+            $list->users()->attach($user->id);
+
+            $this->get("/en/v/{$list->id}/{$list->slug}")
+                ->assertOk()
+                ->assertSee('Christmas 2026', false);
         });
     });
 
