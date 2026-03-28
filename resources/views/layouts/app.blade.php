@@ -31,7 +31,9 @@
     @else
         <meta property="og:description" content="{{ __('meta.home') }}">
     @endif
-    <meta property="og:image" content="{{ asset('images/og-image.png') }}">
+    <meta property="og:image" content="@yield('og_image', asset('images/og-image.png'))">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="{{ config('app.name', 'GiveTwice') }}">
     @php use App\Enums\SupportedLocale; $currentLocale = SupportedLocale::tryFrom(app()->getLocale()); @endphp
     @if($currentLocale)
@@ -53,7 +55,7 @@
     @else
         <meta name="twitter:description" content="{{ __('meta.home') }}">
     @endif
-    <meta name="twitter:image" content="{{ asset('images/og-image.png') }}">
+    <meta name="twitter:image" content="@yield('og_image', asset('images/og-image.png'))">
 
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">

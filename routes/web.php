@@ -12,6 +12,7 @@ use App\Http\Controllers\GiftController;
 use App\Http\Controllers\GiftExchangeController;
 use App\Http\Controllers\ListController;
 use App\Http\Controllers\ListInvitationController;
+use App\Http\Controllers\ListOgImageController;
 use App\Http\Controllers\PublicListController;
 use App\Http\Controllers\ResendGiftExchangeInviteController;
 use App\Http\Controllers\SettingsController;
@@ -74,6 +75,13 @@ Route::prefix('{locale}')
                 ->defaults('occasion', $key)
                 ->name("occasion.{$key}");
         }
+
+        // Dynamic OG image for a list — must be registered BEFORE the public.list
+        // catchall route so /v/{id}/og-image isn't treated as a slug redirect.
+        Route::get('/v/{list}/og-image', ListOgImageController::class)
+            ->whereNumber('list')
+            ->middleware('throttle:60,1')
+            ->name('list.og-image');
 
         // Public list view (shareable) - use ID binding explicitly
         Route::get('/v/{list}/{slug?}', [PublicListController::class, 'show'])

@@ -1,6 +1,16 @@
 @extends('layouts.app')
 
-@section('title', $list->name . ' - ' . $list->creator->name)
+@php
+    $ogOwner     = $list->creator->name;
+    $ogGiftCount = $list->gifts()->count();
+    $ogPossessive = str_ends_with($ogOwner, 's') ? $ogOwner . "'" : $ogOwner . "'s";
+@endphp
+
+@section('title', $ogPossessive . ' wishlist on GiveTwice')
+
+@section('description', $ogPossessive . ' wishlist — ' . $ogGiftCount . ' ' . ($ogGiftCount === 1 ? 'gift' : 'gifts') . '. Help them celebrate with a meaningful gift that also gives to charity.')
+
+@section('og_image', route('list.og-image', ['locale' => app()->getLocale(), 'list' => $list->id]))
 
 @section('robots', 'noindex, nofollow')
 
