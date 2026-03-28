@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\SupportedLocale;
+use App\Helpers\ExchangeHelper;
 use App\Helpers\OccasionHelper;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Auth\SocialAuthController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\ListInvitationController;
 use App\Http\Controllers\PublicListController;
 use App\Http\Controllers\ResendGiftExchangeInviteController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\ShowExchangeLandingController;
 use App\Http\Controllers\ShowOccasionController;
 use App\Http\Middleware\SetLocale;
 use App\Models\User;
@@ -73,6 +75,13 @@ Route::prefix('{locale}')
             Route::get("/{$occasion['slug']}", ShowOccasionController::class)
                 ->defaults('occasion', $key)
                 ->name("occasion.{$key}");
+        }
+
+        // Secret Santa / gift exchange SEO landing pages (locale-specific slugs)
+        foreach (ExchangeHelper::all() as $key => $exchange) {
+            Route::get("/{$exchange['slug']}", ShowExchangeLandingController::class)
+                ->defaults('exchangeLandingKey', $key)
+                ->name("exchange-landing.{$key}");
         }
 
         // Public list view (shareable) - use ID binding explicitly

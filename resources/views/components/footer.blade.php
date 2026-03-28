@@ -1,4 +1,5 @@
 @php
+    use App\Helpers\ExchangeHelper;
     use App\Helpers\OccasionHelper;
     $locale = app()->getLocale();
     $holidays = OccasionHelper::getByCategory($locale, 'holidays');
@@ -14,8 +15,7 @@
             </div>
 
             @php
-                $footerExchangeSlugs = ['en' => 'secret-santa', 'nl' => 'lootjes-trekken', 'fr' => 'tirage-au-sort'];
-                $footerExchangeSlug = $footerExchangeSlugs[$locale] ?? 'secret-santa';
+                $footerExchangeSlug = ExchangeHelper::exchangeTypeForLocale($locale);
                 $footerExchangeLabels = ['en' => __('Secret Santa'), 'nl' => __('Lootjes trekken'), 'fr' => __('Tirage au sort')];
                 $footerExchangeLabel = $footerExchangeLabels[$locale] ?? __('Secret Santa');
             @endphp
@@ -31,7 +31,10 @@
             <div>
                 <p class="font-semibold text-gray-900 mb-3 md:mb-4">{{ __('Holidays') }}</p>
                 <ul class="space-y-2 text-sm">
-                    @foreach(array_slice($holidays, 0, 6, true) as $key => $occasion)
+                    @if($exchangeLanding = ExchangeHelper::getForLocale($locale))
+                        <li><a href="{{ route('exchange-landing.' . $exchangeLanding['key'], ['locale' => $locale]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ $exchangeLanding['page_title'] }}</a></li>
+                    @endif
+                    @foreach(array_slice($holidays, 0, 5, true) as $key => $occasion)
                         <li><a href="{{ route("occasion.{$key}", ['locale' => $locale]) }}" class="text-gray-500 hover:text-gray-700 transition-colors">{{ __($occasion['page_title']) }}</a></li>
                     @endforeach
                 </ul>
