@@ -11,7 +11,7 @@ class ShowExchangeLandingController extends Controller
     public function __invoke(Request $request): View
     {
         $key = $request->route('exchangeLandingKey');
-        $data = ExchangeHelper::getPageContent($key);
+        $data = ExchangeHelper::getPageContent($key, $request->route('locale'));
 
         if (! $data) {
             abort(404);

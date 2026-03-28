@@ -7,6 +7,15 @@ class ExchangeHelper
     private static ?array $cachedAll = null;
 
     /**
+     * Map from locale to exchange type slug (for CTA links).
+     */
+    private static array $exchangeTypeMap = [
+        'en' => 'secret-santa',
+        'nl' => 'lootjes-trekken',
+        'fr' => 'tirage-au-sort',
+    ];
+
+    /**
      * All Secret Santa / gift exchange SEO landing pages.
      *
      * Each entry is keyed by an internal identifier. The slug is the URL path
@@ -75,6 +84,14 @@ class ExchangeHelper
     }
 
     /**
+     * Get the exchange type slug for a given locale (used for CTA links).
+     */
+    public static function exchangeTypeForLocale(string $locale): string
+    {
+        return self::$exchangeTypeMap[$locale] ?? 'secret-santa';
+    }
+
+    /**
      * All page-level content for Secret Santa / exchange SEO pages.
      *
      * @return array<string, array<string, mixed>>
@@ -127,12 +144,9 @@ class ExchangeHelper
                     ],
                 ],
                 'givetwice' => [
-                    'gradient' => 'from-coral-50 to-sunny-50',
-                    'border' => 'border-coral-100',
                     'title' => 'Your Secret Santa, someone else\'s Christmas too',
                     'description' => "When participants buy gifts from each other's wishlists on GiveTwice, the stores pay us a commission. We donate 100% of that to charity. Your group exchange creates a ripple of good — no extra cost, no extra steps.",
                     'link_text' => 'Learn how the charity model works',
-                    'link_color' => 'coral',
                 ],
                 'tips_title' => 'Tips for a smooth Secret Santa',
                 'tips' => [
@@ -170,10 +184,6 @@ class ExchangeHelper
                         'question' => 'How does the charity donation work?',
                         'answer' => "When a participant buys a gift from a GiveTwice wishlist, the store pays us a small affiliate commission (the same as if you'd gone through any price-comparison site). We donate 100% of those commissions to charity. You pay the same price you'd pay anywhere — we just make sure the extra goes somewhere good.",
                     ],
-                ],
-                'similar_exchange_types' => [
-                    'nl' => ['lootjes-trekken', 'nl'],
-                    'fr' => ['tirage-au-sort', 'fr'],
                 ],
                 'final_cta' => [
                     'title' => 'Ready to start your Secret Santa?',
@@ -226,12 +236,9 @@ class ExchangeHelper
                     ],
                 ],
                 'givetwice' => [
-                    'gradient' => 'from-coral-50 to-sunny-50',
-                    'border' => 'border-coral-100',
                     'title' => 'Jouw lootje, iemand anders\' kerst',
                     'description' => 'Wanneer deelnemers cadeautjes kopen via GiveTwice-verlanglijstjes, betaalt de winkel ons een kleine commissie. Wij doneren 100% daarvan aan een goed doel. Jij betaalt niks extra — het geld dat anders bij de winkel bleef, gaat nu naar mensen die het nodig hebben.',
                     'link_text' => 'Zo werkt het goede-doelmodel',
-                    'link_color' => 'coral',
                 ],
                 'tips_title' => 'Tips voor een vlotte loting',
                 'tips' => [
@@ -269,10 +276,6 @@ class ExchangeHelper
                         'question' => 'Hoe werkt de donatie aan het goede doel?',
                         'answer' => 'Wanneer een deelnemer een cadeau koopt via een GiveTwice-verlanglijst, betaalt de winkel ons een kleine affiliatecommissie — hetzelfde als bij elke prijsvergelijkingssite. Wij doneren 100% van die commissies aan een goed doel. Jij betaalt de normale prijs; het verschil gaat naar mensen die het nodig hebben.',
                     ],
-                ],
-                'similar_exchange_types' => [
-                    'en' => ['secret-santa', 'en'],
-                    'fr' => ['tirage-au-sort', 'fr'],
                 ],
                 'final_cta' => [
                     'title' => 'Klaar om lootjes te trekken?',
@@ -325,12 +328,9 @@ class ExchangeHelper
                     ],
                 ],
                 'givetwice' => [
-                    'gradient' => 'from-coral-50 to-sunny-50',
-                    'border' => 'border-coral-100',
                     'title' => 'Votre cadeau, le Noël de quelqu\'un d\'autre aussi',
                     'description' => "Quand les participants achètent des cadeaux via des listes GiveTwice, le magasin nous verse une petite commission d'affiliation. Nous en donnons 100 % à une association caritative. Vous payez le même prix qu'ailleurs — l'argent qui resterait normalement en poche du magasin va à ceux qui en ont besoin.",
                     'link_text' => 'Comment fonctionne notre modèle caritatif',
-                    'link_color' => 'coral',
                 ],
                 'tips_title' => 'Conseils pour un tirage réussi',
                 'tips' => [
@@ -368,10 +368,6 @@ class ExchangeHelper
                         'question' => 'Comment fonctionne le don à l\'association ?',
                         'answer' => "Quand un participant achète un cadeau via une liste GiveTwice, le magasin nous verse une petite commission d'affiliation — comme pour n'importe quel comparateur de prix. Nous donnons 100 % de ces commissions à des associations. Vous payez le prix normal ; la différence va à des personnes qui en ont besoin.",
                     ],
-                ],
-                'similar_exchange_types' => [
-                    'en' => ['secret-santa', 'en'],
-                    'nl' => ['lootjes-trekken', 'nl'],
                 ],
                 'final_cta' => [
                     'title' => 'Prêt à lancer votre tirage au sort ?',
