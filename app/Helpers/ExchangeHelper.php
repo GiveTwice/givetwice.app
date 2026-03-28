@@ -92,6 +92,22 @@ class ExchangeHelper
     }
 
     /**
+     * Get the SEO landing page entry for a given locale.
+     *
+     * @return array{slug: string, locale: string, page_title: string}|null
+     */
+    public static function getForLocale(string $locale): ?array
+    {
+        foreach (self::all() as $key => $entry) {
+            if ($entry['locale'] === $locale) {
+                return array_merge(['key' => $key], $entry);
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * All page-level content for Secret Santa / exchange SEO pages.
      *
      * @return array<string, array<string, mixed>>
