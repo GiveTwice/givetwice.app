@@ -4,16 +4,16 @@
 
 @section('robots', 'noindex, nofollow')
 
-@section('og_description', $list->creator->name . ' has ' . $list->gifts()->count() . ' gifts on their wishlist. Help them celebrate with a meaningful gift that also gives to charity.')
+@php
+    $ogGiftCount = $gifts->total();
+    $ogOwner = $list->creator->name;
+    $ogAvailableGifts = $gifts->filter(fn($gift) => $gift->claims->isEmpty() || $gift->allow_multiple_claims)->take(3);
+@endphp
+
+@section('description', trans_choice('og.description', $ogGiftCount, ['name' => $ogOwner, 'count' => $ogGiftCount]))
+@section('dynamic_og_image', true)
 
 <x-og-image>
-    @php
-        $ogOwner = $list->creator->name;
-        $ogPossessive = str_ends_with($ogOwner, 's') ? $ogOwner."'" : $ogOwner."'s";
-        $ogGiftCount = $list->gifts()->count();
-        $ogGiftLabel = $ogGiftCount === 1 ? '1 gift' : $ogGiftCount . ' gifts';
-        $ogListName = $list->name;
-    @endphp
     <div style="width:1200px;height:630px;position:relative;overflow:hidden;background:linear-gradient(135deg,#fef9f0 0%,#fdf3e3 50%,#fef0e8 100%);font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;">
         {{-- Decorative blobs --}}
         <div style="position:absolute;width:500px;height:500px;top:-180px;right:-120px;border-radius:50%;background:radial-gradient(circle,rgba(245,214,128,0.45) 0%,transparent 70%);"></div>
@@ -30,37 +30,38 @@
                 <span style="font-size:52px;font-weight:800;letter-spacing:-0.02em;line-height:1;"><span style="color:#111827;">Give</span><span style="color:#f07060;">Twice</span></span>
             </div>
             {{-- Headline --}}
-            <div style="font-size:52px;font-weight:800;letter-spacing:-0.02em;line-height:1.15;color:#1f2937;margin-bottom:8px;">{{ $ogPossessive }} wishlist.</div>
-            <div style="font-size:52px;font-weight:800;letter-spacing:-0.02em;color:#f07060;margin-bottom:28px;">Good done quietly.</div>
+            <div style="font-size:52px;font-weight:800;letter-spacing:-0.02em;line-height:1.15;color:#1f2937;margin-bottom:8px;">{{ __('og.headline', ['name' => $ogOwner]) }}</div>
+            <div style="font-size:52px;font-weight:800;letter-spacing:-0.02em;color:#f07060;margin-bottom:28px;">{{ __('og.tagline') }}</div>
             {{-- Subtitle --}}
-            <p style="font-size:22px;color:#6b7280;line-height:1.55;max-width:560px;margin-bottom:40px;">{{ $ogGiftLabel }} to choose from. When you buy, GiveTwice donates to charity — at no extra cost.</p>
+            <p style="font-size:22px;color:#6b7280;line-height:1.55;max-width:560px;margin-bottom:40px;">{{ trans_choice('og.subtitle', $ogGiftCount, ['count' => $ogGiftCount]) }}</p>
             {{-- Gift count pill --}}
-            <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(45,159,147,0.15);color:#1a7a72;font-size:20px;font-weight:700;padding:10px 22px;border-radius:100px;width:fit-content;">♥ &nbsp;Every gift also gives to charity</div>
+            <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(45,159,147,0.15);color:#1a7a72;font-size:20px;font-weight:700;padding:10px 22px;border-radius:100px;width:fit-content;">♥ &nbsp;{{ __('og.charity_pill') }}</div>
         </div>
         {{-- Visual card --}}
         <div style="position:absolute;right:76px;top:50%;transform:translateY(-50%) rotate(2.5deg);width:285px;background:#fff;border-radius:22px;padding:26px 24px;box-shadow:0 28px 56px -10px rgba(0,0,0,0.14),0 0 0 1px rgba(220,210,196,0.4);z-index:20;">
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
                 <span style="font-size:30px;">🎁</span>
                 <div>
-                    <div style="font-size:16px;font-weight:700;color:#111827;">{{ Str::limit($ogListName, 22) }}</div>
-                    <div style="font-size:12px;color:#9ca3af;margin-top:1px;">{{ $ogGiftLabel }}</div>
+                    <div style="font-size:16px;font-weight:700;color:#111827;">{{ Str::limit($list->name, 22) }}</div>
+                    <div style="font-size:12px;color:#9ca3af;margin-top:1px;">{{ trans_choice(':count gift|:count gifts', $ogGiftCount, ['count' => $ogGiftCount]) }}</div>
                 </div>
             </div>
-            <div style="display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid #f3f0ea;">
-                <div style="width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,#dbeafe,#bfdbfe);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🎧</div>
-                <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:#374151;">Headphones</div><div style="font-size:12px;font-weight:700;color:#f07060;margin-top:1px;">€ 79</div></div>
-                <span style="font-size:10px;font-weight:600;padding:3px 9px;border-radius:100px;background:#ccfbf1;color:#0f766e;flex-shrink:0;">Available</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid #f3f0ea;">
-                <div style="width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,#fef3c7,#fde68a);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🧣</div>
-                <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:#374151;">Cozy Scarf</div><div style="font-size:12px;font-weight:700;color:#f07060;margin-top:1px;">€ 45</div></div>
-                <span style="font-size:10px;font-weight:600;padding:3px 9px;border-radius:100px;background:#fef9c3;color:#a16207;flex-shrink:0;">Claimed</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:11px;padding:11px 0;">
-                <div style="width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,#d1fae5,#a7f3d0);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">📚</div>
-                <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:#374151;">Book Set</div><div style="font-size:12px;font-weight:700;color:#f07060;margin-top:1px;">€ 32</div></div>
-                <span style="font-size:10px;font-weight:600;padding:3px 9px;border-radius:100px;background:#ccfbf1;color:#0f766e;flex-shrink:0;">Available</span>
-            </div>
+            @foreach($ogAvailableGifts as $ogGift)
+                <div style="display:flex;align-items:center;gap:11px;padding:11px 0;{{ $loop->last ? '' : 'border-bottom:1px solid #f3f0ea;' }}">
+                    @if($ogGift->hasImage())
+                        <img src="{{ $ogGift->getImageUrl('thumb') }}" style="width:42px;height:42px;border-radius:11px;object-fit:cover;flex-shrink:0;" />
+                    @else
+                        <div style="width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,#f3f0ea,#e5e1d8);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🎁</div>
+                    @endif
+                    <div style="flex:1;overflow:hidden;">
+                        <div style="font-size:13px;font-weight:600;color:#374151;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $ogGift->title ?? __('Gift') }}</div>
+                        @if($ogGift->hasPrice())
+                            <div style="font-size:12px;font-weight:700;color:#f07060;margin-top:1px;">{{ $ogGift->formatPrice() }}</div>
+                        @endif
+                    </div>
+                    <span style="font-size:10px;font-weight:600;padding:3px 9px;border-radius:100px;background:#ccfbf1;color:#0f766e;flex-shrink:0;">{{ __('Available') }}</span>
+                </div>
+            @endforeach
         </div>
         <div style="position:absolute;bottom:38px;right:56px;font-size:20px;font-weight:600;color:#d1d5db;letter-spacing:0.02em;">givetwice.app</div>
     </div>

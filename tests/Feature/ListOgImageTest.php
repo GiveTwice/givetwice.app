@@ -12,15 +12,15 @@ beforeEach(function () {
 describe('List OG Image', function () {
 
     describe('og:image meta tag on public list page', function () {
-        it('includes an og:image meta tag pointing to the og-image package route', function () {
+        it('includes the og-image template for the package to screenshot', function () {
             $user = User::factory()->create(['name' => 'Alice']);
             $list = GiftList::factory()->create(['creator_id' => $user->id]);
             $list->users()->attach($user->id);
 
             $this->get("/en/v/{$list->id}/{$list->slug}")
                 ->assertOk()
-                ->assertSee('og:image', false)
-                ->assertSee('data-og-image', false);
+                ->assertSee('data-og-image', false)
+                ->assertSee('data-og-hash', false);
         });
 
         it('includes og:title with owner name', function () {
@@ -33,14 +33,18 @@ describe('List OG Image', function () {
                 ->assertSee('Sarah', false);
         });
 
-        it('handles possessive for names ending in s', function () {
+        it('localizes the headline using translation keys', function () {
             $user = User::factory()->create(['name' => 'James']);
             $list = GiftList::factory()->create(['creator_id' => $user->id]);
             $list->users()->attach($user->id);
 
             $this->get("/en/v/{$list->id}/{$list->slug}")
                 ->assertOk()
-                ->assertSee("James&#039;", false);
+                ->assertSee("James's wishlist.", true);
+
+            $this->get("/nl/v/{$list->id}/{$list->slug}")
+                ->assertOk()
+                ->assertSee('Verlanglijst van James.', false);
         });
 
         it('includes og:description with gift count', function () {
@@ -77,17 +81,6 @@ describe('List OG Image', function () {
             $this->get("/en/v/{$list->id}/{$list->slug}")
                 ->assertOk()
                 ->assertSee('summary_large_image', false);
-        });
-
-        it('includes the og-image template in the page for the package to screenshot', function () {
-            $user = User::factory()->create(['name' => 'Iris']);
-            $list = GiftList::factory()->create(['creator_id' => $user->id]);
-            $list->users()->attach($user->id);
-
-            // The spatie/laravel-og-image package renders a hidden <template data-og-image> tag
-            $this->get("/en/v/{$list->id}/{$list->slug}")
-                ->assertOk()
-                ->assertSee('data-og-image', false);
         });
 
         it('renders list name in the og-image template', function () {
