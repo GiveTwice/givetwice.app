@@ -1951,5 +1951,6 @@
     "og.description": ":name a :count cadeau sur sa liste. Aidez-les à célébrer avec un cadeau qui soutient aussi une bonne cause.|:name a :count cadeaux sur sa liste. Aidez-les à célébrer avec un cadeau qui soutient aussi une bonne cause.",
     "og.headline": "Liste de souhaits de :name.",
     "og.subtitle": ":count cadeau au choix. Quand vous achetez, GiveTwice fait un don — sans frais supplémentaires.|:count cadeaux au choix. Quand vous achetez, GiveTwice fait un don — sans frais supplémentaires.",
-    "og.tagline": "Le bien fait en silence."
+    "og.tagline": "Le bien fait en silence.",
+    "By :name": "Par :name"
 }

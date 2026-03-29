@@ -1951,5 +1951,6 @@
     "og.description": ":name has :count gift on their wishlist. Help them celebrate with a meaningful gift that also gives to charity.|:name has :count gifts on their wishlist. Help them celebrate with a meaningful gift that also gives to charity.",
     "og.headline": ":name's wishlist.",
     "og.subtitle": ":count gift to choose from. When you buy, GiveTwice donates to charity — at no extra cost.|:count gifts to choose from. When you buy, GiveTwice donates to charity — at no extra cost.",
-    "og.tagline": "Good done quietly."
+    "og.tagline": "Good done quietly.",
+    "By :name": "By :name"
 }

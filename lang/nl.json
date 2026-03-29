@@ -1951,5 +1951,6 @@
     "og.description": ":name heeft :count cadeau op hun verlanglijst. Help hen vieren met een betekenisvol cadeau dat ook aan een goed doel geeft.|:name heeft :count cadeaus op hun verlanglijst. Help hen vieren met een betekenisvol cadeau dat ook aan een goed doel geeft.",
     "og.headline": "Verlanglijst van :name.",
     "og.subtitle": ":count cadeau om uit te kiezen. Bij aankoop doneert GiveTwice aan een goed doel — zonder extra kosten.|:count cadeaus om uit te kiezen. Bij aankoop doneert GiveTwice aan een goed doel — zonder extra kosten.",
-    "og.tagline": "Stilletjes goed doen."
+    "og.tagline": "Stilletjes goed doen.",
+    "By :name": "Van :name"
 }
