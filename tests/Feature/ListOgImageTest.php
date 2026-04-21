@@ -33,18 +33,18 @@ describe('List OG Image', function () {
                 ->assertSee('Sarah', false);
         });
 
-        it('localizes the headline using translation keys', function () {
+        it('localizes the owner attribution using translation keys', function () {
             $user = User::factory()->create(['name' => 'James']);
             $list = GiftList::factory()->create(['creator_id' => $user->id]);
             $list->users()->attach($user->id);
 
             $this->get("/en/v/{$list->id}/{$list->slug}")
                 ->assertOk()
-                ->assertSee("James's wishlist.", true);
+                ->assertSee('By James', false);
 
             $this->get("/nl/v/{$list->id}/{$list->slug}")
                 ->assertOk()
-                ->assertSee('Verlanglijst van James.', false);
+                ->assertSee('Van James', false);
         });
 
         it('includes og:description with gift count', function () {
