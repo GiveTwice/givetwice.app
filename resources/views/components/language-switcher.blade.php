@@ -1,5 +1,6 @@
 @php
     use App\Enums\SupportedLocale;
+    use App\Helpers\ExchangeHelper;
     use App\Helpers\OccasionHelper;
 
     $currentLocale = app()->getLocale();
@@ -18,6 +19,10 @@
     if ($routeName && str_starts_with($routeName, 'occasion.')) {
         $occasionKey = $currentRoute->parameter('occasion');
     }
+
+    // Exchange landing pages use locale-specific route names AND slugs —
+    // each locale has its own registered route (e.g. exchange-landing.lootjes-trekken-nl).
+    $isExchangeLanding = $routeName && str_starts_with($routeName, 'exchange-landing.');
 @endphp
 
 <div class="relative" x-data="{ open: false }" @click.outside="open = false">
@@ -59,15 +64,24 @@
                             continue;
                         }
 
-                        $newParams = array_merge($routeParams, ['locale' => $locale->value]);
+                        if ($isExchangeLanding) {
+                            // Each locale has its own exchange landing route + slug
+                            $targetExchange = ExchangeHelper::getForLocale($locale->value);
+                            $url = $targetExchange
+                                ? route("exchange-landing.{$targetExchange['key']}", ['locale' => $locale->value])
+                                : url("/{$locale->value}");
+                        } else {
+                            $newParams = array_merge($routeParams, ['locale' => $locale->value]);
 
-                        // Exchange pages use locale-specific slugs
-                        if (isset($newParams['exchangeType'])) {
-                            $exchangeSlugs = ['en' => 'secret-santa', 'nl' => 'lootjes-trekken', 'fr' => 'tirage-au-sort'];
-                            $newParams['exchangeType'] = $exchangeSlugs[$locale->value] ?? 'secret-santa';
+                            // Exchange pages use locale-specific slugs
+                            if (isset($newParams['exchangeType'])) {
+                                $exchangeSlugs = ['en' => 'secret-santa', 'nl' => 'lootjes-trekken', 'fr' => 'tirage-au-sort'];
+                                $newParams['exchangeType'] = $exchangeSlugs[$locale->value] ?? 'secret-santa';
+                            }
+
+                            $url = $routeName ? route($routeName, $newParams) : url("/{$locale->value}");
                         }
 
-                        $url = $routeName ? route($routeName, $newParams) : url("/{$locale->value}");
                         $isActive = $locale->value === $currentLocale;
                     @endphp
                     <a

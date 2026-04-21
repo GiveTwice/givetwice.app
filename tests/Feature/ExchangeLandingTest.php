@@ -114,6 +114,35 @@ describe('Exchange SEO landing pages', function () {
         });
     });
 
+    describe('Language switcher', function () {
+        it('links to the locale-specific slug for each other locale from the NL page', function () {
+            $response = $this->get('/nl/lootjes-trekken-online')->assertOk();
+
+            $response->assertSee('href="'.url('/en/secret-santa-gift-exchange').'"', false);
+            $response->assertSee('href="'.url('/fr/tirage-au-sort-noel').'"', false);
+            $response->assertDontSee('/en/lootjes-trekken-online');
+            $response->assertDontSee('/fr/lootjes-trekken-online');
+        });
+
+        it('links to the locale-specific slug for each other locale from the EN page', function () {
+            $response = $this->get('/en/secret-santa-gift-exchange')->assertOk();
+
+            $response->assertSee('href="'.url('/nl/lootjes-trekken-online').'"', false);
+            $response->assertSee('href="'.url('/fr/tirage-au-sort-noel').'"', false);
+            $response->assertDontSee('/nl/secret-santa-gift-exchange');
+            $response->assertDontSee('/fr/secret-santa-gift-exchange');
+        });
+
+        it('links to the locale-specific slug for each other locale from the FR page', function () {
+            $response = $this->get('/fr/tirage-au-sort-noel')->assertOk();
+
+            $response->assertSee('href="'.url('/en/secret-santa-gift-exchange').'"', false);
+            $response->assertSee('href="'.url('/nl/lootjes-trekken-online').'"', false);
+            $response->assertDontSee('/en/tirage-au-sort-noel');
+            $response->assertDontSee('/nl/tirage-au-sort-noel');
+        });
+    });
+
     describe('Sitemap', function () {
         it('includes all three exchange landing pages', function () {
             config(['app.url' => 'https://givetwice.app']);
