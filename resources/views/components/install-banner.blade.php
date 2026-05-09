@@ -53,6 +53,8 @@ document.addEventListener('alpine:init', () => {
         init() {
             if (window.isStandalonePwa || this.isDismissed()) return;
 
+            if (!this.isMobileDevice()) return;
+
             if (this.incrementAndGetPageVisits() < 2) return;
 
             if (this.isIosSafari()) {
@@ -111,6 +113,14 @@ document.addEventListener('alpine:init', () => {
             } catch {
                 return 0;
             }
+        },
+
+        isMobileDevice() {
+            const ua = window.navigator.userAgent;
+            const uaIsMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua)
+                || (navigator.maxTouchPoints > 1 && /Macintosh/.test(ua));
+            const coarsePointer = window.matchMedia?.('(pointer: coarse)').matches ?? false;
+            return uaIsMobile || coarsePointer;
         },
 
         isIosSafari() {
