@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class GiftExchangeController extends Controller
@@ -94,7 +95,8 @@ class GiftExchangeController extends Controller
         string $exchangeType,
         CreateGiftExchangeAction $action,
     ): RedirectResponse {
-        $minParticipants = $request->boolean('organizer_participates') ? 2 : 3;
+        $organizerParticipates = $request->boolean('organizer_participates');
+        $minParticipants = $organizerParticipates ? 2 : 3;
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -103,9 +105,21 @@ class GiftExchangeController extends Controller
             'budget_currency' => ['nullable', 'string', 'in:EUR,USD'],
             'participants' => ['required', 'array', "min:{$minParticipants}"],
             'participants.*.name' => ['required', 'string', 'max:255'],
-            'participants.*.email' => ['required', 'email', 'max:255'],
+            'participants.*.email' => ['required', 'email', 'max:255', 'distinct:ignore_case'],
             'organizer_participates' => ['nullable', 'boolean'],
         ]);
+
+        if ($organizerParticipates) {
+            $organizerEmail = strtolower($request->user()->email);
+            $listedOrganizer = collect($validated['participants'])
+                ->contains(fn (array $participant) => strtolower(trim($participant['email'])) === $organizerEmail);
+
+            if ($listedOrganizer) {
+                throw ValidationException::withMessages([
+                    'participants' => __('You\'re already in the group as the organizer — no need to add yourself again.'),
+                ]);
+            }
+        }
 
         $budgetAmount = $validated['budget_amount']
             ? (int) ($validated['budget_amount'] * 100)
@@ -119,7 +133,7 @@ class GiftExchangeController extends Controller
             participants: $validated['participants'],
             budgetAmount: $budgetAmount,
             budgetCurrency: $validated['budget_currency'] ?? 'EUR',
-            organizerParticipates: (bool) ($validated['organizer_participates'] ?? false),
+            organizerParticipates: $organizerParticipates,
         );
 
         return redirect()
