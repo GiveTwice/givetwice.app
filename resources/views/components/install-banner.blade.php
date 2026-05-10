@@ -49,6 +49,7 @@ document.addEventListener('alpine:init', () => {
         canInstallNative: false,
         deferredPrompt: null,
         instructionText: '',
+        autoHideTimer: null,
 
         init() {
             if (window.isStandalonePwa || this.isDismissed()) return;
@@ -59,7 +60,7 @@ document.addEventListener('alpine:init', () => {
 
             if (this.isIosSafari()) {
                 this.instructionText = @js(__('Tap Share, then "Add to Home Screen"'));
-                this.visible = true;
+                this.show();
             }
 
             window.addEventListener('beforeinstallprompt', (e) => {
@@ -67,13 +68,20 @@ document.addEventListener('alpine:init', () => {
                 this.deferredPrompt = e;
                 this.canInstallNative = true;
                 this.instructionText = @js(__('Add to your home screen for quick access'));
-                this.visible = true;
+                this.show();
             });
 
             window.addEventListener('appinstalled', () => {
                 this.visible = false;
                 this.deferredPrompt = null;
+                clearTimeout(this.autoHideTimer);
             });
+        },
+
+        show() {
+            this.visible = true;
+            clearTimeout(this.autoHideTimer);
+            this.autoHideTimer = setTimeout(() => this.dismiss(), 10000);
         },
 
         async installNative() {
@@ -89,6 +97,7 @@ document.addEventListener('alpine:init', () => {
 
         dismiss() {
             this.visible = false;
+            clearTimeout(this.autoHideTimer);
             try {
                 localStorage.setItem('givetwice_install_dismissed', Date.now().toString());
             } catch {}
