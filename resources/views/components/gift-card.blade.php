@@ -153,6 +153,18 @@
             @else
                 <span class="text-xs text-gray-400 italic">{{ __('No price') }}</span>
             @endif
+
+            @if($editable)
+                <button
+                    type="button"
+                    x-on:click.stop="$dispatch('open-confirm-delete-gift-{{ $gift->id }}')"
+                    aria-label="{{ __('Delete Gift') }}"
+                    title="{{ __('Delete Gift') }}"
+                    class="-mr-1 p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                >
+                    <x-icons.trash class="w-4 h-4" />
+                </button>
+            @endif
         </div>
 
         @if($showClaimActions && !$isOwner)
@@ -209,3 +221,24 @@
         @endif
     </div>
 </div>
+
+@if($editable)
+    <x-confirm-modal
+        id="delete-gift-{{ $gift->id }}"
+        :title="__('Delete Gift')"
+        :message="__('This can\'t be undone. Sure?')"
+        :confirmText="__('Delete Gift')"
+    >
+        <form method="POST" action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id) }}" x-on:click.stop>
+            @csrf
+            @method('DELETE')
+            <button
+                type="submit"
+                class="inline-flex items-center gap-2 bg-red-600 text-white px-4 py-2.5 rounded-xl hover:bg-red-700 transition-colors font-medium"
+            >
+                <x-icons.trash class="w-5 h-5" />
+                {{ __('Delete Gift') }}
+            </button>
+        </form>
+    </x-confirm-modal>
+@endif
