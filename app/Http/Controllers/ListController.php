@@ -22,14 +22,14 @@ class ListController extends Controller
             'description' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        $action->execute(
+        $list = $action->execute(
             $request->user(),
             $validated['name'],
             $validated['description'] ?? null,
         );
 
         return redirect()
-            ->route('dashboard.locale', ['locale' => app()->getLocale()])
+            ->route('dashboard.locale', ['locale' => app()->getLocale(), 'list-added' => $list->slug])
             ->with('success', __('List created successfully.'));
     }
 

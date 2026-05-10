@@ -27,6 +27,7 @@ Bad: "The details have been automatically populated." / "Processing complete."
 - Follow existing code patterns — check similar files before writing new ones
 - Run `vendor/bin/pint --dirty` after every code change
 - Run `composer analyse` after every code change
+- Run `yarn build` after editing CSS, JS, or Blade templates that affect compiled assets (Tailwind classes, Vite-bundled scripts) — `php artisan view:clear` is not enough
 - All tests must pass before creating a PR
 - Use Pest describe/it blocks, not PHPUnit classes
 - Use factories for test data, not raw DB inserts (unless testing DB-level concerns)

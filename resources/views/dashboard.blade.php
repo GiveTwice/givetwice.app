@@ -72,9 +72,18 @@
         :title="__('Welcome back, :name!', ['name' => auth()->user()->name])"
     >
 
+        @php $highlightedSlug = request('list-added'); @endphp
         <div class="space-y-0 divide-y divide-gray-100">
         @forelse($lists as $list)
-            <section id="list-{{ $list->id }}" class="list-section {{ !$loop->first ? 'pt-8' : '' }} {{ !$loop->last ? 'pb-8' : '' }}">
+            @php $isHighlighted = $highlightedSlug === $list->slug; @endphp
+            <section
+                id="list-{{ $list->slug }}"
+                class="list-section {{ !$loop->first || $isHighlighted ? 'pt-8' : '' }} {{ !$loop->last || $isHighlighted ? 'pb-8' : '' }}{{ $isHighlighted ? ' px-4 -mx-4 rounded-2xl scroll-mt-12 highlight-sunny-pulse' : '' }}"
+                @if($isHighlighted)
+                    x-data
+                    x-init="$el.scrollIntoView({ behavior: 'smooth', block: 'start' })"
+                @endif
+            >
 
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
