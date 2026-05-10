@@ -87,6 +87,40 @@ describe('Gift Exchange Feature', function () {
                 ->post('/nl/lootjes-trekken', [])
                 ->assertSessionHasErrors(['name', 'participants']);
         });
+
+        it('rejects duplicate participant emails with a 422 instead of a 500', function () {
+            $user = User::factory()->create();
+
+            $this->actingAs($user)
+                ->post('/nl/lootjes-trekken', [
+                    'name' => 'Dup test',
+                    'participants' => [
+                        ['name' => 'Alice', 'email' => 'alice@example.com'],
+                        ['name' => 'Alice again', 'email' => 'ALICE@example.com'],
+                        ['name' => 'Bob', 'email' => 'bob@example.com'],
+                    ],
+                ])
+                ->assertSessionHasErrors('participants.1.email');
+
+            expect(GiftExchange::count())->toBe(0);
+        });
+
+        it('rejects organizer email in participants list when organizer participates', function () {
+            $user = User::factory()->create(['email' => 'organizer@example.com']);
+
+            $this->actingAs($user)
+                ->post('/nl/lootjes-trekken', [
+                    'name' => 'Self-add test',
+                    'organizer_participates' => true,
+                    'participants' => [
+                        ['name' => 'Self', 'email' => 'organizer@example.com'],
+                        ['name' => 'Alice', 'email' => 'alice@example.com'],
+                    ],
+                ])
+                ->assertSessionHasErrors('participants');
+
+            expect(GiftExchange::count())->toBe(0);
+        });
     });
 
     describe('draw names', function () {
