@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Claim;
 use App\Models\Gift;
 use App\Models\GiftList;
 use App\Models\User;
@@ -35,6 +36,19 @@ describe('Admin dashboard', function () {
             ->get('/admin')
             ->assertSuccessful()
             ->assertSee('admin-chart-data', false);
+    });
+
+    it('renders recent claims even when the gift was soft-deleted', function () {
+        Queue::fake();
+        $admin = User::factory()->admin()->create();
+        $gift = Gift::factory()->create(['title' => 'Soft-deleted gift']);
+        Claim::factory()->confirmed()->create(['gift_id' => $gift->id]);
+        $gift->delete();
+
+        $this->actingAs($admin)
+            ->get('/admin')
+            ->assertSuccessful()
+            ->assertSee('Soft-deleted gift');
     });
 
     it('displays stat counts', function () {

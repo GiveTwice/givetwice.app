@@ -147,7 +147,7 @@
         @forelse($recentClaims as $claim)
             <div class="flex items-center justify-between py-2.5 {{ !$loop->last ? 'border-b border-cream-100' : '' }}">
                 <div class="flex-1 min-w-0">
-                    <p class="font-medium text-gray-900 truncate">{{ $claim->gift->title ?: 'Untitled gift' }}</p>
+                    <p class="font-medium text-gray-900 truncate">{{ $claim->gift?->title ?: 'Untitled gift' }}</p>
                     <p class="text-sm text-gray-500">
                         @if($claim->user)
                             by {{ $claim->user->name }}

@@ -35,7 +35,11 @@ class AdminController extends Controller
 
         $recentUsers = User::latest()->take(5)->get();
         $recentGifts = Gift::with('user')->latest()->take(5)->get();
-        $recentClaims = Claim::with(['gift', 'user'])->whereNotNull('confirmed_at')->latest()->take(5)->get();
+        $recentClaims = Claim::with(['gift' => fn ($query) => $query->withTrashed(), 'user'])
+            ->whereNotNull('confirmed_at')
+            ->latest()
+            ->take(5)
+            ->get();
 
         $chartData = $this->buildChartData();
 
