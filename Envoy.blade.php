@@ -86,7 +86,7 @@
     {{ logMessage("🚚 Installing Composer dependencies...") }}
 
     cd {{ $newReleaseDir }};
-    composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+    composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev --no-progress
 
     # Install Octane FrankenPHP worker script
     php artisan octane:install --server=frankenphp --no-interaction
