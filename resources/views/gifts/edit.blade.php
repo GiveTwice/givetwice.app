@@ -243,6 +243,21 @@
                             {{ __('Uploading...') }}
                         </span>
                     </div>
+
+                    <div class="absolute top-3 right-3 pointer-events-none"
+                         x-show="uploadedRecently"
+                         x-cloak
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 -translate-y-1"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-300"
+                         x-transition:leave-start="opacity-100"
+                         x-transition:leave-end="opacity-0">
+                        <span class="bg-teal-500 text-white px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg inline-flex items-center gap-1.5">
+                            <x-icons.check-circle class="w-4 h-4" />
+                            {{ __('Saved') }}
+                        </span>
+                    </div>
                 </div>
 
                 <p class="text-xs text-gray-500 mt-2 text-center">{{ __('Click to upload a new image') }}</p>
@@ -335,6 +350,7 @@
             },
             refreshing: false,
             uploading: false,
+            uploadedRecently: false,
 
             async refresh() {
                 this.refreshing = true;
@@ -374,10 +390,20 @@
                         body: formData
                     });
 
+                    const data = await response.json();
+
                     if (!response.ok) {
-                        const data = await response.json();
                         alert(data.message || '{{ __('Failed to upload image.') }}');
+                        return;
                     }
+
+                    if (data.image_url_card) {
+                        this.gift.image_url_card = data.image_url_card + (data.image_url_card.includes('?') ? '&' : '?') + 't=' + Date.now();
+                    }
+
+                    this.uploadedRecently = true;
+                    clearTimeout(this.uploadedTimeout);
+                    this.uploadedTimeout = setTimeout(() => { this.uploadedRecently = false; }, 2500);
                 } catch (error) {
                     console.error('Upload error:', error);
                     alert('{{ __('Failed to upload image.') }}');

@@ -273,6 +273,7 @@ class GiftController extends Controller
         return response()->json([
             'success' => true,
             'message' => __('Image uploaded successfully.'),
+            'image_url_card' => $gift->fresh()->getImageUrl('card'),
         ]);
     }
 
