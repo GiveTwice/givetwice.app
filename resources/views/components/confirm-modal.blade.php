@@ -9,6 +9,7 @@
 ])
 
 <div
+    class="contents"
     x-data="{ open: false }"
     x-on:open-confirm-{{ $id }}.window="open = true"
     x-on:keydown.escape.window="open = false"
