@@ -19,6 +19,12 @@
             <form method="POST" action="{{ url('/' . app()->getLocale() . '/gifts') }}">
                 @csrf
 
+                @error('list_id')
+                    <div class="mb-6 rounded-xl bg-red-50 border border-red-200 px-4 py-3">
+                        <p class="form-error mt-0">{{ $message }}</p>
+                    </div>
+                @enderror
+
                 <div class="mb-6">
                     <label for="input" class="form-label">
                         {{ __('Gift') }} <span class="text-coral-500">*</span>
@@ -39,7 +45,9 @@
                     <p class="form-help mt-2">{{ __('Paste a product link and we\'ll fill in the details automatically, or just type what you\'d like.') }}</p>
                 </div>
 
-                @if(!$isSingleListMode)
+                @if($isSingleListMode)
+                    <input type="hidden" name="list_id" value="{{ $selectedListId }}">
+                @else
                     <div class="mb-6">
                         <label for="list_id" class="form-label">
                             {{ __('Add to list') }}
