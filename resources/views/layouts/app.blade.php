@@ -90,38 +90,66 @@
     </a>
 
     <header class="bg-white border-b border-cream-200 sticky top-0 z-40 md:static md:z-auto safe-area-header safe-area-x">
-        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" x-data="{ mobileOpen: false }" @click.outside="mobileOpen = false">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
+        <nav class="{{ auth()->check() ? 'app-frame' : 'max-w-7xl mx-auto' }} px-4 sm:px-6 lg:px-8" x-data="{ mobileOpen: false }" @click.outside="mobileOpen = false">
+            @php
+                $navExchangeSlugs = ['en' => 'secret-santa', 'nl' => 'lootjes-trekken', 'fr' => 'tirage-au-sort'];
+                $navExchangeSlug = $navExchangeSlugs[app()->getLocale()] ?? 'secret-santa';
+                $navExchangeLabels = ['en' => __('Secret Santa'), 'nl' => __('Lootjes trekken'), 'fr' => __('Tirage au sort')];
+                $navExchangeLabel = $navExchangeLabels[app()->getLocale()] ?? __('Secret Santa');
+                $dashboardUrl = route('dashboard.locale', ['locale' => app()->getLocale()]);
+                $secretSantaUrl = route('dashboard.secret-santa', ['locale' => app()->getLocale()]);
+                $friendsUrl = route('friends.index', ['locale' => app()->getLocale()]);
+                $settingsUrl = route('settings', ['locale' => app()->getLocale()]);
+                $mobileHelpLabel = auth()->check() ? __('FAQ') : __('How it works');
+                $isAppNavActive = request()->routeIs('dashboard*', 'friends.*', 'settings*');
+            @endphp
+
+            <div class="flex h-16 items-center justify-between gap-4 sm:gap-6">
+                <div class="flex items-center gap-3 sm:gap-4 md:gap-8 lg:gap-12">
                     <x-logo />
-                </div>
-
-                <div class="hidden md:flex items-center space-x-6">
-                    @php
-                        $navExchangeSlugs = ['en' => 'secret-santa', 'nl' => 'lootjes-trekken', 'fr' => 'tirage-au-sort'];
-                        $navExchangeSlug = $navExchangeSlugs[app()->getLocale()] ?? 'secret-santa';
-                        $navExchangeLabels = ['en' => __('Secret Santa'), 'nl' => __('Lootjes trekken'), 'fr' => __('Tirage au sort')];
-                        $navExchangeLabel = $navExchangeLabels[app()->getLocale()] ?? __('Secret Santa');
-                    @endphp
-                    <a href="{{ route('exchanges.landing', ['locale' => app()->getLocale(), 'exchangeType' => $navExchangeSlug]) }}" class="text-gray-600 hover:text-gray-900 transition-colors">🎲 {{ $navExchangeLabel }}</a>
-                    <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="text-gray-600 hover:text-gray-900 transition-colors">{{ __('How it works') }}</a>
-                    <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="text-gray-600 hover:text-gray-900 transition-colors">{{ __('About') }}</a>
-
-                    <span class="text-cream-300">|</span>
 
                     @auth
-                        <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="text-gray-600 hover:text-gray-900 transition-colors">{{ __('Dashboard') }}</a>
+                        <div class="hidden md:flex items-center gap-8 lg:gap-10 text-[17px] text-gray-700">
+                            <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="transition-colors hover:text-gray-900">{{ __('FAQ') }}</a>
+                            <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="transition-colors hover:text-gray-900">{{ __('About') }}</a>
+                        </div>
+                    @endauth
+                </div>
+
+                <div class="hidden md:flex items-center gap-4 lg:gap-6">
+                    @auth
+                        <x-language-switcher />
+
+                        <a
+                            href="{{ $dashboardUrl }}"
+                            class="inline-flex items-center gap-2 rounded-full bg-coral-500 px-2.5 py-2 text-sm font-semibold text-white shadow-sm shadow-coral-500/20 transition-all duration-200 hover:bg-coral-600"
+                            @if($isAppNavActive) aria-current="page" @endif
+                        >
+                            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 text-white">
+                                <x-icons.device-desktop class="h-4 w-4" />
+                            </span>
+                            <span>{{ __('Dashboard') }}</span>
+                        </a>
                     @else
+                        <a href="{{ route('exchanges.landing', ['locale' => app()->getLocale(), 'exchangeType' => $navExchangeSlug]) }}" class="text-gray-600 hover:text-gray-900 transition-colors">🎲 {{ $navExchangeLabel }}</a>
+                        <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="text-gray-600 hover:text-gray-900 transition-colors">{{ __('How it works') }}</a>
+                        <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="text-gray-600 hover:text-gray-900 transition-colors">{{ __('About') }}</a>
+                        <span class="text-cream-300">|</span>
                         <a href="{{ url('/' . app()->getLocale() . '/login') }}" class="text-gray-600 hover:text-gray-900 transition-colors">{{ __('Login') }}</a>
                         @if(config('app.allow_registration'))
                             <x-nav-button href="{{ url('/' . app()->getLocale() . '/register') }}">{{ __('Sign Up') }}</x-nav-button>
                         @endif
+                        <x-language-switcher />
                     @endauth
 
-                    <x-language-switcher />
-
                     @auth
-                        <x-profile-dropdown :user="auth()->user()" />
+                        <div class="flex items-center gap-3 border-l border-cream-200 pl-4">
+                            <div class="hidden lg:block text-right">
+                                <p class="text-sm font-semibold text-gray-900 truncate max-w-36">{{ auth()->user()->name }}</p>
+                                <p class="text-xs text-gray-500">{{ __('Signed in') }}</p>
+                            </div>
+                            <x-profile-dropdown :user="auth()->user()" />
+                        </div>
                     @endauth
                 </div>
 
@@ -129,8 +157,21 @@
             </div>
 
             <x-mobile-menu-panel>
-                <a href="{{ route('exchanges.landing', ['locale' => app()->getLocale(), 'exchangeType' => $navExchangeSlug ?? 'secret-santa']) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">🎲 {{ $navExchangeLabel ?? __('Secret Santa') }}</a>
-                <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('How it works') }}</a>
+                @auth
+                    <a
+                        href="{{ $dashboardUrl }}"
+                        class="flex items-center gap-3 rounded-2xl border px-4 py-3 shadow-sm transition-all {{ $isAppNavActive ? 'border-coral-500 bg-coral-500 text-white shadow-coral-500/20' : 'border-cream-200 bg-cream-50 text-gray-900' }}"
+                    >
+                        <span class="flex h-10 w-10 items-center justify-center rounded-2xl {{ $isAppNavActive ? 'bg-white/15 text-white' : 'bg-white text-coral-500' }}">
+                            <x-icons.device-desktop class="h-5 w-5" />
+                        </span>
+                        <span class="font-semibold">{{ __('Dashboard') }}</span>
+                    </a>
+                    <a href="{{ route('home', ['locale' => app()->getLocale()]) }}" class="mt-2 block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('Home') }}</a>
+                @else
+                    <a href="{{ route('exchanges.landing', ['locale' => app()->getLocale(), 'exchangeType' => $navExchangeSlug ?? 'secret-santa']) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">🎲 {{ $navExchangeLabel ?? __('Secret Santa') }}</a>
+                @endauth
+                <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ $mobileHelpLabel }}</a>
                 <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">{{ __('About') }}</a>
 
                 <div class="border-t border-cream-200 my-2"></div>
@@ -170,11 +211,19 @@
 
                     <div class="border-t border-cream-200 my-2"></div>
 
-                    <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">
-                        <x-icons.home class="w-5 h-5" />
-                        <span>{{ __('Dashboard') }}</span>
+                    <a href="{{ $dashboardUrl }}" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-cream-100 text-base">&#127873;</span>
+                        <span>{{ __('Lists') }}</span>
                     </a>
-                    <a href="{{ url('/' . app()->getLocale() . '/settings') }}" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">
+                    <a href="{{ $secretSantaUrl }}" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-cream-100 text-base">&#127922;</span>
+                        <span>{{ __('Secret Santa') }}</span>
+                    </a>
+                    <a href="{{ $friendsUrl }}" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">
+                        <x-icons.users class="w-5 h-5" />
+                        <span>{{ __('Friends') }}</span>
+                    </a>
+                    <a href="{{ $settingsUrl }}" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">
                         <x-icons.settings class="w-5 h-5" />
                         <span>{{ __('Settings') }}</span>
                     </a>
@@ -285,7 +334,7 @@
     </div>
 
     <main id="main-content" class="flex-grow safe-area-x">
-        <div class="max-w-7xl mx-auto pt-6 pb-20 px-4 sm:px-6 lg:px-8">
+        <div class="{{ auth()->check() ? 'app-frame' : 'max-w-7xl mx-auto' }} pt-6 pb-20 px-4 sm:px-6 lg:px-8">
             @yield('content')
         </div>
     </main>

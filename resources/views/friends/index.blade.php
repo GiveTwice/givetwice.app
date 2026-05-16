@@ -5,15 +5,23 @@
 @section('robots', 'noindex, nofollow')
 
 @section('content')
-<x-app-content
-    :title="__('Friends\' wishlists')"
-    :description="__('Wishlists from people you\'ve claimed gifts from.')"
-    :breadcrumbs="[
-        ['label' => __('Dashboard'), 'url' => url('/' . app()->getLocale() . '/dashboard')],
-        ['label' => __('Friends\' wishlists')]
-    ]"
+@php
+    $listCount = auth()->user()->lists()->count();
+    $followedListCount = $groupedByOwner->flatten(1)->count();
+    $shell = \App\Helpers\AppShellHelper::friends(auth()->user(), $followedListCount);
+    $currentLocale = $shell['currentLocale'];
+@endphp
+
+<x-app-shell
+    :title="__('Keep up with people')"
+    :sidebar-items="$shell['sidebarItems']"
+    :stats="$shell['sidebarStats']"
 >
-    <div x-data="friendsPage()">
+    <x-app-content
+        :title="__('Friends\' wishlists')"
+        :description="__('Wishlists from people you\'ve claimed gifts from.')"
+    >
+        <div x-data="friendsPage()">
         {{-- Global notifications toggle --}}
         <div class="flex items-center justify-between p-4 bg-cream-50 rounded-xl mb-8">
             <div class="flex items-center gap-3">
@@ -156,8 +164,9 @@
                 @endforeach
             </div>
         @endif
-    </div>
-</x-app-content>
+        </div>
+    </x-app-content>
+</x-app-shell>
 @endsection
 
 @push('scripts')

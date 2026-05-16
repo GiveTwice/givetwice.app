@@ -5,10 +5,20 @@
 @section('robots', 'noindex, nofollow')
 
 @section('content')
+@php
+    $shell = \App\Helpers\AppShellHelper::lists(auth()->user());
+    $dashboardUrl = $shell['dashboardUrl'];
+@endphp
+
+<x-app-shell
+    :title="__('Lists')"
+    :sidebar-items="$shell['sidebarItems']"
+    :stats="$shell['sidebarStats']"
+>
 <x-app-content
     :title="__('Fetching Details')"
     :breadcrumbs="[
-        ['label' => __('Dashboard'), 'url' => url('/' . app()->getLocale() . '/dashboard')],
+        ['label' => __('Lists'), 'url' => $dashboardUrl],
         ['label' => __('Fetching Details')]
     ]"
 >
@@ -75,4 +85,5 @@
         }
     </script>
 </x-app-content>
+</x-app-shell>
 @endsection

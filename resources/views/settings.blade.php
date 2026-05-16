@@ -5,15 +5,20 @@
 @section('robots', 'noindex, nofollow')
 
 @section('content')
-<x-app-content
-    :title="__('Settings')"
-    :description="__('Manage your account settings and preferences.')"
-    :breadcrumbs="[
-        ['label' => __('Dashboard'), 'url' => url('/' . app()->getLocale() . '/dashboard')],
-        ['label' => __('Settings')]
-    ]"
+@php
+    $shell = \App\Helpers\AppShellHelper::settings(auth()->user());
+@endphp
+
+<x-app-shell
+    :title="__('Your account')"
+    :sidebar-items="$shell['sidebarItems']"
+    :stats="$shell['sidebarStats']"
 >
-    <div class="space-y-8">
+    <x-app-content
+        :title="__('Settings')"
+        :description="__('Manage your account settings and preferences.')"
+    >
+        <div class="space-y-8">
 
         {{-- Profile Information --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8" x-data="profileSettings()">
@@ -713,26 +718,26 @@
             </div>
         </div>
 
-    </div>
-</x-app-content>
-
-{{-- Danger Zone - Outside main card like gift/list edit pages --}}
-<div class="mt-8 bg-white/60 backdrop-blur-sm rounded-2xl border border-red-200/60 p-6" x-data>
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-            <h2 class="text-lg font-semibold text-red-600">{{ __('Danger zone') }}</h2>
-            <p class="text-sm text-gray-600 mt-1">{{ __('Once you delete your account, all of its resources and data will be permanently deleted. This action cannot be undone.') }}</p>
         </div>
-        <button
-            type="button"
-            x-on:click="$dispatch('open-confirm-delete-account')"
-            class="w-full sm:w-auto justify-center inline-flex items-center gap-2 bg-red-600 text-white px-5 py-2.5 rounded-xl hover:bg-red-700 transition-colors font-medium"
-        >
-            <x-icons.trash class="w-5 h-5" />
-            {{ __('Delete account') }}
-        </button>
+    </x-app-content>
+
+    <div class="mt-8 rounded-2xl border border-red-200/60 bg-white/60 p-6 backdrop-blur-sm" x-data>
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <h2 class="text-lg font-semibold text-red-600">{{ __('Danger zone') }}</h2>
+                <p class="mt-1 text-sm text-gray-600">{{ __('Once you delete your account, all of its resources and data will be permanently deleted. This action cannot be undone.') }}</p>
+            </div>
+            <button
+                type="button"
+                x-on:click="$dispatch('open-confirm-delete-account')"
+                class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 font-medium text-white transition-colors hover:bg-red-700 sm:w-auto"
+            >
+                <x-icons.trash class="w-5 h-5" />
+                {{ __('Delete account') }}
+            </button>
+        </div>
     </div>
-</div>
+</x-app-shell>
 
 {{-- Confirm Delete Account Modal --}}
 <x-confirm-modal

@@ -5,20 +5,30 @@
 @section('robots', 'noindex, nofollow')
 
 @section('content')
-<x-app-content
-    :title="__('Edit List')"
-    :description="__('Tweak your list details.')"
-    :breadcrumbs="[
-        ['label' => __('Dashboard'), 'url' => url('/' . app()->getLocale() . '/dashboard')],
-        ['label' => __('Edit :name', ['name' => $list->name])]
-    ]"
->
-    <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+@php
+    $shell = \App\Helpers\AppShellHelper::lists(auth()->user());
+    $dashboardUrl = $shell['dashboardUrl'];
+@endphp
 
-        <div class="lg:col-span-3">
-            <form action="{{ url('/' . app()->getLocale() . '/list/' . $list->slug) }}" method="POST">
-                @csrf
-                @method('PUT')
+<x-app-shell
+    :title="__('Lists')"
+    :sidebar-items="$shell['sidebarItems']"
+    :stats="$shell['sidebarStats']"
+>
+    <div class="space-y-8">
+        <x-app-content
+            :title="__('Edit List')"
+            :description="__('Tweak your list details.')"
+            :breadcrumbs="[
+                ['label' => __('Lists'), 'url' => $dashboardUrl],
+                ['label' => __('Edit :name', ['name' => $list->name])]
+            ]"
+        >
+            <div class="grid grid-cols-1 gap-8 lg:grid-cols-5">
+                <div class="lg:col-span-3">
+                    <form action="{{ url('/' . app()->getLocale() . '/list/' . $list->slug) }}" method="POST">
+                        @csrf
+                        @method('PUT')
 
                 <div class="mb-6">
                     <label for="name" class="form-label">
@@ -55,49 +65,51 @@
                 </div>
 
 
-                <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-100">
-                    <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="btn-cancel">
+                        <div class="flex items-center justify-end gap-3 border-t border-gray-100 pt-6">
+                            <a href="{{ $dashboardUrl }}" class="btn-cancel">
                         {{ __('Cancel') }}
-                    </a>
-                    <button type="submit" class="btn-primary">
-                        <x-icons.checkmark class="w-5 h-5" />
-                        {{ __('Save Changes') }}
-                    </button>
+                            </a>
+                            <button type="submit" class="btn-primary">
+                                <x-icons.checkmark class="w-5 h-5" />
+                                {{ __('Save Changes') }}
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            </form>
-        </div>
 
-        <div class="lg:col-span-2">
-            <div class="bg-cream-50 rounded-xl p-6">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('List Info') }}</h2>
+                <div class="lg:col-span-2">
+                    <div class="rounded-xl bg-cream-50 p-6">
+                        <h2 class="mb-4 text-lg font-semibold text-gray-900">{{ __('List Info') }}</h2>
 
-                <div class="space-y-3">
-                    <div class="flex items-center justify-between">
-                        <span class="text-gray-600">{{ __('Created') }}</span>
-                        <span class="text-gray-900 font-medium">{{ $list->created_at->diffForHumans() }}</span>
-                    </div>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-600">{{ __('Created') }}</span>
+                                <span class="font-medium text-gray-900">{{ $list->created_at->diffForHumans() }}</span>
+                            </div>
 
-                    <div class="flex flex-col gap-1.5">
-                        <span class="text-gray-600">{{ __('Shareable link') }}</span>
-                        <a href="{{ url('/' . app()->getLocale() . '/view/' . $list->slug) }}"
-                           target="_blank"
-                           class="text-sm text-coral-600 hover:text-coral-700 hover:underline break-all bg-white px-3 py-2 rounded-lg flex items-center gap-2 border border-cream-200">
-                            <span class="flex-1">{{ url('/' . app()->getLocale() . '/view/' . $list->slug) }}</span>
-                            <x-icons.external-link class="w-4 h-4 flex-shrink-0" />
-                        </a>
+                            <div class="flex flex-col gap-1.5">
+                                <span class="text-gray-600">{{ __('Shareable link') }}</span>
+                                <a href="{{ $list->getPublicUrl() }}"
+                                    target="_blank"
+                                    class="flex items-center gap-2 break-all rounded-lg border border-cream-200 bg-white px-3 py-2 text-sm text-coral-600 hover:text-coral-700 hover:underline">
+                                    <span class="flex-1">{{ $list->getPublicUrl() }}</span>
+                                    <x-icons.external-link class="h-4 w-4 flex-shrink-0" />
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</x-app-content>
+        </x-app-content>
 
-<x-danger-zone
-    id="delete-list"
-    :description="__('Deleting a list is permanent. Your gifts stay — they just won\'t be grouped anymore.')"
-    :buttonText="__('Delete List')"
-    :modalTitle="__('Delete List')"
-    :modalMessage="__('This can\'t be undone. Your gifts won\'t be deleted, just ungrouped.')"
-    :action="url('/' . app()->getLocale() . '/list/' . $list->slug)"
-/>
+        <x-danger-zone
+            id="delete-list"
+            :description="__('Deleting a list is permanent. Your gifts stay — they just won\'t be grouped anymore.')"
+            :buttonText="__('Delete List')"
+            :modalTitle="__('Delete List')"
+            :modalMessage="__('This can\'t be undone. Your gifts won\'t be deleted, just ungrouped.')"
+            :action="url('/' . app()->getLocale() . '/list/' . $list->slug)"
+        />
+    </div>
+</x-app-shell>
 @endsection
