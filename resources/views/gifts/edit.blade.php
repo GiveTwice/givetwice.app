@@ -9,11 +9,22 @@
 @section('robots', 'noindex, nofollow')
 
 @section('content')
+@php
+    $shell = \App\Helpers\AppShellHelper::lists(auth()->user());
+    $dashboardUrl = $shell['dashboardUrl'];
+@endphp
+
+<x-app-shell
+    :title="__('Lists')"
+    :sidebar-items="$shell['sidebarItems']"
+    :stats="$shell['sidebarStats']"
+>
+<div class="space-y-8">
 <x-app-content
     :title="__('Edit Gift')"
     :description="__('Tweak the details.')"
     :breadcrumbs="[
-        ['label' => __('Dashboard'), 'url' => url('/' . app()->getLocale() . '/dashboard')],
+        ['label' => __('Lists'), 'url' => $dashboardUrl],
         ['label' => __('Edit Gift')]
     ]"
 >
@@ -44,7 +55,7 @@
     @endif
 
     <div
-        class="grid grid-cols-1 lg:grid-cols-5 gap-8"
+        class="grid grid-cols-1 gap-8 lg:grid-cols-5"
         x-data="giftEdit()"
     >
 
@@ -186,8 +197,8 @@
                     </div>
                 </div>
 
-                <div class="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 pt-6 border-t border-gray-100">
-                    <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="btn-cancel text-center">
+                <div class="flex flex-col-reverse gap-3 border-t border-gray-100 pt-6 sm:flex-row sm:items-center sm:justify-end">
+                    <a href="{{ $dashboardUrl }}" class="btn-cancel text-center">
                         {{ __('Cancel') }}
                     </a>
                     <button type="submit" class="btn-primary justify-center">
@@ -328,6 +339,8 @@
     :modalMessage="__('This can\'t be undone. Sure?')"
     :action="url('/' . app()->getLocale() . '/gifts/' . $gift->id)"
 />
+</div>
+</x-app-shell>
 
 <script>
     function giftEdit() {

@@ -5,18 +5,28 @@
 @section('robots', 'noindex, nofollow')
 
 @section('content')
-<x-app-content
-    :title="__('Create List')"
-    :description="__('A wishlist for every occasion. Or no occasion at all.')"
-    :breadcrumbs="[
-        ['label' => __('Dashboard'), 'url' => url('/' . app()->getLocale() . '/dashboard')],
-        ['label' => __('Create List')]
-    ]"
->
-    <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+@php
+    $shell = \App\Helpers\AppShellHelper::lists(auth()->user());
+    $dashboardUrl = $shell['dashboardUrl'];
+@endphp
 
-        <div class="lg:col-span-3">
-            <form action="{{ url('/' . app()->getLocale() . '/lists') }}" method="POST">
+<x-app-shell
+    :title="__('Lists')"
+    :sidebar-items="$shell['sidebarItems']"
+    :stats="$shell['sidebarStats']"
+>
+    <x-app-content
+        :title="__('Create List')"
+        :description="__('A wishlist for every occasion. Or no occasion at all.')"
+        :breadcrumbs="[
+            ['label' => __('Lists'), 'url' => $dashboardUrl],
+            ['label' => __('Create List')]
+        ]"
+    >
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-5">
+
+            <div class="lg:col-span-3">
+                <form action="{{ url('/' . app()->getLocale() . '/lists') }}" method="POST">
                 @csrf
 
                 <div class="mb-6">
@@ -53,59 +63,60 @@
                     @enderror
                 </div>
 
-                <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-100">
-                    <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="btn-cancel">
+                    <div class="flex items-center justify-end gap-3 border-t border-gray-100 pt-6">
+                        <a href="{{ $dashboardUrl }}" class="btn-cancel">
                         {{ __('Cancel') }}
-                    </a>
-                    <button type="submit" class="btn-primary">
-                        <x-icons.plus class="w-5 h-5" />
-                        {{ __('Create List') }}
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <div class="lg:col-span-2">
-            <div class="bg-cream-50 rounded-xl p-6">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('About Lists') }}</h2>
-
-                <div class="space-y-4">
-                    <div class="flex gap-3">
-                        <div class="icon-circle bg-coral-100 text-coral-600">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-gray-700 font-medium">{{ __('One list or many') }}</p>
-                            <p class="form-help mt-0">{{ __('Birthdays, holidays, secret wishlists — keep them separate or lump them together.') }}</p>
-                        </div>
+                        </a>
+                        <button type="submit" class="btn-primary">
+                            <x-icons.plus class="w-5 h-5" />
+                            {{ __('Create List') }}
+                        </button>
                     </div>
+                </form>
+            </div>
 
-                    <div class="flex gap-3">
-                        <div class="icon-circle bg-sunny-200 text-sunny-700">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-gray-700 font-medium">{{ __('Share with whoever') }}</p>
-                            <p class="form-help mt-0">{{ __('Each list gets its own link. Send your birthday list to friends, your holiday list to family.') }}</p>
-                        </div>
-                    </div>
+            <div class="lg:col-span-2">
+                <div class="rounded-xl bg-cream-50 p-6">
+                    <h2 class="mb-4 text-lg font-semibold text-gray-900">{{ __('About Lists') }}</h2>
 
-                    <div class="flex gap-3">
-                        <div class="icon-circle bg-teal-100 text-teal-600">
-                            <x-icons.checkmark class="w-4 h-4" />
+                    <div class="space-y-4">
+                        <div class="flex gap-3">
+                            <div class="icon-circle bg-coral-100 text-coral-600">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-700">{{ __('One list or many') }}</p>
+                                <p class="form-help mt-0">{{ __('Birthdays, holidays, secret wishlists — keep them separate or lump them together.') }}</p>
+                            </div>
                         </div>
-                        <div>
-                            <p class="text-gray-700 font-medium">{{ __('Keep it simple') }}</p>
-                            <p class="form-help mt-0">{{ __('Most people only need one list. You do you.') }}</p>
+
+                        <div class="flex gap-3">
+                            <div class="icon-circle bg-sunny-200 text-sunny-700">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-700">{{ __('Share with whoever') }}</p>
+                                <p class="form-help mt-0">{{ __('Each list gets its own link. Send your birthday list to friends, your holiday list to family.') }}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-3">
+                            <div class="icon-circle bg-teal-100 text-teal-600">
+                                <x-icons.checkmark class="w-4 h-4" />
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-700">{{ __('Keep it simple') }}</p>
+                                <p class="form-help mt-0">{{ __('Most people only need one list. You do you.') }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</x-app-content>
+    </x-app-content>
+</x-app-shell>
 @endsection

@@ -1035,3 +1035,23 @@
 .scrollbar-subtle::-webkit-scrollbar-thumb:hover {
     background: oklch(0.88 0.06 65);
 }
+
+.app-frame {
+    width: 100%;
+    max-width: 96rem;
+    margin-inline: auto;
+}
+
+@media (min-width: 64rem) {
+    .app-shell-layout-cozy {
+        grid-template-columns: 18rem minmax(0, 1fr);
+    }
+
+    .app-shell-layout-rail {
+        grid-template-columns: 15rem minmax(0, 1fr);
+    }
+
+    .app-shell-layout-board {
+        grid-template-columns: 19rem minmax(0, 1fr);
+    }
+}

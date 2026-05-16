@@ -5,20 +5,30 @@
 @section('robots', 'noindex, nofollow')
 
 @section('content')
-<x-app-content
-    :title="__('Invite collaborators')"
-    :description="__('Invite someone to help manage this list. Two heads, better gifts.')"
-    :breadcrumbs="[
-        ['label' => __('Dashboard'), 'url' => url('/' . app()->getLocale() . '/dashboard')],
-        ['label' => $list->name, 'url' => url('/' . app()->getLocale() . '/list/' . $list->slug . '/edit')],
-        ['label' => __('Invite')]
-    ]"
->
-    <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+@php
+    $shell = \App\Helpers\AppShellHelper::lists(auth()->user());
+    $dashboardUrl = $shell['dashboardUrl'];
+@endphp
 
-        <div class="lg:col-span-3">
-            <form action="{{ route('lists.invite.store', ['locale' => app()->getLocale(), 'list' => $list->slug]) }}" method="POST">
-                @csrf
+<x-app-shell
+    :title="__('Lists')"
+    :sidebar-items="$shell['sidebarItems']"
+    :stats="$shell['sidebarStats']"
+>
+    <x-app-content
+        :title="__('Invite collaborators')"
+        :description="__('Invite someone to help manage this list. Two heads, better gifts.')"
+        :breadcrumbs="[
+            ['label' => __('Lists'), 'url' => $dashboardUrl],
+            ['label' => $list->name, 'url' => route('list.edit', ['locale' => app()->getLocale(), 'list' => $list->slug])],
+            ['label' => __('Invite')]
+        ]"
+    >
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-5">
+
+            <div class="lg:col-span-3">
+                <form action="{{ route('lists.invite.store', ['locale' => app()->getLocale(), 'list' => $list->slug]) }}" method="POST">
+                    @csrf
 
                 <div class="mb-6">
                     <label for="email" class="form-label">
@@ -39,21 +49,21 @@
                     <p class="form-help">{{ __("They'll get an email with an invite link.") }}</p>
                 </div>
 
-                <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-100">
-                    <a href="{{ url('/' . app()->getLocale() . '/list/' . $list->slug . '/edit') }}" class="btn-cancel">
+                    <div class="flex items-center justify-end gap-3 border-t border-gray-100 pt-6">
+                        <a href="{{ route('list.edit', ['locale' => app()->getLocale(), 'list' => $list->slug]) }}" class="btn-cancel">
                         {{ __('Cancel') }}
-                    </a>
-                    <button type="submit" class="btn-primary">
-                        <x-icons.mail class="w-5 h-5" />
-                        {{ __('Send invitation') }}
-                    </button>
-                </div>
-            </form>
-        </div>
+                        </a>
+                        <button type="submit" class="btn-primary">
+                            <x-icons.mail class="w-5 h-5" />
+                            {{ __('Send invitation') }}
+                        </button>
+                    </div>
+                </form>
+            </div>
 
-        <div class="lg:col-span-2 space-y-6">
-            <div class="bg-white rounded-xl border border-cream-200 p-6">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Collaborators') }}</h2>
+            <div class="space-y-6 lg:col-span-2">
+                <div class="rounded-xl border border-cream-200 bg-white p-6">
+                    <h2 class="mb-4 text-lg font-semibold text-gray-900">{{ __('Collaborators') }}</h2>
 
                 <div class="space-y-3">
                     @foreach($list->users as $user)
@@ -90,9 +100,9 @@
                 </div>
             </div>
 
-            @if($list->pendingInvitations->isNotEmpty())
-                <div class="bg-white rounded-xl border border-cream-200 p-6">
-                    <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Pending invitations') }}</h2>
+                @if($list->pendingInvitations->isNotEmpty())
+                    <div class="rounded-xl border border-cream-200 bg-white p-6">
+                        <h2 class="mb-4 text-lg font-semibold text-gray-900">{{ __('Pending invitations') }}</h2>
 
                     <div class="space-y-3">
                         @foreach($list->pendingInvitations as $invitation)
@@ -116,9 +126,10 @@
                             </div>
                         @endforeach
                     </div>
-                </div>
-            @endif
+                    </div>
+                @endif
+            </div>
         </div>
-    </div>
-</x-app-content>
+    </x-app-content>
+</x-app-shell>
 @endsection

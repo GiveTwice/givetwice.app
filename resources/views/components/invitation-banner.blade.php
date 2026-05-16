@@ -2,7 +2,7 @@
 
 @if($invitations->isNotEmpty())
     <div class="bg-teal-50 border-b border-teal-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+        <div class="app-frame px-4 sm:px-6 lg:px-8 py-3">
             @foreach($invitations as $invitation)
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 {{ !$loop->last ? 'mb-3 pb-3 border-b border-teal-100' : '' }}">
                     <div class="flex items-center gap-3">

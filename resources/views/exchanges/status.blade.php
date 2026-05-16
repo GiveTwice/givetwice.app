@@ -3,25 +3,31 @@
 @section('title', $exchange->name)
 
 @section('content')
-<div class="max-w-3xl mx-auto">
-    <div class="mb-8">
-        <nav class="breadcrumb">
-            <a href="{{ route('dashboard.locale', ['locale' => app()->getLocale()]) }}" class="breadcrumb-link">{{ __('Dashboard') }}</a>
-            <span class="text-gray-400 mx-2">/</span>
-            <span class="text-gray-600">{{ $exchange->name }}</span>
-        </nav>
-    </div>
+@php
+    $shell = \App\Helpers\AppShellHelper::secretSanta(auth()->user());
+    $currentLocale = $shell['currentLocale'];
+    $secretSantaUrl = $shell['secretSantaUrl'];
+@endphp
 
-    @if(session('success'))
-        <div class="alert-success mb-6">{{ session('success') }}</div>
-    @endif
+<x-app-shell
+    :title="__('Secret Santa')"
+    :sidebar-items="$shell['sidebarItems']"
+    :stats="$shell['sidebarStats']"
+>
+    <div class="space-y-6">
+        @if(session('success'))
+            <div class="alert-success">{{ session('success') }}</div>
+        @endif
 
-    {{-- Header --}}
-    <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6 sm:p-8 mb-6">
-        <div class="flex items-start justify-between mb-4">
-            <div>
+        <x-app-content
+            :breadcrumbs="[
+                ['label' => __('Secret Santa'), 'url' => $secretSantaUrl],
+                ['label' => $exchange->name]
+            ]"
+        >
+            <x-slot:titleSlot>
                 <h1 class="text-2xl font-bold text-gray-900">{{ $exchange->name }}</h1>
-                <div class="flex flex-wrap gap-4 mt-2 text-sm text-gray-500">
+                <div class="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-500">
                     @if($exchange->event_date)
                         <span>📅 {{ $exchange->event_date->format('M j, Y') }}</span>
                     @endif
@@ -29,27 +35,27 @@
                         <span>💰 {{ $exchange->formatBudget() }}</span>
                     @endif
                     <span>👥 {{ $exchange->participants->count() }} {{ __('participants') }}</span>
+                    @if($exchange->isDrawn())
+                        <span class="badge badge-success">{{ __('Names drawn') }}</span>
+                    @else
+                        <span class="badge badge-warning">{{ __('Draft') }}</span>
+                    @endif
                 </div>
-            </div>
-            @if($exchange->isDrawn())
-                <span class="badge badge-success">{{ __('Names drawn') }}</span>
-            @else
-                <span class="badge badge-warning">{{ __('Draft') }}</span>
+            </x-slot:titleSlot>
+
+            @if($exchange->isDraft())
+                <x-slot:actions>
+                    <form method="POST" action="{{ route('exchanges.draw', ['locale' => $currentLocale, 'exchange' => $exchange->slug]) }}">
+                        @csrf
+                        <button type="submit" class="btn-primary whitespace-nowrap" onclick="return confirm('{{ __('Draw names and send invites? This can\'t be undone.') }}')">
+                            🎲 {{ __('Draw names & send invites') }}
+                        </button>
+                    </form>
+                </x-slot:actions>
             @endif
-        </div>
 
-        @if($exchange->isDraft())
-            <form method="POST" action="{{ route('exchanges.draw', ['locale' => app()->getLocale(), 'exchange' => $exchange->slug]) }}" class="mt-4">
-                @csrf
-                <button type="submit" class="btn-primary" onclick="return confirm('{{ __('Draw names and send invites? This can\'t be undone.') }}')">
-                    🎲 {{ __('Draw names & send invites') }}
-                </button>
-            </form>
-        @endif
-    </div>
-
-    {{-- Your draw (shown to organizer who is also a participant) --}}
-    @if($myDraw)
+            {{-- Your draw (shown to organizer who is also a participant) --}}
+            @if($myDraw)
     <div class="bg-gradient-to-r from-coral-50 to-sunny-50 rounded-2xl p-6 sm:p-8 mb-6 border border-coral-100">
         <p class="text-sm text-gray-500 mb-1">{{ __('You\'re buying a gift for') }}</p>
         <div class="flex items-center justify-between">
@@ -60,16 +66,16 @@
                 <p class="text-xl font-bold text-gray-900">{{ $myDraw->name }}</p>
             </div>
             @if($myDraw->user_id && $myDraw->defaultWishlist())
-                <a href="{{ route('public.list', ['locale' => app()->getLocale(), 'list' => $myDraw->defaultWishlist()->id, 'slug' => $myDraw->defaultWishlist()->slug]) }}" class="btn-primary-sm">
+                <a href="{{ route('public.list', ['locale' => $currentLocale, 'list' => $myDraw->defaultWishlist()->id, 'slug' => $myDraw->defaultWishlist()->slug]) }}" class="btn-primary-sm">
                     {{ __('See wishlist') }} →
                 </a>
             @endif
         </div>
     </div>
-    @endif
+            @endif
 
-    {{-- Join link (draft only) --}}
-    @if($exchange->isDraft() && $exchange->join_token)
+            {{-- Join link (draft only) --}}
+            @if($exchange->isDraft() && $exchange->join_token)
     <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6 sm:p-8 mb-6" x-data="{ copied: false }">
         <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ __('Invite link') }}</h2>
         <p class="text-gray-600 text-sm mb-4">{{ __('Share this link so people can add themselves to the group before you draw.') }}</p>
@@ -94,10 +100,10 @@
             {{ __('Share via WhatsApp') }}
         </a>
     </div>
-    @endif
+            @endif
 
-    {{-- Impact counter --}}
-    @if($exchange->isDrawn() && $claimCount > 0)
+            {{-- Impact counter --}}
+            @if($exchange->isDrawn() && $claimCount > 0)
     <div class="bg-gradient-to-r from-teal-50 to-teal-100 rounded-2xl p-6 mb-6 border border-teal-200">
         <div class="flex items-center gap-4">
             <div class="text-3xl">✨</div>
@@ -107,10 +113,10 @@
             </div>
         </div>
     </div>
-    @endif
+            @endif
 
-    {{-- Share section (after draw) --}}
-    @if($exchange->isDrawn())
+            {{-- Share section (after draw) --}}
+            @if($exchange->isDrawn())
     @php
         $whatsappMessage = __(':name on GiveTwice — check your email to see who you got!', ['name' => $exchange->name]);
     @endphp
@@ -134,15 +140,15 @@
             </button>
         </div>
     </div>
-    @endif
+            @endif
 
-    {{-- Add participant (draft only) --}}
-    @if($exchange->isDraft())
+            {{-- Add participant (draft only) --}}
+            @if($exchange->isDraft())
     <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6 sm:p-8 mb-6">
         <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ __('Add participant') }}</h2>
         <p class="text-gray-600 text-sm mb-4">{{ __('Manually add someone to the group.') }}</p>
 
-        <form method="POST" action="{{ route('exchanges.participants.store', ['locale' => app()->getLocale(), 'exchange' => $exchange->slug]) }}">
+        <form method="POST" action="{{ route('exchanges.participants.store', ['locale' => $currentLocale, 'exchange' => $exchange->slug]) }}">
             @csrf
             <div class="flex flex-col sm:flex-row gap-2">
                 <input type="text" name="name" class="form-input flex-1" placeholder="{{ __('Name') }}" value="{{ old('name') }}" required>
@@ -154,10 +160,10 @@
             @error('participant') <p class="form-error mt-1">{{ $message }}</p> @enderror
         </form>
     </div>
-    @endif
+            @endif
 
-    {{-- All assignments (drawn, organizer view) --}}
-    @if($exchange->isDrawn())
+            {{-- All assignments (drawn, organizer view) --}}
+            @if($exchange->isDrawn())
     <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6 sm:p-8 mb-6" x-data="{ open: false }">
         <div class="flex items-center justify-between">
             <h2 class="text-lg font-semibold text-gray-900">{{ __('Assignments') }}</h2>
@@ -185,10 +191,10 @@
             @endforeach
         </div>
     </div>
-    @endif
+            @endif
 
-    {{-- Participants --}}
-    <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6 sm:p-8">
+            {{-- Participants --}}
+            <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6 sm:p-8">
         <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Participants') }} ({{ $exchange->participants->count() }})</h2>
 
         <div class="divide-y divide-cream-100">
@@ -208,7 +214,7 @@
                         <span class="badge badge-success text-xs">{{ __('Viewed') }}</span>
                     @elseif($exchange->isDrawn())
                         <span class="badge badge-warning text-xs">{{ __('Invited') }}</span>
-                        <form method="POST" action="{{ route('exchanges.resend-invite', ['locale' => app()->getLocale(), 'exchange' => $exchange->slug, 'participant' => $participant->id]) }}">
+                        <form method="POST" action="{{ route('exchanges.resend-invite', ['locale' => $currentLocale, 'exchange' => $exchange->slug, 'participant' => $participant->id]) }}">
                             @csrf
                             <button type="submit" class="btn-secondary text-xs" onclick="return confirm('{{ __('Resend invite to :name?', ['name' => $participant->name]) }}')">
                                 {{ __('Resend') }}
@@ -221,7 +227,7 @@
                         <span class="badge badge-success text-xs">{{ __('Has wishlist') }}</span>
                     @endif
                     @if($exchange->isDraft() && $exchange->participants->count() > 3)
-                    <form method="POST" action="{{ route('exchanges.participants.destroy', ['locale' => app()->getLocale(), 'exchange' => $exchange->slug, 'participant' => $participant->id]) }}" class="inline">
+                    <form method="POST" action="{{ route('exchanges.participants.destroy', ['locale' => $currentLocale, 'exchange' => $exchange->slug, 'participant' => $participant->id]) }}" class="inline">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="text-gray-400 hover:text-red-500 text-sm" onclick="return confirm('{{ __('Remove :name from the group?', ['name' => $participant->name]) }}')">
@@ -233,6 +239,8 @@
             </div>
             @endforeach
         </div>
+            </div>
+        </x-app-content>
     </div>
-</div>
+</x-app-shell>
 @endsection

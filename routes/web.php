@@ -41,6 +41,12 @@ Route::get('/dashboard', function () {
     return redirect("/{$locale}/dashboard");
 })->middleware('auth')->name('dashboard');
 
+Route::get('/dashboard/secret-santa', function () {
+    $locale = auth()->user()?->locale_preference ?? app()->getLocale();
+
+    return redirect("/{$locale}/dashboard/secret-santa");
+})->middleware('auth')->name('dashboard.secret-santa.redirect');
+
 Route::get('/lists/create', function () {
     $locale = auth()->user()?->locale_preference ?? app()->getLocale();
 
@@ -173,6 +179,7 @@ Route::prefix('{locale}')
         // Protected routes
         Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.locale');
+            Route::get('/dashboard/secret-santa', [DashboardController::class, 'secretSanta'])->name('dashboard.secret-santa');
 
             // List routes
             Route::get('/lists/create', [ListController::class, 'create'])->name('lists.create');
