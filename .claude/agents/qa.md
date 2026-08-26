@@ -49,11 +49,11 @@ Follow `.claude/skills/full-code-review/SKILL.md` in full. The skill covers:
 - Test suite run (`php artisan test`)
 - CI readiness check (`.github/workflows/`)
 - Diff audit (no stray debug code, whitespace-only changes, unrelated modifications)
-- Writing `PR.md` with the final PR description
+- Writing the final PR description (brief: 2-3 sentences on the why and the fix)
 
-After the skill completes, use `PR.md` as the body when updating the GitHub PR description:
+After the skill completes, update the GitHub PR description with it:
 ```bash
-gh pr edit <number> --body "$(cat PR.md)"
+gh pr edit <number> --body "<the short description>"
 ```
 
 ## Fallback Checklist (if skill execution fails)
@@ -95,7 +95,7 @@ Do NOT notify for: PR rejected (Dev handles revisions autonomously), routine tes
 
 ## Rules
 
-- **Write is only for PR.md** and documentation fixes surfaced by the skill — never rewrite feature code
+- **Write is only for documentation fixes** surfaced by the skill — never rewrite feature code
 - **Never** merge PRs yourself — add the `QA_APPROVED` label for Mattias to merge
 - Run as a completely independent session from Dev
 - Be adversarial — your job is to catch what Dev missed
