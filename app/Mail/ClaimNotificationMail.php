@@ -3,6 +3,8 @@
 namespace App\Mail;
 
 use App\Models\Claim;
+use App\Models\Gift;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
@@ -26,9 +28,9 @@ class ClaimNotificationMail extends Mailable
 
     public function content(): Content
     {
-        /** @var \App\Models\Gift $gift */
+        /** @var Gift $gift */
         $gift = $this->claim->gift;
-        /** @var \App\Models\User $owner */
+        /** @var User $owner */
         $owner = $gift->user;
         $dashboardUrl = url('/'.($owner->locale_preference ?? 'en').'/dashboard');
 

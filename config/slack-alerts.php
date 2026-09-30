@@ -1,5 +1,7 @@
 <?php
 
+use Spatie\SlackAlerts\Jobs\SendToSlackChannelJob;
+
 return [
     'enabled' => env('SLACK_ALERT_ENABLED', true),
 
@@ -7,6 +9,6 @@ return [
         'default' => env('SLACK_ALERT_WEBHOOK'),
     ],
 
-    'job' => Spatie\SlackAlerts\Jobs\SendToSlackChannelJob::class,
+    'job' => SendToSlackChannelJob::class,
     'queue' => env('SLACK_ALERT_QUEUE', 'default'),
 ];

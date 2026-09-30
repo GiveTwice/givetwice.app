@@ -4,6 +4,8 @@ namespace App\Actions;
 
 use App\Events\GiftExchangeDrawCompleted;
 use App\Models\GiftExchange;
+use App\Models\GiftExchangeExclusion;
+use App\Models\GiftExchangeParticipant;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
@@ -41,9 +43,9 @@ class PerformDrawAction
              *   └────────────────────┘
              */
             for ($i = 0; $i < $shuffled->count(); $i++) {
-                /** @var \App\Models\GiftExchangeParticipant $buyer */
+                /** @var GiftExchangeParticipant $buyer */
                 $buyer = $shuffled[$i];
-                /** @var \App\Models\GiftExchangeParticipant $receiver */
+                /** @var GiftExchangeParticipant $receiver */
                 $receiver = $shuffled[($i + 1) % $shuffled->count()];
 
                 $buyer->update(['assigned_to_participant_id' => $receiver->id]);
@@ -72,7 +74,7 @@ class PerformDrawAction
         $exclusions = $exchange->exclusions()->get();
 
         $pairs = [];
-        /** @var \App\Models\GiftExchangeExclusion $exclusion */
+        /** @var GiftExchangeExclusion $exclusion */
         foreach ($exclusions as $exclusion) {
             $pairs[$exclusion->giver_id.':'.$exclusion->receiver_id] = true;
         }

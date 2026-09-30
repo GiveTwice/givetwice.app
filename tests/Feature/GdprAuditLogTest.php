@@ -1,5 +1,6 @@
 <?php
 
+use App\Actions\DeleteAccountAction;
 use App\Models\User;
 use Illuminate\Support\Facades\Queue;
 use Spatie\Activitylog\Models\Activity;
@@ -75,7 +76,7 @@ describe('GDPR audit log', function () {
         $userId = $user->id;
         $email = $user->email;
 
-        app(App\Actions\DeleteAccountAction::class)->execute($user, 'Test deletion');
+        app(DeleteAccountAction::class)->execute($user, 'Test deletion');
 
         expect(User::find($userId))->toBeNull();
 
