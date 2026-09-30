@@ -8,7 +8,7 @@ use App\Models\GiftExchangeParticipant;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\GiftExchangeExclusion>
+ * @extends Factory<GiftExchangeExclusion>
  */
 class GiftExchangeExclusionFactory extends Factory
 {

@@ -7,6 +7,7 @@ use App\Actions\ConfirmClaimAction;
 use App\Actions\CreatePendingClaimAction;
 use App\Exceptions\Claim\ClaimException;
 use App\Models\Gift;
+use App\Models\GiftList;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -44,7 +45,7 @@ class ClaimController extends Controller
                 ->first();
         }
 
-        /** @var \App\Models\GiftList|null $list */
+        /** @var GiftList|null $list */
         $list = $gift->lists()->first();
 
         if (! $claim) {
@@ -119,7 +120,7 @@ class ClaimController extends Controller
             return back()->with($flashType, $e->getMessage());
         }
 
-        /** @var \App\Models\GiftList|null $list */
+        /** @var GiftList|null $list */
         $list = $gift->lists()->first();
 
         return redirect($list->getPublicUrl($locale))

@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\GiftList;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -29,7 +30,7 @@ class WelcomeEmail extends Mailable
         $locale = $this->user->locale_preference ?? 'en';
 
         // Get the user's default list for the direct link
-        /** @var \App\Models\GiftList|null $defaultList */
+        /** @var GiftList|null $defaultList */
         $defaultList = $this->user->lists()->where('is_default', true)->first();
         $wishlistUrl = $defaultList
             ? url('/'.$locale.'/list/'.$defaultList->slug)

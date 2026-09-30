@@ -163,7 +163,7 @@ class GiftExchangeController extends Controller
         $exchange->load('participants.user', 'participants.assignedTo.user');
 
         $claimCount = 0;
-        /** @var \App\Models\GiftExchangeParticipant $participant */
+        /** @var GiftExchangeParticipant $participant */
         foreach ($exchange->participants as $participant) {
             if ($participant->user_id) {
                 $wishlist = $participant->defaultWishlist();

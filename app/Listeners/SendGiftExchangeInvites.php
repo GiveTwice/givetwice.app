@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\GiftExchangeDrawCompleted;
 use App\Mail\GiftExchangeInviteMail;
+use App\Models\GiftExchangeParticipant;
 use Illuminate\Support\Facades\Mail;
 
 class SendGiftExchangeInvites
@@ -13,7 +14,7 @@ class SendGiftExchangeInvites
         $exchange = $event->exchange;
         $exchange->load('participants');
 
-        /** @var \App\Models\GiftExchangeParticipant $participant */
+        /** @var GiftExchangeParticipant $participant */
         foreach ($exchange->participants as $participant) {
             Mail::to($participant->email)
                 ->queue(new GiftExchangeInviteMail($participant, $exchange));

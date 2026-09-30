@@ -65,7 +65,7 @@ class FetchGiftDetailsAction implements ShouldQueue
                 'review_count' => $product->reviewCount,
             ]);
 
-            $this->tryAddImageFromUrls($imageAction, $product->allImageUrls ?? []);
+            $this->tryAddImageFromUrls($imageAction, $product->allImageUrls);
         } catch (ClientException|ServerException $e) {
             $response = $e->getResponse();
             $statusCode = $response->getStatusCode();
