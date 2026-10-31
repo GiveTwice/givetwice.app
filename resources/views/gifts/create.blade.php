@@ -26,7 +26,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
 
         <div class="lg:col-span-3">
-            <form method="POST" action="{{ url('/' . app()->getLocale() . '/gifts') }}">
+            <form id="add-gift" method="POST" action="{{ url('/' . app()->getLocale() . '/gifts') }}">
                 @csrf
 
                 @error('list_id')

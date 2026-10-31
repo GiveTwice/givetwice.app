@@ -10,6 +10,10 @@
     display: none !important;
 }
 
+main :where([id], h1, h2, h3, form) {
+    scroll-margin-top: calc(5rem + env(safe-area-inset-top, 0px));
+}
+
 /* Required because viewport-fit=cover extends content behind device chrome */
 @supports (padding: env(safe-area-inset-top)) {
     .safe-area-header {
