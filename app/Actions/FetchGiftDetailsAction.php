@@ -3,17 +3,15 @@
 namespace App\Actions;
 
 use App\Models\Gift;
-use GiveTwice\ProductInfoFetcher\HeadlessBrowser\Exceptions\BrowserException;
+use GiveTwice\ProductInfoFetcher\DataTransferObjects\ProductInfo;
+use GiveTwice\ProductInfoFetcher\DataTransferObjects\TransportAttempt;
+use GiveTwice\ProductInfoFetcher\Enum\FetchOutcome;
 use GiveTwice\ProductInfoFetcher\ProductInfoFetcher;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\ServerException;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 use Spatie\SlackAlerts\Facades\SlackAlert;
 use Throwable;
@@ -45,121 +43,54 @@ class FetchGiftDetailsAction implements ShouldQueue
     public function handle(ProcessGiftImageAction $imageAction): void
     {
         $started = microtime(true);
-        $outcome = 'failed';
+        $status = 'failed';
+        $product = null;
         $this->gift->update(['fetch_status' => 'fetching']);
 
         try {
-            $product = $this->getFetcher()->fetchAndParse();
-            if ((! $product->name && ! $product->description && $product->priceInCents === null && ! $product->allImageUrls)
-                || preg_match('/access denied|just a moment|robot check|captcha|shop online fashion/i', $product->name ?? '')) {
-                throw new RuntimeException('No product details found');
+            $fetcher = $this->getFetcher();
+            $product = $fetcher->fetchResult();
+            if ($this->shouldTryAmazonBrowser($product)) {
+                $httpAttempts = $product->attempts;
+                $product = $fetcher->preferHeadless()->fetchResult();
+                $product->attempts = [...$httpAttempts, ...$product->attempts];
             }
 
-            $description = $product->description
-                ? Str::limit($product->description, 1497, '...')
-                : $this->gift->description;
+            if ($product->outcome === FetchOutcome::Success
+                && preg_match('/just a moment|shop online fashion/i', $product->name ?? '')) {
+                $product->outcome = FetchOutcome::Incomplete;
+            }
 
-            $this->gift->getConnection()->transaction(function () use ($product, $description): void {
-                $this->gift->refreshForUpdate();
-                $details = [
-                    'title' => $product->name ? Str::limit($product->name, 255, '') : $this->gift->title,
-                    'description' => $description,
-                    'price_in_cents' => $product->priceInCents,
-                    'currency' => $product->priceCurrency ?: $this->gift->currency,
-                    'fetch_status' => 'completed',
-                    'fetch_error' => null,
-                    'fetch_attempts' => $this->attempts(),
-                    'fetched_at' => now(),
-                    'rating' => $product->rating,
-                    'review_count' => $product->reviewCount,
-                ];
-                foreach ($this->gift->edited_fields ?? [] as $field) {
-                    unset($details[$field]);
+            if ($product->outcome === FetchOutcome::Success
+                || ($product->outcome === FetchOutcome::Consent && $product->hasProductData())) {
+                $this->applyProduct($product, $imageAction);
+                $status = $product->outcome === FetchOutcome::Success ? 'completed' : 'failed';
+            } else {
+                $error = $this->outcomeError($product);
+                if ($product->outcome === FetchOutcome::Error) {
+                    throw new RuntimeException($error['summary']);
                 }
-                $this->gift->update(array_filter($details, fn ($value, $field) => $value !== null || $field === 'fetch_error', ARRAY_FILTER_USE_BOTH));
-            });
-            $this->tryAddImageFromUrls($imageAction, $product->allImageUrls);
-            $outcome = 'completed';
-        } catch (ClientException|ServerException $e) {
-            $response = $e->getResponse();
-            $statusCode = $response->getStatusCode();
 
-            $error = [
-                'summary' => "HTTP {$statusCode}: {$response->getReasonPhrase()}",
-                'status_code' => $statusCode,
-                'headers' => $response->getHeaders(),
-                'body' => Str::limit($this->getResponseBody($response), 5000, '… [truncated]'),
-            ];
-
-            Log::warning('Gift fetch failed due to HTTP error', [
-                'gift_id' => $this->gift->id,
-                'url' => $this->gift->url,
-                'status_code' => $statusCode,
-                'error' => $e->getMessage(),
-            ]);
-
-            if (in_array($statusCode, [429, 503])) {
-                $this->recordAttempt($error);
-
-                throw $e;
+                $this->markAsFailed($error);
             }
-
-            $this->markAsFailed($error);
-        } catch (ConnectException $e) {
-            $error = [
-                'summary' => "Connection failed: {$e->getMessage()}",
-            ];
-
-            Log::warning('Gift fetch failed due to connection error', [
-                'gift_id' => $this->gift->id,
-                'url' => $this->gift->url,
-                'error' => $e->getMessage(),
-            ]);
-
-            $this->markAsFailed($error);
-        } catch (BrowserException $e) {
-            $error = [
-                'summary' => "Browser error: {$e->getMessage()}",
-            ];
-
-            if ($e->hasDebugData()) {
-                $error['status_code'] = $e->getStatusCode();
-                $error['final_url'] = $e->getFinalUrl();
-                $error['headers'] = $e->getResponseHeaders();
-                $error['body'] = Str::limit($e->getResponseHtml() ?? '', 5000, '… [truncated]');
-            }
-
-            Log::warning('Gift fetch failed due to browser error', [
-                'gift_id' => $this->gift->id,
-                'url' => $this->gift->url,
-                'error' => $e->getMessage(),
-                'attempt' => $this->attempts(),
-            ]);
-
-            $this->recordAttempt($error);
-
-            throw $e;
         } catch (Throwable $e) {
-            $error = [
-                'summary' => 'Unexpected: '.get_class($e).": {$e->getMessage()}",
-            ];
-
-            Log::error('Gift fetch failed due to unexpected error', [
-                'gift_id' => $this->gift->id,
-                'url' => $this->gift->url,
-                'error' => $e->getMessage(),
-                'attempt' => $this->attempts(),
+            $this->recordAttempt($product ? $this->outcomeError($product) : [
+                'summary' => 'Unexpected: '.get_class($e),
             ]);
-
-            $this->recordAttempt($error);
 
             throw $e;
         } finally {
             Log::info('Gift fetch attempt', [
                 'gift_id' => $this->gift->id,
                 'host' => $this->gift->siteName(),
-                'status' => $outcome,
-                'http_status' => $this->gift->fetch_error['status_code'] ?? null,
+                'status' => $status,
+                'outcome' => $product?->outcome->value ?? FetchOutcome::Error->value,
+                'final_url' => $this->redactUrl($product?->finalUrl),
+                'http_status' => $product?->httpStatus,
+                'attempts' => array_map(fn (TransportAttempt $attempt): array => [
+                    ...$attempt->toArray(),
+                    'finalUrl' => $this->redactUrl($attempt->finalUrl),
+                ], $product->attempts ?? []),
                 'duration_ms' => (int) round((microtime(true) - $started) * 1000),
                 'attempt' => $this->attempts(),
             ]);
@@ -168,18 +99,81 @@ class FetchGiftDetailsAction implements ShouldQueue
         $imageAction->dispatchCompletedEvent($this->gift);
     }
 
+    private function shouldTryAmazonBrowser(ProductInfo $product): bool
+    {
+        $host = strtolower(parse_url($this->gift->url, PHP_URL_HOST) ?? '');
+
+        return $product->outcome === FetchOutcome::Blocked
+            && $product->httpStatus === 200
+            && count($product->attempts) === 1
+            && $product->attempts[0]->transport === 'http'
+            && in_array($host, [
+                'amazon.com.be', 'www.amazon.com.be', 'amazon.nl', 'www.amazon.nl',
+                'amazon.de', 'www.amazon.de', 'amazon.fr', 'www.amazon.fr',
+            ], true);
+    }
+
+    private function applyProduct(ProductInfo $product, ProcessGiftImageAction $imageAction): void
+    {
+        $this->gift->getConnection()->transaction(function () use ($product): void {
+            $this->gift->refreshForUpdate();
+            $details = [
+                'title' => $product->name ? Str::limit($product->name, 255, '') : $this->gift->title,
+                'description' => $product->description ? Str::limit($product->description, 1497, '...') : $this->gift->description,
+                'price_in_cents' => $product->priceInCents,
+                'currency' => $product->priceCurrency ?: $this->gift->currency,
+                'fetch_status' => $product->outcome === FetchOutcome::Success ? 'completed' : 'failed',
+                'fetch_error' => $product->outcome === FetchOutcome::Success ? null : $this->outcomeError($product),
+                'fetch_attempts' => $this->attempts(),
+                'fetched_at' => now(),
+                'rating' => $product->rating,
+                'review_count' => $product->reviewCount,
+            ];
+            foreach ($this->gift->edited_fields ?? [] as $field) {
+                unset($details[$field]);
+            }
+            $this->gift->update(array_filter($details, fn ($value, $field) => $value !== null || $field === 'fetch_error', ARRAY_FILTER_USE_BOTH));
+        });
+        $this->tryAddImageFromUrls($imageAction, $product->allImageUrls);
+    }
+
+    /** @return array{summary: string, outcome: string, status_code: ?int} */
+    private function outcomeError(ProductInfo $product): array
+    {
+        return [
+            'summary' => 'Product fetch: '.$product->outcome->value,
+            'outcome' => $product->outcome->value,
+            'status_code' => $product->httpStatus,
+        ];
+    }
+
+    private function redactUrl(?string $url): ?string
+    {
+        if ($url === null) {
+            return null;
+        }
+
+        $parts = parse_url($url);
+        if ($parts === false || ! isset($parts['scheme'], $parts['host'])) {
+            return null;
+        }
+
+        return $parts['scheme'].'://'.$parts['host']
+            .(isset($parts['port']) ? ':'.$parts['port'] : '')
+            .($parts['path'] ?? '');
+    }
+
     public function failed(?Throwable $exception): void
     {
         $fallback = [
             'summary' => $exception
-                ? get_class($exception).": {$exception->getMessage()}"
+                ? get_class($exception)
                 : 'Unknown error',
         ];
 
         Log::error('Gift fetch permanently failed after all retries', [
             'gift_id' => $this->gift->id,
-            'url' => $this->gift->url,
-            'error' => $exception?->getMessage(),
+            'url' => $this->redactUrl($this->gift->url),
         ]);
 
         $this->markAsFailed($this->gift->fetch_error ?? $fallback);
@@ -263,16 +257,5 @@ class FetchGiftDetailsAction implements ShouldQueue
             'fetch_error' => $error,
             'fetch_attempts' => $this->attempts(),
         ]);
-    }
-
-    private function getResponseBody(ResponseInterface $response): string
-    {
-        $body = $response->getBody();
-
-        if ($body->isSeekable()) {
-            $body->rewind();
-        }
-
-        return (string) $body;
     }
 }

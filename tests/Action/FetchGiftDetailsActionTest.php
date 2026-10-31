@@ -6,15 +6,19 @@ use App\Events\GiftFetchCompleted;
 use App\Models\Gift;
 use App\Models\User;
 use GiveTwice\ProductInfoFetcher\DataTransferObjects\ProductInfo;
-use GiveTwice\ProductInfoFetcher\HeadlessBrowser\Exceptions\BrowserException;
+use GiveTwice\ProductInfoFetcher\DataTransferObjects\TransportAttempt;
+use GiveTwice\ProductInfoFetcher\Enum\FetchOutcome;
+use GiveTwice\ProductInfoFetcher\HeadlessBrowser\HeadlessFetcher;
+use GiveTwice\ProductInfoFetcher\HeadlessBrowser\HeadlessFetchResult;
 use GiveTwice\ProductInfoFetcher\ProductInfoFetcher;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\ServerException;
-use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Queue;
+use Spatie\SlackAlerts\Facades\SlackAlert;
 
 beforeEach(function () {
     Queue::fake();
@@ -24,7 +28,7 @@ beforeEach(function () {
 function mockFetcher(ProductInfo $productInfo): ProductInfoFetcher
 {
     $fetcher = Mockery::mock(ProductInfoFetcher::class);
-    $fetcher->shouldReceive('fetchAndParse')->andReturn($productInfo);
+    $fetcher->shouldReceive('fetchResult')->once()->andReturn($productInfo);
 
     return $fetcher;
 }
@@ -32,7 +36,7 @@ function mockFetcher(ProductInfo $productInfo): ProductInfoFetcher
 function mockFetcherThrows(Throwable $exception): ProductInfoFetcher
 {
     $fetcher = Mockery::mock(ProductInfoFetcher::class);
-    $fetcher->shouldReceive('fetchAndParse')->andThrow($exception);
+    $fetcher->shouldReceive('fetchResult')->andThrow($exception);
 
     return $fetcher;
 }
@@ -78,10 +82,10 @@ describe('FetchGiftDetailsAction', function () {
 
             $statusDuringFetch = null;
             $fetcher = Mockery::mock(ProductInfoFetcher::class);
-            $fetcher->shouldReceive('fetchAndParse')->andReturnUsing(function () use ($gift, &$statusDuringFetch) {
+            $fetcher->shouldReceive('fetchResult')->andReturnUsing(function () use ($gift, &$statusDuringFetch) {
                 $statusDuringFetch = $gift->fresh()->fetch_status;
 
-                return new ProductInfo(name: 'Test');
+                return new ProductInfo(outcome: FetchOutcome::Success, name: 'Test');
             });
 
             (new FetchGiftDetailsAction($gift))
@@ -98,7 +102,7 @@ describe('FetchGiftDetailsAction', function () {
                 'price_in_cents' => null,
             ]);
 
-            $fetcher = mockFetcher(new ProductInfo(
+            $fetcher = mockFetcher(new ProductInfo(outcome: FetchOutcome::Success,
                 name: 'Fetched Product Name',
                 description: 'Fetched description',
                 priceInCents: 4999,
@@ -122,7 +126,7 @@ describe('FetchGiftDetailsAction', function () {
                 'review_count' => null,
             ]);
 
-            $fetcher = mockFetcher(new ProductInfo(
+            $fetcher = mockFetcher(new ProductInfo(outcome: FetchOutcome::Success,
                 name: 'Product',
                 rating: 4.5,
                 reviewCount: 127,
@@ -141,7 +145,7 @@ describe('FetchGiftDetailsAction', function () {
             $gift = Gift::factory()->for(User::factory())->create();
 
             (new FetchGiftDetailsAction($gift))
-                ->setFetcher(mockFetcher(new ProductInfo(name: 'Test')))
+                ->setFetcher(mockFetcher(new ProductInfo(outcome: FetchOutcome::Success, name: 'Test')))
                 ->handle(mockImageAction());
 
             expect($gift->fresh()->fetch_status)->toBe('completed');
@@ -151,7 +155,7 @@ describe('FetchGiftDetailsAction', function () {
             $gift = Gift::factory()->for(User::factory())->create(['fetched_at' => null]);
 
             (new FetchGiftDetailsAction($gift))
-                ->setFetcher(mockFetcher(new ProductInfo(name: 'Test')))
+                ->setFetcher(mockFetcher(new ProductInfo(outcome: FetchOutcome::Success, name: 'Test')))
                 ->handle(mockImageAction());
 
             expect($gift->fresh()->fetched_at)->not->toBeNull();
@@ -164,7 +168,7 @@ describe('FetchGiftDetailsAction', function () {
             ]);
 
             (new FetchGiftDetailsAction($gift))
-                ->setFetcher(mockFetcher(new ProductInfo(name: 'Test')))
+                ->setFetcher(mockFetcher(new ProductInfo(outcome: FetchOutcome::Success, name: 'Test')))
                 ->handle(mockImageAction());
 
             expect($gift->fresh())
@@ -180,7 +184,7 @@ describe('FetchGiftDetailsAction', function () {
             $imageAction->shouldReceive('dispatchCompletedEvent')->once();
 
             (new FetchGiftDetailsAction($gift))
-                ->setFetcher(mockFetcher(new ProductInfo(name: 'Test')))
+                ->setFetcher(mockFetcher(new ProductInfo(outcome: FetchOutcome::Success, name: 'Test')))
                 ->handle($imageAction);
         });
     });
@@ -189,7 +193,7 @@ describe('FetchGiftDetailsAction', function () {
         it('truncates long descriptions to 1500 characters', function () {
             $gift = Gift::factory()->for(User::factory())->create();
 
-            $fetcher = mockFetcher(new ProductInfo(
+            $fetcher = mockFetcher(new ProductInfo(outcome: FetchOutcome::Success,
                 name: 'Test',
                 description: str_repeat('a', 2000),
             ));
@@ -204,7 +208,7 @@ describe('FetchGiftDetailsAction', function () {
         it('keeps original title if fetched title is empty', function () {
             $gift = Gift::factory()->for(User::factory())->create(['title' => 'My Original Title']);
 
-            $fetcher = mockFetcher(new ProductInfo(name: '', priceInCents: 1500));
+            $fetcher = mockFetcher(new ProductInfo(outcome: FetchOutcome::Success, name: '', priceInCents: 1500));
 
             (new FetchGiftDetailsAction($gift))
                 ->setFetcher($fetcher)
@@ -216,7 +220,7 @@ describe('FetchGiftDetailsAction', function () {
         it('keeps original description if fetched description is null', function () {
             $gift = Gift::factory()->for(User::factory())->create(['description' => 'My original description']);
 
-            $fetcher = mockFetcher(new ProductInfo(name: 'Test', description: null));
+            $fetcher = mockFetcher(new ProductInfo(outcome: FetchOutcome::Success, name: 'Test', description: null));
 
             (new FetchGiftDetailsAction($gift))
                 ->setFetcher($fetcher)
@@ -228,7 +232,7 @@ describe('FetchGiftDetailsAction', function () {
         it('keeps original currency if fetched currency is null', function () {
             $gift = Gift::factory()->for(User::factory())->create(['currency' => 'EUR']);
 
-            $fetcher = mockFetcher(new ProductInfo(name: 'Test', priceInCents: 1999, priceCurrency: null));
+            $fetcher = mockFetcher(new ProductInfo(outcome: FetchOutcome::Success, name: 'Test', priceInCents: 1999, priceCurrency: null));
 
             (new FetchGiftDetailsAction($gift))
                 ->setFetcher($fetcher)
@@ -242,7 +246,7 @@ describe('FetchGiftDetailsAction', function () {
         it('tries to add image from fetched URLs', function () {
             $gift = Gift::factory()->for(User::factory())->create();
 
-            $fetcher = mockFetcher(new ProductInfo(
+            $fetcher = mockFetcher(new ProductInfo(outcome: FetchOutcome::Success,
                 name: 'Test',
                 allImageUrls: ['https://example.com/product.jpg'],
             ));
@@ -262,7 +266,7 @@ describe('FetchGiftDetailsAction', function () {
         it('updates original_image_url when image download succeeds', function () {
             $gift = Gift::factory()->for(User::factory())->create(['original_image_url' => null]);
 
-            $fetcher = mockFetcher(new ProductInfo(
+            $fetcher = mockFetcher(new ProductInfo(outcome: FetchOutcome::Success,
                 name: 'Test',
                 allImageUrls: ['https://example.com/success.jpg'],
             ));
@@ -277,7 +281,7 @@ describe('FetchGiftDetailsAction', function () {
         it('does not update original_image_url when image download fails', function () {
             $gift = Gift::factory()->for(User::factory())->create(['original_image_url' => null]);
 
-            $fetcher = mockFetcher(new ProductInfo(
+            $fetcher = mockFetcher(new ProductInfo(outcome: FetchOutcome::Success,
                 name: 'Test',
                 allImageUrls: ['https://example.com/fail.jpg'],
             ));
@@ -292,7 +296,7 @@ describe('FetchGiftDetailsAction', function () {
         it('tries multiple images until one succeeds', function () {
             $gift = Gift::factory()->for(User::factory())->create(['original_image_url' => null]);
 
-            $fetcher = mockFetcher(new ProductInfo(
+            $fetcher = mockFetcher(new ProductInfo(outcome: FetchOutcome::Success,
                 name: 'Test',
                 allImageUrls: [
                     'https://example.com/first.jpg',
@@ -322,7 +326,7 @@ describe('FetchGiftDetailsAction', function () {
         it('skips empty image URLs', function () {
             $gift = Gift::factory()->for(User::factory())->create();
 
-            $fetcher = mockFetcher(new ProductInfo(
+            $fetcher = mockFetcher(new ProductInfo(outcome: FetchOutcome::Success,
                 name: 'Test',
                 allImageUrls: ['', null, 'https://example.com/valid.jpg'],
             ));
@@ -340,268 +344,135 @@ describe('FetchGiftDetailsAction', function () {
         });
     });
 
-    describe('error handling', function () {
-        it('stores HTTP error with response headers and body on client error', function () {
-            $gift = Gift::factory()->for(User::factory())->create();
+    describe('outcomes', function () {
+        it('finishes terminal outcomes without retrying or importing page metadata', function (FetchOutcome $outcome, ?int $status) {
+            $gift = Gift::factory()->pending()->for(User::factory())->create(['title' => 'My wish']);
+            $images = Mockery::mock(ProcessGiftImageAction::class);
+            $images->shouldNotReceive('fromUrl');
+            $images->shouldReceive('dispatchCompletedEvent')->once();
+            $product = new ProductInfo(name: 'Wall title', outcome: $outcome, httpStatus: $status);
 
-            $responseBody = '<html><body>Access Denied by WAF</body></html>';
-            $exception = new ClientException(
-                'Not Found',
-                new Request('GET', 'https://example.com'),
-                new Response(404, ['Server' => 'cloudflare'], $responseBody)
-            );
+            (new FetchGiftDetailsAction($gift))->setFetcher(mockFetcher($product))->handle($images);
 
-            (new FetchGiftDetailsAction($gift))
-                ->setFetcher(mockFetcherThrows($exception))
+            expect($gift->fresh())->fetch_status->toBe('failed')
+                ->title->toBe('My wish')->fetch_attempts->toBe(1)
+                ->fetched_at->not->toBeNull()
+                ->fetch_error->toBe(['summary' => 'Product fetch: '.$outcome->value, 'outcome' => $outcome->value, 'status_code' => $status]);
+        })->with([
+            'forbidden' => [FetchOutcome::Blocked, 403],
+            'rate limited' => [FetchOutcome::Blocked, 429],
+            'challenge' => [FetchOutcome::Blocked, 200],
+            'consent' => [FetchOutcome::Consent, 200],
+            'removed' => [FetchOutcome::Removed, 404],
+            'gone' => [FetchOutcome::Removed, 410],
+            'incomplete' => [FetchOutcome::Incomplete, 200],
+        ]);
+
+        it('retries error outcomes including transport timeouts', function (?int $status, bool $timedOut) {
+            $gift = Gift::factory()->pending()->for(User::factory())->create();
+            $images = Mockery::mock(ProcessGiftImageAction::class);
+            $images->shouldNotReceive('dispatchCompletedEvent');
+            $product = new ProductInfo(outcome: FetchOutcome::Error, httpStatus: $status,
+                attempts: [new TransportAttempt('http', $status, $gift->url, 15, $timedOut, 'http_error')]);
+
+            expect(fn () => (new FetchGiftDetailsAction($gift))->setFetcher(mockFetcher($product))->handle($images))
+                ->toThrow(RuntimeException::class, 'Product fetch: error');
+            expect($gift->fresh())->fetch_status->toBe('fetching')->fetch_attempts->toBe(1)
+                ->fetch_error->toHaveKey('outcome', 'error');
+        })->with([[500, false], [503, false], [null, true], [null, false]]);
+
+        it('marks an exhausted error as failed and emits the completion event', function () {
+            $gift = Gift::factory()->fetching()->for(User::factory())->create([
+                'fetch_error' => ['summary' => 'Product fetch: error', 'outcome' => 'error'],
+            ]);
+            SlackAlert::shouldReceive('message')->once();
+
+            (new FetchGiftDetailsAction($gift))->failed(new RuntimeException('Product fetch: error'));
+
+            expect($gift->fresh())->fetch_status->toBe('failed')->fetched_at->not->toBeNull();
+            Event::assertDispatched(GiftFetchCompleted::class);
+        });
+
+        it('records unexpected failures without leaking exception URLs', function () {
+            $gift = Gift::factory()->pending()->for(User::factory())->create();
+            $exception = new RuntimeException('Failed https://example.com?secret=value#private');
+            Log::spy();
+
+            expect(fn () => (new FetchGiftDetailsAction($gift))->setFetcher(mockFetcherThrows($exception))->handle(mockImageAction()))
+                ->toThrow(RuntimeException::class);
+
+            expect($gift->fresh())->fetch_status->toBe('fetching')
+                ->fetch_error->toBe(['summary' => 'Unexpected: RuntimeException']);
+            Log::shouldHaveReceived('info')->with('Gift fetch attempt', Mockery::on(fn (array $data): bool => $data['outcome'] === 'error' && ! str_contains(json_encode($data), 'secret')))->once();
+        });
+
+        it('accepts usable data from a timed out browser without retrying and logs redacted transport diagnostics', function () {
+            $gift = Gift::factory()->pending()->for(User::factory())->create(['url' => 'https://example.com/product?token=input#private']);
+            $product = new ProductInfo(name: 'Product', priceInCents: 0, imageUrl: 'https://example.com/image.jpg',
+                outcome: FetchOutcome::Success, finalUrl: 'https://user:password@example.com/final?token=final#private', httpStatus: 200,
+                attempts: [
+                    new TransportAttempt('http', 403, 'https://example.com/product?token=http#private', 12),
+                    new TransportAttempt('browser', 200, 'https://example.com/final?token=browser#private', 15000, true, 'navigation_timeout'),
+                ]);
+            Log::spy();
+
+            (new FetchGiftDetailsAction($gift))->setFetcher(mockFetcher($product))->handle(mockImageAction());
+
+            expect($gift->fresh())->fetch_status->toBe('completed')->price_in_cents->toBe(0);
+            Log::shouldHaveReceived('info')->with('Gift fetch attempt', Mockery::on(fn (array $data): bool => $data['outcome'] === 'success' && $data['http_status'] === 200
+                && $data['final_url'] === 'https://example.com/final'
+                && $data['attempts'] === [
+                    ['transport' => 'http', 'statusCode' => 403, 'finalUrl' => 'https://example.com/product', 'durationMs' => 12.0, 'timedOut' => false, 'error' => null],
+                    ['transport' => 'browser', 'statusCode' => 200, 'finalUrl' => 'https://example.com/final', 'durationMs' => 15000.0, 'timedOut' => true, 'error' => 'navigation_timeout'],
+                ] && ! str_contains(json_encode($data), 'token') && ! str_contains(json_encode($data), 'password')))->once();
+        });
+
+        it('keeps safeguards for titles the package does not recognize', function (string $title) {
+            $gift = Gift::factory()->pending()->for(User::factory())->create(['title' => 'My wish']);
+            (new FetchGiftDetailsAction($gift))->setFetcher(mockFetcher(new ProductInfo(name: $title, outcome: FetchOutcome::Success)))
                 ->handle(mockImageAction());
-
-            $error = $gift->fresh()->fetch_error;
-
-            expect($error)
-                ->toBeArray()
-                ->toHaveKey('summary', 'HTTP 404: Not Found')
-                ->toHaveKey('status_code', 404)
-                ->toHaveKey('headers')
-                ->toHaveKey('body');
-
-            expect($error['headers'])->toHaveKey('Server');
-            expect($error['body'])->toContain('Access Denied by WAF');
-        });
-
-        it('stores HTTP error with response headers and body on server error', function () {
-            $gift = Gift::factory()->for(User::factory())->create();
-
-            $responseBody = '<html>Internal Server Error</html>';
-            $exception = new ServerException(
-                'Internal Server Error',
-                new Request('GET', 'https://example.com'),
-                new Response(500, ['X-Request-Id' => 'abc123'], $responseBody)
-            );
-
-            (new FetchGiftDetailsAction($gift))
-                ->setFetcher(mockFetcherThrows($exception))
-                ->handle(mockImageAction());
-
-            $error = $gift->fresh()->fetch_error;
-
-            expect($error)
-                ->toHaveKey('summary', 'HTTP 500: Internal Server Error')
-                ->toHaveKey('status_code', 500)
-                ->toHaveKey('body');
-
-            expect($error['headers'])->toHaveKey('X-Request-Id');
-        });
-
-        it('stores connection error as summary-only', function () {
-            $gift = Gift::factory()->for(User::factory())->create();
-
-            $exception = new ConnectException(
-                'cURL error 28: Operation timed out',
-                new Request('GET', 'https://example.com')
-            );
-
-            (new FetchGiftDetailsAction($gift))
-                ->setFetcher(mockFetcherThrows($exception))
-                ->handle(mockImageAction());
-
-            $error = $gift->fresh()->fetch_error;
-
-            expect($error)
-                ->toBeArray()
-                ->toHaveKey('summary')
-                ->not->toHaveKey('headers')
-                ->not->toHaveKey('body');
-
-            expect($error['summary'])->toStartWith('Connection failed:');
-        });
-
-        it('sets fetched_at even when fetch fails', function () {
-            $gift = Gift::factory()->for(User::factory())->create(['fetched_at' => null]);
-
-            $exception = new ClientException(
-                'Not Found',
-                new Request('GET', 'https://example.com'),
-                new Response(404)
-            );
-
-            (new FetchGiftDetailsAction($gift))
-                ->setFetcher(mockFetcherThrows($exception))
-                ->handle(mockImageAction());
-
-            expect($gift->fresh()->fetched_at)->not->toBeNull();
-        });
-
-        it('dispatches completed event even when fetch fails', function () {
-            $gift = Gift::factory()->for(User::factory())->create();
-
-            $exception = new ClientException(
-                'Not Found',
-                new Request('GET', 'https://example.com'),
-                new Response(404)
-            );
-
-            $imageAction = Mockery::mock(ProcessGiftImageAction::class);
-            $imageAction->shouldReceive('dispatchCompletedEvent')->once();
-
-            (new FetchGiftDetailsAction($gift))
-                ->setFetcher(mockFetcherThrows($exception))
-                ->handle($imageAction);
-        });
-
-        it('stores browser error with debug data and re-throws for retry', function () {
-            $gift = Gift::factory()->for(User::factory())->create();
-
-            $exception = BrowserException::blocked(
-                'Access denied',
-                403,
-                '<html>Cloudflare challenge</html>',
-                ['Server' => 'cloudflare', 'CF-Ray' => 'abc123'],
-                'https://example.com/blocked'
-            );
-
-            expect(fn () => (new FetchGiftDetailsAction($gift))
-                ->setFetcher(mockFetcherThrows($exception))
-                ->handle(mockImageAction())
-            )->toThrow(BrowserException::class);
-
-            $error = $gift->fresh()->fetch_error;
-
-            expect($error)
-                ->toBeArray()
-                ->toHaveKey('summary')
-                ->toHaveKey('status_code', 403)
-                ->toHaveKey('final_url', 'https://example.com/blocked')
-                ->toHaveKey('headers')
-                ->toHaveKey('body');
-
-            expect($error['headers'])->toHaveKey('CF-Ray');
-            expect($error['body'])->toContain('Cloudflare challenge');
-            expect($gift->fresh()->fetch_status)->toBe('fetching');
-        });
-
-        it('stores browser error without debug data when unavailable', function () {
-            $gift = Gift::factory()->for(User::factory())->create();
-
-            $exception = new BrowserException('Page load timed out');
-
-            expect(fn () => (new FetchGiftDetailsAction($gift))
-                ->setFetcher(mockFetcherThrows($exception))
-                ->handle(mockImageAction())
-            )->toThrow(BrowserException::class);
-
-            $error = $gift->fresh()->fetch_error;
-
-            expect($error)
-                ->toBeArray()
-                ->toHaveKey('summary', 'Browser error: Page load timed out')
-                ->not->toHaveKey('status_code')
-                ->not->toHaveKey('headers');
-        });
-
-        it('stores unexpected exception error and re-throws for retry', function () {
-            $gift = Gift::factory()->for(User::factory())->create();
-
-            $exception = new RuntimeException('Something broke');
-
-            expect(fn () => (new FetchGiftDetailsAction($gift))
-                ->setFetcher(mockFetcherThrows($exception))
-                ->handle(mockImageAction())
-            )->toThrow(RuntimeException::class);
-
-            $error = $gift->fresh()->fetch_error;
-
-            expect($error)
-                ->toBeArray()
-                ->toHaveKey('summary', 'Unexpected: RuntimeException: Something broke');
-
-            expect($gift->fresh()->fetch_status)->toBe('fetching');
-        });
+            expect($gift->fresh())->title->toBe('My wish')->fetch_status->toBe('failed');
+        })->with(['Just a moment', "Women's & Men's Clothing, Shop Online Fashion | SHEIN"]);
     });
 
-    describe('429/503 retry behavior', function () {
-        it('re-throws on HTTP 429 and stores error for debugging', function () {
-            $gift = Gift::factory()->for(User::factory())->create();
+    describe('Amazon browser policy', function () {
+        it('makes one direct browser navigation after an HTTP challenge and never loops', function (string $domain, string $browserHtml, string $expectedStatus) {
+            $url = 'https://www.'.$domain.'/dp/EXAMPLE?tag=private#fragment';
+            $gift = Gift::factory()->pending()->for(User::factory())->create(['url' => $url]);
+            $http = new MockHandler([new Response(200, [], '<title>Robot Check</title>')]);
+            $browser = Mockery::mock(HeadlessFetcher::class);
+            $browser->shouldReceive('setTimeout', 'setUserAgent', 'setHeaders')->andReturnSelf();
+            $browser->shouldReceive('fetch')->with($url)->once()->andReturn(new HeadlessFetchResult($browserHtml, 200, $url));
+            $fetcher = (new ProductInfoFetcher($url))->setClient(new Client(['handler' => HandlerStack::create($http)]))->setHeadlessFetcher($browser);
+            Log::spy();
 
-            $exception = new ClientException(
-                'Too Many Requests',
-                new Request('GET', 'https://example.com'),
-                new Response(429, ['Retry-After' => '60'])
-            );
+            (new FetchGiftDetailsAction($gift))->setFetcher($fetcher)->handle(mockImageAction());
 
-            expect(fn () => (new FetchGiftDetailsAction($gift))
-                ->setFetcher(mockFetcherThrows($exception))
-                ->handle(mockImageAction())
-            )->toThrow(ClientException::class);
+            expect($http->count())->toBe(0);
+            expect($gift->fresh()->fetch_status)->toBe($expectedStatus);
+            Log::shouldHaveReceived('info')->with('Gift fetch attempt', Mockery::on(fn (array $data): bool => array_column($data['attempts'], 'transport') === ['http', 'browser']
+                && $data['attempts'][0]['finalUrl'] === 'https://www.'.$domain.'/dp/EXAMPLE'))->once();
+        })->with(['amazon.com.be', 'amazon.nl', 'amazon.de', 'amazon.fr'])->with([
+            'product' => ['<script type="application/ld+json">{"@type":"Product","name":"Product","image":"https://example.com/image.jpg","offers":{"price":"19.99","priceCurrency":"EUR"}}</script>', 'completed'],
+            'challenge' => ['<title>Robot Check</title>', 'failed'],
+            'consent' => ['<h1>Before you continue</h1>', 'failed'],
+        ]);
 
-            $error = $gift->fresh()->fetch_error;
+        it('does not start a browser for consent, removed, rate limits, non Amazon hosts or an existing browser attempt', function (string $host, FetchOutcome $outcome, int $status, string $transport) {
+            $gift = Gift::factory()->pending()->for(User::factory())->create(['url' => 'https://'.$host.'/product']);
+            $product = new ProductInfo(outcome: $outcome, httpStatus: $status, attempts: [new TransportAttempt($transport, $status, $gift->url, 10)]);
+            $fetcher = mockFetcher($product);
+            $fetcher->shouldNotReceive('preferHeadless');
 
-            expect($error)
-                ->toHaveKey('summary', 'HTTP 429: Too Many Requests')
-                ->toHaveKey('status_code', 429)
-                ->toHaveKey('headers');
-
-            expect($error['headers'])->toHaveKey('Retry-After');
-            expect($gift->fresh()->fetch_status)->toBe('fetching');
-        });
-
-        it('re-throws on HTTP 503 and stores error for debugging', function () {
-            $gift = Gift::factory()->for(User::factory())->create();
-
-            $exception = new ServerException(
-                'Service Unavailable',
-                new Request('GET', 'https://example.com'),
-                new Response(503, ['Retry-After' => '120'])
-            );
-
-            expect(fn () => (new FetchGiftDetailsAction($gift))
-                ->setFetcher(mockFetcherThrows($exception))
-                ->handle(mockImageAction())
-            )->toThrow(ServerException::class);
-
-            $error = $gift->fresh()->fetch_error;
-
-            expect($error)
-                ->toHaveKey('summary', 'HTTP 503: Service Unavailable')
-                ->toHaveKey('status_code', 503);
-
-            expect($gift->fresh()->fetch_status)->toBe('fetching');
-        });
-
-        it('marks HTTP 403 as failed immediately', function () {
-            $gift = Gift::factory()->for(User::factory())->create();
-
-            $exception = new ClientException(
-                'Forbidden',
-                new Request('GET', 'https://example.com'),
-                new Response(403)
-            );
-
-            (new FetchGiftDetailsAction($gift))
-                ->setFetcher(mockFetcherThrows($exception))
-                ->handle(mockImageAction());
-
-            expect($gift->fresh())
-                ->fetch_status->toBe('failed')
-                ->fetch_error->toHaveKey('summary', 'HTTP 403: Forbidden');
-        });
-
-        it('marks HTTP 500 as failed immediately', function () {
-            $gift = Gift::factory()->for(User::factory())->create();
-
-            $exception = new ServerException(
-                'Internal Server Error',
-                new Request('GET', 'https://example.com'),
-                new Response(500)
-            );
-
-            (new FetchGiftDetailsAction($gift))
-                ->setFetcher(mockFetcherThrows($exception))
-                ->handle(mockImageAction());
-
-            expect($gift->fresh())
-                ->fetch_status->toBe('failed')
-                ->fetch_error->toHaveKey('summary', 'HTTP 500: Internal Server Error');
-        });
+            (new FetchGiftDetailsAction($gift))->setFetcher($fetcher)->handle(mockImageAction());
+            expect($gift->fresh()->fetch_status)->toBe('failed');
+        })->with([
+            ['www.amazon.com.be', FetchOutcome::Consent, 200, 'http'],
+            ['www.amazon.com.be', FetchOutcome::Removed, 404, 'http'],
+            ['www.amazon.com.be', FetchOutcome::Blocked, 429, 'http'],
+            ['www.amazon.com.be', FetchOutcome::Blocked, 200, 'browser'],
+            ['www.bol.com', FetchOutcome::Blocked, 200, 'http'],
+            ['www.amazon.com.be.example.com', FetchOutcome::Blocked, 200, 'http'],
+        ]);
     });
-
 });
