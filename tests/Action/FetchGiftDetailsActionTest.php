@@ -204,7 +204,7 @@ describe('FetchGiftDetailsAction', function () {
         it('keeps original title if fetched title is empty', function () {
             $gift = Gift::factory()->for(User::factory())->create(['title' => 'My Original Title']);
 
-            $fetcher = mockFetcher(new ProductInfo(name: ''));
+            $fetcher = mockFetcher(new ProductInfo(name: '', priceInCents: 1500));
 
             (new FetchGiftDetailsAction($gift))
                 ->setFetcher($fetcher)
