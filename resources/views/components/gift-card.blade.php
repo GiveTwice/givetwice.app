@@ -1,5 +1,6 @@
 @props([
     'gift',
+    'showReservations' => true,
     'editable' => false,
     'showClaimActions' => false,
     'isOwner' => false,
@@ -8,10 +9,10 @@
 
 @php
     $allowsMultipleClaims = $gift->allowsMultipleClaims();
-    $hasAnyClaims = $gift->claims_count > 0 || $gift->claims->isNotEmpty();
-    $confirmedClaimCount = $gift->getConfirmedClaimCount();
+    $hasAnyClaims = $showReservations && ($gift->claims_count > 0 || $gift->claims->isNotEmpty());
+    $confirmedClaimCount = $showReservations ? $gift->getConfirmedClaimCount() : 0;
     $isClaimed = !$allowsMultipleClaims && $hasAnyClaims;
-    $isClaimedByMe = auth()->check() && $gift->claims->where('user_id', auth()->id())->whereNotNull('confirmed_at')->isNotEmpty();
+    $isClaimedByMe = $showReservations && auth()->check() && $gift->claims->where('user_id', auth()->id())->whereNotNull('confirmed_at')->isNotEmpty();
     $isPending = $gift->isPending() || $gift->isFetching();
     $isFailed = $gift->isFetchFailed();
     $isClaimedByOthers = $showClaimActions && $isClaimed && !$isClaimedByMe && !$isOwner;

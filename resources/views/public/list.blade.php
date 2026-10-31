@@ -8,161 +8,72 @@
 @section('dynamic_og_image', true)
 <x-og-image view="public.list-og-image" :data="['list' => $list, 'gifts' => $gifts]" />
 
-@php
-    $availableGifts = (int) $gifts->filter(fn($gift) => $gift->claims->isEmpty() || $gift->allow_multiple_claims)->count();
-    $claimedGifts = (int) max(0, $gifts->total() - $availableGifts);
-    $listOwner = $list->creator;
-    $ownerHasAvatar = $listOwner->hasProfileImage();
-    $ownerAvatarUrl = $listOwner->getProfileImageUrl('medium');
-@endphp
-
 @section('content')
-
-<div
-    x-data="publicList({
-        listId: {{ $list->id }},
-        slug: '{{ $list->slug }}',
-        locale: '{{ app()->getLocale() }}',
-        availableCount: {{ $availableGifts }},
-        claimedCount: {{ $claimedGifts }},
-        translations: {
-            untitledGift: '{{ __('Untitled gift') }}',
-            claimed: '{{ __('Claimed') }}',
-            alreadyClaimed: '{{ __('Already claimed') }}'
-        }
-    })"
->
-
-<div class="mb-6 bg-white rounded-2xl border border-cream-200/60 shadow-sm overflow-hidden">
-
-    <div class="p-5 sm:p-6">
-        <div class="flex flex-wrap sm:flex-nowrap items-start gap-4 sm:gap-5">
-
-            @if($ownerHasAvatar)
-                <div class="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden ring-2 ring-coral-200 ring-offset-2 ring-offset-white shadow-md">
-                    <img
-                        src="{{ $ownerAvatarUrl }}"
-                        alt="{{ $listOwner->name }}"
-                        class="w-full h-full object-cover"
-                    >
-                </div>
-            @else
-                <div class="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-coral-50 to-sunny-50 border border-coral-100/50 flex items-center justify-center">
-                    <span class="text-3xl sm:text-4xl">&#127873;</span>
-                </div>
-            @endif
-
-            <div class="flex-1 min-w-0">
-                <h1 class="text-xl sm:text-2xl font-bold text-gray-900 wrap-anywhere">
-                    {{ $list->name }}
-                </h1>
-                <p class="text-gray-500 text-sm wrap-anywhere">{{ __('By :name', ['name' => $list->creator->name]) }}</p>
-                @if($list->description)
-                    <p class="text-gray-400 text-sm mt-0.5 line-clamp-1 hidden sm:block">{{ $list->description }}</p>
-                @endif
-            </div>
-
-            <div class="flex flex-wrap sm:flex-col items-center sm:items-end gap-1.5 w-full sm:w-auto shrink-0">
-                <div class="flex items-center gap-1.5 px-3 py-1.5 bg-teal-500 rounded-full">
-                    <span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
-                    <span class="text-sm font-bold text-white" x-text="availableCount">{{ $availableGifts }}</span>
-                    <span class="text-xs sm:text-sm text-teal-100">{{ __('available') }}</span>
-                </div>
-                <div class="flex items-center gap-1.5 px-2.5 py-1 bg-cream-100 rounded-full" x-show="claimedCount > 0" x-cloak>
-                    <span class="w-1.5 h-1.5 bg-sunny-500 rounded-full"></span>
-                    <span class="text-xs font-semibold text-gray-600" x-text="claimedCount">{{ $claimedGifts }}</span>
-                    <span class="text-xs text-gray-500">{{ __('claimed') }}</span>
-                </div>
-                @auth
+@php
+    $reserved = fn ($gift) => $showReservations && ! $gift->allow_multiple_claims && $gift->claims->isNotEmpty();
+    $sections = [$gifts->reject($reserved), $gifts->filter($reserved)];
+    $occasionLabels = ['sinterklaas' => __('Sinterklaas'), 'christmas' => __('Christmas'), 'birthday' => __('Birthday'), 'other' => __('Other')];
+@endphp
+<div x-data="publicList({ slug: @js($list->slug), showReservations: @js($showReservations) })">
+    <header class="mb-3 flex flex-col gap-1.5">
+        <h1 class="text-xl font-bold text-gray-900 wrap-anywhere sm:text-3xl">{{ $list->name }}</h1>
+        <p class="text-xs text-gray-500">{{ __('Created by :name', ['name' => $list->creator->name]) }}</p>
+        @if($list->occasion_date)
+            <p class="text-xs text-gray-600">
+                <span class="inline-flex flex-wrap gap-1 rounded-full bg-sunny-100 px-3 py-1">
+                    {{ $occasionLabels[$list->occasion] ?? __('Occasion') }} · {{ $list->occasion_date->translatedFormat('j F') }}
                     @unless($isOwner)
-                        <div x-data="followButton({ following: {{ $isFollowing ? 'true' : 'false' }}, slug: '{{ $list->slug }}', locale: '{{ app()->getLocale() }}' })">
-                            <button
-                                type="button"
-                                x-on:click="toggle()"
-                                :disabled="loading"
-                                class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all"
-                                :class="following
-                                    ? 'bg-coral-100 text-coral-700 hover:bg-coral-200'
-                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
-                            >
-                                <x-icons.bell class="w-4 h-4" />
-                                <span x-text="following ? '{{ __('Unfollow') }}' : '{{ __('Follow') }}'"></span>
-                            </button>
-                        </div>
+                        · {{ $list->occasion_date->isToday() ? __('Today') : ($list->occasion_date->isFuture() ? trans_choice(':count day to go|:count days to go', (int) now()->startOfDay()->diffInDays($list->occasion_date), ['count' => (int) now()->startOfDay()->diffInDays($list->occasion_date)]) : __('Past occasion')) }}
                     @endunless
-                @endauth
-            </div>
-        </div>
-    </div>
-
-    @unless($isOwner)
-        <div class="px-5 sm:px-6 py-4 bg-cream-50/50 border-t border-cream-100">
-            <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
-
-                <p class="text-gray-400 text-sm">
-                    {{ __(':name won\'t know who\'s getting what. The surprise stays a surprise.', ['name' => $list->creator->name]) }}
-                </p>
-            </div>
-        </div>
-    @endunless
-
-    @if($isOwner)
-        <div class="px-5 sm:px-6 py-3 bg-sunny-50/80 border-t border-sunny-100">
-            <div class="flex items-center justify-between gap-4">
-                <div class="flex items-center gap-2">
-                    <x-icons.eye class="w-4 h-4 text-sunny-600" />
-                    <span class="text-sunny-800 text-sm font-medium">{{ __('Preview Mode') }}</span>
-                    <span class="text-sunny-700 text-sm hidden sm:inline">— {{ __('This is what your friends see.') }}</span>
-                </div>
-                <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="text-sm font-medium text-sunny-700 hover:text-sunny-900 underline underline-offset-2">
-                    {{ __('Back to dashboard') }}
-                </a>
-            </div>
-        </div>
-    @endif
-</div>
-
-<div class="bg-white rounded-2xl shadow-sm border border-cream-200/60 overflow-hidden">
-
-    <div class="px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-100">
-        <div class="flex items-center justify-between gap-2">
-            <h2 class="text-lg sm:text-xl font-bold text-gray-900">{{ __('Gift Ideas') }}</h2>
-            @unless($isOwner)
-                <p class="text-sm text-gray-500 text-right">{{ __('Tap a gift to see details') }}</p>
-            @endunless
-        </div>
-    </div>
-
-    <div class="p-4 sm:p-6">
-        @if($gifts->isEmpty())
-            <div class="py-12 text-center" data-empty-state>
-                <div class="w-20 h-20 bg-cream-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <span class="text-4xl">&#127873;</span>
-                </div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ __('No gifts yet') }}</h3>
-                <p class="text-gray-500">{{ __(':name hasn\'t added anything yet. Maybe give them a nudge?', ['name' => $list->creator->name]) }}</p>
-            </div>
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 hidden" data-gift-grid></div>
-        @else
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4" data-gift-grid>
-                @foreach($gifts as $gift)
-                    <x-gift-card :gift="$gift" :showClaimActions="true" :isOwner="$isOwner" :openModal="true" />
-                @endforeach
-            </div>
-
-            @foreach($gifts as $gift)
-                <x-gift-modal :gift="$gift" :isOwner="$isOwner" />
-            @endforeach
-
-            @if($gifts->hasPages())
-                <div class="mt-8 pt-6 border-t border-gray-100">
-                    {{ $gifts->links() }}
-                </div>
-            @endif
+                </span>
+            </p>
         @endif
-    </div>
-</div>
-
+        @if($showReservations)
+            <div data-reservation-progress class="text-xs text-gray-600">
+                <div class="flex flex-wrap justify-between gap-1">
+                    <span>{{ __(':free of :total still free', ['free' => $availableGifts, 'total' => $totalGifts]) }}</span>
+                    @unless($isOwner)<span>{{ __(':name cannot see who buys what', ['name' => $list->creator->name]) }}</span>@endunless
+                </div>
+                <div class="mt-1 h-1 overflow-hidden rounded-full bg-cream-200"><div class="h-full bg-teal-500" style="width: {{ $totalGifts ? 100 * $availableGifts / $totalGifts : 0 }}%"></div></div>
+            </div>
+            <nav aria-label="{{ __('Filter gifts') }}" class="flex flex-wrap gap-2 text-xs">
+                @foreach(['all' => __('All'), 'free' => __('Still free'), 'under20' => __('Under €20')] as $value => $label)
+                    <a href="{{ $list->getPublicUrl() . ($value === 'all' ? '' : '?filter=' . $value) }}" @if($filter === $value) aria-current="true" @endif class="rounded-full border px-3 py-1.5 {{ $filter === $value ? 'border-coral-500 bg-coral-50 text-coral-700' : 'border-cream-300 text-gray-600' }}">{{ $label }}</a>
+                @endforeach
+            </nav>
+        @else
+            <p class="rounded-lg bg-white px-3 py-2 text-xs text-gray-600">{{ __('Surprise protected. You cannot see what is reserved.') }}</p>
+        @endif
+        @if($isOwner)
+            <div class="flex flex-wrap items-center gap-2 text-sm">
+                <a class="btn-primary" href="{{ route('gifts.create', ['locale' => app()->getLocale(), 'list' => $list->id]) }}">{{ __('Add Gift') }}</a>
+                <a class="text-coral-600" href="{{ route('list.edit', ['locale' => app()->getLocale(), 'list' => $list]) }}">{{ __('Edit List') }}</a>
+                <x-share-modal :list="$list" />
+            </div>
+        @endif
+    </header>
+    @foreach($sections as $section)
+        @if($loop->last && $section->isNotEmpty())
+            <h2 class="mb-3 mt-6 text-sm font-semibold text-gray-500" data-reserved-heading>{{ __('Already reserved (:count)', ['count' => $section->count()]) }}</h2>
+        @endif
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5" data-gift-grid>
+            @foreach($section as $gift)
+                <x-shared-gift-tile :gift="$gift" :is-owner="$isOwner" :is-reserved="$reserved($gift)" />
+            @endforeach
+        </div>
+    @endforeach
+    @if($gifts->isEmpty())<p class="py-8 text-gray-500" data-empty-state>{{ __('No gifts yet') }}</p>@endif
+    @foreach($gifts as $gift)
+        <x-gift-modal :gift="$gift" :is-owner="$isOwner" :show-reservations="$showReservations" />
+    @endforeach
+    {{ $gifts->links() }}
+    @auth
+        @unless($isOwner)
+            <div class="mt-6" x-data="followButton({ following: @js($isFollowing), slug: @js($list->slug), locale: @js(app()->getLocale()) })">
+                <button type="button" x-on:click="toggle()" :disabled="loading" class="btn-secondary" x-text="following ? @js(__('Unfollow')) : @js(__('Follow'))"></button>
+            </div>
+        @endunless
+    @endauth
 <div class="mt-16 relative overflow-hidden">
 
     <div class="absolute inset-0 bg-gradient-to-br from-coral-500 to-coral-600 rounded-2xl"></div>

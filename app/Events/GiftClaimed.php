@@ -24,14 +24,15 @@ class GiftClaimed implements ShouldBroadcast
 
     public function broadcastOn(): array
     {
-        $channels = [
-            // Owner's private channel (for dashboard notifications)
-            new PrivateChannel('user.'.$this->gift->user_id),
-        ];
-
-        /** @var GiftList $list */
-        foreach ($this->gift->lists as $list) {
-            $channels[] = new Channel('list.'.$list->slug);
+        $channels = [];
+        $lists = $this->gift->lists()->with('users')->get();
+        foreach ($lists->flatMap->users->unique('id') as $user) {
+            if (! $lists->contains(fn (GiftList $list) => $list->hasUser($user) && ! $list->spoiler_mode)) {
+                $channels[] = new PrivateChannel('user.'.$user->id);
+            }
+        }
+        foreach ($lists as $list) {
+            $channels[] = new Channel('list.'.$list->slug.'.reservations');
         }
 
         return $channels;

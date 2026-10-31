@@ -29,17 +29,19 @@ class DashboardController extends Controller
 
     private function dashboardLists(Request $request)
     {
-        return $request->user()
-            ->lists()
-            ->withCount(['gifts', 'gifts as claimed_gifts_count' => function ($query) {
-                $query->whereHas('claims');
-            }])
-            ->with(['gifts' => function ($query) {
-                $query->with('claims')->reorder()->orderByDesc('created_at');
-            }])
-            ->with('users:id,name,avatar')
-            ->orderBy('lists.created_at', 'asc')
-            ->get();
+        $lists = $request->user()->lists()->withCount('gifts')
+            ->with(['gifts' => fn ($query) => $query->with('media')->reorder()->orderByDesc('created_at')])
+            ->with('users:id,name,avatar')->orderBy('lists.created_at')->get();
+
+        foreach ($lists as $list) {
+            if ($list->spoiler_mode) {
+                $list->gifts->load(['claims' => fn ($query) => $query->whereNotNull('confirmed_at')]);
+            } else {
+                $list->gifts->each(fn ($gift) => $gift->setRelation('claims', collect()));
+            }
+        }
+
+        return $lists;
     }
 
     private function dashboardExchanges(Request $request)

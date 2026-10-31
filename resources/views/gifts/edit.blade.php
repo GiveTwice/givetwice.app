@@ -187,8 +187,12 @@
                     @enderror
                 </div>
 
+                <div class="mb-4">
+                    <input type="hidden" name="most_wanted" value="0">
+                    <label class="flex items-center gap-2"><input type="checkbox" name="most_wanted" value="1" @checked(old('most_wanted', $gift->most_wanted))> ★ {{ __('Most wanted') }}</label>
+                </div>
                 <div class="mb-6 flex items-start gap-3 pt-4 border-t border-gray-100">
-                    <input
+                        <input
                         type="checkbox"
                         name="allow_multiple_claims"
                         id="allow_multiple_claims"

@@ -1,7 +1,7 @@
 @php
-    $ogGiftCount = $gifts->total();
+    $ogGiftCount = $list->gifts()->count();
     $ogOwner = $list->creator->name;
-    $ogAvailableGifts = $gifts->filter(fn($gift) => $gift->claims->isEmpty() || $gift->allow_multiple_claims)->take(3);
+    $ogGifts = $list->gifts()->with('media')->reorder()->orderBy('gifts.id')->limit(3)->get();
 @endphp
 
 <div style="width:1200px;height:630px;position:relative;overflow:hidden;background:linear-gradient(135deg,#fef9f0 0%,#fdf3e3 50%,#fef0e8 100%);font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;">
@@ -34,7 +34,7 @@
                     <div style="font-size:15px;color:#9ca3af;margin-top:2px;">{{ trans_choice(':count gift|:count gifts', $ogGiftCount, ['count' => $ogGiftCount]) }}</div>
                 </div>
             </div>
-            @foreach($ogAvailableGifts as $ogGift)
+            @foreach($ogGifts as $ogGift)
                 <div style="display:flex;align-items:center;gap:16px;padding:14px 0;{{ $loop->last ? '' : 'border-bottom:1px solid #f3f0ea;' }}">
                     @if($ogGift->hasImage())
                         <img src="{{ $ogGift->getImageUrl('thumb') }}" style="width:60px;height:60px;border-radius:14px;object-fit:cover;flex-shrink:0;" />
@@ -47,7 +47,6 @@
                             <div style="font-size:15px;font-weight:700;color:#f07060;margin-top:2px;">{{ $ogGift->formatPrice() }}</div>
                         @endif
                     </div>
-                    <span style="font-size:13px;font-weight:600;padding:5px 14px;border-radius:100px;background:#ccfbf1;color:#0f766e;flex-shrink:0;">{{ __('Available') }}</span>
                 </div>
             @endforeach
         </div>

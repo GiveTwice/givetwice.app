@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\GiftList;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class PublicListController extends Controller
 {
-    public function show(string $locale, int $list, ?string $slug = null): View|RedirectResponse
+    public function show(Request $request, string $locale, int $list, ?string $slug = null): View|RedirectResponse
     {
         $list = GiftList::findOrFail($list);
 
@@ -25,20 +26,35 @@ class PublicListController extends Controller
             $isFollowing = auth()->user()->followedLists()->where('list_id', $list->id)->exists();
         }
 
-        $gifts = $list->gifts()
-            ->whereNull('deleted_at')
-            ->withCount(['claims' => function ($query) {
-                $query->whereNotNull('confirmed_at');
-            }])
-            ->with(['claims' => function ($query) {
-                $query->whereNotNull('confirmed_at');
-            }])
-            ->reorder()
-            ->orderByRaw('case when gifts.allow_multiple_claims = true or claims_count = 0 then 0 else 1 end')
-            ->orderBy('title')
-            ->paginate(100);
+        $showReservations = ! $isOwner || $list->spoiler_mode;
+        $filter = $showReservations && in_array($request->query('filter'), ['free', 'under20'], true)
+            ? $request->query('filter') : 'all';
+        $query = $list->gifts()->with('media');
+        $totalGifts = (clone $query)->count();
+        $availableGifts = null;
+        if ($showReservations) {
+            $free = fn ($query) => $query->where('allow_multiple_claims', true)
+                ->orWhereDoesntHave('claims', fn ($query) => $query->whereNotNull('confirmed_at'));
+            $availableGifts = (clone $query)->where($free)->count();
+            $query->withCount(['claims' => fn ($query) => $query->whereNotNull('confirmed_at')])
+                ->with(['claims' => fn ($query) => $query->whereNotNull('confirmed_at')])
+                ->reorder()->orderByRaw('case when gifts.allow_multiple_claims = true or claims_count = 0 then 0 else 1 end');
+            if ($filter === 'free') {
+                $query->where($free);
+            } elseif ($filter === 'under20') {
+                $query->where('currency', 'EUR')->where('price_in_cents', '<', 2000);
+            }
+        }
+        $gifts = $query->orderBy('title')->paginate(100)->withQueryString();
+        if (! $showReservations) {
+            $gifts->each(fn ($gift) => $gift->setRelation('claims', collect()));
+        }
 
         return view('public.list', [
+            'showReservations' => $showReservations,
+            'filter' => $filter,
+            'totalGifts' => $totalGifts,
+            'availableGifts' => $availableGifts,
             'list' => $list,
             'gifts' => $gifts,
             'isOwner' => $isOwner,

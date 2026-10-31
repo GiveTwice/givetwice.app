@@ -21,12 +21,19 @@ class GiftList extends Model
         'description',
         'slug',
         'is_default',
+        'occasion',
+        'occasion_date',
+        'spoiler_mode',
+        'spoiler_confirmed_at',
     ];
 
     protected function casts(): array
     {
         return [
             'is_default' => 'boolean',
+            'occasion_date' => 'date',
+            'spoiler_mode' => 'boolean',
+            'spoiler_confirmed_at' => 'datetime',
         ];
     }
 
@@ -111,6 +118,9 @@ class GiftList extends Model
         return $this->hasMany(FollowedList::class, 'list_id');
     }
 
+    /**
+     * @return BelongsToMany<Gift, $this>
+     */
     public function gifts(): BelongsToMany
     {
         return $this->belongsToMany(Gift::class, 'gift_list', 'list_id', 'gift_id')

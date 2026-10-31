@@ -86,7 +86,7 @@
                     <div class="flex-shrink-0 w-7 h-7 bg-sunny-200 text-sunny-700 rounded-full flex items-center justify-center text-sm font-semibold">3</div>
                     <div>
                         <p class="text-gray-700 font-medium">{{ __('They can claim gifts') }}</p>
-                        <p class="text-sm text-gray-500">{{ __("You can see which gifts are claimed, but not who claimed them. The giver stays a surprise!") }}</p>
+                        <p class="text-sm text-gray-500">{{ __("Reservations stay hidden from you unless you turn on spoiler mode.") }}</p>
                     </div>
                 </div>
             </div>
