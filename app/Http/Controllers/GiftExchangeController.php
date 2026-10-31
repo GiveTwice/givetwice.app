@@ -162,19 +162,6 @@ class GiftExchangeController extends Controller
 
         $exchange->load('participants.user', 'participants.assignedTo.user');
 
-        $claimCount = 0;
-        /** @var GiftExchangeParticipant $participant */
-        foreach ($exchange->participants as $participant) {
-            if ($participant->user_id) {
-                $wishlist = $participant->defaultWishlist();
-                if ($wishlist) {
-                    $claimCount += $wishlist->gifts()
-                        ->whereHas('claims', fn ($q) => $q->whereNotNull('confirmed_at'))
-                        ->count();
-                }
-            }
-        }
-
         $myDraw = null;
         if ($exchange->isDrawn()) {
             /** @var GiftExchangeParticipant|null $myParticipant */
@@ -188,7 +175,6 @@ class GiftExchangeController extends Controller
 
         return view('exchanges.status', [
             'exchange' => $exchange,
-            'claimCount' => $claimCount,
             'myDraw' => $myDraw,
         ]);
     }

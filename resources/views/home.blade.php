@@ -13,10 +13,10 @@
             <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-[1.15]">
                 <span class="block">{{ __('Your wishlist.') }}</span>
                 <span class="block">{{ __('Gifts for you.') }}</span>
-                <span class="block text-coral-500">{{ __('Good done quietly.') }}</span>
+                <span class="block text-coral-500">{{ __('Less guesswork.') }}</span>
             </h1>
             <p class="text-xl text-gray-600 mb-8 max-w-lg">
-                {{ __('Make a wishlist. Share it with friends and family. When they buy from it, we donate our commission to charity. Simple as that.') }}
+                {{ __('Make a wishlist. Share it with friends and family. Leave the guessing to someone else.') }}
             </p>
 
             <ul class="space-y-3 mb-8">
@@ -26,7 +26,7 @@
                 </li>
                 <li class="flex items-center text-gray-700">
                     <span class="text-teal-500 mr-3">&#10003;</span>
-                    {{ __('100% of our profits go to charity') }}
+                    {{ __('Free. No ads.') }}
                 </li>
                 <li class="flex items-center text-gray-700">
                     <span class="text-teal-500 mr-3">&#10003;</span>
@@ -71,10 +71,10 @@
                 <div class="text-4xl">&#10084;&#65039;</div>
                 <div>
                     <p class="font-semibold text-gray-900">{{ __('Here\'s the thing') }}</p>
-                    <p class="text-gray-600">{{ __('Stores pay us a commission. We donate all of it. You pay nothing extra.') }}</p>
+                    <p class="text-gray-600">{{ __('If you later buy through our shop links, all our commission will go to charity. We are setting that up now.') }} <a href="{{ route('transparency', ['locale' => app()->getLocale()]) }}" class="underline underline-offset-2">{{ __('Transparency') }}</a></p>
                 </div>
             </div>
-            <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center px-5 py-2 bg-white text-gray-700 rounded-full hover:bg-gray-50 font-medium transition-colors border border-gray-200 whitespace-nowrap">
+            <a href="{{ route('transparency', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center px-5 py-2 bg-white text-gray-700 rounded-full hover:bg-gray-50 font-medium transition-colors border border-gray-200 whitespace-nowrap">
                 {{ __('How it works') }} <span class="ml-2">&rarr;</span>
             </a>
         </div>
@@ -114,7 +114,7 @@
 <div class="py-16 px-4">
     <div class="max-w-4xl mx-auto">
         <h2 class="text-3xl font-bold text-gray-900 mb-3 text-center">{{ __('Why "Twice"?') }}</h2>
-        <p class="text-lg text-gray-600 mb-10 text-center max-w-2xl mx-auto">{{ __('Every gift from your wishlist does two things at once.') }}</p>
+        <p class="text-lg text-gray-600 mb-10 text-center max-w-2xl mx-auto">{{ __('Our charity plan') }}</p>
 
         <div class="relative">
             {{-- Connection line (desktop) --}}
@@ -137,21 +137,21 @@
 
                 {{-- Second give: To charity --}}
                 <div class="relative bg-gradient-to-br from-teal-50 to-teal-100/50 rounded-2xl p-6 lg:p-8 border border-teal-200/60">
-                    <div class="absolute -top-3 -left-1 bg-teal-700 text-white text-xs font-bold px-3 py-1 rounded-full">{{ __('GIVE #2') }}</div>
+                    <div class="absolute -top-3 -left-1 bg-teal-700 text-white text-xs font-bold px-3 py-1 rounded-full">{{ __('THE PLAN') }}</div>
                     <div class="flex items-start gap-6">
                         <div class="flex-shrink-0 w-14 h-14 bg-white rounded-xl shadow-sm flex items-center justify-center text-3xl">
                             &#10084;&#65039;
                         </div>
                         <div>
                             <h3 class="font-semibold text-gray-900 text-lg mb-1">{{ __('Charity') }}</h3>
-                            <p class="text-gray-600">{{ __('We donate 100% of our profits. The store pays us, not you.') }}</p>
+                            <p class="text-gray-600">{{ __('If you later buy through our shop links, all our commission will go to charity. We are setting that up now.') }}</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <p class="text-center text-gray-500 mt-8 text-sm">{{ __('You pay nothing extra. The gift-giver pays nothing extra. The donation comes from us.') }}</p>
+        <p class="text-center text-gray-500 mt-8 text-sm">{{ __('Free. No ads.') }}</p>
     </div>
 </div>
 
@@ -180,7 +180,7 @@
             </div>
         </div>
 
-        <p class="text-center text-gray-700 mt-10 max-w-2xl mx-auto">{{ __('So we built something better. A wishlist app that works, doesn\'t track you, and donates every cent of profit to charity.') }}</p>
+        <p class="text-center text-gray-700 mt-10 max-w-2xl mx-auto">{{ __('So we built a wishlist app that works, with no tracking and no ads.') }}</p>
     </div>
 </div>
 
@@ -215,7 +215,7 @@
     "name": "GiveTwice",
     "url": "{{ config('app.url') }}",
     "logo": "{{ asset('android-chrome-512x512.png') }}",
-    "description": "{{ __('A wishlist platform where every gift makes a double impact.') }}",
+    "description": "{{ __('A free wishlist app for sharing gift ideas.') }}",
     "sameAs": [
         "https://github.com/GiveTwice",
         "https://x.com/GiveTwiceApp"

@@ -257,7 +257,7 @@
                         {{ __('Gifting That Gives Back') }}
                     </div>
                     <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{{ __('One gift. Two smiles.') }}</h2>
-                    <p class="text-coral-100 text-lg">{{ __("When you buy through our links, we donate 100% of our profits to charity. You don't pay a cent extra. You're basically a hero. Cape not included.") }}</p>
+                    <p class="text-coral-100 text-lg">{{ __("If you later buy through our shop links, all our commission will go to charity. We are setting that up now.") }}</p>
                 </div>
 
                 <div class="flex-shrink-0 text-center lg:text-left">
@@ -267,7 +267,7 @@
                                 <span>{{ __('Make your own wishlist') }}</span>
                                 <x-icons.arrow-right class="w-5 h-5" />
                             </a>
-                            <p class="mt-3 text-coral-200 text-sm">{{ __('Free. No ads. All profits go to charity.') }}</p>
+                            <p class="mt-3 text-coral-200 text-sm">{{ __('Free. No ads.') }}</p>
                         @else
                             <a href="{{ url('/' . app()->getLocale() . '/contact') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-coral-600 rounded-xl hover:bg-coral-50 font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
                                 <span>{{ __('Get in touch') }}</span>
@@ -298,7 +298,7 @@
     </div>
     <div class="flex items-center gap-2">
         <x-icons.heart class="w-5 h-5 text-coral-500" />
-        <span>{{ __('Supports charity') }}</span>
+        <span>{{ __('Our charity plan') }}</span>
     </div>
 </div>
 

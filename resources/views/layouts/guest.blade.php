@@ -165,7 +165,7 @@
                 </div>
                 <p class="text-gray-500 text-sm flex items-center">
                     <span class="text-coral-500 mr-2">&#10084;</span>
-                    {{ __('All affiliate profits go to charity.') }}
+                    {{ __('Free. No ads.') }}
                 </p>
             </div>
         </div>

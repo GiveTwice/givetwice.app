@@ -222,18 +222,18 @@
                 {{-- Tagline --}}
                 <h1 class="tagline text-gray-700">
                     Your wishlist.<br>
-                    <span class="text-coral-500">Good done quietly.</span>
+                    <span class="text-coral-500">Less guesswork.</span>
                 </h1>
 
                 {{-- Subtitle --}}
                 <p class="subtitle text-gray-500">
-                    Share it with friends and family. When they buy, we donate to charity. Simple as that.
+                    Share it with friends and family. Leave the guessing to someone else.
                 </p>
 
                 {{-- Badges - using Tailwind color classes --}}
                 <div class="badges">
                     <span class="og-badge bg-coral-100 text-coral-700">&#127873; No duplicate gifts</span>
-                    <span class="og-badge bg-teal-100 text-teal-700"><x-heart-icon class="heart-svg-inline" /> 100% to charity</span>
+                    <span class="og-badge bg-teal-100 text-teal-700"><x-heart-icon class="heart-svg-inline" /> Free. No ads.</span>
                     <span class="og-badge bg-sunny-100 text-sunny-700">&#10003; Free to use</span>
                 </div>
             </div>

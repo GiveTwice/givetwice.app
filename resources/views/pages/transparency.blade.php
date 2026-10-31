@@ -23,7 +23,7 @@
             </div>
             <div>
                 <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ __('We\'re just getting started') }}</h2>
-                <p class="text-gray-700 leading-relaxed">{{ __('GiveTwice is a new project, aiming to launch in early 2026. We don\'t have a track record yet — no revenue, no profits, and therefore no donations to report. We\'re building this from scratch, with the goal of making gift-giving more meaningful.') }}</p>
+                <p class="text-gray-700 leading-relaxed">{{ __('We have been live since December 2025. There is no revenue yet, so nothing to donate. As soon as that changes, you will find it here.') }}</p>
             </div>
         </div>
     </div>
@@ -33,8 +33,8 @@
 
             <section class="mb-8">
                 <h2 class="text-lg font-semibold text-gray-900 mb-3">{{ __('Our promise') }}</h2>
-                <p class="text-gray-600 leading-relaxed mb-4">{{ __('We\'ve built GiveTwice around a simple idea: 100% of our affiliate profits go to charity. But promises are easy to make — we believe in proving them.') }}</p>
-                <p class="text-gray-600 leading-relaxed">{{ __('Once GiveTwice is live and generating revenue, we commit to publicly sharing:') }}</p>
+                <p class="text-gray-600 leading-relaxed mb-4">{{ __('If you later buy through our shop links, all our commission will go to charity. We are setting that up now.') }}</p>
+                <p class="text-gray-600 leading-relaxed">{{ __('Once we generate revenue, we will publicly share:') }}</p>
             </section>
 
             <div class="grid sm:grid-cols-3 gap-4 mb-8">
@@ -45,7 +45,7 @@
                 </div>
                 <div class="bg-cream-50 rounded-xl p-4 text-center">
                     <div class="text-2xl mb-2">&#128200;</div>
-                    <p class="font-medium text-gray-900 text-sm">{{ __('Profit breakdown') }}</p>
+                    <p class="font-medium text-gray-900 text-sm">{{ __('Commission breakdown') }}</p>
                     <p class="text-gray-500 text-xs mt-1">{{ __('How much goes to charity') }}</p>
                 </div>
                 <div class="bg-cream-50 rounded-xl p-4 text-center">
@@ -57,13 +57,13 @@
 
             <section class="mb-8">
                 <h2 class="text-lg font-semibold text-gray-900 mb-3">{{ __('Why we can\'t show this yet') }}</h2>
-                <p class="text-gray-600 leading-relaxed mb-4">{{ __('Transparency reports require actual numbers. Since we haven\'t launched yet, there\'s nothing to report — no affiliate revenue has been generated, no operating costs have been incurred beyond initial development, and no charitable donations have been made.') }}</p>
+                <p class="text-gray-600 leading-relaxed mb-4">{{ __('We have been live since December 2025. There is no revenue yet, so nothing to donate. As soon as that changes, you will find it here.') }}</p>
                 <p class="text-gray-600 leading-relaxed">{{ __('We believe it would be misleading to publish empty reports or projections. Instead, we\'ll wait until we have real data to share.') }}</p>
             </section>
 
             <section class="mb-8">
                 <h2 class="text-lg font-semibold text-gray-900 mb-3">{{ __('When to expect updates') }}</h2>
-                <p class="text-gray-600 leading-relaxed mb-4">{{ __('Once GiveTwice launches and the idea proves useful and popular, we\'ll begin publishing regular transparency reports. We\'re aiming for:') }}</p>
+                <p class="text-gray-600 leading-relaxed mb-4">{{ __('Once there is revenue, we plan to publish:') }}</p>
                 <ul class="list-disc pl-6 space-y-2 text-gray-600">
                     <li>{{ __('Quarterly summaries of revenue, costs, and charitable donations') }}</li>
                     <li>{{ __('Annual reports with detailed breakdowns') }}</li>
@@ -73,7 +73,7 @@
 
             <section>
                 <h2 class="text-lg font-semibold text-gray-900 mb-3">{{ __('Hold us accountable') }}</h2>
-                <p class="text-gray-600 leading-relaxed">{{ __('We\'re publishing this page now — before we launch — to hold ourselves accountable. When the time comes, you\'ll find our transparency reports right here. If we\'re not living up to our promises, we want you to call us out.') }}</p>
+                <p class="text-gray-600 leading-relaxed">{{ __('Our promise is public so you can hold us to it. Future transparency reports will appear right here.') }}</p>
             </section>
 
         </div>
@@ -88,7 +88,7 @@
             <div>
                 <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ __('Fully open source') }}</h2>
                 <p class="text-gray-600 leading-relaxed mb-4">{{ __('GiveTwice is open source. You can read every line of code on GitHub.') }}</p>
-                <p class="text-gray-600 leading-relaxed mb-4">{{ __('Want to verify that we\'re actually donating profits? Check the code. Want to see how claims work? Check the code. Want to make sure we\'re not tracking you? Check the code.') }}</p>
+                <p class="text-gray-600 leading-relaxed mb-4">{{ __('Want to see how claims work? Check the code. For future donations, check our transparency reports here.') }}</p>
                 <p class="text-gray-600 leading-relaxed mb-4">{{ __('We built this in public because we don\'t want you to just trust us. Verify it yourself.') }}</p>
                 <a href="https://github.com/GiveTwice" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-gray-900 hover:text-coral-600 font-medium transition-colors">
                     <x-icons.github class="w-4 h-4" />
@@ -102,8 +102,8 @@
     {{-- Coming Soon Notice --}}
     <div class="bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200 rounded-2xl p-6 lg:p-8 text-center">
         <div class="text-3xl mb-3">&#128202;</div>
-        <h3 class="font-semibold text-gray-900 mb-2">{{ __('Reports coming after launch') }}</h3>
-        <p class="text-gray-600 text-sm mb-4">{{ __('We\'re aiming to launch in early 2026. Once we have real numbers, we\'ll publish them here.') }}</p>
+        <h3 class="font-semibold text-gray-900 mb-2">{{ __('Reports coming once there is revenue') }}</h3>
+        <p class="text-gray-600 text-sm mb-4">{{ __('We have been live since December 2025. There is no revenue yet, so nothing to donate. As soon as that changes, you will find it here.') }}</p>
         <a href="{{ route('contact', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center text-teal-600 hover:text-teal-700 font-medium text-sm">
             {{ __('Questions? Email us') }} <span class="ml-1">&rarr;</span>
         </a>

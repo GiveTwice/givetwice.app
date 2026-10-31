@@ -53,7 +53,7 @@
 
     <div class="bg-gradient-to-r from-coral-50 to-sunny-50 rounded-2xl p-5 border border-coral-100 text-center mb-8">
         <p class="text-gray-600 text-sm">
-            ❤️ {{ __('When someone buys from a wishlist, we donate our commission. You pay nothing extra.') }}
+            ❤️ {{ __('If you later buy through our shop links, all our commission will go to charity. We are setting that up now.') }}
             <a href="{{ route('about', ['locale' => app()->getLocale()]) }}" class="text-coral-500 hover:text-coral-600 font-medium">{{ __('How it works') }} →</a>
         </p>
     </div>

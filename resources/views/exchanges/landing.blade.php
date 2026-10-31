@@ -18,7 +18,7 @@
     {{-- Compact header — not a wall of marketing --}}
     <div class="text-center pt-6 pb-4">
         <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">🎲 {{ $title }}</h1>
-        <p class="text-gray-600">{{ __('Draw names. Buy gifts. Donate to charity. All without anyone knowing who got whom.') }}</p>
+        <p class="text-gray-600">{{ __('Draw names. Buy gifts. Keep everyone guessing who got whom.') }}</p>
     </div>
 
     {{-- The form is always visible — guest or authenticated --}}
@@ -123,14 +123,14 @@
         </div>
         <div class="text-center p-4">
             <div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center text-lg mx-auto mb-2 font-bold text-teal-600">3</div>
-            <p class="text-gray-600 text-xs">{{ __('Buy from their wishlist. We donate our commission to charity. Everyone wins.') }}</p>
+            <p class="text-gray-600 text-xs">{{ __('If you later buy through our shop links, all our commission will go to charity. We are setting that up now.') }}</p>
         </div>
     </div>
 
     {{-- Charity angle --}}
     <div class="bg-gradient-to-r from-coral-50 to-sunny-50 rounded-2xl p-5 border border-coral-100 text-center mb-8">
         <p class="text-gray-600 text-sm">
-            ❤️ {{ __('When someone buys from a wishlist, we donate our commission. You pay nothing extra.') }}
+            ❤️ {{ __('If you later buy through our shop links, all our commission will go to charity. We are setting that up now.') }}
             <a href="{{ route('about', ['locale' => $locale]) }}" class="text-coral-500 hover:text-coral-600 font-medium">{{ __('How it works') }} →</a>
         </p>
     </div>

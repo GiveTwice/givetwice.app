@@ -11,7 +11,7 @@
         <div class="grid grid-cols-1 md:grid-cols-5 gap-6 md:gap-8 mb-8">
             <div>
                 <x-logo />
-                <p class="text-gray-500 text-sm mt-4">{{ __('Create and share wishlists. All affiliate profits go to charity.') }}</p>
+                <p class="text-gray-500 text-sm mt-4">{{ __('Make a wishlist. Share it with your people.') }}</p>
             </div>
 
             @php
@@ -77,7 +77,7 @@
             </div>
             <div class="flex items-center space-x-2 text-sm">
                 <span class="text-coral-500">&#10084;</span>
-                <span class="text-gray-600">{{ __('All affiliate profits go to charity') }}</span>
+                <span class="text-gray-600">{{ __('Free. No ads.') }}</span>
             </div>
         </div>
     </div>

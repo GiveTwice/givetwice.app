@@ -22,7 +22,7 @@ class GaveTwiceMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: __('You just gave twice').' ✨',
+            subject: __('Your gift is reserved').' ✨',
         );
     }
 
