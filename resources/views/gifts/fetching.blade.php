@@ -10,7 +10,7 @@
     $dashboardUrl = $shell['dashboardUrl'];
 @endphp
 
-<x-app-shell
+<x-gift-flow-shell
     :title="__('Lists')"
     :sidebar-items="$shell['sidebarItems']"
     :stats="$shell['sidebarStats']"
@@ -35,7 +35,7 @@
             <x-icons.spinner class="w-12 h-12 text-coral-500 animate-spin" />
         </div>
 
-        <h2 class="text-xl font-semibold text-gray-900 mb-2">{{ __('Fetching details...') }}</h2>
+        <h2 class="text-xl font-semibold text-gray-900 mb-2">{{ __('Looking at :shop...', ['shop' => $gift->siteName()]) }}</h2>
         <p class="text-gray-500 mb-4">{{ __('This usually takes a few seconds.') }}</p>
 
         @if($gift->siteName())
@@ -44,17 +44,20 @@
             </p>
         @endif
 
-        @if($gift->url)
-            <p class="text-sm text-gray-400 mt-2 truncate max-w-md">
-                {{ Str::limit($gift->url, 80) }}
-            </p>
-        @endif
+        <div class="w-full max-w-sm rounded-xl bg-cream-50 p-5 text-left">
+            <p class="font-medium break-words">{{ $gift->title ?: $gift->suggestedTitle() }}</p>
+            <p class="mt-2 text-sm text-gray-500">{{ __('Taken from the link. Price and photo will follow.') }}</p>
+        </div>
+        <a x-show="canSkip" x-cloak href="{{ route('gifts.edit', ['locale' => app()->getLocale(), 'gift' => $gift, 'context' => 'fetch_timeout']) }}" class="btn-secondary mt-6 max-w-full text-wrap">{{ __("Don't wait, I'll fill it in myself") }}</a>
+        <p class="mt-3 text-sm text-gray-500">{{ __('We never overwrite what you fill in.') }}</p>
     </div>
 
     <script>
         function giftFetching() {
             return {
+                canSkip: @js($gift->created_at->diffInSeconds(now()) >= 8),
                 init() {
+                    setTimeout(() => this.canSkip = true, @js(max(0, 8 - $gift->created_at->diffInSeconds(now())) * 1000));
                     const editUrl = @js(route('gifts.edit', ['locale' => app()->getLocale(), 'gift' => $gift]));
 
                     // WebSocket listener
@@ -74,16 +77,10 @@
                     this._pollInterval = setInterval(() => {
                         window.location.reload();
                     }, 5000);
-
-                    // 30s timeout fallback
-                    setTimeout(() => {
-                        clearInterval(this._pollInterval);
-                        window.location.href = editUrl + '?context=fetch_timeout';
-                    }, 30000);
                 }
             }
         }
     </script>
 </x-app-content>
-</x-app-shell>
+</x-gift-flow-shell>
 @endsection

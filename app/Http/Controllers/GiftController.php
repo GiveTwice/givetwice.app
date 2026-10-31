@@ -4,17 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Actions\FetchGiftDetailsAction;
 use App\Actions\ProcessGiftImageAction;
-use App\Enums\SupportedCurrency;
 use App\Enums\SupportedLocale;
 use App\Events\GiftAddedToList;
+use App\Http\Requests\UpdateGiftRequest;
 use App\Models\Gift;
 use App\Models\GiftList;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use Spatie\OgImage\OgImage;
 
 class GiftController extends Controller
 {
@@ -57,6 +57,7 @@ class GiftController extends Controller
             'list_id' => ['nullable', 'integer'],
         ]);
 
+        $isFirstGift = ! Gift::withTrashed()->where('user_id', $request->user()->id)->exists();
         $input = trim($validated['input']);
 
         if ($input === '') {
@@ -108,6 +109,10 @@ class GiftController extends Controller
 
         GiftAddedToList::dispatch($gift, $targetList);
 
+        if ($isFirstGift) {
+            $request->session()->put('first_gift', $gift->id);
+        }
+
         if ($url !== null) {
             return redirect()->route('gifts.fetching', ['locale' => $locale, 'gift' => $gift]);
         }
@@ -139,6 +144,11 @@ class GiftController extends Controller
                 ->with('gift_context', 'manual_entry');
         }
 
+        if ($gift->created_at->diffInSeconds(now()) >= 30) {
+            return redirect()->route('gifts.edit', ['locale' => $locale, 'gift' => $gift])
+                ->with('gift_context', 'fetch_timeout');
+        }
+
         return view('gifts.fetching', [
             'gift' => $gift,
         ]);
@@ -153,41 +163,14 @@ class GiftController extends Controller
         ]);
     }
 
-    public function update(Request $request, string $locale, Gift $gift): RedirectResponse
+    public function update(UpdateGiftRequest $request, string $locale, Gift $gift): RedirectResponse
     {
         $this->authorize('update', $gift);
 
-        $giftListIds = $gift->lists()->pluck('lists.id');
+        $validated = $request->validated();
 
-        $validated = $request->validate([
-            'title' => ['nullable', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:1500'],
-            'price' => ['nullable', 'numeric', 'min:0', 'max:9999999.99'],
-            'currency' => ['nullable', 'string', Rule::enum(SupportedCurrency::class)],
-            'url' => [
-                'nullable',
-                'url',
-                'max:2048',
-                function ($attribute, $value, $fail) use ($gift, $giftListIds) {
-                    if ($value === $gift->url) {
-                        return;
-                    }
-
-                    $conflictExists = Gift::where('url', $value)
-                        ->where('id', '!=', $gift->id)
-                        ->whereHas('lists', fn ($q) => $q->whereIn('lists.id', $giftListIds))
-                        ->exists();
-
-                    if ($conflictExists) {
-                        $fail(__("You've already added this gift to this list."));
-                    }
-                },
-            ],
-            'allow_multiple_claims' => ['nullable', 'boolean'],
-        ]);
-
-        $priceInCents = isset($validated['price'])
-            ? (int) round($validated['price'] * 100)
+        $priceInCents = array_key_exists('price', $validated)
+            ? ($validated['price'] === null ? null : (int) round($validated['price'] * 100))
             : $gift->price_in_cents;
 
         $newUrl = $validated['url'] ?? $gift->url;
@@ -195,7 +178,9 @@ class GiftController extends Controller
 
         $updateData = [
             'title' => $validated['title'] ?? $gift->title,
-            'description' => $validated['description'] ?? $gift->description,
+            'owner_note' => array_key_exists('owner_note', $validated) ? $validated['owner_note'] : $gift->owner_note,
+            'shop_name' => $validated['shop_name'] ?? $gift->shop_name,
+            'description' => array_key_exists('description', $validated) ? $validated['description'] : $gift->description,
             'price_in_cents' => $priceInCents,
             'currency' => $validated['currency'] ?? $gift->currency,
             'url' => $newUrl,
@@ -208,11 +193,50 @@ class GiftController extends Controller
             $updateData['fetch_attempts'] = 0;
         }
 
-        $gift->update($updateData);
+        $gift->getConnection()->transaction(function () use ($gift, $validated, $updateData): void {
+            $gift->refreshForUpdate();
+            $edited = array_merge($gift->edited_fields ?? [], $validated['edited_fields'] ?? []);
+            foreach (['title', 'description', 'price_in_cents', 'currency', 'shop_name'] as $field) {
+                if ($validated['tracks_edits'] ?? false) {
+                    if (! in_array($field, $edited, true) && filled($gift->{$field})) {
+                        unset($updateData[$field]);
+                    }
+                } elseif (array_key_exists($field === 'price_in_cents' ? 'price' : $field, $validated)
+                    && $updateData[$field] !== $gift->{$field}) {
+                    $edited[] = $field;
+                }
+            }
+            $gift->update([...$updateData, 'edited_fields' => array_values(array_unique($edited))]);
+        });
+
+        if ($request->session()->get('first_gift') === $gift->id) {
+            $request->session()->forget('first_gift');
+            $list = $gift->lists()->first();
+            if ($list) {
+                return redirect()->route('gifts.share', ['locale' => $locale, 'gift' => $gift])
+                    ->with('first_gift_share', $list->id);
+            }
+        }
 
         return redirect()
             ->to("/{$locale}/dashboard")
             ->with('success', __('Gift updated successfully.'));
+    }
+
+    public function share(Request $request, string $locale, Gift $gift): View|RedirectResponse
+    {
+        $this->authorize('update', $gift);
+        $list = $gift->lists()->find($request->session()->get('first_gift_share'));
+        if (! $list) {
+            return redirect()->route('dashboard.locale', ['locale' => $locale]);
+        }
+
+        $gifts = $list->gifts()->with('claims', 'media')->paginate(24);
+        $og = app(OgImage::class);
+        $hash = $og->hash(trim(view('public.list-og-image', compact('list', 'gifts'))->render()));
+        $og->storeInCache($hash, $list->getPublicUrl());
+
+        return view('gifts.share', ['list' => $list, 'imageUrl' => $og->url($hash)]);
     }
 
     public function destroy(string $locale, Gift $gift): RedirectResponse

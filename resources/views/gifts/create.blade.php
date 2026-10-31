@@ -84,47 +84,7 @@
             </form>
         </div>
 
-        <div class="lg:col-span-2">
-            <div class="bg-cream-50 rounded-xl p-6">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('How does this work?') }}</h2>
-
-                <div class="space-y-4">
-
-                    <div class="flex gap-3">
-                        <div class="icon-circle bg-coral-100 text-coral-600 text-sm font-semibold">1</div>
-                        <div>
-                            <p class="text-gray-700 font-medium">{{ __('Got a link?') }}</p>
-                            <p class="form-help mt-0">{{ __("Paste it and we'll grab the title, image, and price automatically.") }}</p>
-                        </div>
-                    </div>
-
-                    <div class="flex gap-3">
-                        <div class="icon-circle bg-teal-100 text-teal-600 text-sm font-semibold">2</div>
-                        <div>
-                            <p class="text-gray-700 font-medium">{{ __('No link? No problem') }}</p>
-                            <p class="form-help mt-0">{{ __('Just describe what you\'d like — "contribution to my bike", "a good book", anything.') }}</p>
-                        </div>
-                    </div>
-
-                    <div class="flex gap-3">
-                        <div class="icon-circle bg-sunny-200 text-sunny-700 text-sm font-semibold">3</div>
-                        <div>
-                            <p class="text-gray-700 font-medium">{{ __('Review & tweak') }}</p>
-                            <p class="form-help mt-0">{{ __('Add a description, price, or image on the next page.') }}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-6 pt-4 border-t border-cream-200">
-                    <div class="flex items-center gap-3 text-sm">
-                        <div class="icon-circle bg-teal-100 text-teal-600">
-                            <x-icons.checkmark class="w-4 h-4" />
-                        </div>
-                        <p class="text-gray-600">{{ __('Works with pretty much any store.') }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div class="lg:col-span-2 rounded-xl bg-cream-50 p-6"><x-gift-examples /></div>
     </div>
 </x-app-content>
 </x-app-shell>
