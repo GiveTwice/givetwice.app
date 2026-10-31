@@ -98,7 +98,7 @@
                 <div>
                     <h2 class="text-xl font-bold text-gray-900 mb-3">{{ __($givetwice['title']) }}</h2>
                     <p class="text-gray-700 leading-relaxed mb-4">{{ __($givetwice['description']) }}</p>
-                    <a href="{{ route('about', ['locale' => $locale]) }}" class="inline-flex items-center text-{{ $givetwice['link_color'] }}-600 hover:text-{{ $givetwice['link_color'] }}-700 font-medium text-sm">
+                    <a href="{{ route('transparency', ['locale' => $locale]) }}" class="inline-flex items-center text-{{ $givetwice['link_color'] }}-600 hover:text-{{ $givetwice['link_color'] }}-700 font-medium text-sm">
                         {{ __($givetwice['link_text']) }} <span class="ml-1">&rarr;</span>
                     </a>
                 </div>

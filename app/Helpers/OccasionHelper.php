@@ -367,7 +367,7 @@ class OccasionHelper
                 'givetwice' => [
                     'gradient' => 'from-coral-50 to-rose-50',
                     'border' => 'border-coral-100',
-                    'title' => 'Start your marriage with a gift to others',
+                    'title' => 'Our charity plan',
                     'description' => 'If you later buy through our shop links, all our commission will go to charity. We are setting that up now.',
                     'link_text' => 'How our charity model works',
                     'link_color' => 'coral',
@@ -467,7 +467,7 @@ class OccasionHelper
                 'givetwice' => [
                     'gradient' => 'from-yellow-50 to-green-50',
                     'border' => 'border-yellow-100',
-                    'title' => 'Spring generosity blooms',
+                    'title' => 'Our charity plan',
                     'description' => 'If you later buy through our shop links, all our commission will go to charity. We are setting that up now.',
                     'link_text' => 'See how giving works',
                     'link_color' => 'coral',
@@ -516,7 +516,7 @@ class OccasionHelper
                 'givetwice' => [
                     'gradient' => 'from-pink-50 to-coral-50',
                     'border' => 'border-pink-100',
-                    'title' => "A mother's love, extended",
+                    'title' => 'Our charity plan',
                     'description' => 'If you later buy through our shop links, all our commission will go to charity. We are setting that up now.',
                     'link_text' => 'How we give back',
                     'link_color' => 'coral',
@@ -565,7 +565,7 @@ class OccasionHelper
                 'givetwice' => [
                     'gradient' => 'from-slate-50 to-blue-50',
                     'border' => 'border-slate-200',
-                    'title' => "Dad's gift, everyone's benefit",
+                    'title' => 'Our charity plan',
                     'description' => 'If you later buy through our shop links, all our commission will go to charity. We are setting that up now.',
                     'link_text' => 'See how it works',
                     'link_color' => 'coral',
@@ -614,7 +614,7 @@ class OccasionHelper
                 'givetwice' => [
                     'gradient' => 'from-orange-50 to-amber-50',
                     'border' => 'border-orange-100',
-                    'title' => 'Thankfulness that reaches further',
+                    'title' => 'Our charity plan',
                     'description' => 'If you later buy through our shop links, all our commission will go to charity. We are setting that up now.',
                     'link_text' => 'Learn about our giving',
                     'link_color' => 'coral',
@@ -663,7 +663,7 @@ class OccasionHelper
                 'givetwice' => [
                     'gradient' => 'from-red-50 to-orange-50',
                     'border' => 'border-red-100',
-                    'title' => 'Sinterklaas with a good cause',
+                    'title' => 'Our charity plan',
                     'description' => 'If you later buy through our shop links, all our commission will go to charity. We are setting that up now.',
                     'link_text' => 'Learn how it works',
                     'link_color' => 'coral',
@@ -712,7 +712,7 @@ class OccasionHelper
                 'givetwice' => [
                     'gradient' => 'from-pink-50 to-blue-50',
                     'border' => 'border-pink-100',
-                    'title' => 'Welcoming baby, helping others',
+                    'title' => 'Our charity plan',
                     'description' => 'If you later buy through our shop links, all our commission will go to charity. We are setting that up now.',
                     'link_text' => 'Learn how we give',
                     'link_color' => 'coral',
@@ -761,7 +761,7 @@ class OccasionHelper
                 'givetwice' => [
                     'gradient' => 'from-blue-50 to-slate-50',
                     'border' => 'border-blue-100',
-                    'title' => 'Your achievement, extended impact',
+                    'title' => 'Our charity plan',
                     'description' => 'If you later buy through our shop links, all our commission will go to charity. We are setting that up now.',
                     'link_text' => 'How our model works',
                     'link_color' => 'coral',
@@ -810,7 +810,7 @@ class OccasionHelper
                 'givetwice' => [
                     'gradient' => 'from-green-50 to-amber-50',
                     'border' => 'border-green-100',
-                    'title' => 'New home, new good',
+                    'title' => 'Our charity plan',
                     'description' => 'If you later buy through our shop links, all our commission will go to charity. We are setting that up now.',
                     'link_text' => 'See how giving works',
                     'link_color' => 'coral',
@@ -926,7 +926,7 @@ class OccasionHelper
                 'givetwice' => [
                     'gradient' => 'from-teal-50 to-blue-50',
                     'border' => 'border-teal-100',
-                    'title' => 'A celebration that reaches further',
+                    'title' => 'Our charity plan',
                     'description' => 'If you later buy through our shop links, all our commission will go to charity. We are setting that up now.',
                     'link_text' => 'Discover how we give',
                     'link_color' => 'teal',
@@ -993,7 +993,7 @@ class OccasionHelper
                 'givetwice' => [
                     'gradient' => 'from-rose-50 to-coral-50',
                     'border' => 'border-rose-100',
-                    'title' => 'Years of love, extended',
+                    'title' => 'Our charity plan',
                     'description' => 'If you later buy through our shop links, all our commission will go to charity. We are setting that up now.',
                     'link_text' => 'How giving works',
                     'link_color' => 'coral',
@@ -1038,7 +1038,7 @@ class OccasionHelper
                 'givetwice' => [
                     'gradient' => 'from-blue-50 to-amber-50',
                     'border' => 'border-blue-100',
-                    'title' => 'Gifts that spread light',
+                    'title' => 'Our charity plan',
                     'description' => 'If you later buy through our shop links, all our commission will go to charity. We are setting that up now.',
                     'link_text' => 'Learn about our giving model',
                     'link_color' => 'coral',

@@ -90,7 +90,7 @@
                 <div>
                     <h2 class="text-xl font-bold text-gray-900 mb-3">{{ $givetwice['title'] }}</h2>
                     <p class="text-gray-700 leading-relaxed mb-4">{{ $givetwice['description'] }}</p>
-                    <a href="{{ route('about', ['locale' => $locale]) }}"
+                    <a href="{{ route('transparency', ['locale' => $locale]) }}"
                        class="inline-flex items-center text-coral-600 hover:text-coral-700 font-medium text-sm">
                         {{ $givetwice['link_text'] }} <span class="ml-1">&rarr;</span>
                     </a>

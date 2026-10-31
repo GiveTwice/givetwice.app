@@ -162,7 +162,7 @@
             <p class="text-gray-700 leading-relaxed mb-6">{{ __('If you later buy through our shop links, all our commission will go to charity. We are setting that up now.') }}</p>
             <div class="inline-flex items-center px-5 py-2.5 bg-white rounded-full shadow-sm border border-cream-200">
                 <span class="text-coral-500 mr-2">&#10084;</span>
-                <span class="text-gray-700 font-medium text-sm">{{ __('One gift. Two smiles. Zero catch.') }}</span>
+                <span class="text-gray-700 font-medium text-sm">{{ __('Free. No ads.') }}</span>
             </div>
         </div>
     </div>

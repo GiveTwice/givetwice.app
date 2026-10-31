@@ -12,6 +12,7 @@
             <div>
                 <x-logo />
                 <p class="text-gray-500 text-sm mt-4">{{ __('Make a wishlist. Share it with your people.') }}</p>
+                <p class="text-gray-500 text-sm mt-4">{{ __('If you later buy through our shop links, all our commission will go to charity. We are setting that up now.') }} <a href="{{ route('transparency', ['locale' => app()->getLocale()]) }}" class="underline underline-offset-2">{{ __('Transparency') }}</a></p>
             </div>
 
             @php

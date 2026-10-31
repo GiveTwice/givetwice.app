@@ -232,10 +232,10 @@
                 <div class="flex-1 text-center lg:text-left">
                     <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/20 rounded-full text-white/90 text-sm font-medium mb-4">
                         <span>&#10084;&#65039;</span>
-                        {{ __('Gifting That Gives Back') }}
+                        {{ __('Free. No ads.') }}
                     </div>
-                    <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{{ __('One gift. Two smiles.') }}</h2>
-                    <p class="text-coral-100 text-lg">{{ __("If you later buy through our shop links, all our commission will go to charity. We are setting that up now.") }}</p>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{{ __('Want your own wishlist?') }}</h2>
+                    <p class="text-coral-100 text-lg">{{ __('If you later buy through our shop links, all our commission will go to charity. We are setting that up now.') }} <a href="{{ route('transparency', ['locale' => app()->getLocale()]) }}" class="underline underline-offset-2">{{ __('Transparency') }}</a></p>
                 </div>
 
                 <div class="flex-shrink-0 text-center lg:text-left">
