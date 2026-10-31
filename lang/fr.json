@@ -2033,5 +2033,7 @@
     "reservations.old": "J’avais déjà acheté l’ancien",
     "reservations.release": "Libérer le cadeau",
     "reservations.mute": "Plus de mails pour la liste de :owner",
-    "reservations.muted": "Les mails pour cette liste sont désactivés."
+    "reservations.muted": "Les mails pour cette liste sont désactivés.",
+    "Add your first wish": "Ajoute ton premier souhait",
+    "Manage together": "Gérer ensemble"
 }

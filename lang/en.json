@@ -2033,5 +2033,7 @@
     "reservations.old": "I already bought the old one",
     "reservations.release": "Release the reservation",
     "reservations.mute": "No more emails about :owner’s list",
-    "reservations.muted": "Emails for this list are off."
+    "reservations.muted": "Emails for this list are off.",
+    "Add your first wish": "Add your first wish",
+    "Manage together": "Manage together"
 }

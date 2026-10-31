@@ -1,4 +1,4 @@
-@props(['list'])
+@props(['list', 'showLabel' => false, 'quiet' => false])
 
 @php
     $publicUrl = $list->getPublicUrl();
@@ -25,9 +25,9 @@
     }
 }">
     <!-- Share Button -->
-    <button @click="open = true" class="btn-share" title="{{ __('Share') }}">
+    <button @click="open = true" class="{{ $quiet ? 'inline-flex min-h-11 items-center gap-2 py-2 text-sm text-gray-600 hover:text-gray-900' : 'btn-share' }}" title="{{ __('Share') }}">
         <x-icons.share class="w-5 h-5" />
-        <span class="hidden sm:inline">{{ __('Share') }}</span>
+        <span class="{{ $showLabel ? '' : 'hidden sm:inline' }}">{{ __('Share') }}</span>
     </button>
 
     <!-- Modal Backdrop -->
