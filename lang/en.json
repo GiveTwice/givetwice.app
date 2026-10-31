@@ -1972,5 +1972,8 @@
     "Confirm that you want to see reservations.": "Confirm that you want to see reservations.",
     "Reservations stay hidden from you unless you turn on spoiler mode.": "Reservations stay hidden from you unless you turn on spoiler mode.",
     ":count day to go|:count days to go": ":count day to go|:count days to go",
-    "Past occasion": "Past occasion"
+    "Past occasion": "Past occasion",
+    "All": "All",
+    "Today": "Today",
+    "Date": "Date"
 }

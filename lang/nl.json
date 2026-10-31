@@ -1973,5 +1973,7 @@
     "Reservations stay hidden from you unless you turn on spoiler mode.": "Reserveringen blijven voor je verborgen, tenzij je spoilermodus aanzet.",
     ":count day to go|:count days to go": "nog :count dag|nog :count dagen",
     "Past occasion": "Voorbije gelegenheid",
-    "Date": "Datum"
+    "Date": "Datum",
+    "All": "Alles",
+    "Today": "Vandaag"
 }

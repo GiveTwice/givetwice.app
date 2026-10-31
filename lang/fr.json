@@ -1972,5 +1972,8 @@
     "Confirm that you want to see reservations.": "Confirme que tu veux voir les réservations.",
     "Reservations stay hidden from you unless you turn on spoiler mode.": "Les réservations restent cachées pour toi, sauf si tu actives le mode spoiler.",
     ":count day to go|:count days to go": "encore :count jour|encore :count jours",
-    "Past occasion": "Occasion passée"
+    "Past occasion": "Occasion passée",
+    "All": "Tout",
+    "Today": "Aujourd’hui",
+    "Date": "Date"
 }
