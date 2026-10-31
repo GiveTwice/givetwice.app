@@ -124,6 +124,7 @@ Route::prefix('{locale}')
             ->middleware('throttle:10,1')
             ->name('exchanges.join.store');
 
+        Route::match(['get', 'post'], '/reservation-alerts/{alert}/mute', [ReservationsController::class, 'mute'])->middleware('signed')->name('reservations.mute');
         Route::get('/reservations', [ReservationsController::class, 'index'])->name('reservations.index');
         Route::post('/reservations/link', [ReservationsController::class, 'link'])->middleware('throttle:5,60')->name('reservations.link');
         Route::match(['get', 'post'], '/reservations/{claim}/{choice}', [ReservationsController::class, 'choose'])->middleware('signed')->name('reservations.choose');

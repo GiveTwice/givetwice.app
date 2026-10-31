@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
@@ -62,6 +63,17 @@ class Claim extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function latestAlert(): ?ReservationAlert
+    {
+        return $this->alerts->whereNull('resolved_at')->sortByDesc('id')->first();
+    }
+
+    /** @return HasMany<ReservationAlert, $this> */
+    public function alerts(): HasMany
+    {
+        return $this->hasMany(ReservationAlert::class);
     }
 
     public function historyUrl(?string $locale = null): string

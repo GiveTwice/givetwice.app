@@ -2020,5 +2020,18 @@
     "reservations.keep_done": "We houden het bij. Misschien heeft :owner het al: check het even.",
     "reservations.alternative_done": "Reservatie verwijderd. Hier zijn de andere ideeën, als het lijstje er nog is.",
     "reservations.dismiss_done": "Uit je reservaties gehaald.",
-    "reservations.private": ":owner ziet niet wat je kiest."
+    "reservations.private": ":owner ziet niet wat je kiest.",
+    "reservations.changed": ":owner heeft iets aangepast",
+    "reservations.before": "Was",
+    "reservations.after": "Nu",
+    "reservations.title": "Naam",
+    "reservations.price": "Prijs",
+    "reservations.url": "Link",
+    "reservations.owner_note": "Notitie",
+    "reservations.none": "(geen)",
+    "reservations.new": "Oké, ik koop de nieuwe",
+    "reservations.old": "Ik had de oude al gekocht",
+    "reservations.release": "Geef het vrij",
+    "reservations.mute": "Geen mails meer over :owner’s lijstje",
+    "reservations.muted": "Mails voor dit lijstje staan uit."
 }

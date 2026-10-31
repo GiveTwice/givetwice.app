@@ -2020,5 +2020,18 @@
     "reservations.keep_done": "On le garde. :owner l’a peut-être déjà : vérifie avec cette personne.",
     "reservations.alternative_done": "Réservation retirée. Voici les autres idées, si la liste existe encore.",
     "reservations.dismiss_done": "Retiré de tes réservations.",
-    "reservations.private": ":owner ne voit pas ton choix."
+    "reservations.private": ":owner ne voit pas ton choix.",
+    "reservations.changed": ":owner a modifié un cadeau",
+    "reservations.before": "Avant",
+    "reservations.after": "Maintenant",
+    "reservations.title": "Nom",
+    "reservations.price": "Prix",
+    "reservations.url": "Lien",
+    "reservations.owner_note": "Note",
+    "reservations.none": "(aucun)",
+    "reservations.new": "D’accord, j’achète le nouveau",
+    "reservations.old": "J’avais déjà acheté l’ancien",
+    "reservations.release": "Libérer le cadeau",
+    "reservations.mute": "Plus de mails pour la liste de :owner",
+    "reservations.muted": "Les mails pour cette liste sont désactivés."
 }

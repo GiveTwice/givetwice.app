@@ -1,0 +1,54 @@
+<?php
+
+namespace App\Models;
+
+use App\Jobs\SendReservationAlert;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\URL;
+
+/** @property array<string, mixed> $before
+ * @property array<string, mixed> $after
+ */
+class ReservationAlert extends Model
+{
+    protected $guarded = [];
+
+    protected function casts(): array
+    {
+        return ['before' => 'array', 'after' => 'array', 'sent_at' => 'datetime'];
+    }
+
+    /** @return BelongsTo<Claim, $this> */
+    public function claim(): BelongsTo
+    {
+        return $this->belongsTo(Claim::class);
+    }
+
+    public function choiceUrl(string $choice): string
+    {
+        return URL::temporarySignedRoute($choice === 'mute' ? 'reservations.mute' : 'reservations.choose', now()->addDays(30), ['locale' => $this->locale, 'claim' => $this->claim_id, 'choice' => $choice, 'email' => hash('sha256', $this->email), 'alert' => $this->id]);
+    }
+
+    public static function record(Gift $gift, bool $deleted = false, ?int $listId = null): void
+    {
+        foreach ($gift->claims()->whereNotNull('confirmed_at')->get() as $claim) {
+            if ($listId && $claim->reservation['list_id'] !== $listId) {
+                continue;
+            }
+            $claim->getConnection()->transaction(function () use ($claim, $gift, $deleted) {
+                $claim->refreshForUpdate();
+                $old = new Gift($gift->getOriginal());
+                $before = array_replace($claim->reservation, ['title' => $old->title, 'price' => $old->formatPrice(), 'url' => $old->url, 'owner_note' => $old->owner_note]);
+                $after = array_replace($before, ['title' => $gift->title, 'price' => $gift->formatPrice(), 'url' => $gift->url, 'owner_note' => $gift->owner_note, 'deleted' => $deleted]);
+                $alert = static::where('claim_id', $claim->id)->whereNull('sent_at')->whereNull('resolved_at')->where('created_at', '>', now()->subMinutes(10))->first();
+                if ($alert) {
+                    $alert->update(['after' => $after]);
+                } else {
+                    $alert = static::create(['claim_id' => $claim->id, 'gift_id' => $gift->id, 'list_id' => $claim->reservation['list_id'], 'email' => $claim->claimer_email ?? $claim->user->email, 'locale' => $claim->user->locale_preference ?? app()->getLocale(), 'before' => $before, 'after' => $after]);
+                    SendReservationAlert::dispatch($alert->id)->delay(now()->addMinutes(10))->afterCommit();
+                }
+            });
+        }
+    }
+}

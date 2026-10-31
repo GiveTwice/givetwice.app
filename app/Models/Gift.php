@@ -57,7 +57,11 @@ class Gift extends Model implements HasMedia
 
     protected static function booted(): void
     {
+        static::deleting(fn (Gift $gift) => ReservationAlert::record($gift, true));
         static::updated(function (Gift $gift): void {
+            if ($gift->wasChanged(['title', 'price_in_cents', 'currency', 'url', 'owner_note'])) {
+                ReservationAlert::record($gift);
+            }
             if ($gift->wasChanged('url')) {
                 GiftUrlChanged::dispatch($gift);
             }
