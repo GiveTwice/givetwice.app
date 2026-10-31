@@ -345,6 +345,31 @@ describe('FetchGiftDetailsAction', function () {
     });
 
     describe('outcomes', function () {
+        it('uses package detection for HTTP walls, removed pages and storefronts', function (int $status, string $html, string $outcome) {
+            $gift = Gift::factory()->pending()->for(User::factory())->create(['url' => 'https://example.com/product']);
+            $http = new MockHandler([new Response($status, [], $html)]);
+            $fetcher = (new ProductInfoFetcher($gift->url))->setClient(new Client(['handler' => HandlerStack::create($http)]));
+            $images = Mockery::mock(ProcessGiftImageAction::class);
+            $images->shouldNotReceive('fromUrl');
+            $images->shouldReceive('dispatchCompletedEvent')->once();
+
+            (new FetchGiftDetailsAction($gift))->setFetcher($fetcher)->handle($images);
+
+            expect($http->count())->toBe(0);
+            expect($gift->fresh())->fetch_status->toBe('failed')->title->toBeNull()
+                ->fetch_error->toHaveKey('outcome', $outcome);
+        })->with([
+            'access denied' => [200, '<title>Access denied</title>', 'blocked'],
+            'robot check' => [200, '<title>Robot Check</title>', 'blocked'],
+            'captcha' => [200, '<h1>CAPTCHA</h1>', 'blocked'],
+            'forbidden' => [403, '<h1>Forbidden</h1>', 'blocked'],
+            'rate limited' => [429, '<h1>Too many requests</h1>', 'blocked'],
+            'consent' => [200, '<h1>Before you continue</h1>', 'consent'],
+            'not found' => [404, '<title>Not found</title>', 'removed'],
+            'gone' => [410, '<title>Gone</title>', 'removed'],
+            'storefront' => [200, '<title>Online shop</title><meta property="og:image" content="https://example.com/logo.png">', 'incomplete'],
+        ]);
+
         it('finishes terminal outcomes without retrying or importing page metadata', function (FetchOutcome $outcome, ?int $status) {
             $gift = Gift::factory()->pending()->for(User::factory())->create(['title' => 'My wish']);
             $images = Mockery::mock(ProcessGiftImageAction::class);
@@ -357,7 +382,7 @@ describe('FetchGiftDetailsAction', function () {
             expect($gift->fresh())->fetch_status->toBe('failed')
                 ->title->toBe('My wish')->fetch_attempts->toBe(1)
                 ->fetched_at->not->toBeNull()
-                ->fetch_error->toBe(['summary' => 'Product fetch: '.$outcome->value, 'outcome' => $outcome->value, 'status_code' => $status]);
+                ->fetch_error->toEqual(['summary' => 'Product fetch: '.$outcome->value, 'outcome' => $outcome->value, 'status_code' => $status]);
         })->with([
             'forbidden' => [FetchOutcome::Blocked, 403],
             'rate limited' => [FetchOutcome::Blocked, 429],
