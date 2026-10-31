@@ -2035,5 +2035,15 @@
     "reservations.mute": "Geen mails meer over :owner’s lijstje",
     "reservations.muted": "Mails voor dit lijstje staan uit.",
     "Add your first wish": "Voeg je eerste wens toe",
-    "Manage together": "Samen beheren"
+    "Who is joining?": "Wie doet er mee?",
+    "Participant :number": "Deelnemer :number",
+    "Remove participant :number": "Verwijder deelnemer :number",
+    "Date and budget (optional)": "Datum en budget (optioneel)",
+    "Email addresses (optional)": "E-mailadressen (optioneel)",
+    "No email needed. You can share private links via WhatsApp.": "Geen e-mail nodig. Deel de persoonlijke links via WhatsApp.",
+    "Manage together": "Samen beheren",
+    "Steps": "Stappen",
+    "Share links": "Links delen",
+    "At least 3 people, including you.": "Minstens 3 personen, met jou erbij.",
+    "You are joining": "Jij doet mee"
 }

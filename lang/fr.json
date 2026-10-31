@@ -2035,5 +2035,15 @@
     "reservations.mute": "Plus de mails pour la liste de :owner",
     "reservations.muted": "Les mails pour cette liste sont désactivés.",
     "Add your first wish": "Ajoute ton premier souhait",
-    "Manage together": "Gérer ensemble"
+    "Who is joining?": "Qui participe ?",
+    "Participant :number": "Participant :number",
+    "Remove participant :number": "Retirer le participant :number",
+    "Date and budget (optional)": "Date et budget (facultatifs)",
+    "Email addresses (optional)": "Adresses e-mail (facultatives)",
+    "No email needed. You can share private links via WhatsApp.": "Pas besoin d’e-mail. Partage les liens privés via WhatsApp.",
+    "Manage together": "Gérer ensemble",
+    "Steps": "Étapes",
+    "Share links": "Partager",
+    "At least 3 people, including you.": "Au moins 3 personnes, toi compris.",
+    "You are joining": "Tu participes"
 }
