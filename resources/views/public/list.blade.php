@@ -4,7 +4,7 @@
 
 @section('robots', 'noindex, nofollow')
 
-@section('description', trans_choice('og.description', $gifts->total(), ['name' => $list->creator->name, 'count' => $gifts->total()]))
+@section('description', trans_choice('og.description', $totalGifts, ['name' => $list->creator->name, 'count' => $totalGifts]))
 @section('dynamic_og_image', true)
 <x-og-image view="public.list-og-image" :data="['list' => $list, 'gifts' => $gifts]" />
 

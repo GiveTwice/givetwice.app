@@ -114,6 +114,12 @@ describe('buyer list', function () {
         preg_match('/data-og-hash="([^"]+)"/', $all, $allHash);
         preg_match('/data-og-hash="([^"]+)"/', $filtered, $filteredHash);
         expect($allHash[1])->toBe($filteredHash[1]);
+        preg_match('/<meta name="description" content="([^"]+)"/', $all, $allDescription);
+        foreach (['free', 'under20'] as $filter) {
+            $page = $this->get($this->list->getPublicUrl('en').'?filter='.$filter)->getContent();
+            preg_match('/<meta name="description" content="([^"]+)"/', $page, $description);
+            expect($description[1])->toBe($allDescription[1]);
+        }
     });
 });
 
