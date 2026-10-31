@@ -22,16 +22,21 @@ describe('Secret Santa v2', function () {
         $this->base = '/en/exchange/'.$this->exchange->slug;
     });
 
-    it('creates separate private links for names without emails', function () {
+    it('creates separate private links for names without emails', function (array $email) {
         $this->actingAs($this->organizer)->post('/en/secret-santa', [
             'name' => 'Family', 'organizer_participates' => true,
-            'participants' => [['name' => 'A'], ['name' => 'B', 'email' => null]],
+            'participants' => [['name' => 'A', ...$email], ['name' => 'B', ...$email]],
         ])->assertSessionHasNoErrors()->assertRedirect();
         $exchange = GiftExchange::latest('id')->first();
         expect($exchange->participants)->toHaveCount(3)
             ->and($exchange->participants->pluck('token')->unique())->toHaveCount(3)
-            ->and($exchange->participants()->whereNull('email')->count())->toBe(2);
-    });
+            ->and($exchange->participants()->whereNull('email')->count())->toBe(2)
+            ->and($exchange->participants->pluck('name')->all())->toEqualCanonicalizing([$this->organizer->name, 'A', 'B']);
+    })->with([
+        'omitted' => [[]],
+        'null' => [['email' => null]],
+        'empty form field' => [['email' => '']],
+    ]);
 
     it('enforces total participant limits including the organizer', function (int $count, bool $organizer) {
         $this->actingAs($this->organizer)->post('/en/secret-santa', [

@@ -2033,5 +2033,17 @@
     "reservations.old": "I already bought the old one",
     "reservations.release": "Release the reservation",
     "reservations.mute": "No more emails about :owner’s list",
-    "reservations.muted": "Emails for this list are off."
+    "reservations.muted": "Emails for this list are off.",
+    "Add your first wish": "Add your first wish",
+    "Who is joining?": "Who is joining?",
+    "Participant :number": "Participant :number",
+    "Remove participant :number": "Remove participant :number",
+    "Date and budget (optional)": "Date and budget (optional)",
+    "Email addresses (optional)": "Email addresses (optional)",
+    "No email needed. You can share private links via WhatsApp.": "No email needed. You can share private links via WhatsApp.",
+    "Manage together": "Manage together",
+    "Steps": "Steps",
+    "Share links": "Share links",
+    "At least 3 people, including you.": "At least 3 people, including you.",
+    "You are joining": "You are joining"
 }

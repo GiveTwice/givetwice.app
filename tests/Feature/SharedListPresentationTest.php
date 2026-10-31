@@ -6,6 +6,7 @@ use App\Models\Gift;
 use App\Models\GiftList;
 use App\Models\User;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\View\View;
 
 beforeEach(function () {
     Queue::fake();
@@ -45,8 +46,12 @@ describe('reservation visibility', function () {
         $list = $dashboard->viewData('lists')->firstWhere('id', $this->list->id);
         expect($list->gifts->firstWhere('id', $this->reserved->id)->claims->count())->toBe($spoiler ? 1 : 0);
         expect($list->getAttributes())->not->toHaveKey('claimed_gifts_count');
-        $card = $this->get('/en/v/'.$this->list->id.'/'.$this->list->slug.'/gifts/'.$this->reserved->id.'/card')->assertOk();
-        expect(str_contains($card->getContent(), 'opacity-50'))->toBe($spoiler);
+        $reservationVisible = null;
+        Illuminate\Support\Facades\View::composer('components.shared-gift-tile', function (View $view) use (&$reservationVisible): void {
+            $reservationVisible = $view->getData()['isReserved'];
+        });
+        $this->get('/en/v/'.$this->list->id.'/'.$this->list->slug.'/gifts/'.$this->reserved->id.'/card')->assertOk();
+        expect($reservationVisible)->toBe($spoiler);
         $channels = collect((new GiftClaimed($this->reserved, $this->claim, 1))->broadcastOn())->pluck('name')->all();
         expect(in_array('private-user.'.$user->id, $channels, true))->toBe($spoiler);
         expect($channels)->not->toContain('list.'.$this->list->slug);

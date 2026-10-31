@@ -8,6 +8,7 @@
 @php
     $shell = \App\Helpers\AppShellHelper::lists(auth()->user());
     $currentLocale = $shell['currentLocale'];
+    $emptyDashboard = $lists->isNotEmpty() && $lists->sum('gifts_count') === 0;
 @endphp
 
 <div
@@ -74,15 +75,17 @@
     >
         <section>
             <x-app-content
-                :title="__('Welcome back, :name!', ['name' => auth()->user()->name])"
-                :description="__('Your wishlists, gift groups, and settings are all here.')"
+                :title="$emptyDashboard ? __('Add your first wish') : __('Welcome back, :name!', ['name' => auth()->user()->name])"
+                :description="$emptyDashboard ? __('Paste a shop link, or just type your wish.') : __('Your wishlists, gift groups, and settings are all here.')"
             >
+                @unless($emptyDashboard)
                 <x-slot:actions>
                     <a href="{{ route('lists.create', ['locale' => $currentLocale]) }}" class="btn-primary whitespace-nowrap">
                         <x-icons.plus class="w-4 h-4" />
                         {{ __('Create List') }}
                     </a>
                 </x-slot:actions>
+                @endunless
 
                 @php $highlightedSlug = request('list-added'); @endphp
 
@@ -91,13 +94,33 @@
                         @php $isHighlighted = $highlightedSlug === $list->slug; @endphp
                         <section
                             id="list-{{ $list->slug }}"
-                            class="list-section {{ ! $loop->first || $isHighlighted ? 'pt-8' : '' }} {{ ! $loop->last || $isHighlighted ? 'pb-8' : '' }}{{ $isHighlighted ? ' px-4 -mx-4 rounded-2xl scroll-mt-12 highlight-sunny-pulse' : '' }}"
+                            class="list-section {{ ! $loop->first || $isHighlighted ? 'pt-8' : '' }} {{ ! $loop->last || $isHighlighted ? 'pb-8' : '' }}{{ $isHighlighted ? ' px-4 -mx-4 rounded-2xl highlight-sunny-pulse' : '' }}"
                             @if($isHighlighted)
                                 x-data
                                 x-init="$el.scrollIntoView({ behavior: 'smooth', block: 'start' })"
                             @endif
                         >
-                            <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                            @if($list->gifts->isEmpty())
+                                <div class="max-w-lg">
+                                    @unless($emptyDashboard)
+                                        <h2 class="text-xl font-semibold">{{ __('Add your first wish') }}</h2>
+                                        <p class="mt-2 text-gray-600">{{ __('Paste a shop link, or just type your wish.') }}</p>
+                                    @endunless
+                                    <form method="POST" action="{{ route('gifts.store', ['locale' => $currentLocale]) }}" class="flex flex-col gap-3">
+                                        @csrf
+                                        <input type="hidden" name="list_id" value="{{ $list->id }}">
+                                        <label class="sr-only" for="wish-{{ $list->id }}">{{ __('Link or wish') }}</label>
+                                        <input id="wish-{{ $list->id }}" name="input" required maxlength="2048" value="{{ old('input') }}" placeholder="{{ __('Link or wish') }}" class="form-input">
+                                        @error('input')<p class="form-error">{{ $message }}</p>@enderror
+                                        <button class="btn-primary justify-center">{{ __('Add Gift') }}</button>
+                                    </form>
+                                    <details class="mt-4 text-sm text-gray-600">
+                                        <summary class="cursor-pointer py-2">{{ __('Try these too') }}</summary>
+                                        <x-gift-examples />
+                                    </details>
+                                </div>
+                            @endif
+                            <div class="my-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                 <div>
                                     <div class="flex items-center gap-3">
                                         <h2 class="text-lg font-bold text-gray-900">{{ $list->name }}</h2>
@@ -106,14 +129,14 @@
                                         {{ trans_choice(':count gift|:count gifts', $list->gifts_count, ['count' => $list->gifts_count]) }}
                                     </p>
                                 </div>
-                                <div class="flex flex-wrap items-center gap-2">
-                                    <a href="{{ url('/' . $currentLocale . '/list/' . $list->slug . '/edit') }}" class="btn-secondary" title="{{ __('Edit') }}">
+                                <div class="{{ $list->gifts->isEmpty() ? 'grid grid-cols-2 gap-x-2 gap-y-1' : 'flex flex-wrap items-center gap-2' }}">
+                                    <a href="{{ url('/' . $currentLocale . '/list/' . $list->slug . '/edit') }}" class="{{ $list->gifts->isEmpty() ? 'inline-flex min-h-11 items-center gap-2 py-2 text-sm text-gray-600 hover:text-gray-900' : 'btn-secondary' }}" title="{{ __('Edit') }}">
                                         <x-icons.edit class="w-5 h-5" />
-                                        <span class="hidden sm:inline">{{ __('Edit') }}</span>
+                                        <span>{{ __('Edit') }}</span>
                                     </a>
-                                    <x-collaborators-button :list="$list" />
-                                    <x-share-modal :list="$list" />
-                                    <a href="{{ url('/' . $currentLocale . '/gifts/create') }}?list={{ $list->id }}" class="btn-primary">
+                                    <x-collaborators-button :list="$list" :show-label="true" :quiet="$list->gifts->isEmpty()" />
+                                    <x-share-modal :list="$list" :show-label="true" :quiet="$list->gifts->isEmpty()" />
+                                    <a href="{{ url('/' . $currentLocale . '/gifts/create') }}?list={{ $list->id }}" class="{{ $list->gifts->isEmpty() ? 'inline-flex min-h-11 items-center gap-2 py-2 text-sm text-gray-600 hover:text-gray-900' : 'btn-primary' }}">
                                         <x-icons.plus class="w-5 h-5" />
                                         {{ __('Drop a hint') }}
                                     </a>
@@ -123,21 +146,7 @@
                             @unless($list->spoiler_mode)
                                 <p class="mb-4 text-sm text-gray-500">{{ __('Surprise protected. You cannot see what is reserved.') }}</p>
                             @endunless
-                            @if($list->gifts->isEmpty())
-                                <div class="mx-auto max-w-lg rounded-xl bg-cream-50 p-5">
-                                    <h3 class="text-xl font-semibold">{{ __('What would you like?') }}</h3>
-                                    <p class="mt-2 text-gray-600">{{ __('Paste a shop link, or just type your wish.') }}</p>
-                                    <form method="POST" action="{{ route('gifts.store', ['locale' => $currentLocale]) }}" class="my-5 flex flex-col gap-3">
-                                        @csrf
-                                        <input type="hidden" name="list_id" value="{{ $list->id }}">
-                                        <label class="sr-only" for="wish-{{ $list->id }}">{{ __('Link or wish') }}</label>
-                                        <input id="wish-{{ $list->id }}" name="input" required maxlength="2048" value="{{ old('input') }}" placeholder="{{ __('Link or wish') }}" class="form-input">
-                                        @error('input')<p class="form-error">{{ $message }}</p>@enderror
-                                        <button class="btn-primary justify-center">{{ __('Add Gift') }}</button>
-                                    </form>
-                                    <x-gift-examples />
-                                </div>
-                            @else
+                            @if($list->gifts->isNotEmpty())
                                 <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                                     @foreach($list->gifts as $gift)
                                         <x-gift-card :gift="$gift" :editable="true" :show-reservations="$list->spoiler_mode" />
@@ -160,6 +169,9 @@
                         </div>
                     @endforelse
                 </div>
+                @if($emptyDashboard)
+                    <a href="{{ route('lists.create', ['locale' => $currentLocale]) }}" class="btn-link mt-6 text-sm">{{ __('Create List') }}</a>
+                @endif
             </x-app-content>
         </section>
     </x-dynamic-component>
