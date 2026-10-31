@@ -76,7 +76,7 @@ class Claim extends Model
 
     public function snapshot(): array
     {
-        $gift = $this->gift;
+        $gift = $this->gift?->loadMissing('user');
         $list = $gift?->lists()->with('creator')->find(request()->integer('list')) ?? $gift?->lists()->with('creator')->first();
 
         return ['title' => $gift?->title, 'price' => $gift?->formatPrice(), 'url' => $gift?->url, 'owner_note' => $gift?->owner_note,

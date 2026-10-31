@@ -28,6 +28,7 @@ describe('ConfirmClaimAction', function () {
                 'gift_id' => $gift->id,
             ]);
 
+            $this->trackQueriesForEfficiency();
             $action = new ConfirmClaimAction;
             $claim = $action->execute($pendingClaim->confirmation_token);
 
