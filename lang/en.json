@@ -1689,7 +1689,6 @@
     "You now have access to \":name\".": "You now have access to \":name\".",
     "You signed up using a social login. Set a password to enable email login.": "You signed up using a social login. Set a password to enable email login.",
     "You want to claim this gift:": "You want to claim this gift:",
-    "You won't see who claimed what - it's a surprise!": "You won't see who claimed what - it's a surprise!",
     "You worked hard for this. Help family and friends celebrate your achievement with gifts you'll actually use in your next chapter.": "You worked hard for this. Help family and friends celebrate your achievement with gifts you'll actually use in your next chapter.",
     "You'll actually want to share it.": "You'll actually want to share it.",
     "You'll be able to add and edit gifts on this list together.": "You'll be able to add and edit gifts on this list together.",
@@ -1882,5 +1881,7 @@
     "Our promise is public so you can hold us to it. Future transparency reports will appear right here.": "Our promise is public so you can hold us to it. Future transparency reports will appear right here.",
     "Reports coming once there is revenue": "Reports coming once there is revenue",
     "Commission breakdown": "Commission breakdown",
-    "Remember to buy the gift at the store.": "Remember to buy the gift at the store."
+    "Remember to buy the gift at the store.": "Remember to buy the gift at the store.",
+    "You can see which gifts are claimed, but not who claimed them. The giver stays a surprise!": "You can see which gifts are claimed, but not who claimed them. The giver stays a surprise!",
+    "From :name's wishlist": "From :name's wishlist"
 }

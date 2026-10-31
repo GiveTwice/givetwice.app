@@ -1689,7 +1689,6 @@
     "You now have access to \":name\".": "Tu as maintenant accès à \":name\".",
     "You signed up using a social login. Set a password to enable email login.": "Tu t'es inscrit via une connexion sociale. Définis un mot de passe pour activer la connexion par e-mail.",
     "You want to claim this gift:": "Tu veux réclamer ce cadeau :",
-    "You won't see who claimed what - it's a surprise!": "Tu ne verras pas qui a réservé quoi - c'est une surprise !",
     "You worked hard for this. Help family and friends celebrate your achievement with gifts you'll actually use in your next chapter.": "Tu as travaillé dur pour ça. Aide famille et amis à célébrer ta réussite avec des cadeaux que tu utiliseras vraiment dans ton prochain chapitre.",
     "You'll actually want to share it.": "Tu auras vraiment envie de la partager.",
     "You'll be able to add and edit gifts on this list together.": "Vous pourrez ajouter et modifier des cadeaux sur cette liste ensemble.",
@@ -1882,5 +1881,7 @@
     "Our promise is public so you can hold us to it. Future transparency reports will appear right here.": "Notre promesse est publique pour que tu puisses nous demander des comptes. Les futurs rapports seront sur cette page.",
     "Reports coming once there is revenue": "Des rapports dès les premiers revenus",
     "Commission breakdown": "Détail des commissions",
-    "Remember to buy the gift at the store.": "Pense à acheter le cadeau en magasin."
+    "Remember to buy the gift at the store.": "Pense à acheter le cadeau en magasin.",
+    "You can see which gifts are claimed, but not who claimed them. The giver stays a surprise!": "Tu vois quels cadeaux sont réservés, mais pas par qui. La personne qui les offre reste une surprise !",
+    "From :name's wishlist": "De la liste de :name"
 }

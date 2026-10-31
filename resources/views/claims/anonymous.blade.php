@@ -53,20 +53,20 @@
 
     <div class="px-5 sm:px-6 py-3 bg-cream-50/50 border-t border-cream-100">
         <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3 text-sm">
-                <span class="flex items-center gap-1.5">
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
+                <span class="inline-flex items-center gap-1.5 shrink-0">
                     <span class="w-6 h-6 bg-coral-100 text-coral-400 rounded-full flex items-center justify-center text-xs font-bold">
                         <x-icons.checkmark class="w-3.5 h-3.5" />
                     </span>
                     <span class="text-gray-400 font-medium">{{ __('Browse') }}</span>
                 </span>
-                <x-icons.chevron-right class="w-4 h-4 text-gray-300" />
-                <span class="flex items-center gap-1.5">
+                <x-icons.chevron-right class="w-4 h-4 text-gray-300 shrink-0" />
+                <span class="inline-flex items-center gap-1.5 shrink-0">
                     <span class="w-6 h-6 bg-teal-500 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-sm">2</span>
                     <span class="text-gray-900 font-semibold">{{ __('Claim') }}</span>
                 </span>
-                <x-icons.chevron-right class="w-4 h-4 text-gray-300" />
-                <span class="flex items-center gap-1.5">
+                <x-icons.chevron-right class="w-4 h-4 text-gray-300 shrink-0" />
+                <span class="inline-flex items-center gap-1.5 shrink-0">
                     <span class="w-6 h-6 bg-cream-200 text-gray-400 rounded-full flex items-center justify-center text-xs font-bold">3</span>
                     <span class="text-gray-400 font-medium">{{ __('Gift') }}</span>
                 </span>

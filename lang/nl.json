@@ -1689,7 +1689,6 @@
     "You now have access to \":name\".": "Je hebt nu toegang tot \":name\".",
     "You signed up using a social login. Set a password to enable email login.": "Je hebt je aangemeld via een social login. Stel een wachtwoord in om in te loggen met e-mail.",
     "You want to claim this gift:": "Je wilt dit cadeau claimen:",
-    "You won't see who claimed what - it's a surprise!": "Je ziet niet wie wat afstreept - het is een verrassing!",
     "You worked hard for this. Help family and friends celebrate your achievement with gifts you'll actually use in your next chapter.": "Je hebt hier hard voor gewerkt. Help familie en vrienden je prestatie te vieren met cadeaus die je echt zult gebruiken in je volgende hoofdstuk.",
     "You'll actually want to share it.": "Je wilt het echt delen.",
     "You'll be able to add and edit gifts on this list together.": "Jullie kunnen samen cadeaus toevoegen en bewerken op deze lijst.",
@@ -1882,5 +1881,7 @@
     "Our promise is public so you can hold us to it. Future transparency reports will appear right here.": "Onze belofte staat hier, zodat je ons eraan kunt houden. Toekomstige transparantierapporten vind je op deze pagina.",
     "Reports coming once there is revenue": "Rapporten zodra er omzet is",
     "Commission breakdown": "Overzicht van commissies",
-    "Remember to buy the gift at the store.": "Vergeet niet het cadeau in de winkel te kopen."
+    "Remember to buy the gift at the store.": "Vergeet niet het cadeau in de winkel te kopen.",
+    "You can see which gifts are claimed, but not who claimed them. The giver stays a surprise!": "Je ziet welke cadeaus zijn afgestreept, maar niet door wie. De gever blijft een verrassing!",
+    "From :name's wishlist": "Van het verlanglijstje van :name"
 }
