@@ -35,7 +35,7 @@ class Claim extends Model
     protected static function booted(): void
     {
         static::creating(function (Claim $claim) {
-            if (empty($claim->confirmation_token) && empty($claim->user_id)) {
+            if (empty($claim->confirmation_token)) {
                 $claim->confirmation_token = Str::random(64);
             }
         });

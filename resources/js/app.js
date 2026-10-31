@@ -1,5 +1,7 @@
 import './bootstrap';
 import Alpine from 'alpinejs';
+import reservationSheet from './reservation-sheet';
+Alpine.data('reservationSheet', reservationSheet);
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -49,8 +51,11 @@ window.Alpine = Alpine;
 // Reload the current filter so sections, counts and gift details stay in sync.
 Alpine.data('publicList', (config) => ({
     init() {
+        if (/^#gift-\d+$/.test(window.location.hash)) {
+            this.$nextTick(() => document.querySelector(window.location.hash + ' > a')?.click());
+        }
         if (!window.Echo) return;
-        const refresh = () => window.location.reload();
+        const refresh = () => { if (!document.querySelector('.reservation-dialog[open]')) window.location.reload(); };
         window.Echo.channel('list.' + config.slug)
             .listen('.gift.added', refresh)
             .listen('.gift.fetch.completed', refresh);

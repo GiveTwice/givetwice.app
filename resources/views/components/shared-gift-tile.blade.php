@@ -1,6 +1,6 @@
 @props(['gift', 'isOwner' => false, 'isReserved' => false])
-<article data-gift-id="{{ $gift->id }}" class="min-w-0 {{ $isReserved ? 'opacity-50' : '' }}">
-    <a href="{{ route('claim.anonymous.form', ['locale' => app()->getLocale(), 'gift' => $gift]) }}" x-data x-on:click.prevent="$dispatch('open-gift-modal-{{ $gift->id }}')" class="block rounded-xl focus-visible:outline-2 focus-visible:outline-coral-500">
+<article id="gift-{{ $gift->id }}" data-gift-id="{{ $gift->id }}" class="min-w-0 {{ $isReserved ? 'opacity-50' : '' }}">
+    <a href="{{ route('claim.anonymous.form', ['locale' => app()->getLocale(), 'gift' => $gift, 'list' => $gift->pivot?->list_id]) }}" x-data x-on:click.prevent="{{ $isOwner ? "\$dispatch('open-gift-modal-{$gift->id}')" : "\$dispatch('reserve-gift', {url: \$el.href})" }}" class="block rounded-xl focus-visible:outline-2 focus-visible:outline-coral-500">
         <div class="relative aspect-square overflow-hidden rounded-xl bg-cream-100" data-gift-image>
             @if($gift->hasImage())
                 <img src="{{ $gift->getImageUrl('card') }}" alt="" class="h-full w-full object-cover" loading="lazy">
@@ -14,7 +14,7 @@
         <p class="text-sm text-gray-500">{{ $gift->formatPrice() ?? __('No price') }}</p>
     </a>
     @if($isOwner)
-        <form method="POST" action="{{ route('gifts.update', ['locale' => app()->getLocale(), 'gift' => $gift]) }}">
+        <form method="POST" action="{{ route('gifts.update', ['locale' => app()->getLocale(), 'gift' => $gift, 'list' => $gift->pivot?->list_id]) }}">
             @csrf @method('PUT')
             <input type="hidden" name="most_wanted" value="{{ $gift->most_wanted ? 0 : 1 }}">
             <button class="py-2 text-sm text-coral-600" aria-pressed="{{ $gift->most_wanted ? 'true' : 'false' }}" aria-label="{{ __('Most wanted') }}">{{ $gift->most_wanted ? '★' : '☆' }} {{ __('Most wanted') }}</button>

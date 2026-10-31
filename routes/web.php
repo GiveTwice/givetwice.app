@@ -129,6 +129,12 @@ Route::prefix('{locale}')
         Route::get('/claim/confirm/{token}', [ClaimController::class, 'confirm'])->name('claim.confirm');
         Route::get('/gifts/{gift}/claimed/{token?}', [ClaimController::class, 'showConfirmed'])->name('claim.confirmed');
 
+        Route::delete('/gifts/{gift}/reservation', [ClaimController::class, 'destroy'])->name('claim.cancel');
+        Route::patch('/gifts/{gift}/reservation', [ClaimController::class, 'updateEmail'])->name('claim.email');
+        Route::post('/gifts/{gift}/reservation/resend', [ClaimController::class, 'resend'])->name('claim.resend');
+        Route::delete('/reservation-email', [ClaimController::class, 'forgetEmail'])->name('claim.forget-email');
+        Route::match(['get', 'post'], '/reservation/{claim}/undo', [ClaimController::class, 'undo'])->middleware('signed')->name('claim.undo');
+
         // Gift card HTML (for real-time updates on public lists)
         Route::get('/v/{list}/{slug}/gifts/{giftId}/card', [GiftController::class, 'cardHtml'])
             ->whereNumber('list')

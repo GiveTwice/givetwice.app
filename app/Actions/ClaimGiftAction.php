@@ -34,6 +34,7 @@ class ClaimGiftAction
             $claim = Claim::create([
                 'gift_id' => $lockedGift->id,
                 'user_id' => $user->id,
+                'claimer_email' => $user->email,
                 'confirmed_at' => now(),
             ]);
 
