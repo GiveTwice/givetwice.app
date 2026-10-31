@@ -121,7 +121,7 @@ class ClaimController extends Controller
             $gift = $claim->gift;
             $claim->delete();
 
-            return redirect()->route('claim.anonymous.form', ['locale' => $locale, 'gift' => $gift])->with('success', __('Reservation cancelled. The gift is free again.'));
+            return redirect($gift && ! $gift->trashed() ? route('claim.anonymous.form', ['locale' => $locale, 'gift' => $gift]) : route('reservations.index', ['locale' => $locale]))->with('success', __('Reservation cancelled. The gift is free again.'));
         }
 
         return view('claims.undo', ['claim' => $claim]);

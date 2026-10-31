@@ -183,5 +183,5 @@ it('renders receipt links to the original shop, gift on the list and signed undo
     $document = new DOMDocument;
     @$document->loadHTML($mail->render());
     $links = collect(iterator_to_array($document->getElementsByTagName('a')))->map(fn ($link) => $link->getAttribute('href'));
-    expect($links)->toContain($this->gift->url, $this->list->getPublicUrl('en').'#gift-'.$this->gift->id, $mail->undoUrl);
+    expect($links)->toContain($this->gift->url, $claim->historyUrl('en'), $mail->undoUrl);
 });

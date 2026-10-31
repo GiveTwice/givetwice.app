@@ -2008,5 +2008,17 @@
     "Make my wishlist": "Créer ma liste",
     "Nobody else will buy this now. The surprise is safe. You still buy it yourself in the shop.": "Personne d’autre ne l’achètera. La surprise est préservée. À toi de l’acheter en boutique.",
     "All my reservations": "Toutes mes réservations",
-    "The gift will be free again.": "Le cadeau sera à nouveau disponible."
+    "The gift will be free again.": "Le cadeau sera à nouveau disponible.",
+    "reservations.intro": "On t’envoie un lien vers tous tes cadeaux réservés. Pas besoin de compte.",
+    "reservations.send": "Envoie-moi le lien",
+    "reservations.sent": "Le lien arrive dans ta boîte mail.",
+    "reservations.empty": "Pas encore de réservations.",
+    "reservations.deleted": "Supprimé par :owner",
+    "reservations.keep": "Je l’ai déjà acheté",
+    "reservations.alternative": "Choisir autre chose",
+    "reservations.dismiss": "Laisser tomber",
+    "reservations.keep_done": "On le garde. :owner l’a peut-être déjà : vérifie avec cette personne.",
+    "reservations.alternative_done": "Réservation retirée. Voici les autres idées, si la liste existe encore.",
+    "reservations.dismiss_done": "Retiré de tes réservations.",
+    "reservations.private": ":owner ne voit pas ton choix."
 }

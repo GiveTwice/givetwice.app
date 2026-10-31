@@ -18,6 +18,7 @@ use App\Http\Controllers\ListController;
 use App\Http\Controllers\ListInvitationController;
 use App\Http\Controllers\PublicListController;
 use App\Http\Controllers\ResendGiftExchangeInviteController;
+use App\Http\Controllers\ReservationsController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\ShowExchangeLandingController;
 use App\Http\Controllers\ShowOccasionController;
@@ -122,6 +123,10 @@ Route::prefix('{locale}')
         Route::post('/exchange/join/{joinToken}', [GiftExchangeController::class, 'join'])
             ->middleware('throttle:10,1')
             ->name('exchanges.join.store');
+
+        Route::get('/reservations', [ReservationsController::class, 'index'])->name('reservations.index');
+        Route::post('/reservations/link', [ReservationsController::class, 'link'])->middleware('throttle:5,60')->name('reservations.link');
+        Route::match(['get', 'post'], '/reservations/{claim}/{choice}', [ReservationsController::class, 'choose'])->middleware('signed')->name('reservations.choose');
 
         // Claim routes (guest + authenticated)
         Route::get('/gifts/{gift}/claim', [ClaimController::class, 'showAnonymousForm'])->name('claim.anonymous.form');

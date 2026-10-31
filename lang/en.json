@@ -2008,5 +2008,17 @@
     "Make my wishlist": "Make my wishlist",
     "Nobody else will buy this now. The surprise is safe. You still buy it yourself in the shop.": "Nobody else will buy this now. The surprise is safe. You still buy it yourself in the shop.",
     "All my reservations": "All my reservations",
-    "The gift will be free again.": "The gift will be free again."
+    "The gift will be free again.": "The gift will be free again.",
+    "reservations.intro": "We send you a link to everything you reserved. No account needed.",
+    "reservations.send": "Send me the link",
+    "reservations.sent": "Check your inbox for your reservations link.",
+    "reservations.empty": "No reservations yet.",
+    "reservations.deleted": "Deleted by :owner",
+    "reservations.keep": "I already bought it",
+    "reservations.alternative": "Choose something else",
+    "reservations.dismiss": "Never mind",
+    "reservations.keep_done": "We kept it. Maybe :owner already has it: check with them.",
+    "reservations.alternative_done": "Reservation removed. Here are the other ideas, if the list is still here.",
+    "reservations.dismiss_done": "Removed from your reservations.",
+    "reservations.private": ":owner cannot see what you choose. "
 }

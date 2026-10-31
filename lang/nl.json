@@ -2008,5 +2008,17 @@
     "Make my wishlist": "Maak mijn lijstje",
     "Nobody else will buy this now. The surprise is safe. You still buy it yourself in the shop.": "Niemand anders koopt dit nu nog. De verrassing blijft veilig. Kopen doe je zelf in de winkel.",
     "All my reservations": "Al mijn reservaties",
-    "The gift will be free again.": "Dan komt het cadeau weer vrij."
+    "The gift will be free again.": "Dan komt het cadeau weer vrij.",
+    "reservations.intro": "We sturen je een link naar alles wat je reserveerde. Ook zonder account.",
+    "reservations.send": "Stuur me de link",
+    "reservations.sent": "Je link zit zo in je mailbox.",
+    "reservations.empty": "Nog geen reservaties.",
+    "reservations.deleted": "Verwijderd door :owner",
+    "reservations.keep": "Ik heb het al gekocht",
+    "reservations.alternative": "Kies iets anders",
+    "reservations.dismiss": "Laat maar",
+    "reservations.keep_done": "We houden het bij. Misschien heeft :owner het al: check het even.",
+    "reservations.alternative_done": "Reservatie verwijderd. Hier zijn de andere ideeën, als het lijstje er nog is.",
+    "reservations.dismiss_done": "Uit je reservaties gehaald.",
+    "reservations.private": ":owner ziet niet wat je kiest."
 }

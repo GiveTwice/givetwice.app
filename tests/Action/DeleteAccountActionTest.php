@@ -212,9 +212,9 @@ describe('DeleteAccountAction', function () {
             expect(Gift::count())->toBe(1);
             expect(Gift::find($otherUserGift->id))->not->toBeNull();
 
-            // Verify claims on deleted gifts are removed
-            expect(Claim::find($claim1->id))->toBeNull();
-            expect(Claim::find($claim2->id))->toBeNull();
+            // Reservations survive deleted gifts with their saved details
+            expect(Claim::find($claim1->id)->gift_id)->toBeNull();
+            expect(Claim::find($claim2->id)->gift_id)->toBeNull();
 
             // Verify claim by deleted user still exists but user_id is null
             $claimByDeletedUser->refresh();
