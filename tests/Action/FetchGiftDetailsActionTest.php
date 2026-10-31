@@ -436,6 +436,31 @@ describe('FetchGiftDetailsAction', function () {
     });
 
     describe('Amazon browser policy', function () {
+        it('preserves the configured proxy and the single 403 browser fallback', function () {
+            config(['services.gift_fetcher.proxy' => 'http://proxy.example.test:3128']);
+            $gift = Gift::factory()->pending()->for(User::factory())->create(['url' => 'https://www.bol.com/product']);
+            $action = new class($gift) extends FetchGiftDetailsAction
+            {
+                public function configuredFetcher(): ProductInfoFetcher
+                {
+                    return parent::createFetcher();
+                }
+            };
+            $http = new MockHandler([new Response(403, [], '<title>Access denied</title>')]);
+            $browser = Mockery::mock(HeadlessFetcher::class);
+            $browser->shouldReceive('setTimeout', 'setUserAgent', 'setHeaders')->andReturnSelf();
+            $browser->shouldReceive('setProxy')->with('http://proxy.example.test:3128')->once()->andReturnSelf();
+            $browser->shouldReceive('fetch')->with($gift->url)->once()
+                ->andReturn(new HeadlessFetchResult('<title>Access denied</title>', 403, $gift->url));
+            $fetcher = $action->configuredFetcher()->setClient(new Client(['handler' => HandlerStack::create($http)]))->setHeadlessFetcher($browser);
+
+            $action->setFetcher($fetcher)->handle(mockImageAction());
+
+            expect($http->getLastOptions()['proxy'])->toBe('http://proxy.example.test:3128');
+            expect($http->count())->toBe(0);
+            expect($gift->fresh())->fetch_status->toBe('failed')->fetch_error->toHaveKey('outcome', 'blocked');
+        });
+
         it('makes one direct browser navigation after an HTTP challenge and never loops', function (string $domain, string $browserHtml, string $expectedStatus) {
             $url = 'https://www.'.$domain.'/dp/EXAMPLE?tag=private#fragment';
             $gift = Gift::factory()->pending()->for(User::factory())->create(['url' => $url]);
