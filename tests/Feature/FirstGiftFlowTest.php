@@ -6,9 +6,8 @@ use App\Models\Gift;
 use App\Models\GiftList;
 use App\Models\User;
 use GiveTwice\ProductInfoFetcher\DataTransferObjects\ProductInfo;
+use GiveTwice\ProductInfoFetcher\Enum\FetchOutcome;
 use GiveTwice\ProductInfoFetcher\ProductInfoFetcher;
-use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Psr7\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Queue;
@@ -70,41 +69,52 @@ it('saves and shares a pending link without waiting for its fetch', function () 
     expect($gift->fresh())->owner_note->toBe('For the windowsill')->fetch_status->toBe('pending');
 });
 
-it('protects edited fields including intentional blanks from a fetch already in flight', function () {
+it('protects edited fields including intentional blanks from a fetch already in flight', function (FetchOutcome $outcome) {
+    Storage::fake('public');
     $gift = Gift::factory()->pending()->create(['user_id' => $this->user->id, 'title' => null, 'description' => null, 'price_in_cents' => null]);
     $fetcher = Mockery::mock(ProductInfoFetcher::class);
-    $fetcher->shouldReceive('fetchAndParse')->once()->andReturnUsing(function () use ($gift) {
+    $fetcher->shouldReceive('fetchResult')->once()->andReturnUsing(function () use ($gift, $outcome) {
         $this->put("/en/gifts/{$gift->id}", [
             'title' => 'My title', 'description' => '', 'price' => '12.50', 'currency' => 'EUR',
             'edited_fields' => ['title', 'description', 'price_in_cents', 'currency'],
         ])->assertSessionHasNoErrors();
 
-        return new ProductInfo(name: 'Scraped title', description: 'Scraped description', priceInCents: 9999, priceCurrency: 'USD', rating: 4.5);
+        $this->postJson("/en/gifts/{$gift->id}/upload-image", ['image' => UploadedFile::fake()->image('mine.jpg')])->assertSuccessful();
+
+        return new ProductInfo(outcome: $outcome, imageUrl: 'https://example.com/image.jpg', allImageUrls: ['https://example.com/image.jpg'], name: 'Scraped title', description: 'Scraped description', priceInCents: 9999, priceCurrency: 'USD', rating: 4.5);
     });
     $images = Mockery::mock(ProcessGiftImageAction::class);
+    $images->shouldNotReceive('fromUrl');
     $images->shouldReceive('dispatchCompletedEvent');
     (new FetchGiftDetailsAction($gift))->setFetcher($fetcher)->handle($images);
-    expect($gift->fresh())->title->toBe('My title')->description->toBeNull()->price_in_cents->toBe(1250)->currency->toBe('EUR')->rating->toBe('4.5');
-});
+    expect($gift->fresh()->getFirstMedia('image')->file_name)->toBe('mine.jpg');
+    expect($gift->fresh())->title->toBe('My title')->description->toBeNull()->price_in_cents->toBe(1250)->currency->toBe('EUR')->rating->toBe('4.5')
+        ->fetch_status->toBe($outcome === FetchOutcome::Success ? 'completed' : 'failed');
+})->with([FetchOutcome::Success, FetchOutcome::Consent]);
 
-it('fills untouched fields on a late fetch', function () {
+it('fills untouched fields on a late fetch', function (FetchOutcome $outcome) {
     $gift = Gift::factory()->pending()->create(['user_id' => $this->user->id, 'description' => null, 'price_in_cents' => null]);
     $this->put("/en/gifts/{$gift->id}", ['title' => 'My wish']);
     $fetcher = Mockery::mock(ProductInfoFetcher::class);
-    $fetcher->shouldReceive('fetchAndParse')->andReturn(new ProductInfo(name: 'Imported', description: 'Details', priceInCents: 1500));
+    $fetcher->shouldReceive('fetchResult')->andReturn(new ProductInfo(outcome: $outcome, imageUrl: 'https://example.com/image.jpg', name: 'Imported', description: 'Details', priceInCents: 1500));
     $images = Mockery::mock(ProcessGiftImageAction::class);
     $images->shouldReceive('dispatchCompletedEvent');
     (new FetchGiftDetailsAction($gift))->setFetcher($fetcher)->handle($images);
-    expect($gift->fresh())->title->toBe('My wish')->description->toBe('Details')->price_in_cents->toBe(1500);
-});
+    expect($gift->fresh())->title->toBe('My wish')->description->toBe('Details')->price_in_cents->toBe(1500)
+        ->fetch_status->toBe($outcome === FetchOutcome::Success ? 'completed' : 'failed');
+    if ($outcome === FetchOutcome::Consent) {
+        $this->get("/en/gifts/{$gift->id}/fetching")->assertRedirect("/en/gifts/{$gift->id}/edit")->assertSessionHas('gift_context', 'fetch_failed');
+        $this->get("/en/gifts/{$gift->id}/edit")->assertOk()->assertSee('My wish')->assertSee('Details');
+    }
+})->with([FetchOutcome::Success, FetchOutcome::Consent]);
 
 it('records fetch outcomes independently of surviving gift records', function (bool $succeeds) {
     $gift = Gift::factory()->pending()->create(['user_id' => $this->user->id, 'url' => 'https://www.zalando.be/wallet']);
     $fetcher = Mockery::mock(ProductInfoFetcher::class);
     if ($succeeds) {
-        $fetcher->shouldReceive('fetchAndParse')->andReturn(new ProductInfo(name: 'Wallet'));
+        $fetcher->shouldReceive('fetchResult')->andReturn(new ProductInfo(outcome: FetchOutcome::Success, name: 'Wallet'));
     } else {
-        $fetcher->shouldReceive('fetchAndParse')->andThrow(new ConnectException('Timed out', new Request('GET', $gift->url)));
+        $fetcher->shouldReceive('fetchResult')->andReturn(new ProductInfo(outcome: FetchOutcome::Blocked, httpStatus: 403));
     }
     $images = Mockery::mock(ProcessGiftImageAction::class);
     $images->shouldReceive('dispatchCompletedEvent');
@@ -120,7 +130,7 @@ it('lets a late fetch improve an untouched slug prefill', function () {
     $this->put("/en/gifts/{$gift->id}", ['title' => 'Lego plantjes', 'tracks_edits' => true])->assertSessionHasNoErrors();
     expect($gift->fresh()->edited_fields)->toBe([]);
     $fetcher = Mockery::mock(ProductInfoFetcher::class);
-    $fetcher->shouldReceive('fetchAndParse')->andReturn(new ProductInfo(name: 'LEGO Botanicals 10329'));
+    $fetcher->shouldReceive('fetchResult')->andReturn(new ProductInfo(outcome: FetchOutcome::Success, name: 'LEGO Botanicals 10329'));
     $images = Mockery::mock(ProcessGiftImageAction::class);
     $images->shouldReceive('dispatchCompletedEvent');
     (new FetchGiftDetailsAction($gift))->setFetcher($fetcher)->handle($images);
@@ -136,13 +146,14 @@ it('keeps an uploaded photo when a fetch later offers an image', function () {
     expect($gift->fresh()->getFirstMedia('image')->id)->toBe($mediaId);
 });
 
-it('records retries without treating challenge or empty pages as successful imports', function (?string $title) {
+it('finishes challenge or empty pages with the friendly fallback', function (?string $title) {
     $gift = Gift::factory()->pending()->create(['user_id' => $this->user->id, 'title' => null]);
     $fetcher = Mockery::mock(ProductInfoFetcher::class);
-    $fetcher->shouldReceive('fetchAndParse')->andReturn(new ProductInfo(name: $title));
+    $fetcher->shouldReceive('fetchResult')->once()->andReturn(new ProductInfo(outcome: $title === 'Access denied' ? FetchOutcome::Blocked : FetchOutcome::Incomplete, name: $title));
     $images = Mockery::mock(ProcessGiftImageAction::class);
     Log::spy();
-    expect(fn () => (new FetchGiftDetailsAction($gift))->setFetcher($fetcher)->handle($images))->toThrow(RuntimeException::class);
+    $images->shouldReceive('dispatchCompletedEvent')->once();
+    (new FetchGiftDetailsAction($gift))->setFetcher($fetcher)->handle($images);
     Log::shouldHaveReceived('info')->with('Gift fetch attempt', Mockery::on(fn (array $data): bool => $data['status'] === 'failed'))->once();
-    expect($gift->fresh()->title)->toBeNull();
+    expect($gift->fresh())->title->toBeNull()->fetch_status->toBe('failed');
 })->with([null, 'Access denied', "Women's & Men's Clothing, Shop Online Fashion | SHEIN"]);
