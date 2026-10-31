@@ -18,6 +18,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class ClaimController extends Controller
@@ -85,7 +86,8 @@ class ClaimController extends Controller
         abort_unless($claim !== null, 403);
         $email = strtolower(trim($request->validated('email')));
         $this->limit($request, $email, 'mail');
-        $claim->update(['claimer_email' => $email, 'user_id' => $claim->user?->email === $email ? $claim->user_id : null]);
+        $claim->update(['claimer_email' => $email, 'user_id' => $claim->user?->email === $email ? $claim->user_id : null, 'confirmation_token' => $claim->confirmation_token ?? Str::random(64)]);
+        Cookie::queue('reservation_'.$gift->id, $claim->confirmation_token, 60 * 24 * 365);
         Cookie::queue('reservation_email', $email, 60 * 24 * 90);
         Mail::to($email)->queue((new ReservationMail($claim, $locale))->locale($locale));
 

@@ -165,3 +165,23 @@ it('links an instant reservation to an account after verification', function () 
     event(new Verified($user));
     expect($claim->fresh()->user_id)->toBe($user->id);
 });
+
+it('keeps browser control when correcting an older account reservation', function () {
+    $buyer = User::factory()->create();
+    $claim = Claim::factory()->create(['gift_id' => $this->gift->id, 'user_id' => $buyer->id, 'confirmation_token' => null]);
+    $claim->update(['confirmation_token' => null]);
+    $this->actingAs($buyer)->patch($this->url.'/reservation', ['email' => 'corrected@example.test'])->assertOk()->assertCookie('reservation_'.$this->gift->id);
+    expect($claim->fresh()->confirmation_token)->not->toBeNull();
+    expect($claim->fresh()->user_id)->toBeNull();
+    auth()->logout();
+    $this->withCookie('reservation_'.$this->gift->id, $claim->fresh()->confirmation_token)->post($this->url.'/reservation/resend')->assertOk();
+});
+
+it('renders receipt links to the original shop, gift on the list and signed undo', function () {
+    $claim = Claim::factory()->anonymous()->confirmed()->create(['gift_id' => $this->gift->id]);
+    $mail = new ReservationMail($claim);
+    $document = new DOMDocument;
+    @$document->loadHTML($mail->render());
+    $links = collect(iterator_to_array($document->getElementsByTagName('a')))->map(fn ($link) => $link->getAttribute('href'));
+    expect($links)->toContain($this->gift->url, $this->list->getPublicUrl('en').'#gift-'.$this->gift->id, $mail->undoUrl);
+});
