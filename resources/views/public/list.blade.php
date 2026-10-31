@@ -17,9 +17,9 @@
 <div x-data="publicList({ slug: @js($list->slug), showReservations: @js($showReservations) })">
     <header class="mb-3 flex flex-col gap-1.5">
         <h1 class="text-xl font-bold text-gray-900 wrap-anywhere sm:text-3xl">{{ $list->name }}</h1>
-        <p class="text-xs text-gray-500">{{ __('Created by :name', ['name' => $list->creator->name]) }}</p>
+        <p class="text-xs text-gray-700">{{ __('Created by :name', ['name' => $list->creator->name]) }}</p>
         @if($list->occasion_date)
-            <p class="text-xs text-gray-600">
+            <p class="text-xs text-gray-700">
                 <span class="inline-flex flex-wrap gap-1 rounded-full bg-sunny-100 px-3 py-1">
                     {{ $occasionLabels[$list->occasion] ?? __('Occasion') }} · {{ $list->occasion_date->translatedFormat('j F') }}
                     @unless($isOwner)
@@ -29,20 +29,20 @@
             </p>
         @endif
         @if($showReservations)
-            <div data-reservation-progress class="text-xs text-gray-600">
+            <div data-reservation-progress class="text-xs text-gray-700">
                 <div class="flex flex-wrap justify-between gap-1">
                     <span>{{ __(':free of :total still free', ['free' => $availableGifts, 'total' => $totalGifts]) }}</span>
                     @unless($isOwner)<span>{{ __(':name cannot see who buys what', ['name' => $list->creator->name]) }}</span>@endunless
                 </div>
-                <div class="mt-1 h-1 overflow-hidden rounded-full bg-cream-200"><div class="h-full bg-teal-500" style="width: {{ $totalGifts ? 100 * $availableGifts / $totalGifts : 0 }}%"></div></div>
+                <div class="mt-1 h-1 overflow-hidden rounded-full bg-cream-200"><div class="h-full bg-teal-700" style="width: {{ $totalGifts ? 100 * $availableGifts / $totalGifts : 0 }}%"></div></div>
             </div>
             <nav aria-label="{{ __('Filter gifts') }}" class="flex flex-wrap gap-2 text-xs">
                 @foreach(['all' => __('All'), 'free' => __('Still free'), 'under20' => __('Under €20')] as $value => $label)
-                    <a href="{{ $list->getPublicUrl() . ($value === 'all' ? '' : '?filter=' . $value) }}" @if($filter === $value) aria-current="true" @endif class="rounded-full border px-3 py-1.5 {{ $filter === $value ? 'border-coral-500 bg-coral-50 text-coral-700' : 'border-cream-300 text-gray-600' }}">{{ $label }}</a>
+                    <a href="{{ $list->getPublicUrl() . ($value === 'all' ? '' : '?filter=' . $value) }}" @if($filter === $value) aria-current="true" @endif class="rounded-full border px-3 py-1.5 {{ $filter === $value ? 'border-coral-500 bg-coral-50 text-coral-700' : 'border-gray-500 bg-white text-gray-700' }}">{{ $label }}</a>
                 @endforeach
             </nav>
         @else
-            <p class="rounded-lg bg-white px-3 py-2 text-xs text-gray-600">{{ __('Surprise protected. You cannot see what is reserved.') }}</p>
+            <p class="rounded-lg bg-white px-3 py-2 text-xs text-gray-700">{{ __('Surprise protected. You cannot see what is reserved.') }}</p>
         @endif
         @if($isOwner)
             <div class="flex flex-wrap items-center gap-2 text-sm">
@@ -54,7 +54,7 @@
     </header>
     @foreach($sections as $section)
         @if($loop->last && $section->isNotEmpty())
-            <h2 class="mb-3 mt-6 text-sm font-semibold text-gray-500" data-reserved-heading>{{ __('Already reserved (:count)', ['count' => $section->count()]) }}</h2>
+            <h2 class="mb-3 mt-6 text-sm font-semibold text-gray-700" data-reserved-heading>{{ __('Already reserved (:count)', ['count' => $section->count()]) }}</h2>
         @endif
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5" data-gift-grid>
             @foreach($section as $gift)
@@ -62,7 +62,7 @@
             @endforeach
         </div>
     @endforeach
-    @if($gifts->isEmpty())<p class="py-8 text-gray-500" data-empty-state>{{ __('No gifts yet') }}</p>@endif
+    @if($gifts->isEmpty())<p class="py-8 text-gray-700" data-empty-state>{{ __('No gifts yet') }}</p>@endif
     @if($isOwner)
         @foreach($gifts as $gift)<x-gift-modal :gift="$gift" :is-owner="$isOwner" :show-reservations="$showReservations" />@endforeach
     @else
@@ -85,7 +85,7 @@
             </div>
         @endunless
     @endauth
-<div class="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-sm text-gray-500">
+<div class="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-sm text-gray-700">
     <div class="flex items-center gap-2">
         <x-icons.shield-check class="w-5 h-5 text-teal-500" />
         <span>{{ __('Privacy protected') }}</span>
