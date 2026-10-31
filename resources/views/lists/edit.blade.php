@@ -70,7 +70,7 @@
                             <div class="flex flex-wrap gap-2">
                                 @foreach(['' => __('No date'), 'sinterklaas' => __('Sinterklaas'), 'christmas' => __('Christmas'), 'birthday' => __('Birthday'), 'other' => __('Other')] as $value => $label)
                                     <label class="cursor-pointer">
-                                        <input type="radio" name="occasion" value="{{ $value }}" @checked((old('occasion', $list->occasion) ?? '') === $value) class="peer sr-only">
+                                        <input type="radio" x-data x-on:change="if ($el.value === '') { document.getElementById('occasion_date').value = ''; }" name="occasion" value="{{ $value }}" @checked((old('occasion', $list->occasion) ?? '') === $value) class="peer sr-only">
                                         <span class="block rounded-full border border-cream-300 px-3 py-1.5 text-sm peer-checked:border-coral-500 peer-checked:bg-coral-50 peer-checked:text-coral-700 peer-focus-visible:outline-2 peer-focus-visible:outline-coral-500">{{ $label }}</span>
                                     </label>
                                 @endforeach
