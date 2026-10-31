@@ -22,6 +22,10 @@ class GiftExchangeParticipant extends Model
         'assigned_to_participant_id',
         'joined_at',
         'viewed_at',
+        'wishlist_id',
+        'whatsapp_opened_at',
+        'sent_at',
+        'token_generated_at',
     ];
 
     protected function casts(): array
@@ -29,6 +33,9 @@ class GiftExchangeParticipant extends Model
         return [
             'joined_at' => 'datetime',
             'viewed_at' => 'datetime',
+            'whatsapp_opened_at' => 'datetime',
+            'sent_at' => 'datetime',
+            'token_generated_at' => 'datetime',
         ];
     }
 
@@ -41,6 +48,7 @@ class GiftExchangeParticipant extends Model
         });
     }
 
+    /** @return BelongsTo<GiftExchange, $this> */
     public function exchange(): BelongsTo
     {
         return $this->belongsTo(GiftExchange::class, 'exchange_id');
@@ -51,6 +59,7 @@ class GiftExchangeParticipant extends Model
         return $this->belongsTo(User::class);
     }
 
+    /** @return BelongsTo<self, $this> */
     public function assignedTo(): BelongsTo
     {
         return $this->belongsTo(self::class, 'assigned_to_participant_id');
@@ -71,8 +80,18 @@ class GiftExchangeParticipant extends Model
         return $this->hasMany(GiftExchangeExclusion::class, 'receiver_id');
     }
 
+    /** @return BelongsTo<GiftList, $this> */
+    public function wishlist(): BelongsTo
+    {
+        return $this->belongsTo(GiftList::class, 'wishlist_id');
+    }
+
     public function defaultWishlist(): ?GiftList
     {
+        if ($this->wishlist_id) {
+            return $this->wishlist;
+        }
+
         if (! $this->user_id) {
             return null;
         }
@@ -80,6 +99,20 @@ class GiftExchangeParticipant extends Model
         return GiftList::where('creator_id', $this->user_id)
             ->where('is_default', true)
             ->first();
+    }
+
+    public static function forReveal(string $token): self
+    {
+        $participant = self::where('token', $token)->with('exchange', 'wishlist')->firstOrFail();
+        abort_unless($participant->exchange->isDrawn(), 404);
+        abort_if($participant->isTokenExpired(), 410, __('This link has expired. Ask the organizer for a new one.'));
+
+        return $participant;
+    }
+
+    public function revealUrl(): string
+    {
+        return route('exchanges.reveal', ['locale' => $this->exchange->locale, 'token' => $this->token]);
     }
 
     public function hasViewed(): bool
@@ -96,6 +129,6 @@ class GiftExchangeParticipant extends Model
 
     public function isTokenExpired(): bool
     {
-        return $this->created_at->addDays(90)->isPast();
+        return ($this->token_generated_at ?? $this->created_at)->copy()->addDays(90)->isPast();
     }
 }

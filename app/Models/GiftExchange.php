@@ -71,6 +71,7 @@ class GiftExchange extends Model
         return $this->belongsTo(User::class, 'organizer_id');
     }
 
+    /** @return HasMany<GiftExchangeParticipant, $this> */
     public function participants(): HasMany
     {
         return $this->hasMany(GiftExchangeParticipant::class, 'exchange_id');

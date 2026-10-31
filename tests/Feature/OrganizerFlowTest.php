@@ -205,7 +205,7 @@ describe('Organizer Flow', function () {
     });
 
     describe('view assignments', function () {
-        it('shows assignments on status page after draw', function () {
+        it('shows participants without loading assignments after draw', function () {
             $user = User::factory()->create();
             $exchange = GiftExchange::factory()->drawn()->create(['organizer_id' => $user->id]);
 
@@ -220,7 +220,8 @@ describe('Organizer Flow', function () {
             $this->actingAs($user)
                 ->get(route('exchanges.status', ['locale' => 'en', 'exchange' => $exchange->slug]))
                 ->assertOk()
-                ->assertSee(__('Assignments'))
+                ->assertViewMissing('myDraw')
+                ->assertViewHas('exchange', fn ($exchange) => $exchange->participants->every(fn ($participant) => ! $participant->relationLoaded('assignedTo')))
                 ->assertSee('Alice')
                 ->assertSee('Bob')
                 ->assertSee('Carol');

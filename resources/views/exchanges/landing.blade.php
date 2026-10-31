@@ -15,13 +15,14 @@
 @section('content')
 <div class="max-w-2xl mx-auto">
 
-    {{-- Compact header — not a wall of marketing --}}
+    {{-- Compact header - not a wall of marketing --}}
     <div class="text-center pt-6 pb-4">
+        <p class="text-sm text-gray-500">{{ __('Step 1 of 3') }}</p>
         <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">🎲 {{ $title }}</h1>
         <p class="text-gray-600">{{ __('Draw names. Buy gifts. Keep everyone guessing who got whom.') }}</p>
     </div>
 
-    {{-- The form is always visible — guest or authenticated --}}
+    {{-- The form is always visible - guest or authenticated --}}
     <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6 sm:p-8 mb-8">
 
         @auth
@@ -62,9 +63,10 @@
                     <p class="form-help mb-3">{{ __('Add at least 2 other people (3 total with you, if you\'re playing).') }}</p>
 
                     <template x-for="(participant, index) in participants" :key="index">
-                        <div class="flex gap-2 mb-2">
-                            <input type="text" :name="'participants[' + index + '][name]'" class="form-input flex-1" :placeholder="'{{ __('Name') }}'" x-model="participant.name" required>
-                            <input type="email" :name="'participants[' + index + '][email]'" class="form-input flex-1" :placeholder="'{{ __('Email') }}'" x-model="participant.email" required>
+                        <div class="grid gap-2 mb-3" x-data="{ showEmail: !!participant.email }">
+                            <input type="text" :name="'participants[' + index + '][name]'" class="form-input min-w-0" :placeholder="'{{ __('Name') }}'" x-model="participant.name" required>
+                            <button type="button" class="btn-link text-sm text-left" x-show="!showEmail" @click="showEmail = true">+ {{ __('Email (optional)') }}</button>
+                            <input type="email" :name="'participants[' + index + '][email]'" class="form-input min-w-0" :placeholder="'{{ __('Email (optional)') }}'" x-model="participant.email" x-show="showEmail">
                             <button type="button" @click="removeParticipant(index)" x-show="participants.length > 2" class="text-gray-400 hover:text-red-500 px-2">
                                 &times;
                             </button>
@@ -75,6 +77,7 @@
                         + {{ __('Add another person') }}
                     </button>
 
+                    @if($errors->any())<p class="form-error">{{ $errors->first() }}</p>@endif
                     @error('participants') <p class="form-error">{{ $message }}</p> @enderror
                 </div>
 
@@ -91,18 +94,18 @@
 
                 @auth
                 <div class="form-actions">
-                    <button type="submit" class="btn-primary w-full sm:w-auto">{{ __('Create group') }}</button>
+                    <button type="submit" class="btn-primary w-full sm:w-auto">{{ __('Next') }}</button>
                 </div>
                 @else
                 <div class="form-actions">
-                    <button type="submit" class="btn-primary w-full sm:w-auto">{{ __('Create group') }}</button>
+                    <button type="submit" class="btn-primary w-full sm:w-auto">{{ __('Next') }}</button>
                 </div>
 
                 <div x-show="showAuthPrompt" x-transition x-cloak class="mt-4 bg-coral-50 border border-coral-200 rounded-xl p-5 text-center">
                     <p class="font-semibold text-gray-900 mb-1">{{ __('Almost there!') }}</p>
                     <p class="text-gray-600 text-sm mb-4">{{ __('Create a free account to save your group and draw names.') }}</p>
                     <div class="flex flex-col sm:flex-row gap-2 justify-center">
-                        <a href="{{ route('register', ['locale' => $locale]) }}?intended={{ urlencode(route('exchanges.landing', ['locale' => $locale, 'exchangeType' => $exchangeType])) }}" class="btn-primary">{{ __('Sign up — it\'s free') }}</a>
+                        <a href="{{ route('register', ['locale' => $locale]) }}?intended={{ urlencode(route('exchanges.landing', ['locale' => $locale, 'exchangeType' => $exchangeType])) }}" class="btn-primary">{{ __('Sign up - it\'s free') }}</a>
                         <a href="{{ route('login', ['locale' => $locale]) }}?intended={{ urlencode(route('exchanges.landing', ['locale' => $locale, 'exchangeType' => $exchangeType])) }}" class="btn-secondary">{{ __('Log in') }}</a>
                     </div>
                 </div>
@@ -111,15 +114,15 @@
         </form>
     </div>
 
-    {{-- How it works — below the form, not above it --}}
+    {{-- How it works - below the form, not above it --}}
     <div class="grid grid-cols-3 gap-4 mb-8">
         <div class="text-center p-4">
             <div class="w-10 h-10 bg-coral-100 rounded-lg flex items-center justify-center text-lg mx-auto mb-2 font-bold text-coral-600">1</div>
-            <p class="text-gray-600 text-xs">{{ __('Add everyone\'s name and email. Set a budget if you want.') }}</p>
+            <p class="text-gray-600 text-xs">{{ __('Names first. Email is optional.') }}</p>
         </div>
         <div class="text-center p-4">
             <div class="w-10 h-10 bg-sunny-100 rounded-lg flex items-center justify-center text-lg mx-auto mb-2 font-bold text-sunny-600">2</div>
-            <p class="text-gray-600 text-xs">{{ __('We shake the hat and send everyone an email with their person. No peeking.') }}</p>
+            <p class="text-gray-600 text-xs">{{ __('Add couples, draw names, then send each private link.') }}</p>
         </div>
         <div class="text-center p-4">
             <div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center text-lg mx-auto mb-2 font-bold text-teal-600">3</div>
@@ -149,7 +152,7 @@ function exchangeForm() {
         budgetAmount: saved?.budgetAmount || {!! Js::from(old('budget_amount', '')) !!},
         budgetCurrency: saved?.budgetCurrency || {!! Js::from(old('budget_currency', 'EUR')) !!},
         organizerParticipates: saved?.organizerParticipates ?? true,
-        participants: saved?.participants || [
+        participants: {!! Js::from(old('participants')) !!} || saved?.participants || [
             { name: '', email: '' },
             { name: '', email: '' },
         ],
@@ -175,6 +178,7 @@ function exchangeForm() {
             localStorage.removeItem(storageKey);
         },
         addParticipant() {
+            if (this.participants.length >= (this.organizerParticipates ? 49 : 50)) { return; }
             this.participants.push({ name: '', email: '' });
         },
         removeParticipant(index) {

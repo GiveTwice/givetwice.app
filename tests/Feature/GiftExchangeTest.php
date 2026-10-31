@@ -190,7 +190,7 @@ describe('Gift Exchange Feature', function () {
                 ->assertViewIs('exchanges.reveal');
         });
 
-        it('marks participant as viewed', function () {
+        it('marks participant as viewed only on POST', function () {
             $exchange = GiftExchange::factory()->drawn()->create();
             $participant = GiftExchangeParticipant::factory()->create(['exchange_id' => $exchange->id]);
             $assignedTo = GiftExchangeParticipant::factory()->create(['exchange_id' => $exchange->id]);
@@ -198,7 +198,7 @@ describe('Gift Exchange Feature', function () {
 
             expect($participant->fresh()->viewed_at)->toBeNull();
 
-            $this->get("/en/exchange/{$participant->token}");
+            $this->post("/en/exchange/{$participant->token}");
 
             expect($participant->fresh()->viewed_at)->not->toBeNull();
         });

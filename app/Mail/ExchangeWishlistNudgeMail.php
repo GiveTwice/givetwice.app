@@ -22,7 +22,7 @@ class ExchangeWishlistNudgeMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: __('Quick hint for whoever drew you').' — '.$this->exchange->name,
+            subject: __('Quick hint for whoever drew you').' - '.$this->exchange->name,
         );
     }
 
@@ -33,9 +33,7 @@ class ExchangeWishlistNudgeMail extends Mailable
             with: [
                 'participant' => $this->participant,
                 'exchange' => $this->exchange,
-                'registerUrl' => route('register', [
-                    'locale' => $this->exchange->locale,
-                ]).'?utm_source=givetwice&utm_medium=email&utm_campaign=wishlist-nudge',
+                'registerUrl' => $this->participant->revealUrl(),
             ],
         );
     }

@@ -1,233 +1,113 @@
 @extends('layouts.app')
-
 @section('title', $exchange->name)
-
 @section('content')
-@php
-    $shell = \App\Helpers\AppShellHelper::secretSanta(auth()->user());
-    $currentLocale = $shell['currentLocale'];
-    $secretSantaUrl = $shell['secretSantaUrl'];
-@endphp
+@php($locale = app()->getLocale())
+<div class="max-w-2xl mx-auto space-y-6 py-6">
+    <p class="text-sm text-gray-500">{{ $exchange->isDraft() ? __('Step 2 of 3') : __('Step 3 of 3') }}</p>
+    <h1 class="text-2xl font-bold break-words">{{ $exchange->name }}</h1>
+    <p class="text-gray-600">{{ $exchange->event_date?->format('d/m/Y') }} {{ $exchange->formatBudget() }}</p>
+    @if($errors->any()) <div class="alert-error" role="alert">{{ $errors->first() }}</div> @endif
 
-<x-app-shell
-    :title="__('Secret Santa')"
-    :sidebar-items="$shell['sidebarItems']"
-    :stats="$shell['sidebarStats']"
->
-    <div class="space-y-6">
-        @if(session('success'))
-            <div class="alert-success">{{ session('success') }}</div>
-        @endif
-
-        <x-app-content
-            :breadcrumbs="[
-                ['label' => __('Secret Santa'), 'url' => $secretSantaUrl],
-                ['label' => $exchange->name]
-            ]"
-        >
-            <x-slot:titleSlot>
-                <h1 class="text-2xl font-bold text-gray-900">{{ $exchange->name }}</h1>
-                <div class="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-500">
-                    @if($exchange->event_date)
-                        <span>📅 {{ $exchange->event_date->format('M j, Y') }}</span>
-                    @endif
-                    @if($exchange->formatBudget())
-                        <span>💰 {{ $exchange->formatBudget() }}</span>
-                    @endif
-                    <span>👥 {{ $exchange->participants->count() }} {{ __('participants') }}</span>
-                    @if($exchange->isDrawn())
-                        <span class="badge badge-success">{{ __('Names drawn') }}</span>
-                    @else
-                        <span class="badge badge-warning">{{ __('Draft') }}</span>
-                    @endif
-                </div>
-            </x-slot:titleSlot>
-
-            @if($exchange->isDraft())
-                <x-slot:actions>
-                    <form method="POST" action="{{ route('exchanges.draw', ['locale' => $currentLocale, 'exchange' => $exchange->slug]) }}">
-                        @csrf
-                        <button type="submit" class="btn-primary whitespace-nowrap" onclick="return confirm('{{ __('Draw names and send invites? This can\'t be undone.') }}')">
-                            🎲 {{ __('Draw names & send invites') }}
-                        </button>
-                    </form>
-                </x-slot:actions>
-            @endif
-
-            {{-- Your draw (shown to organizer who is also a participant) --}}
-            @if($myDraw)
-    <div class="bg-gradient-to-r from-coral-50 to-sunny-50 rounded-2xl p-6 sm:p-8 mb-6 border border-coral-100">
-        <p class="text-sm text-gray-500 mb-1">{{ __('You\'re buying a gift for') }}</p>
-        <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-lg font-bold text-coral-500 shadow-sm">
-                    {{ strtoupper(substr($myDraw->name, 0, 1)) }}
-                </div>
-                <p class="text-xl font-bold text-gray-900">{{ $myDraw->name }}</p>
-            </div>
-            @if($myDraw->user_id && $myDraw->defaultWishlist())
-                <a href="{{ route('public.list', ['locale' => $currentLocale, 'list' => $myDraw->defaultWishlist()->id, 'slug' => $myDraw->defaultWishlist()->slug]) }}" class="btn-primary-sm">
-                    {{ __('See wishlist') }} →
-                </a>
-            @endif
-        </div>
-    </div>
-            @endif
-
-            {{-- Join link (draft only) --}}
-            @if($exchange->isDraft() && $exchange->join_token)
-    <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6 sm:p-8 mb-6" x-data="{ copied: false }">
-        <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ __('Invite link') }}</h2>
-        <p class="text-gray-600 text-sm mb-4">{{ __('Share this link so people can add themselves to the group before you draw.') }}</p>
-        <div class="flex gap-2">
-            <input type="text" readonly value="{{ $exchange->getJoinUrl() }}" class="form-input flex-1 text-sm bg-gray-50" x-ref="joinUrl" @click="$el.select()">
-            <button type="button"
-                    @click="navigator.clipboard.writeText($refs.joinUrl.value); copied = true; setTimeout(() => copied = false, 2000)"
-                    class="btn-secondary shrink-0 text-sm"
-                    :class="copied && 'ring-2 ring-teal-300'">
-                <span x-show="!copied">{{ __('Copy') }}</span>
-                <span x-show="copied" x-cloak>{{ __('Copied!') }}</span>
-            </button>
-        </div>
-        @php
-            $joinWhatsappMessage = __('Join my gift exchange ":name" on GiveTwice!', ['name' => $exchange->name]) . ' ' . $exchange->getJoinUrl();
-        @endphp
-        <a href="https://wa.me/?text={{ urlencode($joinWhatsappMessage) }}"
-           target="_blank"
-           rel="noopener noreferrer"
-           class="inline-flex items-center gap-2 px-4 py-2 mt-3 bg-[#25D366] text-white rounded-lg font-medium text-sm hover:bg-[#1fb855] transition-colors">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-            {{ __('Share via WhatsApp') }}
-        </a>
-    </div>
-            @endif
-
-            {{-- Share section (after draw) --}}
-            @if($exchange->isDrawn())
-    @php
-        $whatsappMessage = __(':name on GiveTwice — check your email to see who you got!', ['name' => $exchange->name]);
-    @endphp
-    <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6 sm:p-8 mb-6" x-data="{ copied: false, message: {!! Js::from($whatsappMessage) !!} }">
-        <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ __('Let everyone know') }}</h2>
-        <p class="text-gray-600 text-sm mb-4">{{ __('Remind participants to check their email for their draw.') }}</p>
-        <div class="flex flex-wrap gap-3">
-            <a href="https://wa.me/?text={{ urlencode($whatsappMessage) }}"
-               target="_blank"
-               rel="noopener noreferrer"
-               class="inline-flex items-center gap-2 px-4 py-2 bg-[#25D366] text-white rounded-lg font-medium text-sm hover:bg-[#1fb855] transition-colors">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                WhatsApp
-            </a>
-            <button type="button"
-                    @click="navigator.clipboard.writeText(message); copied = true; setTimeout(() => copied = false, 2000)"
-                    class="btn-secondary text-sm"
-                    :class="copied && 'ring-2 ring-teal-300'">
-                <span x-show="!copied">{{ __('Copy message') }}</span>
-                <span x-show="copied" x-cloak>{{ __('Copied!') }}</span>
-            </button>
-        </div>
-    </div>
-            @endif
-
-            {{-- Add participant (draft only) --}}
-            @if($exchange->isDraft())
-    <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6 sm:p-8 mb-6">
-        <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ __('Add participant') }}</h2>
-        <p class="text-gray-600 text-sm mb-4">{{ __('Manually add someone to the group.') }}</p>
-
-        <form method="POST" action="{{ route('exchanges.participants.store', ['locale' => $currentLocale, 'exchange' => $exchange->slug]) }}">
+    @if($exchange->isDraft())
+    <section class="bg-white rounded-2xl border border-cream-200 p-5 space-y-4" x-data="{ selected: null }">
+        <h2 class="text-xl font-bold">{{ __('Who should not draw each other?') }}</h2>
+        <p class="text-sm text-gray-600">{{ __('Tap two names to make a couple. Couples never draw each other.') }}</p>
+        <form method="POST" action="{{ route('exchanges.rules', [$locale, $exchange]) }}" x-ref="couple">
             @csrf
-            <div class="flex flex-col sm:flex-row gap-2">
-                <input type="text" name="name" class="form-input flex-1" placeholder="{{ __('Name') }}" value="{{ old('name') }}" required>
-                <input type="email" name="email" class="form-input flex-1" placeholder="{{ __('Email') }}" value="{{ old('email') }}" required>
-                <button type="submit" class="btn-primary shrink-0">{{ __('Add') }}</button>
+            <input type="hidden" name="giver_id" :value="selected">
+            <input type="hidden" name="receiver_id" x-ref="receiver">
+            <input type="hidden" name="mutual" value="1">
+            <div class="flex flex-wrap gap-2">
+                @foreach($exchange->participants as $participant)
+                <button type="button" class="btn-secondary break-all" :class="selected === {{ $participant->id }} && 'ring-2 ring-teal-500'" :aria-pressed="selected === {{ $participant->id }}" @click="if (selected === null) { selected = {{ $participant->id }} } else if (selected === {{ $participant->id }}) { selected = null } else { $refs.receiver.value = {{ $participant->id }}; $refs.couple.requestSubmit() }">{{ $participant->name }}</button>
+                @endforeach
             </div>
-            @error('name') <p class="form-error mt-1">{{ $message }}</p> @enderror
-            @error('email') <p class="form-error mt-1">{{ $message }}</p> @enderror
-            @error('participant') <p class="form-error mt-1">{{ $message }}</p> @enderror
         </form>
-    </div>
-            @endif
-
-            {{-- All assignments (drawn, organizer view) --}}
-            @if($exchange->isDrawn())
-    <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6 sm:p-8 mb-6" x-data="{ open: false }">
-        <div class="flex items-center justify-between">
-            <h2 class="text-lg font-semibold text-gray-900">{{ __('Assignments') }}</h2>
-            <button type="button" @click="open = !open" class="btn-secondary text-sm">
-                <span x-show="!open">{{ __('Show all') }}</span>
-                <span x-show="open" x-cloak>{{ __('Hide') }}</span>
-            </button>
-        </div>
-        <p class="text-gray-500 text-sm mt-1">{{ __('Only you (the organizer) can see this.') }}</p>
-
-        <div x-show="open" x-transition x-cloak class="mt-4 divide-y divide-cream-100">
-            @foreach($exchange->participants as $participant)
-                @if($participant->assignedTo)
-                <div class="flex items-center gap-2 py-3 text-sm">
-                    <span class="font-medium text-gray-900">{{ $participant->name }}</span>
-                    <span class="text-gray-400">→</span>
-                    <span class="text-gray-700">{{ $participant->assignedTo->name }}</span>
-                    @if($participant->hasViewed())
-                        <span class="badge badge-success text-xs ml-auto">{{ __('Viewed') }}</span>
-                    @else
-                        <span class="badge badge-warning text-xs ml-auto">{{ __('Not viewed') }}</span>
-                    @endif
-                </div>
+        <div class="space-y-2">
+            @foreach($exchange->exclusions as $rule)
+                @php($mutual = $exchange->exclusions->contains(fn ($other) => $other->giver_id === $rule->receiver_id && $other->receiver_id === $rule->giver_id))
+                @if(!$mutual || $rule->giver_id < $rule->receiver_id)
+                <form method="POST" action="{{ route('exchanges.rules', [$locale, $exchange]) }}" class="flex flex-wrap items-center gap-2 text-sm">
+                    @csrf
+                    <input type="hidden" name="giver_id" value="{{ $rule->giver_id }}">
+                    <input type="hidden" name="receiver_id" value="{{ $rule->receiver_id }}">
+                    <input type="hidden" name="mutual" value="{{ (int) $mutual }}">
+                    <input type="hidden" name="remove" value="1">
+                    <span class="break-all">{{ $rule->giver->name }} {{ $mutual ? '+' : '→' }} {{ $rule->receiver->name }}</span>
+                    <button class="btn-link">{{ __('Remove') }}</button>
+                </form>
                 @endif
             @endforeach
         </div>
-    </div>
-            @endif
-
-            {{-- Participants --}}
-            <div class="bg-white rounded-2xl shadow-sm border border-cream-200 p-6 sm:p-8">
-        <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Participants') }} ({{ $exchange->participants->count() }})</h2>
-
-        <div class="divide-y divide-cream-100">
+        <details>
+            <summary class="text-coral-600 cursor-pointer font-semibold">{{ __('More rules') }}</summary>
+            <form method="POST" action="{{ route('exchanges.rules', [$locale, $exchange]) }}" class="grid gap-3 pt-3">
+                @csrf
+                <input type="hidden" name="mutual" value="0">
+                <label class="form-label">{{ __('This person') }}
+                    <select name="giver_id" class="form-select">@foreach($exchange->participants as $participant)<option value="{{ $participant->id }}">{{ $participant->name }}</option>@endforeach</select>
+                </label>
+                <label class="form-label">{{ __('Cannot draw') }}
+                    <select name="receiver_id" class="form-select">@foreach($exchange->participants as $participant)<option value="{{ $participant->id }}">{{ $participant->name }}</option>@endforeach</select>
+                </label>
+                <button class="btn-secondary">{{ __('Add rule') }}</button>
+            </form>
+        </details>
+        <form method="POST" action="{{ route('exchanges.draw', [$locale, $exchange]) }}">
+            @csrf
+            <button class="btn-primary w-full">{{ __('Draw names') }}</button>
+        </form>
+        <p class="text-xs text-gray-500">{{ __('There is no overview of who drew whom. Not even for you.') }}</p>
+    </section>
+    <details class="bg-white rounded-2xl border border-cream-200 p-5">
+        <summary class="font-semibold cursor-pointer">{{ __('Participants') }} ({{ $exchange->participants->count() }})</summary>
+        <div class="grid gap-3 py-4">
             @foreach($exchange->participants as $participant)
-            <div class="flex items-center justify-between py-3">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-cream-100 rounded-full flex items-center justify-center text-sm font-semibold text-gray-600">
-                        {{ strtoupper(substr($participant->name, 0, 1)) }}
-                    </div>
-                    <div>
-                        <p class="font-medium text-gray-900">{{ $participant->name }}</p>
-                        <p class="text-sm text-gray-500">{{ $participant->email }}</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2">
-                    @if($participant->hasViewed())
-                        <span class="badge badge-success text-xs">{{ __('Viewed') }}</span>
-                    @elseif($exchange->isDrawn())
-                        <span class="badge badge-warning text-xs">{{ __('Invited') }}</span>
-                        <form method="POST" action="{{ route('exchanges.resend-invite', ['locale' => $currentLocale, 'exchange' => $exchange->slug, 'participant' => $participant->id]) }}">
-                            @csrf
-                            <button type="submit" class="btn-secondary text-xs" onclick="return confirm('{{ __('Resend invite to :name?', ['name' => $participant->name]) }}')">
-                                {{ __('Resend') }}
-                            </button>
-                        </form>
-                    @else
-                        <span class="badge badge-info text-xs">{{ __('Added') }}</span>
-                    @endif
-                    @if($participant->user_id && $participant->defaultWishlist())
-                        <span class="badge badge-success text-xs">{{ __('Has wishlist') }}</span>
-                    @endif
-                    @if($exchange->isDraft() && $exchange->participants->count() > 3)
-                    <form method="POST" action="{{ route('exchanges.participants.destroy', ['locale' => $currentLocale, 'exchange' => $exchange->slug, 'participant' => $participant->id]) }}" class="inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="text-gray-400 hover:text-red-500 text-sm" onclick="return confirm('{{ __('Remove :name from the group?', ['name' => $participant->name]) }}')">
-                            ✕
-                        </button>
-                    </form>
-                    @endif
-                </div>
-            </div>
+            <form method="POST" action="{{ route('exchanges.participants.destroy', [$locale, $exchange, $participant]) }}" class="flex items-center justify-between gap-2">
+                @csrf @method('DELETE')
+                <span class="break-all">{{ $participant->name }}</span>
+                @if($exchange->participants->count() > 3)<button class="btn-link shrink-0">{{ __('Remove') }}</button>@endif
+            </form>
             @endforeach
+            <form method="POST" action="{{ route('exchanges.participants.store', [$locale, $exchange]) }}" class="grid gap-2">
+                @csrf
+                <input name="name" class="form-input" aria-label="{{ __('Name') }}" placeholder="{{ __('Name') }}" required>
+                <input type="email" name="email" class="form-input" aria-label="{{ __('Email (optional)') }}" placeholder="{{ __('Email (optional)') }}">
+                <button class="btn-secondary">{{ __('Add participant') }}</button>
+            </form>
+            <label class="form-label">{{ __('Invite link') }}<input readonly class="form-input min-w-0" value="{{ $exchange->getJoinUrl() }}" @click="$el.select()"></label>
         </div>
+    </details>
+    @else
+    <section class="bg-white rounded-2xl border border-cream-200 p-5 space-y-4">
+        <h2 class="text-xl font-bold">{{ __('Drawn! Send everyone their private link') }}</h2>
+        <p class="text-sm text-gray-600">{{ __('Each link is personal. Only send it to that person.') }}</p>
+        <p class="text-sm text-gray-600">{{ __('Pick the right person in WhatsApp. Mark it sent yourself. Seen only counts after they tap Show my draw.') }}</p>
+        @foreach($exchange->participants as $participant)
+        <div class="border-t border-cream-200 pt-4 space-y-2" x-data="{ whatsappOpened: false }">
+            <p class="font-semibold break-all">{{ $participant->name }}</p>
+            @if(!$participant->hasViewed() && !$participant->sent_at)<p x-show="whatsappOpened" x-cloak class="text-sm text-gray-500">{{ __('WhatsApp opened') }}</p>@endif
+            <p x-show="!whatsappOpened || @js($participant->hasViewed() || (bool) $participant->sent_at)" class="text-sm text-gray-500">{{ $participant->hasViewed() ? __('Seen') : ($participant->sent_at ? __('Sent') : ($participant->whatsapp_opened_at ? __('WhatsApp opened') : __('Not sent'))) }}</p>
+            <div class="flex flex-wrap gap-2">
+                @if($participant->user_id === auth()->id())<a class="btn-secondary text-sm" href="{{ $participant->revealUrl() }}">{{ __('My draw') }}</a>@endif
+                <form method="POST" action="{{ route('exchanges.delivery', [$locale, $exchange, $participant]) }}" target="_blank" @submit="whatsappOpened = true">
+                    @csrf <button name="action" value="whatsapp" class="btn-secondary text-sm">WhatsApp</button>
+                </form>
+                <form method="POST" action="{{ route('exchanges.delivery', [$locale, $exchange, $participant]) }}">
+                    @csrf <button name="action" value="sent" class="btn-secondary text-sm">{{ __('Mark sent') }}</button>
+                </form>
+                @if($participant->email)
+                <form method="POST" action="{{ route('exchanges.resend-invite', [$locale, $exchange, $participant]) }}">
+                    @csrf <button class="btn-secondary text-sm">{{ __('Resend email') }}</button>
+                </form>
+                @endif
+                <form method="POST" action="{{ route('exchanges.delivery', [$locale, $exchange, $participant]) }}" onsubmit="return confirm(@js(__('Replace this link? The old one will stop working.')))">
+                    @csrf <button name="action" value="regenerate" class="btn-link text-sm">{{ __('New link') }}</button>
+                </form>
             </div>
-        </x-app-content>
-    </div>
-</x-app-shell>
+        </div>
+        @endforeach
+    </section>
+    @endif
+</div>
 @endsection

@@ -22,7 +22,7 @@ class CreateGiftExchangeAction
     ): GiftExchange {
         $allParticipants = collect($participants)->map(fn ($p) => [
             'name' => trim($p['name']),
-            'email' => strtolower(trim($p['email'])),
+            'email' => filled($p['email'] ?? null) ? strtolower(trim($p['email'])) : null,
         ]);
 
         if ($organizerParticipates) {
@@ -32,9 +32,9 @@ class CreateGiftExchangeAction
             ]);
         }
 
-        $allParticipants = $allParticipants->unique('email')->values();
+        $allParticipants = $allParticipants->unique(fn ($participant, $index) => $participant['email'] ?? 'participant:'.$index)->values();
 
-        if ($allParticipants->count() < 3) {
+        if ($allParticipants->count() < 3 || $allParticipants->count() > 50) {
             throw new InvalidArgumentException(__('At least 3 participants are required.'));
         }
 
@@ -50,7 +50,7 @@ class CreateGiftExchangeAction
             ]);
 
             foreach ($allParticipants as $participantData) {
-                $existingUser = User::where('email', $participantData['email'])->first();
+                $existingUser = $participantData['email'] ? User::where('email', $participantData['email'])->first() : null;
 
                 GiftExchangeParticipant::create([
                     'exchange_id' => $exchange->id,

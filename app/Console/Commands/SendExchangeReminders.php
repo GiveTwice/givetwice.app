@@ -26,6 +26,7 @@ class SendExchangeReminders extends Command
     private function sendRevealReminders(): void
     {
         $participants = GiftExchangeParticipant::query()
+            ->whereNotNull('email')
             ->whereNull('viewed_at')
             ->whereHas('exchange', fn ($q) => $q
                 ->where('status', 'drawn')
@@ -54,9 +55,11 @@ class SendExchangeReminders extends Command
     private function sendWishlistNudges(): void
     {
         $participants = GiftExchangeParticipant::query()
+            ->whereNotNull('email')
+            ->whereNull('wishlist_id')
+            ->whereDoesntHave('user.createdLists', fn ($query) => $query->where('is_default', true))
             ->whereNotNull('viewed_at')
             ->where('viewed_at', '<=', now()->subDays(1))
-            ->whereNull('user_id')
             ->whereHas('exchange', fn ($q) => $q
                 ->where('status', 'drawn')
                 ->where('event_date', '>', now())
@@ -64,13 +67,19 @@ class SendExchangeReminders extends Command
             ->with('exchange')
             ->get();
 
+        $sent = 0;
         foreach ($participants as $participant) {
+            if ($participant->isTokenExpired()) {
+                continue;
+            }
+
             /** @var GiftExchange $exchange */
             $exchange = $participant->exchange;
             Mail::to($participant->email)
                 ->queue(new ExchangeWishlistNudgeMail($participant, $exchange));
+            $sent++;
         }
 
-        $this->info("Sent {$participants->count()} wishlist nudges.");
+        $this->info("Sent {$sent} wishlist nudges.");
     }
 }

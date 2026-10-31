@@ -64,16 +64,16 @@ describe('Resend invite', function () {
             Mail::assertNothingQueued();
         });
 
-        it('returns error when participant has already viewed their invite', function () {
+        it('can resend a viewed invite for recovery', function () {
             $organizer = User::factory()->create();
             $exchange = GiftExchange::factory()->drawn()->create(['organizer_id' => $organizer->id]);
             $participant = GiftExchangeParticipant::factory()->viewed()->create(['exchange_id' => $exchange->id]);
 
             $this->actingAs($organizer)
                 ->post("/nl/exchange/{$exchange->slug}/resend-invite/{$participant->id}")
-                ->assertSessionHasErrors('resend');
+                ->assertSessionHasNoErrors();
 
-            Mail::assertNothingQueued();
+            Mail::assertQueued(GiftExchangeInviteMail::class);
         });
 
         it('returns 404 when participant does not belong to the exchange', function () {
