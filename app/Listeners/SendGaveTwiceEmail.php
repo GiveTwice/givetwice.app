@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\GiftClaimed;
-use App\Mail\GaveTwiceMail;
+use App\Mail\ReservationMail;
 use Illuminate\Support\Facades\Mail;
 
 class SendGaveTwiceEmail
@@ -11,7 +11,6 @@ class SendGaveTwiceEmail
     public function handle(GiftClaimed $event): void
     {
         $claim = $event->claim;
-        $gift = $event->gift;
 
         $email = $claim->claimer_email ?? $claim->user?->email;
 
@@ -19,6 +18,6 @@ class SendGaveTwiceEmail
             return;
         }
 
-        Mail::to($email)->queue(new GaveTwiceMail($claim, $gift));
+        Mail::to($email)->queue((new ReservationMail($claim, app()->getLocale()))->locale(app()->getLocale()));
     }
 }

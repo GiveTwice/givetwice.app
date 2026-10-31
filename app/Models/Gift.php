@@ -151,6 +151,9 @@ class Gift extends Model implements HasMedia
             ->withTimestamps();
     }
 
+    /**
+     * @return HasMany<Claim, $this>
+     */
     public function claims(): HasMany
     {
         return $this->hasMany(Claim::class);

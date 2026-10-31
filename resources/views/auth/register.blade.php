@@ -8,7 +8,7 @@
 
 @section('content')
 @if(config('app.allow_registration'))
-    <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-cream-200" x-data="{ showEmailForm: {{ old('name') || old('email') || $errors->any() ? 'true' : 'false' }} }">
+    <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-cream-200" x-data="{ showEmailForm: {{ request('email') || old('name') || old('email') || $errors->any() ? 'true' : 'false' }} }">
         {{-- Header section with generous spacing --}}
         <div class="flex items-center gap-4 mb-8">
             <div class="flex-shrink-0 w-12 h-12 bg-sunny-100 text-sunny-600 rounded-xl text-2xl flex items-center justify-center transform rotate-3">
@@ -93,7 +93,7 @@
                         <input type="email"
                                name="email"
                                id="email"
-                               value="{{ old('email') }}"
+                               value="{{ old('email', request('email')) }}"
                                required
                                class="form-input">
                     </div>
