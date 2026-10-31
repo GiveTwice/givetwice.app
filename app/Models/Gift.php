@@ -11,12 +11,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-/** @property 'pending'|'fetching'|'completed'|'failed'|'skipped' $fetch_status */
+/**
+ * @property 'pending'|'fetching'|'completed'|'failed'|'skipped' $fetch_status
+ * @property array<int, string>|null $edited_fields
+ * @property array<string, mixed>|null $fetch_error
+ */
 class Gift extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia, SoftDeletes;
@@ -30,6 +35,9 @@ class Gift extends Model implements HasMedia
     ];
 
     protected $fillable = [
+        'owner_note',
+        'shop_name',
+        'edited_fields',
         'user_id',
         'url',
         'title',
@@ -60,6 +68,7 @@ class Gift extends Model implements HasMedia
         return [
             'price_in_cents' => 'integer',
             'fetch_error' => 'array',
+            'edited_fields' => 'array',
             'fetched_at' => 'datetime',
             'rating' => 'decimal:1',
             'review_count' => 'integer',
@@ -224,6 +233,21 @@ class Gift extends Model implements HasMedia
         $host = $parsedUrl['host'] ?? '';
 
         return preg_replace('/^www\./', '', $host) ?: null;
+    }
+
+    public function suggestedTitle(): string
+    {
+        $segments = array_reverse(explode('/', trim(parse_url($this->url ?? '', PHP_URL_PATH) ?? '', '/')));
+        foreach ($segments as $segment) {
+            $slug = preg_replace('/\.(html?|aspx)$/i', '', rawurldecode($segment));
+            $slug = preg_replace('/[-_]?(?:[a-z]*\d[a-z\d]*-?)+$/i', '', $slug);
+            $slug = preg_replace('/-p$/i', '', $slug);
+            if (preg_match('/[\p{L}]{3}/u', $slug) && ! in_array(strtolower($slug), ['product', 'products', 'listing', 'shop', 'nl-nl'], true)) {
+                return Str::ucfirst(Str::limit(str_replace(['-', '_'], ' ', $slug), 255, ''));
+            }
+        }
+
+        return $this->siteName() ?? '';
     }
 
     public function hasAccessibleListFor(User $user): bool

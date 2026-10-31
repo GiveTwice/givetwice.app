@@ -6,6 +6,7 @@ use App\Events\GiftFetchCompleted;
 use App\Models\Gift;
 use Illuminate\Broadcasting\BroadcastException;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\UnreachableUrl;
 use Throwable;
@@ -13,6 +14,17 @@ use Throwable;
 class ProcessGiftImageAction
 {
     public function fromUrl(Gift $gift, string $imageUrl): bool
+    {
+        return Cache::lock('gift-image-'.$gift->id, 60)->block(30, function () use ($gift, $imageUrl): bool {
+            if (in_array('image', $gift->fresh()->edited_fields ?? [], true)) {
+                return false;
+            }
+
+            return $this->download($gift, $imageUrl);
+        });
+    }
+
+    private function download(Gift $gift, string $imageUrl): bool
     {
         $imageUrl = $this->normalizeUrl($imageUrl);
 
@@ -42,9 +54,18 @@ class ProcessGiftImageAction
 
     public function fromUpload(Gift $gift, UploadedFile $file): bool
     {
+        return Cache::lock('gift-image-'.$gift->id, 60)->block(30, fn (): bool => $this->upload($gift, $file));
+    }
+
+    private function upload(Gift $gift, UploadedFile $file): bool
+    {
         try {
             $gift->addMedia($file)
                 ->toMediaCollection('image');
+            $gift->getConnection()->transaction(function () use ($gift): void {
+                $gift->refreshForUpdate();
+                $gift->update(['edited_fields' => array_values(array_unique([...($gift->edited_fields ?? []), 'image']))]);
+            });
 
             return true;
         } catch (Throwable $e) {

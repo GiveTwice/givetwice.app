@@ -12,15 +12,19 @@
 @php
     $shell = \App\Helpers\AppShellHelper::lists(auth()->user());
     $dashboardUrl = $shell['dashboardUrl'];
+    $giftContext = session('gift_context') ?? request('context');
+    $isGiftFlow = $giftContext || session('first_gift') === $gift->id;
 @endphp
 
-<x-app-shell
+<x-dynamic-component
+    :component="$isGiftFlow ? 'gift-flow-shell' : 'app-shell'"
     :title="__('Lists')"
     :sidebar-items="$shell['sidebarItems']"
     :stats="$shell['sidebarStats']"
 >
 <div class="space-y-8">
-<x-app-content
+<x-dynamic-component
+    :component="$isGiftFlow ? 'gift-flow-shell' : 'app-content'"
     :title="__('Edit Gift')"
     :description="__('Tweak the details.')"
     :breadcrumbs="[
@@ -28,42 +32,32 @@
         ['label' => __('Edit Gift')]
     ]"
 >
-    @php
-        $giftContext = session('gift_context') ?? request('context');
-    @endphp
-
     @if($giftContext === 'fetch_success')
-        <div class="mb-6 flex items-center gap-3 p-4 rounded-xl bg-teal-50 border border-teal-200 text-teal-800">
-            <x-icons.check-circle class="w-5 h-5 text-teal-600 flex-shrink-0" />
-            <p>{{ __("We've filled in the details. Review and tweak as needed.") }}</p>
-        </div>
-    @elseif($giftContext === 'fetch_failed')
-        <div class="mb-6 flex items-center gap-3 p-4 rounded-xl bg-coral-50 border border-coral-200 text-coral-800">
-            <x-icons.warning class="w-5 h-5 text-coral-600 flex-shrink-0" />
-            <p>{{ __("We couldn't grab the details automatically. Fill them in yourself.") }}</p>
-        </div>
+        <h2 class="mb-6 text-xl font-semibold">{{ __('Found it! Does this look right?') }}</h2>
+    @elseif($giftContext === 'fetch_failed' || $gift->isFetchFailed())
+        <h2 class="mb-2 text-xl font-semibold">{{ __(':shop is keeping the door shut', ['shop' => ucfirst(explode('.', $gift->siteName() ?? '')[0])]) }}</h2>
+        <p class="mb-6 text-gray-600">{{ __("We couldn't get the photo and price. Can you fill them in? We'll keep the link.") }}</p>
     @elseif($giftContext === 'manual_entry')
-        <div class="mb-6 flex items-center gap-3 p-4 rounded-xl bg-sunny-50 border border-sunny-200 text-sunny-800">
-            <x-icons.edit class="w-5 h-5 text-sunny-600 flex-shrink-0" />
-            <p>{{ __('Fill in the details for your gift.') }}</p>
-        </div>
+        <h2 class="mb-6 text-xl font-semibold">{{ __('Fill in the details for your gift.') }}</h2>
     @elseif($giftContext === 'fetch_timeout')
-        <div class="mb-6 flex items-center gap-3 p-4 rounded-xl bg-sunny-50 border border-sunny-200 text-sunny-800">
-            <x-icons.clock class="w-5 h-5 text-sunny-600 flex-shrink-0" />
-            <p>{{ __('Still fetching in the background. Details will appear when ready.') }}</p>
-        </div>
+        <p class="mb-6 text-gray-600">{{ __('Still fetching in the background. We never overwrite what you fill in.') }}</p>
     @endif
 
     <div
         class="grid grid-cols-1 gap-8 lg:grid-cols-5"
         x-data="giftEdit()"
+        @paste.window="pasteImage($event)"
     >
 
-        <div class="lg:col-span-3">
-            <form method="POST" action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id) }}">
+        <div class="order-last lg:order-first lg:col-span-3">
+            <form @input="markEdited($event.target.name)" method="POST" action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id) }}">
                 @csrf
                 @method('PUT')
+                <input type="hidden" name="tracks_edits" value="0" :value="1">
+                <template x-for="field in edited" :key="field"><input type="hidden" name="edited_fields[]" :value="field"></template>
 
+                <details class="mb-6">
+                    <summary class="cursor-pointer text-sm text-gray-500">{{ __('Product URL') }}</summary>
                 <div class="mb-6">
                     <label for="url" class="form-label">
                         {{ __('Product URL') }}
@@ -99,6 +93,7 @@
                         </span>
                     </div>
                 </div>
+                </details>
 
                 <div class="mb-6">
                     <label for="title" class="form-label">
@@ -108,6 +103,7 @@
                         type="text"
                         id="title"
                         name="title"
+                        required
                         x-model="form.title"
                         placeholder="{{ __('Product name') }}"
                         class="form-input @error('title') border-red-500 @enderror"
@@ -117,6 +113,18 @@
                     @enderror
                 </div>
 
+                <div class="mb-6">
+                    <label for="shop_name" class="form-label">{{ __('Shop') }}</label>
+                    <input id="shop_name" name="shop_name" x-model="form.shop_name" class="form-input" maxlength="255">
+                    @error('shop_name')<p class="form-error">{{ $message }}</p>@enderror
+                </div>
+                <div class="mb-6">
+                    <label for="owner_note" class="form-label">{{ __('Note for the buyer (optional)') }}</label>
+                    <textarea id="owner_note" name="owner_note" rows="2" class="form-textarea" maxlength="1500" placeholder="{{ __('E.g. gold, size S...') }}">{{ old('owner_note', $gift->owner_note) }}</textarea>
+                    @error('owner_note')<p class="form-error">{{ $message }}</p>@enderror
+                </div>
+                <details class="mb-6">
+                    <summary class="cursor-pointer text-sm text-gray-500">{{ __('Description') }}</summary>
                 <div class="mb-6">
                     <label for="description" class="form-label">
                         {{ __('Description') }}
@@ -133,6 +141,7 @@
                         <p class="form-error">{{ $message }}</p>
                     @enderror
                 </div>
+                </details>
 
                 <div class="mb-6">
                     <label for="price" class="form-label">
@@ -203,13 +212,13 @@
                     </a>
                     <button type="submit" class="btn-primary justify-center">
                         <x-icons.checkmark class="w-5 h-5" />
-                        {{ __('Save Changes') }}
+                        {{ __('Save') }}
                     </button>
                 </div>
             </form>
         </div>
 
-        <div class="lg:col-span-2">
+        <div class="order-first lg:order-last lg:col-span-2">
 
             <div class="bg-cream-50 rounded-xl p-6 mb-6">
                 <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Current Image') }}</h2>
@@ -234,7 +243,7 @@
                         <div class="w-full h-full bg-cream-100 flex items-center justify-center">
                             <div class="text-center text-gray-400">
                                 <x-icons.image-placeholder class="w-12 h-12 mx-auto mb-2" />
-                                <p class="text-sm">{{ __('No image yet') }}</p>
+                                <p class="text-sm">{{ __('Add a photo') }}</p>
                             </div>
                         </div>
                     </template>
@@ -271,66 +280,15 @@
                     </div>
                 </div>
 
-                <p class="text-xs text-gray-500 mt-2 text-center">{{ __('Click to upload a new image') }}</p>
+                <p class="text-xs text-gray-500 mt-2 text-center">{{ __('Paste a screenshot or choose a photo') }}</p>
             </div>
 
-            <div class="bg-cream-50 rounded-xl p-6">
-                <h2 class="text-lg font-semibold text-gray-900 mb-3">{{ __('Fetch Status') }}</h2>
-                <p class="text-sm text-gray-500 mb-4">{{ __('We grab the image, description, and price from the URL automatically.') }}</p>
 
-                <div class="space-y-3">
-                    <div class="flex items-center justify-between">
-                        <span class="text-gray-600">{{ __('Status') }}</span>
-                        <div class="flex items-center gap-2">
-
-                            <span x-show="gift.fetch_status === 'pending'" class="badge badge-warning">
-                                <span class="w-2 h-2 bg-sunny-500 rounded-full"></span>
-                                {{ __('Pending') }}
-                            </span>
-
-                            <span x-show="gift.fetch_status === 'fetching'" class="badge badge-warning">
-                                <span class="w-2 h-2 bg-sunny-500 rounded-full animate-pulse"></span>
-                                {{ __('Fetching') }}
-                            </span>
-
-                            <span x-show="gift.fetch_status === 'completed'" x-cloak class="badge badge-success">
-                                <x-icons.checkmark class="w-4 h-4" />
-                                {{ __('Completed') }}
-                            </span>
-
-                            <span x-show="gift.fetch_status === 'failed'" x-cloak class="badge badge-danger">
-                                <x-icons.close class="w-4 h-4" />
-                                {{ __('Failed') }}
-                            </span>
-
-                            <span x-show="gift.fetch_status === 'skipped'" x-cloak class="badge bg-gray-100 text-gray-600">
-                                {{ __('Not applicable') }}
-                            </span>
-
-                            @if(auth()->user()->is_admin && $gift->url)
-                                <button
-                                    type="button"
-                                    x-on:click="refresh()"
-                                    :disabled="refreshing"
-                                    title="{{ __('Re-fetch details') }}"
-                                    class="p-1.5 text-gray-400 hover:text-coral-600 hover:bg-white rounded-lg transition-colors disabled:opacity-50"
-                                >
-                                    <x-icons.refresh class="w-4 h-4" x-bind:class="{ 'animate-spin': refreshing }" />
-                                </button>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div x-show="gift.fetched_at" class="flex items-center justify-between">
-                        <span class="text-gray-600">{{ __('Last fetched') }}</span>
-                        <span class="text-gray-900 font-medium" x-text="gift.fetched_at"></span>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
-</x-app-content>
+</x-dynamic-component>
 
+@unless($isGiftFlow)
 <x-danger-zone
     id="delete-gift"
     :description="__('Deleting a gift is permanent.')"
@@ -339,16 +297,27 @@
     :modalMessage="__('This can\'t be undone. Sure?')"
     :action="url('/' . app()->getLocale() . '/gifts/' . $gift->id)"
 />
+@endunless
 </div>
-</x-app-shell>
+</x-dynamic-component>
 
 <script>
     function giftEdit() {
         return {
+            edited: @js(old('edited_fields', [])),
+            markEdited(name) {
+                const field = name === 'price' ? 'price_in_cents' : name;
+                if (['title', 'description', 'price_in_cents', 'currency', 'shop_name'].includes(field) && !this.edited.includes(field)) this.edited.push(field);
+            },
+            pasteImage(event) {
+                const file = Array.from(event.clipboardData?.files || []).find(file => file.type.startsWith('image/'));
+                if (file) { event.preventDefault(); this.uploadImage({ target: { files: [file], value: '' } }); }
+            },
             originalUrl: @js($gift->url),
             form: {
                 url: @js(old('url', $gift->url)),
-                title: @js(old('title', $gift->title)),
+                title: @js(old('title', $gift->title ?: $gift->suggestedTitle())),
+                shop_name: @js(old('shop_name', $gift->shop_name ?? $gift->siteName())),
                 description: @js(old('description', $gift->description)),
                 price: @js(old('price', $gift->getPriceAsDecimal())),
                 currency: @js(old('currency', $gift->currency ?? \App\Enums\SupportedCurrency::default()->value)),
@@ -433,16 +402,16 @@
                             if (e.gift.id === this.gift.id) {
                                 // Update sidebar display
                                 this.gift.title = e.gift.title;
-                                this.gift.image_url_card = e.gift.image_url_card;
+                                if (!this.uploadedRecently && !this.uploading) this.gift.image_url_card = e.gift.image_url_card;
                                 this.gift.fetch_status = e.gift.fetch_status;
                                 this.gift.fetched_at = '{{ __('Just now') }}';
 
-                                // Update form fields with fetched data
-                                if (e.gift.url) this.form.url = e.gift.url;
-                                if (e.gift.title) this.form.title = e.gift.title;
-                                if (e.gift.description) this.form.description = e.gift.description;
-                                if (e.gift.price_in_cents) this.form.price = (e.gift.price_in_cents / 100).toFixed(2);
-                                if (e.gift.currency) this.form.currency = e.gift.currency;
+                                for (const field of ['title', 'description', 'currency']) {
+                                    if (!this.edited.includes(field) && e.gift[field]) this.form[field] = e.gift[field];
+                                }
+                                if (!this.edited.includes('price_in_cents') && e.gift.price_in_cents != null) {
+                                    this.form.price = (e.gift.price_in_cents / 100).toFixed(2);
+                                }
                             }
                         });
                 }

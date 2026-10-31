@@ -66,7 +66,8 @@
         }
     }"
 >
-    <x-app-shell
+    <x-dynamic-component
+        :component="$lists->sum('gifts_count') === 0 ? 'gift-flow-shell' : 'app-shell'"
         :title="__('Your GiveTwice HQ')"
         :sidebar-items="$shell['sidebarItems']"
         :stats="$shell['sidebarStats']"
@@ -120,12 +121,18 @@
                             </div>
 
                             @if($list->gifts->isEmpty())
-                                <div class="rounded-xl bg-cream-50 p-8 text-center">
-                                    <p class="mb-4 text-gray-500">{{ __('This list is wide open. Time to fill it.') }}</p>
-                                    <a href="{{ url('/' . $currentLocale . '/gifts/create') }}?list={{ $list->id }}" class="btn-link">
-                                        <x-icons.plus class="w-4 h-4" />
-                                        {{ __('Drop your first hint') }}
-                                    </a>
+                                <div class="mx-auto max-w-lg rounded-xl bg-cream-50 p-5">
+                                    <h3 class="text-xl font-semibold">{{ __('What would you like?') }}</h3>
+                                    <p class="mt-2 text-gray-600">{{ __('Paste a shop link, or just type your wish.') }}</p>
+                                    <form method="POST" action="{{ route('gifts.store', ['locale' => $currentLocale]) }}" class="my-5 flex flex-col gap-3">
+                                        @csrf
+                                        <input type="hidden" name="list_id" value="{{ $list->id }}">
+                                        <label class="sr-only" for="wish-{{ $list->id }}">{{ __('Link or wish') }}</label>
+                                        <input id="wish-{{ $list->id }}" name="input" required maxlength="2048" value="{{ old('input') }}" placeholder="{{ __('Link or wish') }}" class="form-input">
+                                        @error('input')<p class="form-error">{{ $message }}</p>@enderror
+                                        <button class="btn-primary justify-center">{{ __('Add Gift') }}</button>
+                                    </form>
+                                    <x-gift-examples />
                                 </div>
                             @else
                                 <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
@@ -152,6 +159,6 @@
                 </div>
             </x-app-content>
         </section>
-    </x-app-shell>
+    </x-dynamic-component>
 </div>
 @endsection

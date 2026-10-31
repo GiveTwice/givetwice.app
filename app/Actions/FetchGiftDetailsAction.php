@@ -14,6 +14,7 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
 use Spatie\SlackAlerts\Facades\SlackAlert;
 use Throwable;
 
@@ -43,29 +44,42 @@ class FetchGiftDetailsAction implements ShouldQueue
 
     public function handle(ProcessGiftImageAction $imageAction): void
     {
+        $started = microtime(true);
+        $outcome = 'failed';
         $this->gift->update(['fetch_status' => 'fetching']);
 
         try {
             $product = $this->getFetcher()->fetchAndParse();
+            if ((! $product->name && ! $product->description && $product->priceInCents === null && ! $product->allImageUrls)
+                || preg_match('/access denied|just a moment|robot check|captcha|shop online fashion/i', $product->name ?? '')) {
+                throw new RuntimeException('No product details found');
+            }
 
             $description = $product->description
                 ? Str::limit($product->description, 1497, '...')
                 : $this->gift->description;
 
-            $this->gift->update([
-                'title' => $product->name ?: $this->gift->title,
-                'description' => $description,
-                'price_in_cents' => $product->priceInCents,
-                'currency' => $product->priceCurrency ?: $this->gift->currency,
-                'fetch_status' => 'completed',
-                'fetch_error' => null,
-                'fetch_attempts' => $this->attempts(),
-                'fetched_at' => now(),
-                'rating' => $product->rating,
-                'review_count' => $product->reviewCount,
-            ]);
-
+            $this->gift->getConnection()->transaction(function () use ($product, $description): void {
+                $this->gift->refreshForUpdate();
+                $details = [
+                    'title' => $product->name ? Str::limit($product->name, 255, '') : $this->gift->title,
+                    'description' => $description,
+                    'price_in_cents' => $product->priceInCents,
+                    'currency' => $product->priceCurrency ?: $this->gift->currency,
+                    'fetch_status' => 'completed',
+                    'fetch_error' => null,
+                    'fetch_attempts' => $this->attempts(),
+                    'fetched_at' => now(),
+                    'rating' => $product->rating,
+                    'review_count' => $product->reviewCount,
+                ];
+                foreach ($this->gift->edited_fields ?? [] as $field) {
+                    unset($details[$field]);
+                }
+                $this->gift->update(array_filter($details, fn ($value, $field) => $value !== null || $field === 'fetch_error', ARRAY_FILTER_USE_BOTH));
+            });
             $this->tryAddImageFromUrls($imageAction, $product->allImageUrls);
+            $outcome = 'completed';
         } catch (ClientException|ServerException $e) {
             $response = $e->getResponse();
             $statusCode = $response->getStatusCode();
@@ -140,6 +154,15 @@ class FetchGiftDetailsAction implements ShouldQueue
             $this->recordAttempt($error);
 
             throw $e;
+        } finally {
+            Log::info('Gift fetch attempt', [
+                'gift_id' => $this->gift->id,
+                'host' => $this->gift->siteName(),
+                'status' => $outcome,
+                'http_status' => $this->gift->fetch_error['status_code'] ?? null,
+                'duration_ms' => (int) round((microtime(true) - $started) * 1000),
+                'attempt' => $this->attempts(),
+            ]);
         }
 
         $imageAction->dispatchCompletedEvent($this->gift);
@@ -170,6 +193,10 @@ class FetchGiftDetailsAction implements ShouldQueue
 
     private function tryAddImageFromUrls(ProcessGiftImageAction $imageAction, array $imageUrls): void
     {
+        if (in_array('image', $this->gift->fresh()->edited_fields ?? [], true)) {
+            return;
+        }
+
         foreach ($imageUrls as $imageUrl) {
             if (empty($imageUrl)) {
                 continue;
@@ -209,7 +236,7 @@ class FetchGiftDetailsAction implements ShouldQueue
                 'Sec-Fetch-User' => '?1',
                 'Upgrade-Insecure-Requests' => '1',
             ])
-            ->preferHeadless();
+            ->enableHeadlessFallback();
 
         $proxy = config('services.gift_fetcher.proxy');
 
