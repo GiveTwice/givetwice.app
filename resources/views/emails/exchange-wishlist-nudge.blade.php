@@ -12,7 +12,7 @@
 </p>
 
 <p style="font-size: 15px; margin-bottom: 24px;">
-    {{ __('Drop a few ideas on a wishlist — takes about a minute. And when they buy from it, we\'ll donate to charity. Everyone wins. Especially charity.') }}
+    {{ __('Drop a few ideas on a wishlist. It takes about a minute and saves your gift-giver a lot of guessing.') }}
 </p>
 
 <div style="text-align: center; margin-bottom: 24px;">

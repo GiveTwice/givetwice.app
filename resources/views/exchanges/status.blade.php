@@ -102,19 +102,6 @@
     </div>
             @endif
 
-            {{-- Impact counter --}}
-            @if($exchange->isDrawn() && $claimCount > 0)
-    <div class="bg-gradient-to-r from-teal-50 to-teal-100 rounded-2xl p-6 mb-6 border border-teal-200">
-        <div class="flex items-center gap-4">
-            <div class="text-3xl">✨</div>
-            <div>
-                <p class="font-semibold text-gray-900">{{ __('Your group is giving twice') }}</p>
-                <p class="text-gray-600">{{ $claimCount }} {{ trans_choice('gift claimed|gifts claimed', $claimCount) }} · ~€{{ $claimCount * 3 }} {{ __('estimated donation') }}</p>
-            </div>
-        </div>
-    </div>
-            @endif
-
             {{-- Share section (after draw) --}}
             @if($exchange->isDrawn())
     @php

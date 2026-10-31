@@ -106,7 +106,7 @@
 
             <div class="flex h-16 items-center justify-between gap-4 sm:gap-6">
                 <div class="flex items-center gap-3 sm:gap-4 md:gap-8 lg:gap-12">
-                    <x-logo />
+                    <x-logo :show-beta="! request()->routeIs('public.list')" />
 
                     @auth
                         <div class="hidden md:flex items-center gap-8 lg:gap-10 text-[17px] text-gray-700">

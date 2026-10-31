@@ -93,7 +93,7 @@
 <div class="mb-6 bg-white rounded-2xl border border-cream-200/60 shadow-sm overflow-hidden">
 
     <div class="p-5 sm:p-6">
-        <div class="flex items-start gap-4 sm:gap-5">
+        <div class="flex flex-wrap sm:flex-nowrap items-start gap-4 sm:gap-5">
 
             @if($ownerHasAvatar)
                 <div class="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden ring-2 ring-coral-200 ring-offset-2 ring-offset-white shadow-md">
@@ -110,19 +110,16 @@
             @endif
 
             <div class="flex-1 min-w-0">
-                <p class="text-coral-500 text-xs sm:text-sm tracking-wide uppercase font-medium">
-                    {{ __('Wishlist from') }}
-                </p>
-                <h1 class="text-xl sm:text-2xl font-bold text-gray-900 truncate">
-                    {{ $list->creator->name }}
+                <h1 class="text-xl sm:text-2xl font-bold text-gray-900 wrap-anywhere">
+                    {{ $list->name }}
                 </h1>
-                <p class="text-gray-500 text-sm truncate">{{ $list->name }}</p>
+                <p class="text-gray-500 text-sm wrap-anywhere">{{ __('By :name', ['name' => $list->creator->name]) }}</p>
                 @if($list->description)
                     <p class="text-gray-400 text-sm mt-0.5 line-clamp-1 hidden sm:block">{{ $list->description }}</p>
                 @endif
             </div>
 
-            <div class="flex flex-col items-end gap-1.5 flex-shrink-0">
+            <div class="flex flex-wrap sm:flex-col items-center sm:items-end gap-1.5 w-full sm:w-auto shrink-0">
                 <div class="flex items-center gap-1.5 px-3 py-1.5 bg-teal-500 rounded-full">
                     <span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
                     <span class="text-sm font-bold text-white" x-text="availableCount">{{ $availableGifts }}</span>
@@ -158,25 +155,6 @@
     @unless($isOwner)
         <div class="px-5 sm:px-6 py-4 bg-cream-50/50 border-t border-cream-100">
             <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
-
-                <div class="flex items-center gap-2 sm:gap-3 text-sm">
-                    <span class="flex items-center gap-1.5">
-                        <span class="w-6 h-6 bg-coral-100 text-coral-600 rounded-full flex items-center justify-center text-xs font-bold shadow-sm flex-shrink-0">1</span>
-                        <span class="text-gray-600 font-medium hidden sm:inline">{{ __('Browse') }}</span>
-                    </span>
-                    <x-icons.chevron-right class="w-4 h-4 text-gray-300 flex-shrink-0" />
-                    <span class="flex items-center gap-1.5">
-                        <span class="w-6 h-6 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center text-xs font-bold shadow-sm flex-shrink-0">2</span>
-                        <span class="text-gray-600 font-medium hidden sm:inline">{{ __('Claim') }}</span>
-                    </span>
-                    <x-icons.chevron-right class="w-4 h-4 text-gray-300 flex-shrink-0" />
-                    <span class="flex items-center gap-1.5">
-                        <span class="w-6 h-6 bg-sunny-200 text-sunny-700 rounded-full flex items-center justify-center text-xs font-bold shadow-sm flex-shrink-0">3</span>
-                        <span class="text-gray-600 font-medium hidden sm:inline">{{ __('Gift') }}</span>
-                    </span>
-                </div>
-
-                <div class="hidden sm:block w-px h-4 bg-gray-200"></div>
 
                 <p class="text-gray-400 text-sm">
                     {{ __(':name won\'t know who\'s getting what. The surprise stays a surprise.', ['name' => $list->creator->name]) }}
@@ -254,10 +232,10 @@
                 <div class="flex-1 text-center lg:text-left">
                     <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/20 rounded-full text-white/90 text-sm font-medium mb-4">
                         <span>&#10084;&#65039;</span>
-                        {{ __('Gifting That Gives Back') }}
+                        {{ __('Free. No ads.') }}
                     </div>
-                    <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{{ __('One gift. Two smiles.') }}</h2>
-                    <p class="text-coral-100 text-lg">{{ __("When you buy through our links, we donate 100% of our profits to charity. You don't pay a cent extra. You're basically a hero. Cape not included.") }}</p>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{{ __('Want your own wishlist?') }}</h2>
+                    <p class="text-coral-100 text-lg">{{ __('If you later buy through our shop links, all our commission will go to charity. We are setting that up now.') }} <a href="{{ route('transparency', ['locale' => app()->getLocale()]) }}" class="underline underline-offset-2">{{ __('Transparency') }}</a></p>
                 </div>
 
                 <div class="flex-shrink-0 text-center lg:text-left">
@@ -267,7 +245,7 @@
                                 <span>{{ __('Make your own wishlist') }}</span>
                                 <x-icons.arrow-right class="w-5 h-5" />
                             </a>
-                            <p class="mt-3 text-coral-200 text-sm">{{ __('Free. No ads. All profits go to charity.') }}</p>
+                            <p class="mt-3 text-coral-200 text-sm">{{ __('Free. No ads.') }}</p>
                         @else
                             <a href="{{ url('/' . app()->getLocale() . '/contact') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-coral-600 rounded-xl hover:bg-coral-50 font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
                                 <span>{{ __('Get in touch') }}</span>
@@ -298,7 +276,7 @@
     </div>
     <div class="flex items-center gap-2">
         <x-icons.heart class="w-5 h-5 text-coral-500" />
-        <span>{{ __('Supports charity') }}</span>
+        <span>{{ __('Our charity plan') }}</span>
     </div>
 </div>
 

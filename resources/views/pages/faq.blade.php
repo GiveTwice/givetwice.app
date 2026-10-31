@@ -24,7 +24,7 @@
                 </div>
                 <div>
                     <h3 class="font-semibold text-lg text-gray-900 mb-2">{{ __('What is :app?', ['app' => config('app.name')]) }}</h3>
-                    <p class="text-gray-600 leading-relaxed">{{ __('A wishlist app where 100% of our profits go to charity. You create lists, share them with friends and family, and when people buy gifts through our links, stores pay us a commission. We donate all of it after covering basic costs (servers, that sort of thing). Free to use, no tracking, no ads.', ['app' => config('app.name')]) }}</p>
+                    <p class="text-gray-600 leading-relaxed">{{ __('Make a wishlist. Share it with your people.') }}</p>
                 </div>
             </div>
         </div>
@@ -60,7 +60,7 @@
                 </div>
                 <div>
                     <h3 class="font-semibold text-lg text-gray-900 mb-2">{{ __('Which charities do you support?') }}</h3>
-                    <p class="text-gray-600 leading-relaxed">{{ __('We\'re still figuring this out. We\'re launching in early 2026, and we\'ll announce our charity partners before then. We plan to rotate partners and publish exactly how much we donate to each one.') }} <a href="{{ route('transparency', ['locale' => app()->getLocale()]) }}" class="text-coral-500 hover:text-coral-600 underline">{{ __('See our transparency page for more details.') }}</a></p>
+                    <p class="text-gray-600 leading-relaxed">{{ __('We have been live since December 2025. There is no revenue yet, so nothing to donate. As soon as that changes, you will find it here.') }} <a href="{{ route('transparency', ['locale' => app()->getLocale()]) }}" class="text-coral-500 hover:text-coral-600 underline">{{ __('See our transparency page for more details.') }}</a></p>
                 </div>
             </div>
         </div>
@@ -72,7 +72,7 @@
                 </div>
                 <div>
                     <h3 class="font-semibold text-lg text-gray-900 mb-2">{{ __('Is it really free?') }}</h3>
-                    <p class="text-gray-600 leading-relaxed">{{ __('Yes. Always will be. We make money through affiliate commissions when people buy gifts - the store pays us a small referral fee. After we cover hosting and essential costs, we donate the rest. You never pay anything.') }}</p>
+                    <p class="text-gray-600 leading-relaxed">{{ __('If you later buy through our shop links, all our commission will go to charity. We are setting that up now.') }}</p>
                 </div>
             </div>
         </div>
@@ -178,7 +178,7 @@
             "name": "{{ __('What is :app?', ['app' => config('app.name')]) }}",
             "acceptedAnswer": {
                 "@@type": "Answer",
-                "text": "{{ __('A wishlist app where 100% of our profits go to charity. You create lists, share them with friends and family, and when people buy gifts through our links, stores pay us a commission. We donate all of it after covering basic costs (servers, that sort of thing). Free to use, no tracking, no ads.', ['app' => config('app.name')]) }}"
+                "text": "{{ __('Make a wishlist. Share it with your people.') }}"
             }
         },
         {
@@ -202,7 +202,7 @@
             "name": "{{ __('Which charities do you support?') }}",
             "acceptedAnswer": {
                 "@@type": "Answer",
-                "text": "{{ __('We\'re still figuring this out. We\'re launching in early 2026, and we\'ll announce our charity partners before then. We plan to rotate partners and publish exactly how much we donate to each one.') }}"
+                "text": "{{ __('We have been live since December 2025. There is no revenue yet, so nothing to donate. As soon as that changes, you will find it here.') }}"
             }
         },
         {
@@ -210,7 +210,7 @@
             "name": "{{ __('Is it really free?') }}",
             "acceptedAnswer": {
                 "@@type": "Answer",
-                "text": "{{ __('Yes. Always will be. We make money through affiliate commissions when people buy gifts - the store pays us a small referral fee. After we cover hosting and essential costs, we donate the rest. You never pay anything.') }}"
+                "text": "{{ __('If you later buy through our shop links, all our commission will go to charity. We are setting that up now.') }}"
             }
         },
         {

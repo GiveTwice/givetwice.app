@@ -163,7 +163,8 @@ describe('Gift Exchange Feature', function () {
             $this->actingAs($user)
                 ->get("/nl/exchange/{$exchange->slug}/status")
                 ->assertOk()
-                ->assertViewIs('exchanges.status');
+                ->assertViewIs('exchanges.status')
+                ->assertViewMissing('claimCount');
         });
 
         it('denies status page to non-organizer', function () {

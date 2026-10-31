@@ -34,7 +34,7 @@
                         <span class="text-4xl">&#127922;</span>
                     </div>
                     <h2 class="mb-2 text-xl font-semibold text-gray-900">{{ __('Secret Santa') }}</h2>
-                    <p class="mb-6 text-gray-500">{{ __('Draw names. Buy gifts. Donate to charity. All without anyone knowing who got whom.') }}</p>
+                    <p class="mb-6 text-gray-500">{{ __('Draw names. Buy gifts. Keep everyone guessing who got whom.') }}</p>
                     <a href="{{ route('exchanges.landing', ['locale' => $currentLocale, 'exchangeType' => $exchangeSlug]) }}" class="btn-primary">
                         {{ __('Start a group') }}
                     </a>

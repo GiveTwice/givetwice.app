@@ -74,7 +74,7 @@
                 {{-- Charity note --}}
                 <div class="bg-teal-50 rounded-xl p-4 border-l-4 border-teal-400">
                     <p class="text-gray-700 text-sm">
-                        {{ __('When you buy from a wishlist here, we donate our commission to charity. You pay nothing extra.') }}
+                        {{ __('If you later buy through our shop links, all our commission will go to charity. We are setting that up now.') }} <a href="{{ route('transparency', ['locale' => app()->getLocale()]) }}" class="underline underline-offset-2">{{ __('Transparency') }}</a>
                     </p>
                 </div>
 

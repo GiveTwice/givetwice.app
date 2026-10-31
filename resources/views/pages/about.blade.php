@@ -11,7 +11,7 @@
         &#10084;&#65039;
     </div>
     <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">{{ __('About GiveTwice') }}</h1>
-    <p class="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">{{ __('A wishlist app where 100% of our profits go to charity.') }}</p>
+    <p class="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">{{ __('Make a wishlist. Share it with your people.') }}</p>
 </div>
 
 <div class="max-w-4xl mx-auto">
@@ -21,8 +21,7 @@
         <h2 class="text-2xl font-bold text-gray-900 mb-6">{{ __('Why "Twice"?') }}</h2>
 
         <div class="space-y-4 text-lg text-gray-700 leading-relaxed mb-8">
-            <p>{{ __('Here\'s how it works: when someone buys a gift from your list, the store pays us a referral commission. We donate 100% of the profit to charity.') }}</p>
-            <p>{{ __('So every gift does two things: your friend gets what they asked for, and charity gets a donation.') }}</p>
+            <p>{{ __('If you later buy through our shop links, all our commission will go to charity. We are setting that up now.') }}</p>
         </div>
 
         <div class="bg-white/60 rounded-2xl p-6 border border-coral-100/50">
@@ -30,7 +29,7 @@
                 <span class="text-teal-500 text-xl">&#10003;</span>
                 <span class="font-semibold text-gray-900">{{ __('Nobody pays extra') }}</span>
             </div>
-            <p class="text-gray-600 ml-8">{{ __('The gift-giver pays the same price they\'d pay anywhere else. You pay nothing. The donation comes entirely from the store\'s commission - money that would otherwise go to us.') }}</p>
+            <p class="text-gray-600 ml-8">{{ __('We cover running costs ourselves. All future affiliate commission is for charity.') }}</p>
         </div>
     </div>
 
@@ -39,8 +38,8 @@
         <h2 class="text-2xl font-bold text-gray-900 mb-6">{{ __('How the money works') }}</h2>
 
         <div class="space-y-4 text-gray-700 leading-relaxed mb-8">
-            <p>{{ __('Let\'s be upfront: "100% of profits" means we first cover operating costs - servers, essential software, legal stuff. What\'s left goes entirely to charity.') }}</p>
-            <p>{{ __('We run lean. No office, no bloated team, no unnecessary tools. The less we spend, the more goes to charity.') }}</p>
+            <p>{{ __('If you later buy through our shop links, all our commission will go to charity. We are setting that up now.') }}</p>
+            <p>{{ __('We cover running costs ourselves. All future affiliate commission is for charity.') }}</p>
             <p>{{ __('Everyone working on GiveTwice donates their time. We built this because we think it\'s a good idea, not because we\'re trying to make money.') }}</p>
         </div>
 
@@ -55,7 +54,7 @@
             </div>
             <div class="bg-cream-50 rounded-xl p-4 text-center">
                 <div class="text-2xl mb-2">&#10084;&#65039;</div>
-                <p class="text-sm text-gray-600">{{ __('All profits to charity') }}</p>
+                <p class="text-sm text-gray-600">{{ __('Free. No ads.') }}</p>
             </div>
         </div>
 
@@ -83,7 +82,7 @@
                 </div>
                 <div class="p-6">
                     <p class="text-gray-700 leading-relaxed mb-4">{{ __('Most wishlist services are "free" - but that usually means you\'re the product. Your data gets sold, your browsing habits tracked, your gift preferences monetized.') }}</p>
-                    <p class="text-gray-700 leading-relaxed mb-4">{{ __('We do things differently. We\'re completely transparent about how we make money: affiliate commissions, with 100% of profits going to charity.') }}</p>
+                    <p class="text-gray-700 leading-relaxed mb-4">{{ __('If you later buy through our shop links, all our commission will go to charity. We are setting that up now.') }}</p>
                     <p class="text-gray-600 text-sm">{{ __('Our privacy policy is written in plain language. We collect only what we need and never sell your data.') }}</p>
                     <div class="flex flex-wrap gap-x-6 gap-y-2 mt-4">
                         <a href="{{ route('privacy', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center text-teal-600 hover:text-teal-700 font-medium text-sm">
@@ -132,7 +131,7 @@
                 </div>
                 <div class="pt-0.5">
                     <h3 class="font-semibold text-gray-900 mb-1">{{ __('Giving back') }}</h3>
-                    <p class="text-gray-600 text-sm leading-relaxed">{{ __('100% of profits go to charity. We cover costs, nothing more.') }}</p>
+                    <p class="text-gray-600 text-sm leading-relaxed">{{ __('Free. No ads.') }}</p>
                 </div>
             </div>
             <div class="flex items-start gap-4 sm:gap-5 bg-white rounded-2xl border border-cream-200 p-4 sm:p-5 transition-all hover:border-teal-200 hover:shadow-sm">
@@ -160,10 +159,10 @@
     <div class="bg-cream-100 rounded-3xl p-6 sm:p-8 lg:p-10 mb-12 sm:mb-16">
         <div class="max-w-2xl mx-auto text-center">
             <h2 class="text-2xl font-bold text-gray-900 mb-4">{{ __('Our promise') }}</h2>
-            <p class="text-gray-700 leading-relaxed mb-6">{{ __('GiveTwice will always be free. We\'ll never sell your data. After covering basic costs, every cent of profit goes to charity. We\'ll keep improving it - on our own time - because we think gift-giving should be simple and meaningful.') }}</p>
+            <p class="text-gray-700 leading-relaxed mb-6">{{ __('If you later buy through our shop links, all our commission will go to charity. We are setting that up now.') }}</p>
             <div class="inline-flex items-center px-5 py-2.5 bg-white rounded-full shadow-sm border border-cream-200">
                 <span class="text-coral-500 mr-2">&#10084;</span>
-                <span class="text-gray-700 font-medium text-sm">{{ __('One gift. Two smiles. Zero catch.') }}</span>
+                <span class="text-gray-700 font-medium text-sm">{{ __('Free. No ads.') }}</span>
             </div>
         </div>
     </div>

@@ -16,7 +16,7 @@
             </div>
             <div>
                 <h1 class="text-xl font-bold text-gray-900">{{ __('Make a wishlist. Do some good.') }}</h1>
-                <p class="text-gray-500 text-sm mt-0.5">{{ __('No catch. No ads. All affiliate profits go to charity.') }}</p>
+                <p class="text-gray-500 text-sm mt-0.5">{{ __('Free. No ads.') }}</p>
             </div>
         </div>
 

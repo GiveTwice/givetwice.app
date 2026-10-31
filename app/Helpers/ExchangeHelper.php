@@ -121,11 +121,11 @@ class ExchangeHelper
                 'hero' => [
                     'h1_title' => 'Secret Santa',
                     'h1_subtitle' => 'gift exchange',
-                    'description' => "Draw names, set a budget, buy one person a gift they'll love. We handle the shuffle, the secrecy, and the charity donation.",
+                    'description' => 'Draw names, set a budget, buy one person a gift they will love. We handle the shuffle and the secrecy.',
                     'bullets' => [
                         'Names drawn privately — no one knows who got whom',
                         'Everyone gets a link to their person\'s wishlist',
-                        'Every purchase donates to charity at no extra cost',
+                        'Free. No ads.',
                     ],
                     'cta_text' => 'Start my Secret Santa group',
                     'cta_emoji' => '&#127877;',
@@ -154,14 +154,14 @@ class ExchangeHelper
                         [
                             'emoji' => '&#10084;&#65039;',
                             'bg' => 'teal',
-                            'title' => 'Giving that keeps giving',
-                            'description' => "When gifts are bought from wishlists on GiveTwice, we donate our commission to charity. Your group celebration helps people you'll never meet.",
+                            'title' => 'Our charity plan',
+                            'description' => 'If you later buy through our shop links, all our commission will go to charity. We are setting that up now.',
                         ],
                     ],
                 ],
                 'givetwice' => [
-                    'title' => 'Your Secret Santa, someone else\'s Christmas too',
-                    'description' => "When participants buy gifts from each other's wishlists on GiveTwice, the stores pay us a commission. We donate 100% of that to charity. Your group exchange creates a ripple of good — no extra cost, no extra steps.",
+                    'title' => 'Our charity plan',
+                    'description' => 'If you later buy through our shop links, all our commission will go to charity. We are setting that up now.',
                     'link_text' => 'Learn how the charity model works',
                 ],
                 'tips_title' => 'Tips for a smooth Secret Santa',
@@ -198,7 +198,7 @@ class ExchangeHelper
                     ],
                     [
                         'question' => 'How does the charity donation work?',
-                        'answer' => "When a participant buys a gift from a GiveTwice wishlist, the store pays us a small affiliate commission (the same as if you'd gone through any price-comparison site). We donate 100% of those commissions to charity. You pay the same price you'd pay anywhere — we just make sure the extra goes somewhere good.",
+                        'answer' => 'If you later buy through our shop links, all our commission will go to charity. We are setting that up now.',
                     ],
                 ],
                 'final_cta' => [
@@ -217,7 +217,7 @@ class ExchangeHelper
                     'bullets' => [
                         'Niemand weet wie jou getrokken heeft',
                         'Iedereen krijgt een link naar de verlanglijst van zijn persoon',
-                        'Elke aankoop doneert aan een goed doel, gratis',
+                        'Gratis. Geen reclame.',
                     ],
                     'cta_text' => 'Lootjes trekken starten',
                     'cta_emoji' => '&#127381;',
@@ -246,14 +246,14 @@ class ExchangeHelper
                         [
                             'emoji' => '&#10084;&#65039;',
                             'bg' => 'teal',
-                            'title' => 'Geven dat verder reikt',
-                            'description' => 'Als cadeautjes via GiveTwice-verlanglijstjes gekocht worden, doneren wij onze commissie aan een goed doel. Jouw lootjestrekkronde helpt mensen die je nooit zult ontmoeten.',
+                            'title' => 'Ons plan voor het goede doel',
+                            'description' => 'Koop je later via onze winkellinks, dan gaat onze commissie naar een goed doel. Dat zetten we nu op.',
                         ],
                     ],
                 ],
                 'givetwice' => [
-                    'title' => 'Jouw lootje, iemand anders\' kerst',
-                    'description' => 'Wanneer deelnemers cadeautjes kopen via GiveTwice-verlanglijstjes, betaalt de winkel ons een kleine commissie. Wij doneren 100% daarvan aan een goed doel. Jij betaalt niks extra — het geld dat anders bij de winkel bleef, gaat nu naar mensen die het nodig hebben.',
+                    'title' => 'Ons plan voor het goede doel',
+                    'description' => 'Koop je later via onze winkellinks, dan gaat onze commissie naar een goed doel. Dat zetten we nu op.',
                     'link_text' => 'Zo werkt het goede-doelmodel',
                 ],
                 'tips_title' => 'Tips voor een vlotte loting',
@@ -290,7 +290,7 @@ class ExchangeHelper
                     ],
                     [
                         'question' => 'Hoe werkt de donatie aan het goede doel?',
-                        'answer' => 'Wanneer een deelnemer een cadeau koopt via een GiveTwice-verlanglijst, betaalt de winkel ons een kleine affiliatecommissie — hetzelfde als bij elke prijsvergelijkingssite. Wij doneren 100% van die commissies aan een goed doel. Jij betaalt de normale prijs; het verschil gaat naar mensen die het nodig hebben.',
+                        'answer' => 'Koop je later via onze winkellinks, dan gaat onze commissie naar een goed doel. Dat zetten we nu op.',
                     ],
                 ],
                 'final_cta' => [
@@ -309,7 +309,7 @@ class ExchangeHelper
                     'bullets' => [
                         'Personne ne sait qui vous a tiré',
                         'Chacun reçoit un lien vers la liste de cadeaux de son filleul',
-                        'Chaque achat fait un don à une association, sans frais supplémentaires',
+                        'Gratuit. Sans pub.',
                     ],
                     'cta_text' => 'Lancer mon tirage au sort',
                     'cta_emoji' => '&#127381;',
@@ -338,14 +338,14 @@ class ExchangeHelper
                         [
                             'emoji' => '&#10084;&#65039;',
                             'bg' => 'teal',
-                            'title' => 'Un cadeau qui va plus loin',
-                            'description' => 'Quand les cadeaux sont achetés via les listes GiveTwice, nous donnons notre commission à une association. Votre échange de Noël aide des personnes que vous ne croiserez jamais.',
+                            'title' => 'Notre projet solidaire',
+                            'description' => 'Si tu achètes plus tard via nos liens marchands, toute notre commission ira à une association. On met ça en place.',
                         ],
                     ],
                 ],
                 'givetwice' => [
-                    'title' => 'Votre cadeau, le Noël de quelqu\'un d\'autre aussi',
-                    'description' => "Quand les participants achètent des cadeaux via des listes GiveTwice, le magasin nous verse une petite commission d'affiliation. Nous en donnons 100 % à une association caritative. Vous payez le même prix qu'ailleurs — l'argent qui resterait normalement en poche du magasin va à ceux qui en ont besoin.",
+                    'title' => 'Notre projet solidaire',
+                    'description' => 'Si tu achètes plus tard via nos liens marchands, toute notre commission ira à une association. On met ça en place.',
                     'link_text' => 'Comment fonctionne notre modèle caritatif',
                 ],
                 'tips_title' => 'Conseils pour un tirage réussi',
@@ -382,7 +382,7 @@ class ExchangeHelper
                     ],
                     [
                         'question' => 'Comment fonctionne le don à l\'association ?',
-                        'answer' => "Quand un participant achète un cadeau via une liste GiveTwice, le magasin nous verse une petite commission d'affiliation — comme pour n'importe quel comparateur de prix. Nous donnons 100 % de ces commissions à des associations. Vous payez le prix normal ; la différence va à des personnes qui en ont besoin.",
+                        'answer' => 'Si tu achètes plus tard via nos liens marchands, toute notre commission ira à une association. On met ça en place.',
                     ],
                 ],
                 'final_cta' => [
