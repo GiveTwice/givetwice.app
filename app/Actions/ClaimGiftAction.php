@@ -31,14 +31,16 @@ class ClaimGiftAction
                 throw new UserAlreadyClaimedException;
             }
 
-            $claim = Claim::create([
+            $claim = new Claim([
                 'gift_id' => $lockedGift->id,
                 'user_id' => $user->id,
                 'claimer_email' => $user->email,
                 'confirmed_at' => now(),
             ]);
 
-            $lockedGift->load('lists.users', 'user');
+            $claim->gift()->associate($lockedGift->setRelation('user', $gift->user));
+            $claim->save();
+            $lockedGift->load('lists.users');
 
             foreach ($lockedGift->lists as $list) {
                 $user->followListIfEligible($list);

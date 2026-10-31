@@ -34,7 +34,7 @@ class ReservationMail extends Mailable implements ShouldQueue
 
         return new Content(view: 'emails.reservation', with: [
             'gift' => $gift,
-            'listUrl' => $gift->lists()->first()?->getPublicUrl($this->userLocale).'#gift-'.$gift->id,
+            'listUrl' => $this->claim->historyUrl($this->userLocale),
             'undoUrl' => $this->undoUrl,
         ]);
     }

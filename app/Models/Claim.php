@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
 /**
+ * @property array<string, mixed>|null $reservation
  * @property Carbon|null $confirmed_at
  * @property string|null $notes
  */
@@ -17,6 +19,8 @@ class Claim extends Model
     use HasFactory;
 
     protected $fillable = [
+        'reservation',
+        'resolution',
         'gift_id',
         'user_id',
         'claimer_email',
@@ -29,12 +33,15 @@ class Claim extends Model
     {
         return [
             'confirmed_at' => 'datetime',
+            'reservation' => 'array',
         ];
     }
 
     protected static function booted(): void
     {
         static::creating(function (Claim $claim) {
+            $claim->claimer_email ??= $claim->user?->email;
+            $claim->reservation ??= $claim->snapshot();
             if (empty($claim->confirmation_token)) {
                 $claim->confirmation_token = Str::random(64);
             }
@@ -46,7 +53,7 @@ class Claim extends Model
      */
     public function gift(): BelongsTo
     {
-        return $this->belongsTo(Gift::class);
+        return $this->belongsTo(Gift::class)->withTrashed();
     }
 
     /**
@@ -55,6 +62,27 @@ class Claim extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function historyUrl(?string $locale = null): string
+    {
+        return URL::temporarySignedRoute('reservations.index', now()->addDays(30), ['locale' => $locale ?? app()->getLocale(), 'email' => $this->claimer_email ?? $this->user->email]);
+    }
+
+    public function isRemoved(): bool
+    {
+        return ! $this->gift || $this->gift->trashed() || (! empty($this->reservation['list_id']) && ! $this->gift->lists->contains('id', $this->reservation['list_id']));
+    }
+
+    public function snapshot(): array
+    {
+        $gift = $this->gift;
+        $list = $gift?->lists()->with('creator')->find(request()->integer('list')) ?? $gift?->lists()->with('creator')->first();
+
+        return ['title' => $gift?->title, 'price' => $gift?->formatPrice(), 'url' => $gift?->url, 'owner_note' => $gift?->owner_note,
+            'image' => $gift?->getImageUrl('thumb'), 'list_id' => $list?->id, 'list_name' => $list?->name,
+            'owner' => $list ? $list->creator->name : $gift?->user?->name, 'owner_id' => $list ? $list->creator_id : $gift?->user_id,
+            'date' => $list?->occasion_date?->format('Y-m-d')];
     }
 
     public function isConfirmed(): bool

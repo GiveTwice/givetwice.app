@@ -73,6 +73,7 @@
         <div class="absolute -top-2 right-4 w-4 h-4 bg-white border-l border-t border-cream-200 transform rotate-45"></div>
 
         <div class="relative bg-white rounded-2xl shadow-xl shadow-gray-900/10 border border-cream-200 overflow-hidden">
+            <a href="{{ route('reservations.index', ['locale' => app()->getLocale()]) }}" class="block px-5 py-3 text-coral-600">{{ __('All my reservations') }}</a>
             {{-- User info header --}}
             <div class="px-5 py-5 bg-gradient-to-br from-cream-50 to-white border-b border-cream-100">
                 <div class="flex items-center gap-4">

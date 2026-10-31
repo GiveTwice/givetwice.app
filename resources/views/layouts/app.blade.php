@@ -157,6 +157,7 @@
             </div>
 
             <x-mobile-menu-panel>
+                <a href="{{ route('reservations.index', ['locale' => app()->getLocale()]) }}" class="block px-3 py-2 text-coral-600">{{ __('All my reservations') }}</a>
                 @auth
                     <a
                         href="{{ $dashboardUrl }}"
