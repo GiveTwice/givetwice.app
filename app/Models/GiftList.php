@@ -43,6 +43,11 @@ class GiftList extends Model
 
     protected static function booted(): void
     {
+        static::deleting(function (GiftList $list) {
+            foreach ($list->gifts as $gift) {
+                ReservationAlert::record($gift, true, $list->id);
+            }
+        });
         static::creating(function (GiftList $list) {
             if (empty($list->slug)) {
                 // Temporary slug for insertion - will be updated after creation

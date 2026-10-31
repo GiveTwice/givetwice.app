@@ -62,7 +62,6 @@ class ListController extends Controller
     {
         $this->authorize('delete', $list);
 
-        $list->gifts()->detach();
         $list->delete();
 
         return redirect()

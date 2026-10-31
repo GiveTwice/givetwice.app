@@ -22,9 +22,11 @@
                 <article class="flex flex-col gap-3 rounded-xl border border-cream-200 bg-white p-4">
                     <div class="flex items-center gap-3">
                         @if($item['image'])<img src="{{ $item['image'] }}" alt="" class="size-14 shrink-0 rounded-lg object-cover">@endif
-                        <div class="min-w-0"><h3 class="font-semibold">{{ $item['title'] }}</h3><p class="text-sm">{{ $item['price'] }}</p></div>
+                        <div class="min-w-0"><h3 class="font-semibold {{ $claim->isRemoved() ? 'line-through text-gray-500' : '' }}">{{ $item['title'] }}</h3><p class="text-sm">{{ $item['price'] }}</p></div>
                     </div>
-                    @if($claim->isRemoved())
+                    @if($alert = $claim->latestAlert())
+                        <a class="rounded-lg bg-coral-50 p-3 font-semibold text-coral-700" href="{{ $alert->choiceUrl('review') }}">{{ __('reservations.changed', ['owner' => $item['owner']]) }} →</a>
+                    @elseif($claim->isRemoved())
                         <p class="text-sm text-coral-700">{{ __('reservations.deleted', ['owner' => $item['owner']]) }}</p>
                         @if($claim->resolution === 'keep')<p>{{ __('reservations.keep_done', ['owner' => $item['owner']]) }}</p>
                         @else

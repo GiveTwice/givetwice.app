@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Mail\FriendDigestMail;
 use App\Models\Gift;
 use App\Models\GiftList;
+use App\Models\ReservationAlert;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
@@ -95,12 +96,14 @@ class SendFriendDigestCommand extends Command
             $listIds,
         );
 
+        $alertsByList = ReservationAlert::where('email', $user->email)->where('updated_at', '>', $sinceDate)->get(['gift_id', 'list_id'])->groupBy('list_id');
         $digestData = collect();
 
         foreach ($followedLists as $followedList) {
             $listId = $followedList->list_id;
-            $addedGifts = $addedGiftsByList->get($listId, collect());
-            $removedGifts = $removedGiftsByList->get($listId, collect());
+            $alertedGiftIds = $alertsByList->get($listId, collect())->pluck('gift_id')->all();
+            $addedGifts = $addedGiftsByList->get($listId, collect())->reject(fn (Gift $gift) => in_array($gift->id, $alertedGiftIds));
+            $removedGifts = $removedGiftsByList->get($listId, collect())->reject(fn (Gift $gift) => in_array($gift->id, $alertedGiftIds));
 
             if ($addedGifts->isEmpty() && $removedGifts->isEmpty()) {
                 continue;

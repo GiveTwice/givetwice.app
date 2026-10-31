@@ -2020,5 +2020,18 @@
     "reservations.keep_done": "We kept it. Maybe :owner already has it: check with them.",
     "reservations.alternative_done": "Reservation removed. Here are the other ideas, if the list is still here.",
     "reservations.dismiss_done": "Removed from your reservations.",
-    "reservations.private": ":owner cannot see what you choose. "
+    "reservations.private": ":owner cannot see what you choose. ",
+    "reservations.changed": ":owner’s list: something changed",
+    "reservations.before": "Before",
+    "reservations.after": "Now",
+    "reservations.title": "Name",
+    "reservations.price": "Price",
+    "reservations.url": "Link",
+    "reservations.owner_note": "Note",
+    "reservations.none": "(none)",
+    "reservations.new": "Okay, I’ll buy the new one",
+    "reservations.old": "I already bought the old one",
+    "reservations.release": "Release the reservation",
+    "reservations.mute": "No more emails about :owner’s list",
+    "reservations.muted": "Emails for this list are off."
 }
