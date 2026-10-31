@@ -63,9 +63,20 @@
         </div>
     @endforeach
     @if($gifts->isEmpty())<p class="py-8 text-gray-500" data-empty-state>{{ __('No gifts yet') }}</p>@endif
-    @foreach($gifts as $gift)
-        <x-gift-modal :gift="$gift" :is-owner="$isOwner" :show-reservations="$showReservations" />
-    @endforeach
+    @if($isOwner)
+        @foreach($gifts as $gift)<x-gift-modal :gift="$gift" :is-owner="$isOwner" :show-reservations="$showReservations" />@endforeach
+    @else
+        <div x-data="reservationSheet" x-on:reserve-gift.window="open($event.detail.url)" x-on:reservation-submit="send($event.detail.form)">
+            <dialog x-ref="dialog" x-on:cancel="close()" x-on:click="if ($event.target === $el) close()" x-on:close="closed()" class="reservation-dialog fixed inset-x-0 bottom-0 top-auto m-0 mx-auto w-full max-w-md rounded-t-2xl bg-white p-0 text-gray-900 shadow-xl sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 sm:rounded-2xl">
+                <div class="overflow-y-auto overscroll-contain p-4" style="max-height: inherit" x-on:touchstart.passive="touchY = $event.touches[0].clientY" x-on:touchend.passive="if ($event.changedTouches[0].clientY - touchY > 90 && $el.scrollTop === 0) close()">
+                    <div class="mb-2 flex items-center justify-between"><span></span><span class="h-1 w-10 rounded-full bg-cream-300"></span><button type="button" x-on:click="close()" class="px-2 text-2xl" aria-label="{{ __('Close') }}">×</button></div>
+                    <p x-show="busy" role="status">{{ __('Loading...') }}</p>
+                    <p x-show="error" x-text="error" role="alert" class="text-sm text-red-700"></p>
+                    <div x-ref="content"></div>
+                </div>
+            </dialog>
+        </div>
+    @endif
     {{ $gifts->links() }}
     @auth
         @unless($isOwner)
@@ -74,51 +85,6 @@
             </div>
         @endunless
     @endauth
-<div class="mt-16 relative overflow-hidden">
-
-    <div class="absolute inset-0 bg-gradient-to-br from-coral-500 to-coral-600 rounded-2xl"></div>
-    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iNCIvPjwvZz48L2c+PC9zdmc+')] opacity-50"></div>
-
-    <div class="relative px-6 sm:px-10 py-10 sm:py-12">
-        <div class="max-w-3xl mx-auto">
-            <div class="flex flex-col lg:flex-row lg:items-center gap-8">
-
-                <div class="flex-1 text-center lg:text-left">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/20 rounded-full text-white/90 text-sm font-medium mb-4">
-                        <span>&#10084;&#65039;</span>
-                        {{ __('Free. No ads.') }}
-                    </div>
-                    <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{{ __('Want your own wishlist?') }}</h2>
-                    <p class="text-coral-100 text-lg">{{ __('If you later buy through our shop links, all our commission will go to charity. We are setting that up now.') }} <a href="{{ route('transparency', ['locale' => app()->getLocale()]) }}" class="underline underline-offset-2">{{ __('Transparency') }}</a></p>
-                </div>
-
-                <div class="flex-shrink-0 text-center lg:text-left">
-                    @guest
-                        @if(config('app.allow_registration'))
-                            <a href="{{ url('/' . app()->getLocale() . '/register') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-coral-600 rounded-xl hover:bg-coral-50 font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-                                <span>{{ __('Make your own wishlist') }}</span>
-                                <x-icons.arrow-right class="w-5 h-5" />
-                            </a>
-                            <p class="mt-3 text-coral-200 text-sm">{{ __('Free. No ads.') }}</p>
-                        @else
-                            <a href="{{ url('/' . app()->getLocale() . '/contact') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-coral-600 rounded-xl hover:bg-coral-50 font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-                                <span>{{ __('Get in touch') }}</span>
-                                <x-icons.arrow-right class="w-5 h-5" />
-                            </a>
-                            <p class="mt-3 text-coral-200 text-sm">{{ __('Coming soon') }}</p>
-                        @endif
-                    @else
-                        <a href="{{ url('/' . app()->getLocale() . '/dashboard') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-coral-600 rounded-xl hover:bg-coral-50 font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-                            <span>{{ __('Go to My Wishlists') }}</span>
-                            <x-icons.arrow-right class="w-5 h-5" />
-                        </a>
-                    @endguest
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-sm text-gray-500">
     <div class="flex items-center gap-2">
         <x-icons.shield-check class="w-5 h-5 text-teal-500" />

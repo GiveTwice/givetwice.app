@@ -1055,3 +1055,8 @@
         grid-template-columns: 19rem minmax(0, 1fr);
     }
 }
+
+.reservation-dialog { max-height: calc(100dvh - var(--sheet-top, 72px) - 8px); }
+.reservation-dialog::backdrop { background: rgb(0 0 0 / .3); clip-path: inset(var(--sheet-top, 72px) 0 0); }
+
+@media (min-width: 640px) { .reservation-dialog { top: calc((100dvh + var(--sheet-top, 72px)) / 2); } }
