@@ -379,7 +379,7 @@ describe('PerformDrawAction', function () {
             $action->execute($exchange);
         })->throws(InvalidArgumentException::class, 'excluded from giving to all other participants');
 
-        it('throws RuntimeException when exclusions are too restrictive for a valid cycle', function () {
+        it('finds a valid matching when rules require separate cycles', function () {
             $exchange = GiftExchange::factory()->create();
             $participants = GiftExchangeParticipant::factory()->count(4)->create(['exchange_id' => $exchange->id]);
 
@@ -437,6 +437,8 @@ describe('PerformDrawAction', function () {
 
             $action = new PerformDrawAction;
             $action->execute($exchange);
-        })->throws(RuntimeException::class, 'Could not find a valid draw');
+            expect($exchange->fresh()->isDrawn())->toBeTrue();
+            expect($exchange->participants()->pluck('assigned_to_participant_id')->sort()->values()->all())->toBe($ids->sort()->values()->all());
+        });
     });
 });

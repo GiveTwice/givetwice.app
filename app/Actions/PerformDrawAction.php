@@ -9,7 +9,6 @@ use App\Models\GiftExchangeParticipant;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
-use RuntimeException;
 
 class PerformDrawAction
 {
@@ -32,23 +31,18 @@ class PerformDrawAction
         $this->validateExclusionsAreSolvable($participants, $excludedPairs);
 
         return DB::transaction(function () use ($exchange, $participants, $excludedPairs) {
-            $shuffled = $this->findValidCycle($participants, $excludedPairs);
+            try {
+                $shuffled = $this->findValidCycle($participants, $excludedPairs);
+                $assignments = [];
+                foreach ($shuffled as $index => $giver) {
+                    $assignments[$giver->id] = $shuffled[($index + 1) % $shuffled->count()]->id;
+                }
+            } catch (InvalidArgumentException) {
+                $assignments = $this->matchParticipants($participants, $excludedPairs);
+            }
 
-            /*
-             * Create a single cycle: [0]->[1]->[2]->...->[n]->[0]
-             * Each participant buys for the next one in the shuffled list.
-             * The last participant buys for the first.
-             *
-             *   A -> B -> C -> D -> A
-             *   └────────────────────┘
-             */
-            for ($i = 0; $i < $shuffled->count(); $i++) {
-                /** @var GiftExchangeParticipant $buyer */
-                $buyer = $shuffled[$i];
-                /** @var GiftExchangeParticipant $receiver */
-                $receiver = $shuffled[($i + 1) % $shuffled->count()];
-
-                $buyer->update(['assigned_to_participant_id' => $receiver->id]);
+            foreach ($participants as $buyer) {
+                $buyer->update(['assigned_to_participant_id' => $assignments[$buyer->id]]);
             }
 
             $exchange->update([
@@ -122,11 +116,13 @@ class PerformDrawAction
      * Retries up to MAX_ATTEMPTS times. For typical use cases (couples exclusions
      * in groups of 3-50), this converges very quickly.
      *
+     * @param  Collection<int, GiftExchangeParticipant>  $participants
      * @param  array<string, true>  $excludedPairs
+     * @return Collection<int, GiftExchangeParticipant>
      */
     private function findValidCycle(Collection $participants, array $excludedPairs): Collection
     {
-        // No exclusions — single shuffle is always valid
+        // No exclusions - single shuffle is always valid
         if ($excludedPairs === []) {
             return $participants->shuffle();
         }
@@ -139,9 +135,54 @@ class PerformDrawAction
             }
         }
 
-        throw new RuntimeException(
-            'Could not find a valid draw after '.self::MAX_ATTEMPTS.' attempts. The exclusion rules may be too restrictive.'
-        );
+        throw new InvalidArgumentException(__('These rules leave no valid draw. Remove a rule and try again.'));
+    }
+
+    /**
+     * Find an exact matching when restrictive rules cannot form a single cycle.
+     *
+     * @param  array<string, true>  $excludedPairs
+     * @return array<int, int>
+     */
+    private function matchParticipants(Collection $participants, array $excludedPairs): array
+    {
+        $options = [];
+        foreach ($participants as $giver) {
+            $options[$giver->id] = $participants->pluck('id')->shuffle()->reject(
+                fn (int $receiver) => $receiver === $giver->id || isset($excludedPairs[$giver->id.':'.$receiver])
+            )->all();
+        }
+        $receivers = [];
+        foreach ($participants->shuffle() as $giver) {
+            $visited = [];
+            if (! $this->findReceiver($giver->id, $options, $receivers, $visited)) {
+                throw new InvalidArgumentException(__('These rules leave no valid draw. Remove a rule and try again.'));
+            }
+        }
+
+        return array_flip($receivers);
+    }
+
+    /**
+     * @param  array<int, array<int, int>>  $options
+     * @param  array<int, int>  $receivers
+     * @param  array<int, true>  $visited
+     */
+    private function findReceiver(int $giver, array $options, array &$receivers, array &$visited): bool
+    {
+        foreach ($options[$giver] as $receiver) {
+            if (isset($visited[$receiver])) {
+                continue;
+            }
+            $visited[$receiver] = true;
+            if (! isset($receivers[$receiver]) || $this->findReceiver($receivers[$receiver], $options, $receivers, $visited)) {
+                $receivers[$receiver] = $giver;
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
