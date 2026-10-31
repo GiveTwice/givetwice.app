@@ -38,9 +38,9 @@
                 </div>
 
                 <div>
-                    <label for="email" class="form-label">{{ __('Your email') }}</label>
+                    <label for="email" class="form-label">{{ __('Email (optional)') }}</label>
                     <input type="email" name="email" id="email" class="form-input"
-                           value="{{ old('email', auth()->user()?->email) }}" required>
+                           value="{{ old('email', auth()->user()?->email) }}">
                     @error('email') <p class="form-error">{{ $message }}</p> @enderror
                 </div>
 

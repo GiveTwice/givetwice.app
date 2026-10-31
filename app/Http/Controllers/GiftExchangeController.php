@@ -4,18 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Actions\CreateGiftExchangeAction;
 use App\Actions\PerformDrawAction;
+use App\Http\Requests\ExchangeParticipantRequest;
+use App\Http\Requests\StoreGiftExchangeRequest;
 use App\Models\GiftExchange;
 use App\Models\GiftExchangeParticipant;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class GiftExchangeController extends Controller
 {
-    public function addParticipant(Request $request, string $locale, GiftExchange $exchange): RedirectResponse
+    public function addParticipant(ExchangeParticipantRequest $request, string $locale, GiftExchange $exchange): RedirectResponse
     {
         $this->authorize('manage', $exchange);
 
@@ -23,18 +26,15 @@ class GiftExchangeController extends Controller
             return back()->withErrors(['participant' => __('This group has reached its maximum number of participants.')]);
         }
 
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
-        ]);
+        $validated = $request->validated();
 
-        $email = strtolower(trim($validated['email']));
+        $email = filled($validated['email'] ?? null) ? strtolower(trim($validated['email'])) : null;
 
-        if ($exchange->participants()->where('email', $email)->exists()) {
+        if ($email && $exchange->participants()->where('email', $email)->exists()) {
             return back()->withErrors(['email' => __('This email is already in the group.')]);
         }
 
-        $existingUser = User::where('email', $email)->first();
+        $existingUser = $email ? User::where('email', $email)->first() : null;
 
         GiftExchangeParticipant::create([
             'exchange_id' => $exchange->id,
@@ -90,38 +90,27 @@ class GiftExchangeController extends Controller
     }
 
     public function store(
-        Request $request,
+        StoreGiftExchangeRequest $request,
         string $locale,
         string $exchangeType,
         CreateGiftExchangeAction $action,
     ): RedirectResponse {
         $organizerParticipates = $request->boolean('organizer_participates');
-        $minParticipants = $organizerParticipates ? 2 : 3;
-
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'event_date' => ['nullable', 'date', 'after:today'],
-            'budget_amount' => ['nullable', 'numeric', 'min:0'],
-            'budget_currency' => ['nullable', 'string', 'in:EUR,USD'],
-            'participants' => ['required', 'array', "min:{$minParticipants}"],
-            'participants.*.name' => ['required', 'string', 'max:255'],
-            'participants.*.email' => ['required', 'email', 'max:255', 'distinct:ignore_case'],
-            'organizer_participates' => ['nullable', 'boolean'],
-        ]);
+        $validated = $request->validated();
 
         if ($organizerParticipates) {
             $organizerEmail = strtolower($request->user()->email);
             $listedOrganizer = collect($validated['participants'])
-                ->contains(fn (array $participant) => strtolower(trim($participant['email'])) === $organizerEmail);
+                ->contains(fn (array $participant) => strtolower(trim($participant['email'] ?? '')) === $organizerEmail);
 
             if ($listedOrganizer) {
                 throw ValidationException::withMessages([
-                    'participants' => __('You\'re already in the group as the organizer — no need to add yourself again.'),
+                    'participants' => __('You\'re already in the group as the organizer - no need to add yourself again.'),
                 ]);
             }
         }
 
-        $budgetAmount = $validated['budget_amount']
+        $budgetAmount = ($validated['budget_amount'] ?? null)
             ? (int) ($validated['budget_amount'] * 100)
             : null;
 
@@ -149,34 +138,24 @@ class GiftExchangeController extends Controller
     ): RedirectResponse {
         $this->authorize('draw', $exchange);
 
-        $action->execute($exchange);
+        try {
+            $action->execute($exchange);
+        } catch (\InvalidArgumentException) {
+            return back()->withErrors(['draw' => __('These rules leave no valid draw. Remove a rule and try again.')]);
+        }
 
         return redirect()
             ->route('exchanges.status', ['locale' => $locale, 'exchange' => $exchange->slug])
-            ->with('success', __('Names drawn! Invites are on their way.'));
+            ->with('success', __('Drawn! Send everyone their private link'));
     }
 
     public function status(string $locale, GiftExchange $exchange): View
     {
         $this->authorize('viewStatus', $exchange);
 
-        $exchange->load('participants.user', 'participants.assignedTo.user');
+        $exchange->load('participants.exchange', 'exclusions.giver', 'exclusions.receiver');
 
-        $myDraw = null;
-        if ($exchange->isDrawn()) {
-            /** @var GiftExchangeParticipant|null $myParticipant */
-            $myParticipant = $exchange->participants
-                ->firstWhere('user_id', auth()->id());
-
-            if ($myParticipant) {
-                $myDraw = $myParticipant->assignedTo;
-            }
-        }
-
-        return view('exchanges.status', [
-            'exchange' => $exchange,
-            'myDraw' => $myDraw,
-        ]);
+        return view('exchanges.status', ['exchange' => $exchange]);
     }
 
     public function showJoinForm(string $locale, string $joinToken): View
@@ -195,7 +174,7 @@ class GiftExchangeController extends Controller
         ]);
     }
 
-    public function join(Request $request, string $locale, string $joinToken): RedirectResponse
+    public function join(ExchangeParticipantRequest $request, string $locale, string $joinToken): RedirectResponse
     {
         $exchange = GiftExchange::where('join_token', $joinToken)->firstOrFail();
 
@@ -207,20 +186,17 @@ class GiftExchangeController extends Controller
             abort(422, __('This group has reached its maximum number of participants.'));
         }
 
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
-        ]);
+        $validated = $request->validated();
 
-        $email = strtolower(trim($validated['email']));
+        $email = filled($validated['email'] ?? null) ? strtolower(trim($validated['email'])) : null;
 
-        if ($exchange->participants()->where('email', $email)->exists()) {
+        if ($email && $exchange->participants()->where('email', $email)->exists()) {
             return back()->withInput()->withErrors([
                 'email' => __('This email is already in the group.'),
             ]);
         }
 
-        $existingUser = User::where('email', $email)->first();
+        $existingUser = $email ? User::where('email', $email)->first() : null;
 
         GiftExchangeParticipant::create([
             'exchange_id' => $exchange->id,
@@ -232,39 +208,28 @@ class GiftExchangeController extends Controller
         return back()->with('success', __('You\'ve joined :name!', ['name' => $exchange->name]));
     }
 
-    public function reveal(string $locale, string $token): View
+    public function reveal(Request $request, string $locale, string $token): Response
     {
-        $participant = GiftExchangeParticipant::where('token', $token)
-            ->with(['exchange', 'assignedTo'])
-            ->firstOrFail();
-
-        /** @var GiftExchange $exchange */
-        $exchange = $participant->exchange;
-
-        if (! $exchange->isDrawn()) {
-            abort(404);
+        $participant = GiftExchangeParticipant::forReveal($token);
+        $revealed = $request->isMethod('post');
+        if ($revealed) {
+            $participant->markAsViewed();
         }
 
-        if ($participant->isTokenExpired()) {
-            abort(410, __('This link has expired. Ask the organizer for a new one.'));
+        if ($revealed) {
+            $participant->load('assignedTo.wishlist');
         }
-
-        $participant->markAsViewed();
-
-        /** @var GiftExchangeParticipant|null $assignedTo */
-        $assignedTo = $participant->assignedTo;
+        $assignedTo = $revealed ? $participant->assignedTo : null;
         $wishlist = $assignedTo?->defaultWishlist();
-        $wishlistGiftCount = $wishlist?->gifts()->count() ?? 0;
 
-        $participantHasWishlist = $participant->user_id !== null && (bool) $participant->defaultWishlist();
-
-        return view('exchanges.reveal', [
+        return response()->view('exchanges.reveal', [
             'participant' => $participant,
             'exchange' => $participant->exchange,
             'assignedTo' => $assignedTo,
             'wishlist' => $wishlist,
-            'wishlistGiftCount' => $wishlistGiftCount,
-            'participantHasWishlist' => $participantHasWishlist,
-        ]);
+            'revealed' => $revealed,
+            'participantHasWishlist' => (bool) $participant->defaultWishlist(),
+            'gifts' => $wishlist?->gifts()->with('media')->limit(2)->get(),
+        ])->header('Cache-Control', 'private, no-store')->header('Referrer-Policy', 'no-referrer');
     }
 }

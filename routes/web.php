@@ -7,10 +7,13 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExchangeWishlistController;
 use App\Http\Controllers\ExportPersonalDataController;
 use App\Http\Controllers\FriendsController;
 use App\Http\Controllers\GiftController;
 use App\Http\Controllers\GiftExchangeController;
+use App\Http\Controllers\GiftExchangeDeliveryController;
+use App\Http\Controllers\GiftExchangeRuleController;
 use App\Http\Controllers\ListController;
 use App\Http\Controllers\ListInvitationController;
 use App\Http\Controllers\PublicListController;
@@ -104,6 +107,13 @@ Route::prefix('{locale}')
         Route::get('/exchange/{token}', [GiftExchangeController::class, 'reveal'])
             ->middleware('throttle:30,1')
             ->name('exchanges.reveal');
+
+        Route::post('/exchange/{token}', [GiftExchangeController::class, 'reveal'])
+            ->middleware('throttle:30,1')->name('exchanges.reveal.show');
+        Route::get('/exchange/{token}/wishlist', [ExchangeWishlistController::class, 'create'])
+            ->middleware('auth')->name('exchanges.wishlist');
+        Route::post('/exchange/{token}/wishlist', [ExchangeWishlistController::class, 'store'])
+            ->middleware('auth')->name('exchanges.wishlist.store');
 
         // Gift exchange join link (public, rate-limited)
         Route::get('/exchange/join/{joinToken}', [GiftExchangeController::class, 'showJoinForm'])
@@ -240,6 +250,8 @@ Route::prefix('{locale}')
                 ->middleware('throttle:5,60')
                 ->name('settings.data.export');
 
+            Route::post('/exchange/{exchange}/rules', GiftExchangeRuleController::class)->name('exchanges.rules');
+            Route::post('/exchange/{exchange}/delivery/{participant}', GiftExchangeDeliveryController::class)->name('exchanges.delivery');
             // Gift exchange routes (auth-required actions)
             Route::post('/{exchangeType}', [GiftExchangeController::class, 'store'])
                 ->where('exchangeType', 'lootjes-trekken|secret-santa|tirage-au-sort')

@@ -23,9 +23,7 @@ class ResendGiftExchangeInviteController extends Controller
             abort(404);
         }
 
-        if ($participant->hasViewed()) {
-            return back()->withErrors(['resend' => __(':name has already viewed their invite.', ['name' => $participant->name])]);
-        }
+        abort_unless(filled($participant->email), 422);
 
         $rateLimitKey = 'resend-invite:'.$exchange->id.':'.$participant->id;
 
@@ -44,6 +42,7 @@ class ResendGiftExchangeInviteController extends Controller
 
         Mail::to($participant->email)
             ->queue(new GiftExchangeInviteMail($participant, $exchange));
+        $participant->update(['sent_at' => now()]);
 
         return back()->with('success', __('Invite resent to :name.', ['name' => $participant->name]));
     }

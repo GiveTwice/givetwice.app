@@ -22,7 +22,7 @@ class ExchangeRevealReminderMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: __('Your draw is getting lonely').' — '.$this->exchange->name,
+            subject: __('Your draw is getting lonely').' - '.$this->exchange->name,
         );
     }
 

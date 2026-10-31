@@ -16,8 +16,13 @@ class SendGiftExchangeInvites
 
         /** @var GiftExchangeParticipant $participant */
         foreach ($exchange->participants as $participant) {
+            if (! $participant->email) {
+                continue;
+            }
+
             Mail::to($participant->email)
                 ->queue(new GiftExchangeInviteMail($participant, $exchange));
+            $participant->update(['sent_at' => now()]);
         }
     }
 }
