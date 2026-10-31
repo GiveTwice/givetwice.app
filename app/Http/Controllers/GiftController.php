@@ -177,6 +177,7 @@ class GiftController extends Controller
         $urlAdded = $gift->isSkipped() && $newUrl && $newUrl !== $gift->url;
 
         $updateData = [
+            'most_wanted' => $validated['most_wanted'] ?? $gift->most_wanted,
             'title' => $validated['title'] ?? $gift->title,
             'owner_note' => array_key_exists('owner_note', $validated) ? $validated['owner_note'] : $gift->owner_note,
             'shop_name' => $validated['shop_name'] ?? $gift->shop_name,
@@ -184,7 +185,7 @@ class GiftController extends Controller
             'price_in_cents' => $priceInCents,
             'currency' => $validated['currency'] ?? $gift->currency,
             'url' => $newUrl,
-            'allow_multiple_claims' => $request->boolean('allow_multiple_claims'),
+            'allow_multiple_claims' => array_key_exists('most_wanted', $validated) && count($validated) === 1 ? $gift->allow_multiple_claims : $request->boolean('allow_multiple_claims'),
         ];
 
         if ($urlAdded) {
@@ -231,7 +232,7 @@ class GiftController extends Controller
             return redirect()->route('dashboard.locale', ['locale' => $locale]);
         }
 
-        $gifts = $list->gifts()->with('claims', 'media')->paginate(24);
+        $gifts = $list->gifts()->with('media')->paginate(24);
         $og = app(OgImage::class);
         $hash = $og->hash(trim(view('public.list-og-image', compact('list', 'gifts'))->render()));
         $og->storeInCache($hash, $list->getPublicUrl());
@@ -311,16 +312,14 @@ class GiftController extends Controller
 
         $gift = $giftList->gifts()->findOrFail($giftId);
 
-        $gift->loadCount('claims');
-        $gift->load(['claims' => fn ($q) => $q->whereNotNull('confirmed_at')]);
-
-        $html = view('components.gift-card', [
+        $isOwner = auth()->check() && $giftList->hasUser(auth()->user());
+        $showReservations = ! $isOwner || $giftList->spoiler_mode;
+        $gift->load(['claims' => fn ($query) => $query->whereNotNull('confirmed_at')->when(! $showReservations, fn ($query) => $query->whereRaw('1 = 0'))]);
+        $html = view('components.shared-gift-tile', [
             'gift' => $gift,
-            'editable' => false,
-            'showClaimActions' => true,
-            'isOwner' => false,
-            'openModal' => true,
-        ])->render();
+            'isOwner' => $isOwner,
+            'isReserved' => $showReservations && ! $gift->allow_multiple_claims && $gift->claims->isNotEmpty(),
+        ])->render().view('components.gift-modal', compact('gift', 'isOwner', 'showReservations'))->render();
 
         return response($html)->header('Content-Type', 'text/html');
     }

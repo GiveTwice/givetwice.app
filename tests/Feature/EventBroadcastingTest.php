@@ -59,10 +59,14 @@ describe('GiftClaimed event', function () {
         });
     });
 
-    it('broadcasts to owner private channel', function () {
+    it('broadcasts to owner private channel when spoilers are enabled', function () {
         $owner = User::factory()->create();
         $gift = Gift::factory()->create(['user_id' => $owner->id]);
         $claim = Claim::factory()->create(['gift_id' => $gift->id]);
+
+        $list = GiftList::factory()->create(['spoiler_mode' => true]);
+        $list->users()->attach($owner);
+        $gift->lists()->attach($list);
 
         $event = new GiftClaimed($gift, $claim, $gift->getConfirmedClaimCount());
         $channels = $event->broadcastOn();
@@ -90,8 +94,8 @@ describe('GiftClaimed event', function () {
         $publicChannels = array_filter($channels, fn ($ch) => $ch instanceof Channel && ! $ch instanceof PrivateChannel);
         $publicChannelNames = array_map(fn ($ch) => $ch->name, $publicChannels);
 
-        expect($publicChannelNames)->toContain('list.'.$list1->fresh()->slug);
-        expect($publicChannelNames)->toContain('list.'.$list2->fresh()->slug);
+        expect($publicChannelNames)->toContain('list.'.$list1->fresh()->slug.'.reservations');
+        expect($publicChannelNames)->toContain('list.'.$list2->fresh()->slug.'.reservations');
     });
 
     it('broadcasts as gift.claimed event', function () {

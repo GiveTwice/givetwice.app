@@ -35,6 +35,7 @@ class Gift extends Model implements HasMedia
     ];
 
     protected $fillable = [
+        'most_wanted',
         'owner_note',
         'shop_name',
         'edited_fields',
@@ -66,6 +67,7 @@ class Gift extends Model implements HasMedia
     protected function casts(): array
     {
         return [
+            'most_wanted' => 'boolean',
             'price_in_cents' => 'integer',
             'fetch_error' => 'array',
             'edited_fields' => 'array',

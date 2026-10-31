@@ -82,6 +82,13 @@ class ClaimController extends Controller
 
     public function showAnonymousForm(string $locale, Gift $gift): View|RedirectResponse
     {
+        if (auth()->check()) {
+            $managedList = $gift->lists()->whereHas('users', fn ($query) => $query->where('users.id', auth()->id()))->first();
+            if ($managedList) {
+                return redirect($managedList->getPublicUrl($locale));
+            }
+        }
+
         if ($gift->isClaimed()) {
             return back()->with('error', __('This gift has already been claimed.'));
         }
@@ -100,6 +107,10 @@ class ClaimController extends Controller
         Gift $gift,
         CreatePendingClaimAction $action
     ): RedirectResponse {
+        if (auth()->check() && ($gift->user_id === auth()->id() || $gift->hasAccessibleListFor(auth()->user()))) {
+            return redirect()->route('dashboard.locale', ['locale' => $locale]);
+        }
+
         // 5 attempts per minute per IP per gift
         $rateLimitKey = 'claim-attempt:'.$request->ip().':'.$gift->id;
         if (RateLimiter::tooManyAttempts($rateLimitKey, 5)) {

@@ -120,6 +120,9 @@
                                 </div>
                             </div>
 
+                            @unless($list->spoiler_mode)
+                                <p class="mb-4 text-sm text-gray-500">{{ __('Surprise protected. You cannot see what is reserved.') }}</p>
+                            @endunless
                             @if($list->gifts->isEmpty())
                                 <div class="mx-auto max-w-lg rounded-xl bg-cream-50 p-5">
                                     <h3 class="text-xl font-semibold">{{ __('What would you like?') }}</h3>
@@ -137,7 +140,7 @@
                             @else
                                 <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                                     @foreach($list->gifts as $gift)
-                                        <x-gift-card :gift="$gift" :editable="true" />
+                                        <x-gift-card :gift="$gift" :editable="true" :show-reservations="$list->spoiler_mode" />
                                     @endforeach
                                 </div>
                             @endif

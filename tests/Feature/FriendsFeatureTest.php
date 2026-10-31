@@ -60,7 +60,8 @@ describe('Friends Feature', function () {
             $gift = Gift::factory()->create(['user_id' => $creator->id]);
             $gift->lists()->attach($list->id);
 
-            app(ClaimGiftAction::class)->execute($gift, $collaborator);
+            expect(fn () => app(ClaimGiftAction::class)->execute($gift, $collaborator))
+                ->toThrow(CannotClaimOwnGiftException::class);
 
             expect(FollowedList::where('user_id', $collaborator->id)->where('list_id', $list->id)->exists())->toBeFalse();
         });

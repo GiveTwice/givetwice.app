@@ -65,6 +65,34 @@
                 </div>
 
 
+                        <fieldset class="mb-6 flex flex-col gap-3">
+                            <legend class="form-label">{{ __('What is the occasion?') }}</legend>
+                            <div class="flex flex-wrap gap-2">
+                                @foreach(['' => __('No date'), 'sinterklaas' => __('Sinterklaas'), 'christmas' => __('Christmas'), 'birthday' => __('Birthday'), 'other' => __('Other')] as $value => $label)
+                                    <label class="cursor-pointer">
+                                        <input type="radio" x-data x-on:change="if ($el.value === '') { document.getElementById('occasion_date').value = ''; }" name="occasion" value="{{ $value }}" @checked((old('occasion', $list->occasion) ?? '') === $value) class="peer sr-only">
+                                        <span class="block rounded-full border border-cream-300 px-3 py-1.5 text-sm peer-checked:border-coral-500 peer-checked:bg-coral-50 peer-checked:text-coral-700 peer-focus-visible:outline-2 peer-focus-visible:outline-coral-500">{{ $label }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+                            @error('occasion')<p class="form-error">{{ $message }}</p>@enderror
+                            <label for="occasion_date" class="form-label">{{ __('Date') }}</label>
+                            <input id="occasion_date" name="occasion_date" type="date" value="{{ old('occasion_date', $list->occasion_date?->format('Y-m-d')) }}" class="form-input" aria-describedby="occasion-help">
+                            @error('occasion_date')<p class="form-error">{{ $message }}</p>@enderror
+                            <p id="occasion-help" class="text-sm text-gray-500">{{ __('In the Netherlands, presents are opened on 5 December. Pick the date that suits your family.') }}</p>
+                        </fieldset>
+                        <div class="mb-6 rounded-xl bg-cream-50 p-4" x-data="{ confirmed: @js((bool) $list->spoiler_confirmed_at) }">
+                            <input type="hidden" name="spoiler_mode" value="0">
+                            <input type="hidden" name="spoiler_confirmation" value="1" :disabled="!confirmed" disabled>
+                            <label class="flex items-center gap-3 font-semibold">
+                                <input type="checkbox" name="spoiler_mode" value="1" @checked(old('spoiler_mode', $list->spoiler_mode)) x-on:change="if ($el.checked && !confirmed) { confirmed = window.confirm(@js(__('Show reservations? This will spoil the surprise.'))); $el.checked = confirmed; }" class="rounded border-cream-300 text-coral-500">
+                                {{ __('Spoiler mode') }}
+                            </label>
+                            <p class="mt-2 text-sm text-gray-500">{{ __('When on, you see which gifts are reserved. Useful when you manage a list for someone else.') }}</p>
+                            @error('spoiler_confirmation')<p class="form-error">{{ $message }}</p>@enderror
+                            @error('spoiler_mode')<p class="form-error">{{ $message }}</p>@enderror
+                        </div>
+
                         <div class="flex items-center justify-end gap-3 border-t border-gray-100 pt-6">
                             <a href="{{ $dashboardUrl }}" class="btn-cancel">
                         {{ __('Cancel') }}

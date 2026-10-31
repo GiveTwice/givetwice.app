@@ -15,7 +15,7 @@ class ClaimGiftAction
 {
     public function execute(Gift $gift, User $user): Claim
     {
-        if ($gift->user_id === $user->id) {
+        if ($gift->user_id === $user->id || $gift->hasAccessibleListFor($user)) {
             throw new CannotClaimOwnGiftException;
         }
 

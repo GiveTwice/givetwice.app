@@ -43,6 +43,7 @@ class UpdateGiftRequest extends FormRequest
                     }
                 },
             ],
+            'most_wanted' => ['sometimes', 'boolean'],
             'allow_multiple_claims' => ['nullable', 'boolean'],
         ];
 
