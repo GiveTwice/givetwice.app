@@ -4,12 +4,12 @@
 @foreach($alerts as $alert)
 {!! $alert->before['title'] !!}
 @if($alert->after['deleted'])
-{!! __('reservations.keep_done', ['owner' => $alert->before['owner']]) !!}
+{!! __('reservations.removed_summary', ['list' => $alert->before['list_name'] ?? $alert->before['owner']]) !!}
 @else
-@foreach(['title', 'price', 'url', 'owner_note'] as $field)
+@foreach($alert->changedFields() as $field => $values)
 {!! __('reservations.'.$field) !!}
-{!! __('reservations.before') !!}: {!! $alert->before[$field] ?: __('reservations.none') !!}
-{!! __('reservations.after') !!}: {!! $alert->after[$field] ?: __('reservations.none') !!}
+{!! __('reservations.before') !!}: {!! $values['before'] ?: __('reservations.none') !!}
+{!! __('reservations.after') !!}: {!! $values['after'] ?: __('reservations.none') !!}
 
 @endforeach
 @endif

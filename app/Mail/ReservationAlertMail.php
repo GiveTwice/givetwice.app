@@ -19,7 +19,7 @@ class ReservationAlertMail extends Mailable
 
     public function envelope(): Envelope
     {
-        return new Envelope(subject: __('reservations.changed', ['owner' => $this->alert->before['owner']]));
+        return new Envelope(subject: $this->alert->summary());
     }
 
     public function content(): Content
