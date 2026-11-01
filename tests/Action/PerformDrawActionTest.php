@@ -387,7 +387,7 @@ describe('PerformDrawAction', function () {
             // This creates a situation where the only valid assignments are fixed,
             // but they may not form a single cycle
             // 0 can only give to 1, 1 can only give to 0, 2 can only give to 3, 3 can only give to 2
-            // This forces two sub-cycles: (0->1->0) and (2->3->2) — no single cycle possible
+            // This forces two sub-cycles: (0->1->0) and (2->3->2), no single cycle possible
             $ids = $participants->pluck('id');
 
             // 0 cannot give to 2 or 3

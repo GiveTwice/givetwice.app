@@ -17,7 +17,7 @@
                     class="w-full h-full object-cover"
                 >
             @else
-                <div class="w-full h-full flex items-center justify-center text-cream-400">
+                <div class="w-full h-full flex items-center justify-center text-gray-600">
                     <x-icons.image-placeholder class="w-8 h-8" />
                 </div>
             @endif
@@ -55,7 +55,7 @@
                     class="w-full h-full object-cover"
                 >
             @else
-                <div class="w-full h-full flex flex-col items-center justify-center text-cream-400">
+                <div class="w-full h-full flex flex-col items-center justify-center text-gray-600">
                     <x-icons.image-placeholder class="w-16 h-16" />
                     <span class="mt-2 text-sm font-medium">{{ __('No image') }}</span>
                 </div>

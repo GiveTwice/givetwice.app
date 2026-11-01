@@ -26,7 +26,7 @@
                 @if($inviter->hasProfileImage())
                     <img src="{{ $inviter->getProfileImageUrl('thumb') }}" alt="{{ $inviter->name }}" class="w-12 h-12 rounded-full object-cover flex-shrink-0">
                 @else
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-coral-400 to-coral-500 flex items-center justify-center flex-shrink-0">
+                    <div class="w-12 h-12 rounded-full bg-coral-500 flex items-center justify-center flex-shrink-0">
                         <span class="text-white font-bold">{{ $inviter->getInitials() }}</span>
                     </div>
                 @endif

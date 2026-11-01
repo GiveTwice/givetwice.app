@@ -82,7 +82,7 @@
             >
                 @unless($emptyDashboard)
                 <x-slot:actions>
-                    <a href="{{ route('lists.create', ['locale' => $currentLocale]) }}" class="btn-primary whitespace-nowrap">
+                    <a href="{{ route('lists.create', ['locale' => $currentLocale]) }}" class="btn-secondary whitespace-nowrap">
                         <x-icons.plus class="w-4 h-4" />
                         {{ __('Create List') }}
                     </a>
@@ -118,7 +118,7 @@
                             @if($list->gifts->isEmpty())
                                 <div class="max-w-lg">
                                     @unless($emptyDashboard)
-                                        <h2 class="text-xl font-semibold">{{ __('Add your first wish') }}</h2>
+                                        <x-section-heading>{{ __('Add your first wish') }}</x-section-heading>
                                         <p class="mt-2 text-gray-600">{{ __('Paste a shop link, or just type your wish.') }}</p>
                                     @endunless
                                     <form method="POST" action="{{ route('gifts.store', ['locale' => $currentLocale]) }}" class="flex flex-col gap-3">
@@ -138,7 +138,7 @@
                             <div class="my-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                 <div>
                                     <div class="flex items-center gap-3">
-                                        <h2 class="text-lg font-bold text-gray-900">{{ $list->name }}</h2>
+                                        <x-section-heading>{{ $list->name }}</x-section-heading>
                                     </div>
                                     <p class="mt-1 text-sm text-gray-500">
                                         {{ trans_choice(':count gift|:count gifts', $list->gifts_count, ['count' => $list->gifts_count]) }}

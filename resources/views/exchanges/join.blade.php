@@ -6,7 +6,7 @@
 <div class="max-w-lg mx-auto">
 
     <div class="text-center pt-6 pb-4">
-        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">🎲 {{ __('Join :name', ['name' => $exchange->name]) }}</h1>
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{{ __('Join :name', ['name' => $exchange->name]) }}</h1>
         <p class="text-gray-600">{{ __('You\'ve been invited to a gift exchange!') }}</p>
     </div>
 

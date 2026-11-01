@@ -107,7 +107,7 @@
 
                 <div class="lg:col-span-2">
                     <div class="rounded-xl bg-cream-50 p-6">
-                        <h2 class="mb-4 text-lg font-semibold text-gray-900">{{ __('List Info') }}</h2>
+                        <x-section-heading class="mb-4">{{ __('List Info') }}</x-section-heading>
 
                         <div class="space-y-3">
                             <div class="flex items-center justify-between">
@@ -132,7 +132,7 @@
 
         <x-danger-zone
             id="delete-list"
-            :description="__('Deleting a list is permanent. Your gifts stay — they just won\'t be grouped anymore.')"
+            :description="__('Deleting a list is permanent. Your gifts stay, they just won\'t be grouped anymore.')"
             :buttonText="__('Delete List')"
             :modalTitle="__('Delete List')"
             :modalMessage="__('This can\'t be undone. Your gifts won\'t be deleted, just ungrouped.')"

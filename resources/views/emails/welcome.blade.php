@@ -1,71 +1,24 @@
 @extends('emails.layouts.base')
-
-@section('title', __('Welcome to :app!', ['app' => config('app.name')]))
-
+@section('title', __('Welcome to :app!', ['app' => 'GiveTwice']))
 @section('content')
-
-    <h1 style="color: #E8614D; margin-top: 0; font-size: 24px;">{{ __('Welcome to :app!', ['app' => config('app.name')]) }}</h1>
-
-    <p style="font-size: 16px; color: #374151;">{{ __('Hi :name,', ['name' => $user->name]) }}</p>
-
-    <p style="font-size: 16px; color: #374151;">{{ __("You're in! Your wishlist is ready.") }}</p>
-
-    <p style="text-align: center; margin: 30px 0;">
-        <a href="{{ $wishlistUrl }}" style="background: #E8614D; color: white; padding: 14px 28px; text-decoration: none; border-radius: 12px; display: inline-block; font-weight: 600; font-size: 16px;">
-            {{ __('Go to My Wishlist') }} &#127873;
-        </a>
-    </p>
-
-    <div style="background: #FEF7F5; border-radius: 12px; padding: 24px; margin: 30px 0; border: 1px solid #FECDC7;">
-        <h2 style="color: #374151; font-size: 18px; margin-top: 0; margin-bottom: 20px;">{{ __("Here's how it works:") }}</h2>
-
-        <table style="width: 100%; margin-bottom: 16px;" cellpadding="0" cellspacing="0">
-            <tr>
-                <td style="width: 40px; vertical-align: top;">
-                    <div style="width: 32px; height: 32px; background: #FECDC7; border-radius: 8px; text-align: center; line-height: 32px; font-size: 16px;">
-                        &#127873;
-                    </div>
-                </td>
-                <td style="vertical-align: top; padding-left: 12px;">
-                    <p style="margin: 0; font-weight: 600; color: #374151;">{{ __('1. Add your favorite items') }}</p>
-                    <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 14px;">{{ __('Paste a link from any store — we grab the details') }}</p>
-                </td>
-            </tr>
-        </table>
-
-        <table style="width: 100%; margin-bottom: 16px;" cellpadding="0" cellspacing="0">
-            <tr>
-                <td style="width: 40px; vertical-align: top;">
-                    <div style="width: 32px; height: 32px; background: #FEF0C7; border-radius: 8px; text-align: center; line-height: 32px; font-size: 16px;">
-                        &#128279;
-                    </div>
-                </td>
-                <td style="vertical-align: top; padding-left: 12px;">
-                    <p style="margin: 0; font-weight: 600; color: #374151;">{{ __('2. Share with friends & family') }}</p>
-                    <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 14px;">{{ __('Send the link however you want — text, email, carrier pigeon') }}</p>
-                </td>
-            </tr>
-        </table>
-
-        <table style="width: 100%; margin-bottom: 0;" cellpadding="0" cellspacing="0">
-            <tr>
-                <td style="width: 40px; vertical-align: top;">
-                    <div style="width: 32px; height: 32px; background: #CCFBF1; border-radius: 8px; text-align: center; line-height: 32px; font-size: 16px;">
-                        &#10003;
-                    </div>
-                </td>
-                <td style="vertical-align: top; padding-left: 12px;">
-                    <p style="margin: 0; font-weight: 600; color: #374151;">{{ __('3. Receive perfect gifts') }}</p>
-                    <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 14px;">{{ __('They claim secretly - no duplicates, no spoiled surprises!') }}</p>
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    <p style="color: #6b7280; font-size: 14px;">
-        {{ __('Questions or need help?') }} <a href="{{ $faqUrl }}" style="color: #E8614D; text-decoration: none; font-weight: 500;">{{ __('Check our FAQ') }}</a>
-    </p>
-
-    <p style="color: #374151; margin-top: 24px;">{{ __('Happy gifting!') }}</p>
-    <p style="color: #E8614D; margin: 0; font-weight: 500;">{{ config('app.name') }}</p>
+    <x-mail.heading>{{ __('Welcome to :app!', ['app' => 'GiveTwice']) }}</x-mail.heading>
+    <p>{{ __('Hi :name,', ['name' => $user->name]) }}</p>
+    <p>{{ __("You're in! Your wishlist is ready.") }}</p>
+    <x-mail.panel>
+        <h2 style="color: #374151; font-size: 16px; line-height: 1.4; font-weight: 600; margin: 0 0 16px;">{{ __("Here's how it works:") }}</h2>
+        <div style="margin: 16px 0;">
+            <p style="margin: 0; font-weight: 600;">{{ __('1. Add your favorite items') }}</p>
+            <p style="margin: 4px 0 0;">{{ __('Paste a link from any store, we grab the details') }}</p>
+        </div>
+        <div style="margin: 16px 0;">
+            <p style="margin: 0; font-weight: 600;">{{ __('2. Share with friends & family') }}</p>
+            <p style="margin: 4px 0 0;">{{ __('Send the link however you want, text, email, carrier pigeon') }}</p>
+        </div>
+        <div style="margin: 16px 0 0;">
+            <p style="margin: 0; font-weight: 600;">{{ __('3. Receive perfect gifts') }}</p>
+            <p style="margin: 4px 0 0;">{{ __('They claim secretly - no duplicates, no spoiled surprises!') }}</p>
+        </div>
+    </x-mail.panel>
+    <x-mail.action :url="$wishlistUrl" :button="true">{{ __('Go to My Wishlist') }}</x-mail.action>
+    <x-mail.quiet-link :url="$faqUrl">{{ __('Check our FAQ') }}</x-mail.quiet-link>
 @endsection

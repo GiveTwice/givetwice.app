@@ -15,8 +15,8 @@
     {{-- Fallback styles when Vite CSS is not cached by the service worker --}}
     <style>
         .offline-fallback { font-family: 'Instrument Sans', system-ui, -apple-system, sans-serif; margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .offline-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: #f97066; color: #fff; border: none; border-radius: 0.75rem; font-weight: 600; font-size: 1rem; cursor: pointer; }
-        .offline-btn:hover { background: #ef5a50; }
+        .offline-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: #c83b3f; color: #fff; border: none; border-radius: 0.75rem; font-weight: 600; font-size: 1rem; cursor: pointer; }
+        .offline-btn:hover { background: #b52d35; }
     </style>
 </head>
 <body class="offline-fallback min-h-screen bg-gradient-warm flex flex-col items-center justify-center px-4 safe-area-x">
@@ -51,7 +51,7 @@
         </button>
 
         <p class="mt-12 text-sm text-gray-400">
-            <span class="font-bold text-gray-500">Give</span><span class="font-bold text-coral-400">Twice</span>
+            <span class="font-bold text-gray-500">Give</span><span class="font-bold text-coral-500">Twice</span>
         </p>
     </div>
 

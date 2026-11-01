@@ -21,15 +21,15 @@
 
             <ul class="space-y-3 mb-8">
                 <li class="flex items-center text-gray-700">
-                    <span class="text-teal-500 mr-3">&#10003;</span>
+                    <span class="text-teal-700 mr-3">&#10003;</span>
                     {{ __('Your friends get exactly what you asked for') }}
                 </li>
                 <li class="flex items-center text-gray-700">
-                    <span class="text-teal-500 mr-3">&#10003;</span>
+                    <span class="text-teal-700 mr-3">&#10003;</span>
                     {{ __('Free. No ads.') }}
                 </li>
                 <li class="flex items-center text-gray-700">
-                    <span class="text-teal-500 mr-3">&#10003;</span>
+                    <span class="text-teal-700 mr-3">&#10003;</span>
                     {{ __('Any online store · No duplicate gifts · Free to use') }}
                 </li>
             </ul>

@@ -77,7 +77,7 @@
 
             <div class="lg:col-span-2">
                 <div class="rounded-xl bg-cream-50 p-6">
-                    <h2 class="mb-4 text-lg font-semibold text-gray-900">{{ __('About Lists') }}</h2>
+                    <x-section-heading class="mb-4">{{ __('About Lists') }}</x-section-heading>
 
                     <div class="space-y-4">
                         <div class="flex gap-3">
@@ -88,7 +88,7 @@
                             </div>
                             <div>
                                 <p class="font-medium text-gray-700">{{ __('One list or many') }}</p>
-                                <p class="form-help mt-0">{{ __('Birthdays, holidays, secret wishlists — keep them separate or lump them together.') }}</p>
+                                <p class="form-help mt-0">{{ __('Birthdays, holidays, secret wishlists, keep them separate or lump them together.') }}</p>
                             </div>
                         </div>
 

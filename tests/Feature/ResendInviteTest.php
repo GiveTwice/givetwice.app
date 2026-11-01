@@ -126,7 +126,7 @@ describe('Resend invite', function () {
             $exchange = GiftExchange::factory()->drawn()->create(['organizer_id' => $organizer->id]);
             $participant = GiftExchangeParticipant::factory()->create(['exchange_id' => $exchange->id]);
 
-            // First resend — should succeed
+            // First resend, should succeed
             $this->actingAs($organizer)
                 ->post("/nl/exchange/{$exchange->slug}/resend-invite/{$participant->id}")
                 ->assertSessionMissing('errors');
@@ -143,7 +143,7 @@ describe('Resend invite', function () {
             $this->actingAs($organizer)
                 ->post("/nl/exchange/{$exchange->slug}/resend-invite/{$participant->id}");
 
-            // Second resend — should be rate limited
+            // Second resend, should be rate limited
             $this->actingAs($organizer)
                 ->post("/nl/exchange/{$exchange->slug}/resend-invite/{$participant->id}")
                 ->assertSessionHasErrors('resend');

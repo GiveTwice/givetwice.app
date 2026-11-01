@@ -7,16 +7,16 @@
     @if(!$email)
         <p>{{ __('reservations.intro') }}</p>
         <form method="POST" action="{{ route('reservations.link', ['locale' => app()->getLocale()]) }}" class="flex flex-col gap-3">@csrf
-            <label for="email">{{ __('Email') }}</label><input id="email" name="email" type="email" required autocomplete="email" class="input-field" value="{{ old('email') }}">
+            <label for="email" class="form-label mb-0">{{ __('Email') }}</label><input id="email" name="email" type="email" required autocomplete="email" class="form-input" value="{{ old('email') }}">
             @error('email')<p class="text-red-700">{{ $message }}</p>@enderror
             <button class="btn-primary">{{ __('reservations.send') }}</button>
         </form>
-        <a href="{{ route('login', ['locale' => app()->getLocale()]) }}">{{ __('Log in') }}</a>
+        <a class="btn-link" href="{{ route('login', ['locale' => app()->getLocale()]) }}">{{ __('Log in') }}</a>
     @else
         <p class="text-sm text-gray-600">{{ $email }}</p>
         @forelse($groups as $claims)
             @php($context = $claims->first()->reservation)
-            <h2 class="font-semibold">{{ $context['owner'] }} · {{ $context['list_name'] }} @if($context['date']) · {{ \Illuminate\Support\Carbon::parse($context['date'])->translatedFormat('j M') }} @endif</h2>
+            <x-section-heading>{{ $context['owner'] }} · {{ $context['list_name'] }} @if($context['date']) · {{ \Illuminate\Support\Carbon::parse($context['date'])->translatedFormat('j M') }} @endif</x-section-heading>
             @foreach($claims as $claim)
                 @php($item = $claim->reservation)
                 <article class="flex flex-col gap-3 rounded-xl border border-cream-200 bg-white p-4">

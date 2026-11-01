@@ -25,6 +25,30 @@ class ReservationAlert extends Model
         return $this->belongsTo(Claim::class);
     }
 
+    /** @return array<string, array{before: mixed, after: mixed}> */
+    public function changedFields(): array
+    {
+        if ($this->after['deleted']) {
+            return [];
+        }
+        $changes = [];
+        foreach (['title', 'price', 'url', 'owner_note'] as $field) {
+            if (($this->before[$field] ?? null) !== ($this->after[$field] ?? null)) {
+                $changes[$field] = ['before' => $this->before[$field] ?? null, 'after' => $this->after[$field] ?? null];
+            }
+        }
+
+        return $changes;
+    }
+
+    public function summary(): string
+    {
+        return __('reservations.'.($this->after['deleted'] ? 'list_removed' : 'list_changed'), [
+            'list' => $this->before['list_name'] ?? $this->before['owner'],
+            'gift' => $this->before['title'],
+        ]);
+    }
+
     public function choiceUrl(string $choice): string
     {
         return URL::temporarySignedRoute($choice === 'mute' ? 'reservations.mute' : 'reservations.choose', now()->addDays(30), ['locale' => $this->locale, 'claim' => $this->claim_id, 'choice' => $choice, 'email' => hash('sha256', $this->email), 'alert' => $this->id]);
