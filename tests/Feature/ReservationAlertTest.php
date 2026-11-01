@@ -1,6 +1,7 @@
 <?php
 
 use App\Events\GiftClaimed;
+use App\Jobs\SendListUpdate;
 use App\Jobs\SendReservationAlert;
 use App\Mail\FriendDigestMail;
 use App\Mail\ReservationAlertMail;
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\Queue;
 
 beforeEach(function () {
     Mail::fake();
-    Queue::fake();
+    Queue::fake()->except([SendListUpdate::class]);
     $this->list = GiftList::factory()->create();
     $this->list->users()->attach($this->list->creator_id);
     $this->gift = Gift::factory()->create(['user_id' => $this->list->creator_id, 'title' => 'Old title', 'url' => 'https://shop.example/old']);
@@ -105,8 +106,8 @@ it('dedupes the digest for a buyer but keeps news for another follower', functio
     }
     $this->travel(11)->minutes();
     $this->artisan('friends:send-digest')->assertSuccessful();
-    Mail::assertQueued(FriendDigestMail::class, 1);
-    Mail::assertQueued(FriendDigestMail::class, fn ($mail) => $mail->hasTo($other->email));
+    Mail::assertSent(FriendDigestMail::class, 1);
+    Mail::assertSent(FriendDigestMail::class, fn ($mail) => $mail->hasTo($other->email));
 })->with(['pending', 'sent', 'released']);
 
 it('keeps opt-out after cancellation, applies it to future alerts, and honours follower settings', function () {

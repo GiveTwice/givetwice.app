@@ -2,6 +2,7 @@
 
 use App\Actions\ClaimGiftAction;
 use App\Exceptions\Claim\CannotClaimOwnGiftException;
+use App\Jobs\SendListUpdate;
 use App\Mail\FriendDigestMail;
 use App\Models\Claim;
 use App\Models\FollowedList;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 
 beforeEach(function () {
-    Queue::fake();
+    Queue::fake()->except([SendListUpdate::class]);
     Mail::fake();
 });
 
@@ -406,7 +407,7 @@ describe('Friends Feature', function () {
             $this->artisan('friends:send-digest')
                 ->assertExitCode(0);
 
-            Mail::assertQueued(FriendDigestMail::class, function ($mail) use ($follower) {
+            Mail::assertSent(FriendDigestMail::class, function ($mail) use ($follower) {
                 return $mail->user->id === $follower->id;
             });
         });

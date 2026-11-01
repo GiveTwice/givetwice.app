@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\SendListUpdate;
 use App\Mail\FriendDigestMail;
 use App\Models\FollowedList;
 use App\Models\Gift;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Queue;
 describe('list update bundles', function () {
     beforeEach(function () {
         Mail::fake();
-        Queue::fake();
+        Queue::fake()->except([SendListUpdate::class]);
         $this->owner = User::factory()->create();
         $this->list = GiftList::factory()->create(['creator_id' => $this->owner->id]);
         $this->follower = User::factory()->create(['locale_preference' => 'nl']);
@@ -26,13 +27,13 @@ describe('list update bundles', function () {
         $gift->update(['title' => 'New title']);
         $this->travel(2)->minutes();
         $this->artisan('friends:send-digest')->assertSuccessful();
-        Mail::assertNothingQueued();
+        Mail::assertNothingSent();
         $this->travel(8)->minutes();
         $this->artisan('friends:send-digest')->assertSuccessful();
         $this->artisan('friends:send-digest')->assertSuccessful();
-        Mail::assertQueued(FriendDigestMail::class, fn ($mail) => $mail->hasTo($this->follower->email)
+        Mail::assertSent(FriendDigestMail::class, fn ($mail) => $mail->hasTo($this->follower->email)
             && $mail->locale === 'nl' && $mail->digestData->sole()['edited_gifts']->sole()->gift_id === $gift->id);
-        Mail::assertQueuedCount(1);
+        Mail::assertSentCount(1);
     });
 
     it('skips the actor, unverified recipients and both notification opt-outs', function (string $reason) {
@@ -46,7 +47,7 @@ describe('list update bundles', function () {
         $this->list->gifts()->attach($gift);
         $this->travel(11)->minutes();
         $this->artisan('friends:send-digest')->assertSuccessful();
-        Mail::assertNothingQueued();
+        Mail::assertNothingSent();
     })->with(['actor', 'unverified', 'global', 'list']);
 
     it('lets a signed recipient mute without logging in, after confirmation', function () {
@@ -58,3 +59,24 @@ describe('list update bundles', function () {
         $this->post($url.'&tampered=1')->assertForbidden();
     });
 });
+
+it('rechecks queued recipients after mute, global opt-out, or list deletion', function (string $change) {
+    Mail::fake();
+    Queue::fake();
+    $owner = User::factory()->create();
+    $follower = User::factory()->create();
+    $list = GiftList::factory()->create(['creator_id' => $owner->id]);
+    $follow = FollowedList::create(['user_id' => $follower->id, 'list_id' => $list->id]);
+    $gift = Gift::factory()->skipped()->create(['user_id' => $owner->id]);
+    $list->gifts()->attach($gift);
+    $this->travel(11)->minutes();
+    $job = new SendListUpdate($follow->id);
+    match ($change) {
+        'mute' => $follow->update(['notifications' => false]),
+        'global' => $follower->update(['friend_notifications_enabled' => false]),
+        'deleted' => $list->delete(),
+    };
+    $job->handle();
+    $job->handle();
+    Mail::assertNothingSent();
+})->with(['mute', 'global', 'deleted']);
