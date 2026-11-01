@@ -1002,7 +1002,7 @@ function twoFactorAuth() {
                     await this.fetchSecretKey();
                 } else if (response.status === 423) {
                     if (!this.hasPassword) {
-                        // Social auth user — auto-confirm (backend allows it)
+                        // Social auth user, auto-confirm (backend allows it)
                         await this.confirmPassword();
                     } else {
                         this.showPasswordConfirm = true;

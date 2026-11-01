@@ -17,7 +17,7 @@
 <div class="max-w-4xl mx-auto">
 
     {{-- The "Twice" Explainer --}}
-    <div class="bg-gradient-to-br from-coral-50 to-sunny-50 rounded-3xl p-6 sm:p-8 lg:p-12 mb-12 sm:mb-16 border border-coral-100">
+    <div class="bg-cream-50 rounded-3xl p-6 sm:p-8 lg:p-12 mb-12 sm:mb-16 border border-coral-100">
         <h2 class="text-2xl font-bold text-gray-900 mb-6">{{ __('Why "Twice"?') }}</h2>
 
         <div class="space-y-4 text-lg text-gray-700 leading-relaxed mb-8">
@@ -26,7 +26,7 @@
 
         <div class="bg-white/60 rounded-2xl p-6 border border-coral-100/50">
             <div class="flex items-center gap-3 mb-4">
-                <span class="text-teal-500 text-xl">&#10003;</span>
+                <span class="text-teal-700 text-xl">&#10003;</span>
                 <span class="font-semibold text-gray-900">{{ __('Nobody pays extra') }}</span>
             </div>
             <p class="text-gray-600 ml-8">{{ __('We cover running costs ourselves. All future affiliate commission is for charity.') }}</p>
@@ -72,10 +72,10 @@
         <div class="grid lg:grid-cols-2 gap-6 sm:gap-8">
             {{-- Reason 1: Transparency --}}
             <div class="bg-white rounded-2xl border border-cream-200 shadow-sm overflow-hidden">
-                <div class="bg-gradient-to-r from-teal-500 to-teal-600 p-4">
+                <div class="bg-teal-700 p-4">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                            <span class="text-white text-xl">&#128274;</span>
+                            <x-icons.lock class="h-5 w-5 text-white" />
                         </div>
                         <h3 class="font-bold text-white text-lg">{{ __('No tracking, no selling your data') }}</h3>
                     </div>
@@ -97,10 +97,10 @@
 
             {{-- Reason 2: Design --}}
             <div class="bg-white rounded-2xl border border-cream-200 shadow-sm overflow-hidden">
-                <div class="bg-gradient-to-r from-coral-500 to-coral-600 p-4">
+                <div class="bg-coral-500 p-4">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                            <span class="text-white text-xl">&#10024;</span>
+                            <x-icons.check-circle class="h-5 w-5 text-white" />
                         </div>
                         <h3 class="font-bold text-white text-lg">{{ __('Built to not annoy you') }}</h3>
                     </div>

@@ -19,7 +19,7 @@ class ExchangeHelper
      * All Secret Santa / gift exchange SEO landing pages.
      *
      * Each entry is keyed by an internal identifier. The slug is the URL path
-     * segment (locale-specific — not a translated version of the same slug).
+     * segment (locale-specific, not a translated version of the same slug).
      *
      * @return array<string, array{slug: string, locale: string, page_title: string}>
      */
@@ -68,7 +68,7 @@ class ExchangeHelper
             return null;
         }
 
-        // Each page is strictly single-locale — 404 if wrong locale is requested
+        // Each page is strictly single-locale, 404 if wrong locale is requested
         $locale ??= app()->getLocale();
         if ($base['locale'] !== $locale) {
             return null;
@@ -123,7 +123,7 @@ class ExchangeHelper
                     'h1_subtitle' => 'gift exchange',
                     'description' => 'Draw names, set a budget, buy one person a gift they will love. We handle the shuffle and the secrecy.',
                     'bullets' => [
-                        'Names drawn privately — no one knows who got whom',
+                        'Names drawn privately, no one knows who got whom',
                         'Everyone gets a link to their person\'s wishlist',
                         'Free. No ads.',
                     ],
@@ -186,15 +186,15 @@ class ExchangeHelper
                 'faqs' => [
                     [
                         'question' => 'How does Secret Santa work on GiveTwice?',
-                        'answer' => 'You add participants (name + email), set an optional budget and event date, then click Draw. GiveTwice shuffles the names fairly, making sure nobody draws themselves. Each participant gets an email with a private link revealing who they\'re buying for — and a link to that person\'s wishlist if they have one.',
+                        'answer' => 'You add participants (name + email), set an optional budget and event date, then click Draw. GiveTwice shuffles the names fairly, making sure nobody draws themselves. Each participant gets an email with a private link revealing who they\'re buying for, and a link to that person\'s wishlist if they have one.',
                     ],
                     [
                         'question' => 'Can I set rules so certain people don\'t draw each other?',
-                        'answer' => 'Yes. Before running the draw you can add exclusion pairs — for example, partners who already exchange gifts separately, or colleagues who don\'t know each other well. The draw algorithm will avoid those pairings.',
+                        'answer' => 'Yes. Before running the draw you can add exclusion pairs, for example, partners who already exchange gifts separately, or colleagues who don\'t know each other well. The draw algorithm will avoid those pairings.',
                     ],
                     [
                         'question' => 'Does everyone need a GiveTwice account?',
-                        'answer' => 'No. Participants receive a private reveal link by email — no account required to see who they\'re buying for. Creating a wishlist to share with their Secret Santa is optional, but free and takes about a minute.',
+                        'answer' => 'No. Participants receive a private reveal link by email, no account required to see who they\'re buying for. Creating a wishlist to share with their Secret Santa is optional, but free and takes about a minute.',
                     ],
                     [
                         'question' => 'How does the charity donation work?',
@@ -213,7 +213,7 @@ class ExchangeHelper
                 'hero' => [
                     'h1_title' => 'Lootjes trekken',
                     'h1_subtitle' => 'online geregeld',
-                    'description' => 'Trekjes doen zonder gedoe. Voeg iedereen toe, stel een budget in en wij zorgen voor de loting — eerlijk, willekeurig, geheim.',
+                    'description' => 'Trekjes doen zonder gedoe. Voeg iedereen toe, stel een budget in en wij zorgen voor de loting, eerlijk, willekeurig, geheim.',
                     'bullets' => [
                         'Niemand weet wie jou getrokken heeft',
                         'Iedereen krijgt een link naar de verlanglijst van zijn persoon',
@@ -235,7 +235,7 @@ class ExchangeHelper
                             'emoji' => '&#127381;',
                             'bg' => 'coral',
                             'title' => 'Eerlijke, willekeurige loting',
-                            'description' => 'Wij schudden de namen door elkaar, zodat niemand zichzelf trekt en niemand vals speelt. Uitzonderingen instellen kan ook — handig voor koppels.',
+                            'description' => 'Wij schudden de namen door elkaar, zodat niemand zichzelf trekt en niemand vals speelt. Uitzonderingen instellen kan ook, handig voor koppels.',
                         ],
                         [
                             'emoji' => '&#128141;',
@@ -278,15 +278,15 @@ class ExchangeHelper
                 'faqs' => [
                     [
                         'question' => 'Hoe werkt lootjes trekken op GiveTwice?',
-                        'answer' => "Je voegt deelnemers toe (naam + e-mail), stelt optioneel een budget en datum in, en klikt op 'Loting uitvoeren'. GiveTwice schudt de namen eerlijk door elkaar — niemand trekt zichzelf. Elke deelnemer krijgt een e-mail met een privélink die onthult wie hij of zij een cadeau mag geven, plus een link naar de verlanglijst van die persoon.",
+                        'answer' => "Je voegt deelnemers toe (naam + e-mail), stelt optioneel een budget en datum in, en klikt op 'Loting uitvoeren'. GiveTwice schudt de namen eerlijk door elkaar, niemand trekt zichzelf. Elke deelnemer krijgt een e-mail met een privélink die onthult wie hij of zij een cadeau mag geven, plus een link naar de verlanglijst van die persoon.",
                     ],
                     [
                         'question' => 'Kan ik instellen dat bepaalde mensen elkaar niet trekken?',
-                        'answer' => "Ja. Vóór de loting kun je uitsluitingsparen toevoegen — bijvoorbeeld koppels die al cadeautjes uitwisselen, of collega's die elkaar niet zo goed kennen. Het lotingsalgoritme houdt daar rekening mee.",
+                        'answer' => "Ja. Vóór de loting kun je uitsluitingsparen toevoegen, bijvoorbeeld koppels die al cadeautjes uitwisselen, of collega's die elkaar niet zo goed kennen. Het lotingsalgoritme houdt daar rekening mee.",
                     ],
                     [
                         'question' => 'Hebben alle deelnemers een account nodig?',
-                        'answer' => 'Nee. Deelnemers ontvangen een privélink via e-mail — geen account nodig om te zien wie ze getrokken hebben. Een verlanglijstje aanmaken om te delen is optioneel, gratis en duurt minder dan een minuut.',
+                        'answer' => 'Nee. Deelnemers ontvangen een privélink via e-mail, geen account nodig om te zien wie ze getrokken hebben. Een verlanglijstje aanmaken om te delen is optioneel, gratis en duurt minder dan een minuut.',
                     ],
                     [
                         'question' => 'Hoe werkt de donatie aan het goede doel?',
@@ -305,7 +305,7 @@ class ExchangeHelper
                 'hero' => [
                     'h1_title' => 'Tirage au sort',
                     'h1_subtitle' => 'père noël secret en ligne',
-                    'description' => 'Organisez votre tirage au sort de Noël sans prise de tête. Ajoutez les participants, fixez un budget et laissez-nous gérer le tirage — équitable, aléatoire, secret.',
+                    'description' => 'Organisez votre tirage au sort de Noël sans prise de tête. Ajoutez les participants, fixez un budget et laissez-nous gérer le tirage, équitable, aléatoire, secret.',
                     'bullets' => [
                         'Personne ne sait qui vous a tiré',
                         'Chacun reçoit un lien vers la liste de cadeaux de son filleul',
@@ -370,15 +370,15 @@ class ExchangeHelper
                 'faqs' => [
                     [
                         'question' => 'Comment fonctionne le tirage au sort sur GiveTwice ?',
-                        'answer' => "Vous ajoutez les participants (nom + e-mail), définissez optionnellement un budget et une date, puis cliquez sur « Effectuer le tirage ». GiveTwice mélange les noms équitablement — personne ne se tire soi-même. Chaque participant reçoit un e-mail avec un lien privé révélant son filleul, ainsi qu'un lien vers sa liste de souhaits s'il en a une.",
+                        'answer' => "Vous ajoutez les participants (nom + e-mail), définissez optionnellement un budget et une date, puis cliquez sur « Effectuer le tirage ». GiveTwice mélange les noms équitablement, personne ne se tire soi-même. Chaque participant reçoit un e-mail avec un lien privé révélant son filleul, ainsi qu'un lien vers sa liste de souhaits s'il en a une.",
                     ],
                     [
                         'question' => 'Puis-je empêcher certaines personnes de se tirer mutuellement ?',
-                        'answer' => "Oui. Avant le tirage, vous pouvez ajouter des paires d'exclusion — par exemple des couples qui échangent déjà des cadeaux, ou des collègues qui ne se connaissent pas bien. L'algorithme en tiendra compte.",
+                        'answer' => "Oui. Avant le tirage, vous pouvez ajouter des paires d'exclusion, par exemple des couples qui échangent déjà des cadeaux, ou des collègues qui ne se connaissent pas bien. L'algorithme en tiendra compte.",
                     ],
                     [
                         'question' => 'Les participants ont-ils besoin d\'un compte ?',
-                        'answer' => "Non. Les participants reçoivent un lien privé par e-mail — pas besoin de compte pour voir leur filleul. Créer une liste de souhaits à partager est optionnel, gratuit et prend moins d'une minute.",
+                        'answer' => "Non. Les participants reçoivent un lien privé par e-mail, pas besoin de compte pour voir leur filleul. Créer une liste de souhaits à partager est optionnel, gratuit et prend moins d'une minute.",
                     ],
                     [
                         'question' => 'Comment fonctionne le don à l\'association ?',

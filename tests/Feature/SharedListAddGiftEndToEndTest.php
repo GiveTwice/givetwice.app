@@ -12,7 +12,7 @@ beforeEach(function () {
     Mail::fake();
 });
 
-describe('shared list — collaborator adds a gift (end-to-end)', function () {
+describe('shared list, collaborator adds a gift (end-to-end)', function () {
 
     it('lets a freshly-accepted collaborator add a gift via the form', function () {
         // Owner with their default list.
