@@ -27,6 +27,8 @@
 
             const imgContainer = card.querySelector('[data-gift-image]');
             if (imgContainer && gift.image_url_card) {
+                imgContainer.classList.remove('h-20');
+                imgContainer.classList.add('aspect-square');
                 const placeholder = imgContainer.querySelector('[data-gift-placeholder]');
                 if (placeholder) {
                     placeholder.remove();
