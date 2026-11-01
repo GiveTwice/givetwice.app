@@ -89,8 +89,21 @@
 
                 @php $highlightedSlug = request('list-added'); @endphp
 
+                @if($lists->count() > 1)
+                    <form method="GET" action="{{ route('dashboard.locale', ['locale' => $currentLocale]) }}" class="mb-6 max-w-lg flex flex-col gap-2">
+                        <label for="selected-list" class="form-label mb-0">{{ __('Choose a list') }}</label>
+                        <div class="flex items-stretch gap-2">
+                            <select id="selected-list" name="list" class="form-select min-h-11 min-w-0 flex-1" onchange="this.form.requestSubmit()">
+                                @foreach($lists as $option)
+                                    <option value="{{ $option->id }}" @selected($selectedListId === $option->id)>{{ $option->name }}</option>
+                                @endforeach
+                            </select>
+                            <button class="btn-secondary min-h-11">{{ __('View') }}</button>
+                        </div>
+                    </form>
+                @endif
                 <div class="space-y-0 divide-y divide-gray-100">
-                    @forelse($lists as $list)
+                    @forelse($lists->where('id', $selectedListId) as $list)
                         @php $isHighlighted = $highlightedSlug === $list->slug; @endphp
                         <section
                             id="list-{{ $list->slug }}"
