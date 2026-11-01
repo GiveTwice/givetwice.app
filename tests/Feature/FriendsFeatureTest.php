@@ -402,6 +402,7 @@ describe('Friends Feature', function () {
             ]);
             $gift->lists()->attach($list->id);
 
+            $this->travel(11)->minutes();
             $this->artisan('friends:send-digest')
                 ->assertExitCode(0);
 

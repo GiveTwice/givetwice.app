@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\URL;
 
 class FollowedList extends Model
 {
@@ -12,7 +13,22 @@ class FollowedList extends Model
         'user_id',
         'list_id',
         'notifications',
+        'last_change_id',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $follow): void {
+            $follow->last_change_id = ListChange::where('list_id', $follow->list_id)->max('id') ?? 0;
+        });
+    }
+
+    public function muteUrl(): string
+    {
+        return URL::signedRoute('list-updates.mute', [
+            'locale' => $this->user->locale_preference ?? 'en', 'follow' => $this->id,
+        ]);
+    }
 
     protected function casts(): array
     {
@@ -21,6 +37,7 @@ class FollowedList extends Model
         ];
     }
 
+    /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

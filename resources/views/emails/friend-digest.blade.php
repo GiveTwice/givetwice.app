@@ -3,7 +3,7 @@
 @section('title', __('Updates from your friends\' wishlists'))
 
 @section('content')
-    <h1 style="color: #0d9488; margin-top: 0; font-size: 24px;">{{ __('Wishlist updates') }} &#127873;</h1>
+    <h1 style="color: #0d9488; margin-top: 0; font-size: 24px;">{{ __('Wishlist updates') }}</h1>
 
     <p>{{ __('Hello') }} {{ $user->name }},</p>
 
@@ -29,6 +29,14 @@
                     </ul>
                 </div>
             @endif
+
+            @if(($data['edited_gifts'] ?? collect())->isNotEmpty())
+                <p><strong>{{ __('list-updates.edited') }}</strong></p>
+                <ul>@foreach($data['edited_gifts'] as $gift)<li>{{ $gift->title ?: __('Untitled gift') }}</li>@endforeach</ul>
+            @endif
+            @isset($data['mute_url'])
+                <p><a href="{{ $data['mute_url'] }}">{{ __('list-updates.stop') }}</a></p>
+            @endisset
 
             @if($data['removed_gifts']->isNotEmpty())
                 <div>

@@ -103,6 +103,7 @@ it('dedupes the digest for a buyer but keeps news for another follower', functio
     } elseif ($state === 'released') {
         $this->post($alert->choiceUrl('dismiss'))->assertRedirect();
     }
+    $this->travel(11)->minutes();
     $this->artisan('friends:send-digest')->assertSuccessful();
     Mail::assertQueued(FriendDigestMail::class, 1);
     Mail::assertQueued(FriendDigestMail::class, fn ($mail) => $mail->hasTo($other->email));

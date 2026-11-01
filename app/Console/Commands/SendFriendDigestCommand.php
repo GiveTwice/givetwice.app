@@ -3,142 +3,58 @@
 namespace App\Console\Commands;
 
 use App\Mail\FriendDigestMail;
-use App\Models\Gift;
-use App\Models\GiftList;
+use App\Models\FollowedList;
+use App\Models\ListChange;
 use App\Models\ReservationAlert;
-use App\Models\User;
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Mail;
 
 class SendFriendDigestCommand extends Command
 {
     protected $signature = 'friends:send-digest';
 
-    protected $description = 'Send daily email digest of friends\' wishlist updates';
+    protected $description = 'Send content updates after ten quiet minutes per follower and list';
 
     public function handle(): int
     {
-        $startedAt = now();
+        FollowedList::query()->where('notifications', true)
+            ->whereHas('user', fn ($query) => $query->whereNotNull('email_verified_at')->where('friend_notifications_enabled', true))
+            ->with('user', 'list.creator', 'list.users')->chunkById(100, function ($follows): void {
+                foreach ($follows as $follow) {
+                    $follow->getConnection()->transaction(function () use ($follow): void {
+                        $locked = FollowedList::query()->lockForUpdate()->find($follow->id);
+                        if (! $locked || ! $locked->notifications || ! $follow->isVisibleTo($follow->user)) {
+                            return;
+                        }
+                        $changes = ListChange::where('list_id', $follow->list_id)->where('id', '>', $locked->last_change_id)
+                            ->where(fn ($query) => $query->whereNull('actor_id')->orWhere('actor_id', '!=', $follow->user_id))
+                            ->orderBy('id')->get();
+                        if ($changes->isEmpty() || $changes->last()->created_at->gt(now()->subMinutes(10))) {
+                            return;
+                        }
+                        $included = $changes;
+                        $alerted = ReservationAlert::where('email', $follow->user->email)
+                            ->where('list_id', $follow->list_id)->where('created_at', '>=', $changes->first()->created_at)->pluck('gift_id');
+                        $included = $changes->reject(fn ($change) => $alerted->contains($change->gift_id));
+                        if ($included->isEmpty()) {
+                            $locked->update(['last_change_id' => $changes->last()->id]);
 
-        $users = User::query()
-            ->where('friend_notifications_enabled', true)
-            ->whereNotNull('email_verified_at')
-            ->whereHas('followedLists', function (Builder $query) {
-                $query->where('notifications', true);
-            })
-            ->get();
-
-        $sentCount = 0;
-
-        foreach ($users as $user) {
-            $digestData = $this->getDigestDataForUser($user);
-
-            if ($digestData->isEmpty()) {
-                continue;
-            }
-
-            Mail::to($user)->queue(new FriendDigestMail($user, $digestData));
-            $sentCount++;
-        }
-
-        if ($users->isNotEmpty()) {
-            User::query()
-                ->whereIn('id', $users->pluck('id'))
-                ->update(['last_friend_digest_at' => $startedAt]);
-        }
-
-        $this->info("Sent {$sentCount} friend digest emails.");
-
-        return Command::SUCCESS;
-    }
-
-    /**
-     * @return Collection<int, array{list: GiftList, added_gifts: Collection<int, Gift>, removed_gifts: Collection<int, Gift>}>
-     */
-    protected function getDigestDataForUser(User $user): Collection
-    {
-        $sinceDate = $user->last_friend_digest_at ?? now()->subDay();
-
-        $followedLists = $user->followedLists()
-            ->where('notifications', true)
-            ->visibleTo($user)
-            ->with(['list.creator', 'list.users'])
-            ->get();
-
-        if ($followedLists->isEmpty()) {
-            return collect();
-        }
-
-        $listIds = $followedLists->pluck('list_id')->toArray();
-
-        $addedGiftsByList = $this->groupGiftsByMatchingLists(
-            Gift::query()
-                ->whereHas('lists', function (Builder $query) use ($listIds) {
-                    $query->whereIn('lists.id', $listIds);
-                })
-                ->where('created_at', '>', $sinceDate)
-                ->with('lists')
-                ->get(),
-            $listIds,
-        );
-
-        $removedGiftsByList = $this->groupGiftsByMatchingLists(
-            Gift::withTrashed()
-                ->whereHas('lists', function (Builder $query) use ($listIds) {
-                    $query->whereIn('lists.id', $listIds);
-                })
-                ->whereNotNull('deleted_at')
-                ->where('deleted_at', '>', $sinceDate)
-                ->with('lists')
-                ->get(),
-            $listIds,
-        );
-
-        $alertsByList = ReservationAlert::where('email', $user->email)->where('updated_at', '>', $sinceDate)->get(['gift_id', 'list_id'])->groupBy('list_id');
-        $digestData = collect();
-
-        foreach ($followedLists as $followedList) {
-            $listId = $followedList->list_id;
-            $alertedGiftIds = $alertsByList->get($listId, collect())->pluck('gift_id')->all();
-            $addedGifts = $addedGiftsByList->get($listId, collect())->reject(fn (Gift $gift) => in_array($gift->id, $alertedGiftIds));
-            $removedGifts = $removedGiftsByList->get($listId, collect())->reject(fn (Gift $gift) => in_array($gift->id, $alertedGiftIds));
-
-            if ($addedGifts->isEmpty() && $removedGifts->isEmpty()) {
-                continue;
-            }
-
-            $digestData->push([
-                'list' => $followedList->list,
-                'added_gifts' => $addedGifts,
-                'removed_gifts' => $removedGifts,
-            ]);
-        }
-
-        return $digestData;
-    }
-
-    /**
-     * @param  Collection<int, Gift>  $gifts
-     * @param  array<int>  $listIds
-     * @return Collection<int, Collection<int, Gift>>
-     */
-    protected function groupGiftsByMatchingLists(Collection $gifts, array $listIds): Collection
-    {
-        $grouped = collect();
-
-        foreach ($gifts as $gift) {
-            $matchingListIds = $gift->lists->pluck('id')->intersect($listIds);
-
-            foreach ($matchingListIds as $listId) {
-                if (! $grouped->has($listId)) {
-                    $grouped->put($listId, collect());
+                            return;
+                        }
+                        $latest = $included->groupBy('gift_id')->map->last();
+                        $data = collect([[
+                            'list' => $follow->list,
+                            'added_gifts' => $latest->where('kind', 'added')->values(),
+                            'edited_gifts' => $latest->where('kind', 'edited')->values(),
+                            'removed_gifts' => $latest->where('kind', 'removed')->values(),
+                            'mute_url' => $follow->muteUrl(),
+                        ]]);
+                        Mail::to($follow->user)->queue((new FriendDigestMail($follow->user, $data))->afterCommit());
+                        $locked->update(['last_change_id' => $changes->last()->id]);
+                    });
                 }
-                $grouped->get($listId)->push($gift);
-            }
-        }
+            });
 
-        return $grouped;
+        return self::SUCCESS;
     }
 }
