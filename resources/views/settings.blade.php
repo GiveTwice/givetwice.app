@@ -23,7 +23,7 @@
         {{-- Profile Information --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8" x-data="profileSettings()">
             <div>
-                <h2 class="text-lg font-semibold text-gray-900">{{ __('Profile information') }}</h2>
+                <x-section-heading>{{ __('Profile information') }}</x-section-heading>
                 <p class="mt-1 text-sm text-gray-600">{{ __("Update your account's profile information and photo.") }}</p>
             </div>
 
@@ -58,7 +58,7 @@
                                 </template>
 
                                 <template x-if="!imageUrl">
-                                    <div class="w-full h-full bg-gradient-to-br from-coral-400 to-coral-500 flex items-center justify-center">
+                                    <div class="w-full h-full bg-coral-500 flex items-center justify-center">
                                         <span class="text-white text-2xl font-bold tracking-tight">{{ auth()->user()->getInitials() }}</span>
                                     </div>
                                 </template>
@@ -200,7 +200,7 @@
         {{-- Update Password --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div>
-                <h2 class="text-lg font-semibold text-gray-900">{{ __('Update password') }}</h2>
+                <x-section-heading>{{ __('Update password') }}</x-section-heading>
                 <p class="mt-1 text-sm text-gray-600">{{ __('Ensure your account is using a long, random password to stay secure.') }}</p>
             </div>
 
@@ -288,7 +288,7 @@
         {{-- Notifications --}}
         <div id="notifications" class="grid grid-cols-1 lg:grid-cols-3 gap-8" x-data="notificationSettings()">
             <div>
-                <h2 class="text-lg font-semibold text-gray-900">{{ __('Notifications') }}</h2>
+                <x-section-heading>{{ __('Notifications') }}</x-section-heading>
                 <p class="mt-1 text-sm text-gray-600">{{ __('Manage your email notification preferences.') }}</p>
             </div>
 
@@ -347,7 +347,7 @@
         {{-- Two-Factor Authentication --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8" x-data="twoFactorAuth()">
             <div>
-                <h2 class="text-lg font-semibold text-gray-900">{{ __('Two-factor authentication') }}</h2>
+                <x-section-heading>{{ __('Two-factor authentication') }}</x-section-heading>
                 <p class="mt-1 text-sm text-gray-600">{{ __('Add additional security to your account using two-factor authentication.') }}</p>
             </div>
 
@@ -616,7 +616,7 @@
         {{-- Browser Sessions --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div>
-                <h2 class="text-lg font-semibold text-gray-900">{{ __('Browser sessions') }}</h2>
+                <x-section-heading>{{ __('Browser sessions') }}</x-section-heading>
                 <p class="mt-1 text-sm text-gray-600">{{ __('Manage and log out your active sessions on other browsers and devices.') }}</p>
             </div>
 
@@ -704,7 +704,7 @@
         {{-- Your Data --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div>
-                <h2 class="text-lg font-semibold text-gray-900">{{ __('Your data') }}</h2>
+                <x-section-heading>{{ __('Your data') }}</x-section-heading>
                 <p class="mt-1 text-sm text-gray-600">{{ __('Download a copy of all personal data we hold about you in a machine-readable format (JSON).') }}</p>
             </div>
             <div class="lg:col-span-2">

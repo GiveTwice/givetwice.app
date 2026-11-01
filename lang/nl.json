@@ -2076,5 +2076,6 @@
     "Move up": "Omhoog",
     "Move down": "Omlaag",
     "Move :gift up": "Zet :gift hoger",
-    "Move :gift down": "Zet :gift lager"
+    "Move :gift down": "Zet :gift lager",
+    "Your session expired. Open the page again and retry.": "Je sessie is verlopen. Open de pagina opnieuw en probeer nog eens."
 }
