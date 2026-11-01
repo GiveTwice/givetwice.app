@@ -10,3 +10,5 @@
 
 @endif
 {!! __('exchange-reminders.stop') !!}: {!! $participant->reminderMuteUrl() !!}
+
+@include('emails.text.footer')

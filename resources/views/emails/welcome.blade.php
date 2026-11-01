@@ -1,7 +1,7 @@
 @extends('emails.layouts.base')
-@section('title', __('Welcome to :app!', ['app' => config('app.name')]))
+@section('title', __('Welcome to :app!', ['app' => 'GiveTwice']))
 @section('content')
-    <x-mail.heading>{{ __('Welcome to :app!', ['app' => config('app.name')]) }}</x-mail.heading>
+    <x-mail.heading>{{ __('Welcome to :app!', ['app' => 'GiveTwice']) }}</x-mail.heading>
     <p>{{ __('Hi :name,', ['name' => $user->name]) }}</p>
     <p>{{ __("You're in! Your wishlist is ready.") }}</p>
     <x-mail.panel>

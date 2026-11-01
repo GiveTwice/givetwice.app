@@ -15,3 +15,5 @@
 @endif
 
 {!! __('This invitation expires in 30 days.', locale: $locale) !!}
+
+@include('emails.text.footer')

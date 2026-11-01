@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', config('app.name'))</title>
+    <title>@yield('title', 'GiveTwice')</title>
     <meta name="color-scheme" content="light dark">
     <style>
         @media (prefers-color-scheme: dark) {
@@ -27,7 +27,7 @@
             {{ __('Free. No ads.') }}
         </p>
         <p style="color: #b64032; font-size: 14px; margin: 10px 0 0 0; font-weight: 500; letter-spacing: 0.5px;">
-            {{ config('app.name') }}
+            GiveTwice ❤️
         </p>
     </div>
 </body>

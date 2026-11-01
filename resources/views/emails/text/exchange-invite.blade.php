@@ -13,3 +13,5 @@
 
 {!! __('See my draw') !!}: {!! $revealUrl !!}
 {!! __('No account needed. Just click and see.') !!}
+
+@include('emails.text.footer')
