@@ -2058,5 +2058,9 @@
     "This invitation expires in 30 days.": "This invitation is valid for 30 days.",
     "More options": "More options",
     "Photo (optional)": "Photo (optional)",
-    "Choose a list": "Choose a list"
+    "Choose a list": "Choose a list",
+    "Reserved by you": "Reserved by you",
+    "Your reservations are one click away. This link works for 30 minutes.": "Your reservations are one click away. This link works for 30 minutes.",
+    "This reservation link no longer works": "This reservation link no longer works",
+    "It may have expired, or the reservation was already cancelled. Request a fresh link to see your current reservations.": "It may have expired, or the reservation was already cancelled. Request a fresh link to see your current reservations."
 }

@@ -7,6 +7,7 @@ use App\Models\Claim;
 use App\Models\Gift;
 use App\Models\GiftList;
 use App\Models\User;
+use Illuminate\Mail\MailManager;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
@@ -85,3 +86,15 @@ it('denies another mailbox and the owner access to choices', function () {
     $url = URL::signedRoute('reservations.choose', ['locale' => 'en', 'claim' => $this->claim, 'choice' => 'keep', 'email' => hash('sha256', $this->claim->claimer_email)]);
     $this->actingAs($this->list->creator)->get($url)->assertForbidden();
 });
+
+it('delivers the same expiring history link in both mail alternatives', function (string $locale) {
+    $mail = (new ReservationLinkMail($this->claim->claimer_email, $locale))->locale($locale);
+    $url = $mail->content()->with['historyUrl'];
+    $sent = $mail->to($this->claim->claimer_email)->send((new MailManager(app()))->mailer('array'));
+    $message = $sent->getSymfonySentMessage()->getOriginalMessage();
+    expect($message->getHtmlBody())->not->toBeEmpty()
+        ->and($message->getTextBody())->toContain($url);
+    $this->get($url)->assertRedirect();
+    $this->travel(31)->minutes();
+    $this->get($url)->assertForbidden();
+})->with(['nl', 'fr', 'en']);

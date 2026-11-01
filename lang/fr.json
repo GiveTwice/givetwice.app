@@ -2058,5 +2058,9 @@
     "This invitation expires in 30 days.": "Cette invitation est valable 30 jours.",
     "More options": "Plus d’options",
     "Photo (optional)": "Photo (facultatif)",
-    "Choose a list": "Choisis une liste"
+    "Choose a list": "Choisis une liste",
+    "Reserved by you": "Réservé par toi",
+    "Your reservations are one click away. This link works for 30 minutes.": "Voici tes réservations. Ce lien fonctionne pendant 30 minutes.",
+    "This reservation link no longer works": "Ce lien de réservation ne fonctionne plus",
+    "It may have expired, or the reservation was already cancelled. Request a fresh link to see your current reservations.": "Le lien a expiré ou ta réservation a déjà été annulée. Demande un nouveau lien pour voir tes réservations."
 }

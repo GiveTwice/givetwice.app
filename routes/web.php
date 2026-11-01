@@ -132,7 +132,7 @@ Route::prefix('{locale}')
         Route::match(['get', 'post'], '/list-updates/{follow}/mute', ListUpdatePreferenceController::class)->middleware('signed')->name('list-updates.mute');
         Route::get('/reservations', [ReservationsController::class, 'index'])->name('reservations.index');
         Route::post('/reservations/link', [ReservationsController::class, 'link'])->middleware('throttle:5,60')->name('reservations.link');
-        Route::match(['get', 'post'], '/reservations/{claim}/{choice}', [ReservationsController::class, 'choose'])->middleware('signed')->name('reservations.choose');
+        Route::match(['get', 'post'], '/reservations/{claim}/{choice}', [ReservationsController::class, 'choose'])->middleware('signed')->name('reservations.choose')->missing(fn () => response()->view('claims.link-unavailable', [], 410));
 
         // Claim routes (guest + authenticated)
         Route::get('/gifts/{gift}/claim', [ClaimController::class, 'showAnonymousForm'])->name('claim.anonymous.form');
@@ -144,7 +144,7 @@ Route::prefix('{locale}')
         Route::patch('/gifts/{gift}/reservation', [ClaimController::class, 'updateEmail'])->name('claim.email');
         Route::post('/gifts/{gift}/reservation/resend', [ClaimController::class, 'resend'])->name('claim.resend');
         Route::delete('/reservation-email', [ClaimController::class, 'forgetEmail'])->name('claim.forget-email');
-        Route::match(['get', 'post'], '/reservation/{claim}/undo', [ClaimController::class, 'undo'])->middleware('signed')->name('claim.undo');
+        Route::match(['get', 'post'], '/reservation/{claim}/undo', [ClaimController::class, 'undo'])->middleware('signed')->name('claim.undo')->missing(fn () => response()->view('claims.link-unavailable', [], 410));
 
         // Gift card HTML (for real-time updates on public lists)
         Route::get('/v/{list}/{slug}/gifts/{giftId}/card', [GiftController::class, 'cardHtml'])

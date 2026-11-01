@@ -302,7 +302,7 @@ class GiftController extends Controller
         ]);
     }
 
-    public function cardHtml(string $locale, int $list, string $slug, int $giftId): Response
+    public function cardHtml(Request $request, string $locale, int $list, string $slug, int $giftId): Response
     {
         $giftList = GiftList::findOrFail($list);
 
@@ -318,10 +318,11 @@ class GiftController extends Controller
         $html = view('components.shared-gift-tile', [
             'gift' => $gift,
             'isOwner' => $isOwner,
+            'isMine' => ! $isOwner && $gift->claims->contains(fn ($claim) => $claim->belongsToBrowser($request)),
             'isReserved' => $showReservations && ! $gift->allow_multiple_claims && $gift->claims->isNotEmpty(),
         ])->render().view('components.gift-modal', compact('gift', 'isOwner', 'showReservations'))->render();
 
-        return response($html)->header('Content-Type', 'text/html');
+        return response($html)->header('Content-Type', 'text/html')->header('Cache-Control', 'private, no-store');
     }
 
     /**
