@@ -1064,3 +1064,146 @@ main :where([id], h1, h2, h3, form) {
 .reservation-dialog::backdrop { background: rgb(0 0 0 / .3); clip-path: inset(var(--sheet-top, 72px) 0 0); }
 
 @media (min-width: 640px) { .reservation-dialog { top: calc((100dvh + var(--sheet-top, 72px)) / 2); } }
+
+@theme {
+    --text-xs: 0.875rem;
+    --text-xs--line-height: calc(1.25 / 0.875);
+    --color-teal-500: oklch(0.48 0.10 175);
+    --color-teal-600: oklch(0.48 0.10 175);
+    --color-sunny-700: oklch(0.48 0.11 65);
+}
+
+.btn-primary, .btn-primary-sm, .btn-secondary, .btn-share, .btn-claim {
+    justify-content: center;
+    min-height: 2.75rem;
+}
+
+.form-select {
+    appearance: none;
+    padding-right: 2.75rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%236b7280' stroke-width='1.5'%3E%3Cpath d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+    background-position: right 0.75rem center;
+    background-size: 1.25rem;
+    background-repeat: no-repeat;
+}
+
+input[type='checkbox'] {
+    appearance: none;
+    flex-shrink: 0;
+    width: 1.125rem;
+    height: 1.125rem;
+    border: 1px solid var(--color-gray-500);
+    border-radius: 0.25rem;
+    background-color: white;
+    vertical-align: middle;
+}
+
+input[type='checkbox']:checked {
+    border-color: var(--color-coral-500);
+    background: var(--color-coral-500) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='m4 10 4 4 8-8'/%3E%3C/svg%3E") center / 1rem no-repeat;
+}
+
+input[type='checkbox']:focus-visible {
+    outline: 2px solid var(--color-coral-500);
+    outline-offset: 3px;
+}
+
+.text-gray-400 {
+    color: var(--color-gray-500);
+}
+
+main {
+    overflow-wrap: anywhere;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        color-scheme: dark;
+        --color-cream-50: #161d29;
+        --color-cream-100: #1c2635;
+        --color-cream-200: #344155;
+        --color-cream-300: #46546a;
+        --color-coral-50: #352025;
+        --color-coral-100: #49272e;
+        --color-teal-50: #142f30;
+        --color-teal-100: #193b3b;
+        --color-sunny-50: #2b271a;
+        --color-sunny-100: #3a321e;
+        --color-sunny-200: #514323;
+        --color-gray-900: #f3f4f6;
+        --color-gray-800: #e5e7eb;
+        --color-gray-700: #d1d5db;
+        --color-gray-600: #cbd5e1;
+        --color-gray-500: #b4becc;
+        --color-gray-400: #a5afbe;
+        --color-gray-300: #46546a;
+        --color-gray-200: #344155;
+        --color-gray-100: #283446;
+        --color-gray-50: #1c2635;
+    }
+
+    body, .bg-gradient-warm {
+        background: #101827;
+        color: #e5e7eb;
+    }
+
+    .bg-white, .card, .gift-card, .btn-secondary, .form-input, .form-textarea, .form-select,
+    input[type='checkbox'] {
+        background-color: #1c2635;
+        color: #e5e7eb;
+    }
+
+    [class*='bg-white/'], .gift-card-hover-label {
+        background-color: #1c2635;
+    }
+
+    .text-coral-400, .text-coral-500, .text-coral-600, .text-coral-700, .btn-link {
+        color: #ffa69b;
+    }
+
+    .text-teal-500, .text-teal-600, .text-teal-700, .text-teal-800, .text-teal-900, .btn-claim {
+        color: #82e0cf;
+    }
+
+    .text-sunny-600, .text-sunny-700, .text-sunny-800, .text-cream-400, .text-cream-600, .btn-share {
+        color: #f4d891;
+    }
+
+    [class*='peer-checked:text-coral-700'] {
+        color: #ffa69b;
+    }
+
+    .badge-success { color: #82e0cf; }
+    .badge-warning { color: #f4d891; }
+
+    .form-label, .form-help, .btn-cancel, .breadcrumb {
+        color: #cbd5e1;
+    }
+
+    .form-error, .text-red-500, .text-red-600, .text-red-700 {
+        color: #fca5a5;
+    }
+
+    .alert-error, .info-box-danger, .bg-red-50, .bg-red-100 {
+        background-color: #3d202a;
+        color: #fca5a5;
+    }
+
+    .alert-success, .alert-warning, .alert-info, .info-box, .info-box-success, .info-box-warning {
+        color: #e5e7eb;
+    }
+
+    .btn-secondary:hover, .btn-cancel:hover {
+        background-color: #283446;
+        color: #f3f4f6;
+    }
+
+    .bg-coral-500.text-white, .btn-primary, .btn-primary-sm {
+        color: white;
+    }
+}
+
+.btn-primary, .btn-secondary, .btn-share, .btn-claim, .btn-link, .btn-cancel,
+.form-label, .form-input, .form-select, .form-textarea {
+    font-size: 1rem;
+}
