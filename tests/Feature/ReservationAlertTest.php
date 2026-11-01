@@ -220,3 +220,12 @@ it('includes working signed decisions for every alert in both mail alternatives'
         expect($message->getTextBody())->toContain($alert->choiceUrl($choice));
     }
 });
+
+it('summarizes only changed fields and uses one removal summary', function () {
+    $this->gift->update(['title' => 'New title']);
+    $alert = ReservationAlert::sole();
+    expect($alert->changedFields())->toBe(['title' => ['before' => 'Old title', 'after' => 'New title']]);
+    $this->gift->delete();
+    expect($alert->fresh()->changedFields())->toBe([]);
+    expect((new ReservationAlertMail($alert))->content()->text)->not->toBeNull();
+});
