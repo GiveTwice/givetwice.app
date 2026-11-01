@@ -129,11 +129,12 @@ class GiftList extends Model
     }
 
     /**
-     * @return BelongsToMany<Gift, $this>
+     * @return BelongsToMany<Gift, $this, GiftListEntry>
      */
     public function gifts(): BelongsToMany
     {
         return $this->belongsToMany(Gift::class, 'gift_list', 'list_id', 'gift_id')
+            ->using(GiftListEntry::class)
             ->withPivot('sort_order', 'added_at')
             ->withTimestamps()
             ->orderByPivot('sort_order');
