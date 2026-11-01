@@ -33,12 +33,12 @@
     ]"
 >
     @if($giftContext === 'fetch_success')
-        <h2 class="mb-6 text-xl font-semibold">{{ __('Found it! Does this look right?') }}</h2>
+        <x-section-heading class="mb-6">{{ __('Found it! Does this look right?') }}</x-section-heading>
     @elseif($giftContext === 'fetch_failed' || $gift->isFetchFailed())
-        <h2 class="mb-2 text-xl font-semibold">{{ __(':shop is keeping the door shut', ['shop' => ucfirst(explode('.', $gift->siteName() ?? '')[0])]) }}</h2>
+        <x-section-heading class="mb-2">{{ __(':shop is keeping the door shut', ['shop' => ucfirst(explode('.', $gift->siteName() ?? '')[0])]) }}</x-section-heading>
         <p class="mb-6 text-gray-600">{{ __("We couldn't get the photo and price. Can you fill them in? We'll keep the link.") }}</p>
     @elseif($giftContext === 'manual_entry')
-        <h2 class="mb-6 text-xl font-semibold">{{ __('Fill in the details for your gift.') }}</h2>
+        <x-section-heading class="mb-6">{{ __('Fill in the details for your gift.') }}</x-section-heading>
     @elseif($giftContext === 'fetch_timeout')
         <p class="mb-6 text-gray-600">{{ __('Still fetching in the background. We never overwrite what you fill in.') }}</p>
     @endif
@@ -160,7 +160,7 @@
                         <span
                             x-show="form.url !== originalUrl"
                             x-cloak
-                            class="text-xs text-gray-400"
+                            class="text-sm text-gray-400"
                         >
                             {{ __("We'll re-fetch the details when you save") }}
                         </span>
@@ -229,7 +229,7 @@
             <summary class="min-h-11 cursor-pointer py-3 font-medium">{{ __('Photo (optional)') }}</summary>
 
             <div class="bg-cream-50 rounded-xl p-6 mb-6">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Current Image') }}</h2>
+                <x-section-heading class="mb-4">{{ __('Current Image') }}</x-section-heading>
 
                 <input
                     type="file"
@@ -281,14 +281,14 @@
                          x-transition:leave="transition ease-in duration-300"
                          x-transition:leave-start="opacity-100"
                          x-transition:leave-end="opacity-0">
-                        <span class="bg-teal-500 text-white px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg inline-flex items-center gap-1.5">
+                        <span class="bg-teal-500 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg inline-flex items-center gap-1.5">
                             <x-icons.check-circle class="w-4 h-4" />
                             {{ __('Saved') }}
                         </span>
                     </div>
                 </div>
 
-                <p class="text-xs text-gray-500 mt-2 text-center">{{ __('Paste a screenshot or choose a photo') }}</p>
+                <p class="text-sm text-gray-500 mt-2 text-center">{{ __('Paste a screenshot or choose a photo') }}</p>
             </div>
 
 

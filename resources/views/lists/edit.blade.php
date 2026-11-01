@@ -107,7 +107,7 @@
 
                 <div class="lg:col-span-2">
                     <div class="rounded-xl bg-cream-50 p-6">
-                        <h2 class="mb-4 text-lg font-semibold text-gray-900">{{ __('List Info') }}</h2>
+                        <x-section-heading class="mb-4">{{ __('List Info') }}</x-section-heading>
 
                         <div class="space-y-3">
                             <div class="flex items-center justify-between">
