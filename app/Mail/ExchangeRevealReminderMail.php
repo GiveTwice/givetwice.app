@@ -30,6 +30,7 @@ class ExchangeRevealReminderMail extends Mailable
     {
         return new Content(
             view: 'emails.exchange-reveal-reminder',
+            text: 'emails.text.exchange-reveal-reminder',
             with: [
                 'participant' => $this->participant,
                 'exchange' => $this->exchange,

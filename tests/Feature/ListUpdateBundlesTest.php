@@ -80,3 +80,25 @@ it('rechecks queued recipients after mute, global opt-out, or list deletion', fu
     $job->handle();
     Mail::assertNothingSent();
 })->with(['mute', 'global', 'deleted']);
+
+it('delivers localized bundles as multipart mail with usable list and opt-out URLs', function (string $locale) {
+    Queue::fake();
+    $owner = User::factory()->create();
+    $recipient = User::factory()->create(['locale_preference' => $locale]);
+    $list = GiftList::factory()->create(['creator_id' => $owner->id]);
+    $follow = FollowedList::create(['user_id' => $recipient->id, 'list_id' => $list->id]);
+    $data = collect([[
+        'list' => $list,
+        'added_gifts' => collect(),
+        'edited_gifts' => collect(),
+        'removed_gifts' => collect(),
+        'mute_url' => $follow->muteUrl(),
+    ]]);
+    $originalLocale = app()->getLocale();
+    $sent = Mail::to($recipient)->send(new FriendDigestMail($recipient, $data));
+    $message = $sent->getSymfonySentMessage()->getOriginalMessage();
+
+    expect($message->getHtmlBody())->not->toBeEmpty()
+        ->and($message->getTextBody())->toContain($list->getPublicUrl($locale), $follow->muteUrl())
+        ->and(app()->getLocale())->toBe($originalLocale);
+})->with(['nl', 'fr', 'en']);

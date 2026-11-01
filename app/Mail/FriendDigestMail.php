@@ -34,6 +34,7 @@ class FriendDigestMail extends Mailable
 
         return new Content(
             view: 'emails.friend-digest',
+            text: 'emails.text.friend-digest',
             with: [
                 'user' => $this->user,
                 'digestData' => $this->digestData,
