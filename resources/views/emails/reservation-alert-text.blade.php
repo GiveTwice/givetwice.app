@@ -20,3 +20,5 @@
 @endforeach
 {!! __('All my reservations') !!}: {!! $alert->claim->historyUrl($alert->locale) !!}
 {!! __('list-updates.stop') !!}: {!! $alert->choiceUrl('mute') !!}
+
+@include('emails.text.footer')

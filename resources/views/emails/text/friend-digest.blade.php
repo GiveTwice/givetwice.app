@@ -23,3 +23,5 @@
 
 @endforeach
 {!! __('list-updates.settings') !!}: {!! $settingsUrl !!}#notifications
+
+@include('emails.text.footer')

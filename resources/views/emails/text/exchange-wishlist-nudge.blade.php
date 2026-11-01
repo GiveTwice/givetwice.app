@@ -6,3 +6,5 @@
 {!! __('Make a wishlist') !!}: {!! $registerUrl !!}
 
 {!! __('exchange-reminders.stop') !!}: {!! $participant->reminderMuteUrl() !!}
+
+@include('emails.text.footer')

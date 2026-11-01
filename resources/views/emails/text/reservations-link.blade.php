@@ -3,3 +3,5 @@
 {!! __('Your reservations are one click away. This link works for 30 minutes.') !!}
 
 {!! __('All my reservations') !!}: {!! $historyUrl !!}
+
+@include('emails.text.footer')
