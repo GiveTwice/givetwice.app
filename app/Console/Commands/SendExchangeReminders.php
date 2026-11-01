@@ -27,7 +27,9 @@ class SendExchangeReminders extends Command
     {
         $participants = GiftExchangeParticipant::query()
             ->whereNotNull('email')
+            ->whereNull('reminders_muted_at')
             ->whereNull('viewed_at')
+            ->whereNull('reveal_reminder_sent_at')
             ->whereHas('exchange', fn ($q) => $q
                 ->where('status', 'drawn')
                 ->where('draw_completed_at', '<=', now()->subDays(3))
@@ -44,9 +46,16 @@ class SendExchangeReminders extends Command
 
             /** @var GiftExchange $exchange */
             $exchange = $participant->exchange;
-            Mail::to($participant->email)
-                ->queue(new ExchangeRevealReminderMail($participant, $exchange));
-            $sent++;
+            $participant->getConnection()->transaction(function () use ($participant, $exchange, &$sent): void {
+                $locked = GiftExchangeParticipant::query()->lockForUpdate()->findOrFail($participant->id);
+                if ($locked->reveal_reminder_sent_at || $locked->reminders_muted_at) {
+                    return;
+                }
+                Mail::to($locked->email)->locale($exchange->locale)
+                    ->queue((new ExchangeRevealReminderMail($locked, $exchange))->afterCommit());
+                $locked->update(['reveal_reminder_sent_at' => now()]);
+                $sent++;
+            });
         }
 
         $this->info("Sent {$sent} reveal reminders.");
@@ -56,8 +65,10 @@ class SendExchangeReminders extends Command
     {
         $participants = GiftExchangeParticipant::query()
             ->whereNotNull('email')
-            ->whereNull('wishlist_id')
-            ->whereDoesntHave('user.createdLists', fn ($query) => $query->where('is_default', true))
+            ->whereNull('reminders_muted_at')
+            ->whereNull('wishlist_nudge_sent_at')
+            ->whereDoesntHave('wishlist.gifts')
+            ->whereDoesntHave('user.createdLists', fn ($query) => $query->where('is_default', true)->whereHas('gifts'))
             ->whereNotNull('viewed_at')
             ->where('viewed_at', '<=', now()->subDays(1))
             ->whereHas('exchange', fn ($q) => $q
@@ -75,9 +86,16 @@ class SendExchangeReminders extends Command
 
             /** @var GiftExchange $exchange */
             $exchange = $participant->exchange;
-            Mail::to($participant->email)
-                ->queue(new ExchangeWishlistNudgeMail($participant, $exchange));
-            $sent++;
+            $participant->getConnection()->transaction(function () use ($participant, $exchange, &$sent): void {
+                $locked = GiftExchangeParticipant::query()->lockForUpdate()->findOrFail($participant->id);
+                if ($locked->wishlist_nudge_sent_at || $locked->reminders_muted_at) {
+                    return;
+                }
+                Mail::to($locked->email)->locale($exchange->locale)
+                    ->queue((new ExchangeWishlistNudgeMail($locked, $exchange))->afterCommit());
+                $locked->update(['wishlist_nudge_sent_at' => now()]);
+                $sent++;
+            });
         }
 
         $this->info("Sent {$sent} wishlist nudges.");

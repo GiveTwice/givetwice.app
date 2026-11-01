@@ -22,4 +22,5 @@
         {{ __('We\'re not saying there\'s a deadline. But there\'s definitely a deadline.') }} ({{ $exchange->event_date->format('M j') }})
     @endif
 </p>
+<p style="font-size: 14px; text-align: center;"><a href="{{ $participant->reminderMuteUrl() }}">{{ __('exchange-reminders.stop') }}</a></p>
 @endsection

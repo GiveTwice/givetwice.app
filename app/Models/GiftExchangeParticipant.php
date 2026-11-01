@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
 class GiftExchangeParticipant extends Model
@@ -26,6 +27,9 @@ class GiftExchangeParticipant extends Model
         'whatsapp_opened_at',
         'sent_at',
         'token_generated_at',
+        'reveal_reminder_sent_at',
+        'wishlist_nudge_sent_at',
+        'reminders_muted_at',
     ];
 
     protected function casts(): array
@@ -36,6 +40,9 @@ class GiftExchangeParticipant extends Model
             'whatsapp_opened_at' => 'datetime',
             'sent_at' => 'datetime',
             'token_generated_at' => 'datetime',
+            'reveal_reminder_sent_at' => 'datetime',
+            'wishlist_nudge_sent_at' => 'datetime',
+            'reminders_muted_at' => 'datetime',
         ];
     }
 
@@ -113,6 +120,14 @@ class GiftExchangeParticipant extends Model
     public function revealUrl(): string
     {
         return route('exchanges.reveal', ['locale' => $this->exchange->locale, 'token' => $this->token]);
+    }
+
+    public function reminderMuteUrl(): string
+    {
+        return URL::signedRoute('exchanges.reminders.mute', [
+            'locale' => $this->exchange->locale,
+            'participant' => $this->id,
+        ]);
     }
 
     public function hasViewed(): bool

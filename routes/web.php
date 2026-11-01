@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExchangeReminderPreferenceController;
 use App\Http\Controllers\ExchangeWishlistController;
 use App\Http\Controllers\ExportPersonalDataController;
 use App\Http\Controllers\FriendsController;
@@ -105,6 +106,8 @@ Route::prefix('{locale}')
             ->name('exchanges.landing');
 
         // Gift exchange reveal (token-based, no auth required)
+        Route::match(['get', 'post'], '/exchange-reminders/{participant}/mute', ExchangeReminderPreferenceController::class)->middleware('signed')->name('exchanges.reminders.mute');
+
         Route::get('/exchange/{token}', [GiftExchangeController::class, 'reveal'])
             ->middleware('throttle:30,1')
             ->name('exchanges.reveal');

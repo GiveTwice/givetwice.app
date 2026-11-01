@@ -20,4 +20,5 @@
         {{ __('Make a wishlist') }} →
     </a>
 </div>
+<p style="font-size: 14px; text-align: center;"><a href="{{ $participant->reminderMuteUrl() }}">{{ __('exchange-reminders.stop') }}</a></p>
 @endsection
