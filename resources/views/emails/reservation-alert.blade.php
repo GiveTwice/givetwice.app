@@ -13,5 +13,5 @@
         </x-mail.panel>
     @endforeach
     <x-mail.action :url="$alert->claim->historyUrl($alert->locale)" :button="true">{{ __('All my reservations') }}</x-mail.action>
-    <x-mail.quiet-link :url="$alert->choiceUrl('mute')">{{ __('reservations.mute', ['owner' => $alert->before['list_name'] ?? $alert->before['owner']]) }}</x-mail.quiet-link>
+    <x-mail.quiet-link :url="$alert->choiceUrl('mute')">{{ __('list-updates.stop') }}</x-mail.quiet-link>
 @endsection

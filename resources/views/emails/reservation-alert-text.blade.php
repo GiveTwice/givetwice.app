@@ -19,4 +19,4 @@
 
 @endforeach
 {!! __('All my reservations') !!}: {!! $alert->claim->historyUrl($alert->locale) !!}
-{!! __('reservations.mute', ['owner' => $alert->before['list_name'] ?? $alert->before['owner']]) !!}: {!! $alert->choiceUrl('mute') !!}
+{!! __('list-updates.stop') !!}: {!! $alert->choiceUrl('mute') !!}
