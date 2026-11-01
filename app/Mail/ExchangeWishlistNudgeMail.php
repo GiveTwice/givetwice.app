@@ -30,6 +30,7 @@ class ExchangeWishlistNudgeMail extends Mailable
     {
         return new Content(
             view: 'emails.exchange-wishlist-nudge',
+            text: 'emails.text.exchange-wishlist-nudge',
             with: [
                 'participant' => $this->participant,
                 'exchange' => $this->exchange,

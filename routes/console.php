@@ -41,9 +41,8 @@ Schedule::command('sitemap:generate')
     ->weekly()
     ->monitorName('Generate Sitemap');
 
-// Send friend wishlist digest emails daily at 1PM UTC
 Schedule::command('friends:send-digest')
-    ->dailyAt('13:00')
+    ->everyMinute()->withoutOverlapping()
     ->monitorName('Friend Digest Emails');
 
 // Prune expired invitations, tokens, and sessions daily

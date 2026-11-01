@@ -17,6 +17,7 @@ use App\Http\Controllers\GiftExchangeDeliveryController;
 use App\Http\Controllers\GiftExchangeRuleController;
 use App\Http\Controllers\ListController;
 use App\Http\Controllers\ListInvitationController;
+use App\Http\Controllers\ListUpdatePreferenceController;
 use App\Http\Controllers\PublicListController;
 use App\Http\Controllers\ResendGiftExchangeInviteController;
 use App\Http\Controllers\ReservationsController;
@@ -128,6 +129,7 @@ Route::prefix('{locale}')
             ->name('exchanges.join.store');
 
         Route::match(['get', 'post'], '/reservation-alerts/{alert}/mute', [ReservationsController::class, 'mute'])->middleware('signed')->name('reservations.mute');
+        Route::match(['get', 'post'], '/list-updates/{follow}/mute', ListUpdatePreferenceController::class)->middleware('signed')->name('list-updates.mute');
         Route::get('/reservations', [ReservationsController::class, 'index'])->name('reservations.index');
         Route::post('/reservations/link', [ReservationsController::class, 'link'])->middleware('throttle:5,60')->name('reservations.link');
         Route::match(['get', 'post'], '/reservations/{claim}/{choice}', [ReservationsController::class, 'choose'])->middleware('signed')->name('reservations.choose');
