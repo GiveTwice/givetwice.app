@@ -33,7 +33,7 @@
                     <div class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-cream-100">
                         <span class="text-4xl">&#127922;</span>
                     </div>
-                    <h2 class="mb-2 text-xl font-semibold text-gray-900">{{ __('Secret Santa') }}</h2>
+                    <x-section-heading class="mb-2">{{ __('Secret Santa') }}</x-section-heading>
                     <p class="mb-6 text-gray-500">{{ __('Draw names. Buy gifts. Keep everyone guessing who got whom.') }}</p>
                     <a href="{{ route('exchanges.landing', ['locale' => $currentLocale, 'exchangeType' => $exchangeSlug]) }}" class="btn-primary">
                         {{ __('Start a group') }}
