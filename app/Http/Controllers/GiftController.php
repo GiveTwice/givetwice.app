@@ -102,10 +102,13 @@ class GiftController extends Controller
             ]);
         }
 
-        $targetList->gifts()->attach($gift->id, [
-            'sort_order' => ($targetList->gifts()->max('gift_list.sort_order') ?? -1) + 1,
-            'added_at' => now(),
-        ]);
+        $targetList->getConnection()->transaction(function () use ($targetList, $gift): void {
+            GiftList::query()->lockForUpdate()->findOrFail($targetList->id);
+            $targetList->gifts()->attach($gift->id, [
+                'sort_order' => ($targetList->gifts()->max('gift_list.sort_order') ?? -1) + 1,
+                'added_at' => now(),
+            ]);
+        });
 
         GiftAddedToList::dispatch($gift, $targetList);
 
