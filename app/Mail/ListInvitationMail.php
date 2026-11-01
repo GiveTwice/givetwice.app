@@ -42,6 +42,7 @@ class ListInvitationMail extends Mailable
 
         return new Content(
             view: 'emails.list-invitation',
+            text: 'emails.text.list-invitation',
             with: [
                 'invitation' => $this->invitation,
                 'inviter' => $this->invitation->inviter,

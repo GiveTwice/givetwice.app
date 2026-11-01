@@ -31,6 +31,7 @@ class InactiveAccountWarningMail extends Mailable
 
         return new Content(
             view: 'emails.inactive-account-warning',
+            text: 'emails.text.inactive-account-warning',
             with: [
                 'loginUrl' => route('login', ['locale' => $locale]),
                 'settingsUrl' => route('settings', ['locale' => $locale]),

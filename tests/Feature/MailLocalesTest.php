@@ -15,8 +15,11 @@ use App\Models\ReservationAlert;
 use App\Models\User;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Http\Request;
+use Illuminate\Mail\MailManager;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\URL;
 
 describe('recipient mail language', function () {
     it('retains recipient language through queue serialization independently of worker language', function (string $locale) {
@@ -27,6 +30,10 @@ describe('recipient mail language', function () {
         $invitation = ListInvitation::factory()->create(['invitee_id' => $recipient->id]);
         foreach ([new GiftExchangeInviteMail($participant, $exchange), new ExchangeRevealReminderMail($participant, $exchange), new ExchangeWishlistNudgeMail($participant, $exchange), new ListInvitationMail($invitation), new InactiveAccountWarningMail($recipient)] as $mail) {
             expect(unserialize(serialize($mail))->locale)->toBe($locale);
+            $sent = (new MailManager(app()))->mailer('array')->to($recipient)->send($mail);
+            $message = $sent->getSymfonySentMessage()->getOriginalMessage();
+            expect($message->getHtmlBody())->not->toBeEmpty()
+                ->and($message->getTextBody())->not->toBeEmpty();
         }
     })->with(['nl', 'fr', 'en']);
 
@@ -60,3 +67,25 @@ it('keeps a guest reservation language when an owner edits in another language',
     expect($claim->fresh()->reservation['locale'])->toBe($locale)
         ->and(ReservationAlert::sole()->locale)->toBe($locale);
 })->with(['nl', 'fr', 'en']);
+
+it('keeps recovery tokens and verification signatures usable in branded multipart notifications', function () {
+    $recipient = User::factory()->create(['locale_preference' => 'nl']);
+    $reset = (new ResetPassword('reset-token'))->toMail($recipient);
+    $resetUrl = $reset->viewData['actionUrl'];
+    parse_str(parse_url($resetUrl, PHP_URL_QUERY), $query);
+    expect($query['email'])->toBe($recipient->email)
+        ->and(parse_url($resetUrl, PHP_URL_PATH))->toBe('/nl/reset-password/reset-token');
+
+    $verification = (new VerifyEmail)->toMail($recipient);
+    $request = Request::create($verification->viewData['actionUrl']);
+    expect(URL::hasValidSignature($request))->toBeTrue();
+    $this->travel(61)->minutes();
+    expect(URL::hasValidSignature($request))->toBeFalse();
+
+    foreach ([$reset, $verification] as $message) {
+        expect($message->view)->toHaveCount(2);
+        foreach ($message->view as $view) {
+            expect(view($view, $message->viewData)->render())->not->toBeEmpty();
+        }
+    }
+});

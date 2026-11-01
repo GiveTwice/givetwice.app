@@ -7,10 +7,12 @@ use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
 use App\Http\Responses\LogoutResponse;
+use App\Models\User;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
@@ -44,7 +46,7 @@ class FortifyServiceProvider extends ServiceProvider
             return Hash::check($password, $user->password);
         });
 
-        ResetPassword::createUrlUsing(function ($notifiable, string $token) {
+        $resetPasswordUrl = function (User $notifiable, string $token): string {
             $locale = $notifiable->locale_preference ?? config('app.locale', 'en');
 
             return route('password.reset', [
@@ -52,9 +54,25 @@ class FortifyServiceProvider extends ServiceProvider
                 'token' => $token,
                 'email' => $notifiable->getEmailForPasswordReset(),
             ]);
+        };
+        ResetPassword::createUrlUsing($resetPasswordUrl);
+        ResetPassword::toMailUsing(function (User $user, string $token) use ($resetPasswordUrl): MailMessage {
+            return (new MailMessage)
+                ->subject(__('Reset your password'))
+                ->view(['emails.authentication', 'emails.text.authentication'], [
+                    'user' => $user,
+                    'title' => __('Reset your password'),
+                    'intro' => __('You are receiving this email because we received a password reset request for your account.'),
+                    'actionText' => __('Reset Password'),
+                    'actionUrl' => $resetPasswordUrl($user, $token),
+                    'outroLines' => [
+                        __('This password reset link will expire in :count minutes.', ['count' => config('auth.passwords.'.config('auth.defaults.passwords').'.expire')]),
+                        __('If you did not request a password reset, no further action is required.'),
+                    ],
+                ]);
         });
 
-        VerifyEmail::createUrlUsing(function ($notifiable) {
+        $verificationUrl = function (User $notifiable): string {
             $locale = $notifiable->locale_preference ?? config('app.locale', 'en');
 
             $verificationUrl = URL::temporarySignedRoute(
@@ -68,6 +86,19 @@ class FortifyServiceProvider extends ServiceProvider
             );
 
             return $verificationUrl;
+        };
+        VerifyEmail::createUrlUsing($verificationUrl);
+        VerifyEmail::toMailUsing(function (User $user, string $url): MailMessage {
+            return (new MailMessage)
+                ->subject(__('Verify your email address'))
+                ->view(['emails.authentication', 'emails.text.authentication'], [
+                    'user' => $user,
+                    'title' => __('Verify your email address'),
+                    'intro' => __('Please click the button below to verify your email address.'),
+                    'actionText' => __('Verify Email Address'),
+                    'actionUrl' => $url,
+                    'outroLines' => [__('If you did not create an account, no further action is required.')],
+                ]);
         });
 
         RateLimiter::for('login', function (Request $request) {

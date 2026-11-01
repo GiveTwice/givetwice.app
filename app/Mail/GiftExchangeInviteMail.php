@@ -33,6 +33,7 @@ class GiftExchangeInviteMail extends Mailable
     {
         return new Content(
             view: 'emails.exchange-invite',
+            text: 'emails.text.exchange-invite',
             with: [
                 'participant' => $this->participant,
                 'exchange' => $this->exchange,
