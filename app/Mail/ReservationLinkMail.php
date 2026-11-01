@@ -22,6 +22,6 @@ class ReservationLinkMail extends Mailable implements ShouldQueue
 
     public function content(): Content
     {
-        return new Content(view: 'emails.reservations-link', with: ['historyUrl' => URL::temporarySignedRoute('reservations.index', now()->addMinutes(30), ['locale' => $this->userLocale, 'email' => $this->email])]);
+        return new Content(view: 'emails.reservations-link', text: 'emails.text.reservations-link', with: ['historyUrl' => URL::temporarySignedRoute('reservations.index', now()->addMinutes(30), ['locale' => $this->userLocale, 'email' => $this->email])]);
     }
 }
