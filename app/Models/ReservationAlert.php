@@ -41,7 +41,7 @@ class ReservationAlert extends Model
                 $old = new Gift($gift->getOriginal());
                 $before = array_replace($claim->reservation, ['title' => $old->title, 'price' => $old->formatPrice(), 'url' => $old->url, 'owner_note' => $old->owner_note]);
                 $after = array_replace($before, ['title' => $gift->title, 'price' => $gift->formatPrice(), 'url' => $gift->url, 'owner_note' => $gift->owner_note, 'deleted' => $deleted]);
-                $alert = static::where('claim_id', $claim->id)->whereNull('sent_at')->whereNull('resolved_at')->where('created_at', '>', now()->subMinutes(10))->first();
+                $alert = static::where('claim_id', $claim->id)->whereNull('sent_at')->whereNull('resolved_at')->first();
                 if ($alert) {
                     $alert->update(['after' => $after]);
                 } else {

@@ -168,3 +168,28 @@ it('never sends a reservation bundle to a current manager', function () {
     (new SendReservationAlert(ReservationAlert::sole()->id))->handle();
     Mail::assertNothingSent();
 });
+
+it('keeps a continuous edit session in one alert even beyond ten minutes', function () {
+    $this->gift->update(['title' => 'First edit']);
+    $this->travel(9)->minutes();
+    $this->gift->update(['title' => 'Second edit']);
+    $this->travel(9)->minutes();
+    $this->gift->update(['title' => 'Final edit']);
+    expect(ReservationAlert::count())->toBe(1);
+    $alert = ReservationAlert::sole();
+    expect($alert->before['title'])->toBe('Old title')->and($alert->after['title'])->toBe('Final edit');
+    $this->travel(11)->minutes();
+    (new SendReservationAlert($alert->id))->handle();
+    (new SendReservationAlert($alert->id))->handle();
+    Mail::assertSent(ReservationAlertMail::class, fn ($mail) => $mail->alerts->count() === 1);
+    Mail::assertSentCount(1);
+});
+
+it('delivers the removal alert safely after its list has been deleted', function () {
+    $this->list->delete();
+    $alert = ReservationAlert::sole();
+    $this->travel(11)->minutes();
+    (new SendReservationAlert($alert->id))->handle();
+    Mail::assertSent(ReservationAlertMail::class, 1);
+    expect((new ReservationAlertMail($alert->fresh()))->render())->not->toBeEmpty();
+});
