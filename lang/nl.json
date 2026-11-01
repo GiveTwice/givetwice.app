@@ -2062,5 +2062,13 @@
     "Reserved by you": "Door jou gereserveerd",
     "Your reservations are one click away. This link works for 30 minutes.": "Hier zijn je reservaties. Deze link werkt 30 minuten.",
     "This reservation link no longer works": "Deze reservatielink werkt niet meer",
-    "It may have expired, or the reservation was already cancelled. Request a fresh link to see your current reservations.": "De link is verlopen of je reservatie is al geannuleerd. Vraag een nieuwe link voor je huidige reservaties."
+    "It may have expired, or the reservation was already cancelled. Request a fresh link to see your current reservations.": "De link is verlopen of je reservatie is al geannuleerd. Vraag een nieuwe link voor je huidige reservaties.",
+    "Followed lists": "Gevolgde lijstjes",
+    "Followed list updates": "Updates van gevolgde lijstjes",
+    "Save individual lists here. Following is one-way. Reserving while logged in follows that list automatically.": "Hier bewaar je lijstjes. Volgen is één richting. Reserveer je ingelogd, dan volg je dat lijstje automatisch.",
+    "Get one short email after changes to a followed list.": "Eén kort mailtje na wijzigingen aan een gevolgd lijstje.",
+    "Email updates": "Mailupdates",
+    "No followed lists yet": "Je volgt nog geen lijstjes",
+    "Open a shared list and choose Follow. Reserving while logged in follows that list too.": "Open een gedeeld lijstje en kies Volgen. Reserveer je ingelogd, dan volg je dat lijstje ook.",
+    "Reserving follows this list automatically. You can turn updates off in Followed lists.": "Met je reservatie volg je dit lijstje automatisch. Mailupdates zet je uit bij Gevolgde lijstjes."
 }

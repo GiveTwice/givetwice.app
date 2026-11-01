@@ -222,7 +222,7 @@
                     </a>
                     <a href="{{ $friendsUrl }}" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">
                         <x-icons.users class="w-5 h-5" />
-                        <span>{{ __('Friends') }}</span>
+                        <span>{{ __('Followed lists') }}</span>
                     </a>
                     <a href="{{ $settingsUrl }}" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-cream-100 rounded-lg">
                         <x-icons.settings class="w-5 h-5" />

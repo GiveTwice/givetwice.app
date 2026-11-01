@@ -2062,5 +2062,13 @@
     "Reserved by you": "Reserved by you",
     "Your reservations are one click away. This link works for 30 minutes.": "Your reservations are one click away. This link works for 30 minutes.",
     "This reservation link no longer works": "This reservation link no longer works",
-    "It may have expired, or the reservation was already cancelled. Request a fresh link to see your current reservations.": "It may have expired, or the reservation was already cancelled. Request a fresh link to see your current reservations."
+    "It may have expired, or the reservation was already cancelled. Request a fresh link to see your current reservations.": "It may have expired, or the reservation was already cancelled. Request a fresh link to see your current reservations.",
+    "Followed lists": "Followed lists",
+    "Followed list updates": "Followed list updates",
+    "Save individual lists here. Following is one-way. Reserving while logged in follows that list automatically.": "Save individual lists here. Following is one-way. Reserving while logged in follows that list automatically.",
+    "Get one short email after changes to a followed list.": "Get one short email after changes to a followed list.",
+    "Email updates": "Email updates",
+    "No followed lists yet": "No followed lists yet",
+    "Open a shared list and choose Follow. Reserving while logged in follows that list too.": "Open a shared list and choose Follow. Reserving while logged in follows that list too.",
+    "Reserving follows this list automatically. You can turn updates off in Followed lists.": "Reserving follows this list automatically. You can turn updates off in Followed lists."
 }

@@ -46,6 +46,9 @@
             @if($claim)<button type="button" x-on:click="editing = false" class="text-gray-500">{{ __('Cancel') }}</button>@endif
         </form>
         @if($claim)<form x-show="editing" method="POST" action="{{ route('claim.cancel', $parameters) }}" x-on:submit.prevent="$dispatch('reservation-submit', {form: $el})">@csrf @method('DELETE')<button class="text-gray-500">{{ __('Undo reservation') }}</button></form>@endif
+        @auth
+            <p class="text-sm text-gray-600">{{ __('Reserving follows this list automatically. You can turn updates off in Followed lists.') }} <a class="inline-flex min-h-11 items-center text-coral-700" href="{{ route('friends.index', ['locale' => app()->getLocale()]) }}">{{ __('Followed lists') }}</a></p>
+        @endauth
         @if(!$claim)
             <p class="text-xs text-gray-500">{{ __('So nobody else buys it. You still buy it yourself in the shop.') }}</p>
             @guest
