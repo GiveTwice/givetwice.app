@@ -54,7 +54,7 @@ class ReservationAlert extends Model
                 if ($alert) {
                     $alert->update(['after' => $after]);
                 } else {
-                    $alert = static::create(['claim_id' => $claim->id, 'gift_id' => $gift->id, 'list_id' => $claim->reservation['list_id'], 'email' => $claim->claimer_email ?? $claim->user->email, 'locale' => $claim->user->locale_preference ?? app()->getLocale(), 'before' => $before, 'after' => $after]);
+                    $alert = static::create(['claim_id' => $claim->id, 'gift_id' => $gift->id, 'list_id' => $claim->reservation['list_id'], 'email' => $claim->claimer_email ?? $claim->user->email, 'locale' => $claim->user->locale_preference ?? $claim->reservation['locale'] ?? app()->getLocale(), 'before' => $before, 'after' => $after]);
                     SendReservationAlert::dispatch($alert->id)->delay(now()->addMinutes(10))->afterCommit();
                 }
             });
