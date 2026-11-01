@@ -49,51 +49,12 @@
         @paste.window="pasteImage($event)"
     >
 
-        <div class="order-last lg:order-first lg:col-span-3">
+        <div class="lg:col-span-3">
             <form @input="markEdited($event.target.name)" method="POST" action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id) }}">
                 @csrf
                 @method('PUT')
                 <input type="hidden" name="tracks_edits" value="0" :value="1">
                 <template x-for="field in edited" :key="field"><input type="hidden" name="edited_fields[]" :value="field"></template>
-
-                <details class="mb-6">
-                    <summary class="cursor-pointer text-sm text-gray-500">{{ __('Product URL') }}</summary>
-                <div class="mb-6">
-                    <label for="url" class="form-label">
-                        {{ __('Product URL') }}
-                    </label>
-                    <input
-                        type="url"
-                        id="url"
-                        name="url"
-                        x-model="form.url"
-                        placeholder="https://www.bol.com/nl/p/..."
-                        class="form-input @error('url') border-red-500 @enderror"
-                    >
-                    @error('url')
-                        <p class="form-error">{{ $message }}</p>
-                    @enderror
-                    <div class="flex items-center justify-between mt-2">
-                        <a
-                            x-show="form.url"
-                            :href="form.url"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="inline-flex items-center gap-1 text-sm text-coral-600 hover:text-coral-700 transition-colors"
-                        >
-                            {{ __('View gift') }}
-                            <x-icons.external-link class="w-4 h-4" />
-                        </a>
-                        <span
-                            x-show="form.url !== originalUrl"
-                            x-cloak
-                            class="text-xs text-gray-400"
-                        >
-                            {{ __("We'll re-fetch the details when you save") }}
-                        </span>
-                    </div>
-                </div>
-                </details>
 
                 <div class="mb-6">
                     <label for="title" class="form-label">
@@ -112,36 +73,6 @@
                         <p class="form-error">{{ $message }}</p>
                     @enderror
                 </div>
-
-                <div class="mb-6">
-                    <label for="shop_name" class="form-label">{{ __('Shop') }}</label>
-                    <input id="shop_name" name="shop_name" x-model="form.shop_name" class="form-input" maxlength="255">
-                    @error('shop_name')<p class="form-error">{{ $message }}</p>@enderror
-                </div>
-                <div class="mb-6">
-                    <label for="owner_note" class="form-label">{{ __('Note for the buyer (optional)') }}</label>
-                    <textarea id="owner_note" name="owner_note" rows="2" class="form-textarea" maxlength="1500" placeholder="{{ __('E.g. gold, size S...') }}">{{ old('owner_note', $gift->owner_note) }}</textarea>
-                    @error('owner_note')<p class="form-error">{{ $message }}</p>@enderror
-                </div>
-                <details class="mb-6">
-                    <summary class="cursor-pointer text-sm text-gray-500">{{ __('Description') }}</summary>
-                <div class="mb-6">
-                    <label for="description" class="form-label">
-                        {{ __('Description') }}
-                    </label>
-                    <textarea
-                        id="description"
-                        name="description"
-                        rows="3"
-                        x-model="form.description"
-                        placeholder="{{ __('Brief description of the gift') }}"
-                        class="form-textarea @error('description') border-red-500 @enderror"
-                    ></textarea>
-                    @error('description')
-                        <p class="form-error">{{ $message }}</p>
-                    @enderror
-                </div>
-                </details>
 
                 <div class="mb-6">
                     <label for="price" class="form-label">
@@ -187,6 +118,86 @@
                     @enderror
                 </div>
 
+                <div class="flex flex-col-reverse gap-3 border-t border-gray-100 pt-6 sm:flex-row sm:items-center sm:justify-end">
+                    <a href="{{ $dashboardUrl }}" class="btn-cancel text-center">
+                        {{ __('Cancel') }}
+                    </a>
+                    <button type="submit" class="btn-primary justify-center">
+                        <x-icons.checkmark class="w-5 h-5" />
+                        {{ __('Save') }}
+                    </button>
+                </div>
+                <details class="mt-6" @if($errors->any()) open @endif>
+                    <summary class="min-h-11 cursor-pointer py-3 font-medium">{{ __('More options') }}</summary>
+                <details class="mb-6">
+                    <summary class="cursor-pointer text-sm text-gray-500">{{ __('Product URL') }}</summary>
+                <div class="mb-6">
+                    <label for="url" class="form-label">
+                        {{ __('Product URL') }}
+                    </label>
+                    <input
+                        type="url"
+                        id="url"
+                        name="url"
+                        x-model="form.url"
+                        placeholder="https://www.bol.com/nl/p/..."
+                        class="form-input @error('url') border-red-500 @enderror"
+                    >
+                    @error('url')
+                        <p class="form-error">{{ $message }}</p>
+                    @enderror
+                    <div class="flex items-center justify-between mt-2">
+                        <a
+                            x-show="form.url"
+                            :href="form.url"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="inline-flex items-center gap-1 text-sm text-coral-600 hover:text-coral-700 transition-colors"
+                        >
+                            {{ __('View gift') }}
+                            <x-icons.external-link class="w-4 h-4" />
+                        </a>
+                        <span
+                            x-show="form.url !== originalUrl"
+                            x-cloak
+                            class="text-xs text-gray-400"
+                        >
+                            {{ __("We'll re-fetch the details when you save") }}
+                        </span>
+                    </div>
+                </div>
+                </details>
+
+                <div class="mb-6">
+                    <label for="shop_name" class="form-label">{{ __('Shop') }}</label>
+                    <input id="shop_name" name="shop_name" x-model="form.shop_name" class="form-input" maxlength="255">
+                    @error('shop_name')<p class="form-error">{{ $message }}</p>@enderror
+                </div>
+                <div class="mb-6">
+                    <label for="owner_note" class="form-label">{{ __('Note for the buyer (optional)') }}</label>
+                    <textarea id="owner_note" name="owner_note" rows="2" class="form-textarea" maxlength="1500" placeholder="{{ __('E.g. gold, size S...') }}">{{ old('owner_note', $gift->owner_note) }}</textarea>
+                    @error('owner_note')<p class="form-error">{{ $message }}</p>@enderror
+                </div>
+                <details class="mb-6">
+                    <summary class="cursor-pointer text-sm text-gray-500">{{ __('Description') }}</summary>
+                <div class="mb-6">
+                    <label for="description" class="form-label">
+                        {{ __('Description') }}
+                    </label>
+                    <textarea
+                        id="description"
+                        name="description"
+                        rows="3"
+                        x-model="form.description"
+                        placeholder="{{ __('Brief description of the gift') }}"
+                        class="form-textarea @error('description') border-red-500 @enderror"
+                    ></textarea>
+                    @error('description')
+                        <p class="form-error">{{ $message }}</p>
+                    @enderror
+                </div>
+                </details>
+
                 <div class="mb-4">
                     <input type="hidden" name="most_wanted" value="0">
                     <label class="flex items-center gap-2"><input type="checkbox" name="most_wanted" value="1" @checked(old('most_wanted', $gift->most_wanted))> ★ {{ __('Most wanted') }}</label>
@@ -210,19 +221,12 @@
                     </div>
                 </div>
 
-                <div class="flex flex-col-reverse gap-3 border-t border-gray-100 pt-6 sm:flex-row sm:items-center sm:justify-end">
-                    <a href="{{ $dashboardUrl }}" class="btn-cancel text-center">
-                        {{ __('Cancel') }}
-                    </a>
-                    <button type="submit" class="btn-primary justify-center">
-                        <x-icons.checkmark class="w-5 h-5" />
-                        {{ __('Save') }}
-                    </button>
-                </div>
+                </details>
             </form>
         </div>
 
-        <div class="order-first lg:order-last lg:col-span-2">
+        <details class="lg:col-span-2">
+            <summary class="min-h-11 cursor-pointer py-3 font-medium">{{ __('Photo (optional)') }}</summary>
 
             <div class="bg-cream-50 rounded-xl p-6 mb-6">
                 <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Current Image') }}</h2>
@@ -288,7 +292,7 @@
             </div>
 
 
-        </div>
+        </details>
     </div>
 </x-dynamic-component>
 

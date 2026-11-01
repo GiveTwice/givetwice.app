@@ -155,5 +155,5 @@ it('finishes challenge or empty pages with the friendly fallback', function (?st
     $images->shouldReceive('dispatchCompletedEvent')->once();
     (new FetchGiftDetailsAction($gift))->setFetcher($fetcher)->handle($images);
     Log::shouldHaveReceived('info')->with('Gift fetch attempt', Mockery::on(fn (array $data): bool => $data['status'] === 'failed'))->once();
-    expect($gift->fresh())->title->toBeNull()->fetch_status->toBe('failed');
+    expect($gift->fresh())->title->toBe($gift->suggestedTitle())->fetch_status->toBe('failed');
 })->with([null, 'Access denied', "Women's & Men's Clothing, Shop Online Fashion | SHEIN"]);

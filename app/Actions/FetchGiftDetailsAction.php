@@ -244,6 +244,7 @@ class FetchGiftDetailsAction implements ShouldQueue
     private function markAsFailed(array $error): void
     {
         $this->gift->update([
+            'title' => $this->gift->title ?: $this->gift->suggestedTitle(),
             'fetch_status' => 'failed',
             'fetch_error' => $error,
             'fetch_attempts' => $this->attempts(),
