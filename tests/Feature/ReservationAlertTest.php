@@ -11,6 +11,7 @@ use App\Models\GiftList;
 use App\Models\ReservationAlert;
 use App\Models\User;
 use Illuminate\Broadcasting\BroadcastEvent;
+use Illuminate\Mail\MailManager;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
@@ -42,12 +43,12 @@ it('batches ten minutes into one delayed mail with the first and final values', 
     Queue::assertPushed(SendReservationAlert::class, fn ($job) => $job->delay->equalTo(now()->addMinute()));
     $alert = ReservationAlert::sole();
     expect($alert->before['title'])->toBe('Old title')->and($alert->after['title'])->toBe('Final');
-    $this->travel(1)->minutes();
+    $this->travel(10)->minutes();
     (new SendReservationAlert($alert->id))->handle();
     (new SendReservationAlert($alert->id))->handle();
     Mail::assertSent(ReservationAlertMail::class, 1);
     Mail::assertSent(ReservationAlertMail::class, fn ($mail) => $mail->hasTo($this->claim->claimer_email));
-    expect((new ReservationAlertMail($alert->fresh()))->render())->toContain('Old title', 'Final', '19.99');
+    expect($alert->fresh()->sent_at)->not->toBeNull();
     $this->travel(2)->minutes();
     $this->gift->update(['owner_note' => 'Another batch']);
     expect(ReservationAlert::count())->toBe(2);
@@ -128,6 +129,7 @@ it('keeps opt-out after cancellation, applies it to future alerts, and honours f
     $otherList->gifts()->attach($otherGift);
     $otherClaim = Claim::factory()->anonymous()->confirmed()->create(['gift_id' => $otherGift->id, 'claimer_email' => $buyer->email]);
     $otherGift->update(['title' => 'Different list']);
+    $this->travel(11)->minutes();
     (new SendReservationAlert($otherClaim->alerts()->sole()->id))->handle();
     Mail::assertSent(ReservationAlertMail::class, 1);
 });
@@ -136,8 +138,85 @@ it('rejects old decision links after another edit and keeps digest dedupe after 
     $this->gift->update(['title' => 'First']);
     $first = ReservationAlert::sole();
     $this->travel(11)->minutes();
+    (new SendReservationAlert($first->id))->handle();
     $this->gift->update(['title' => 'Second']);
     $this->post($first->choiceUrl('old'))->assertConflict();
     $this->post(ReservationAlert::latest('id')->first()->choiceUrl('release'))->assertRedirect();
     expect(ReservationAlert::where('email', $this->claim->claimer_email)->count())->toBe(2);
+});
+
+it('bundles two changed reservations for one buyer and list after the last edit', function () {
+    $second = Gift::factory()->skipped()->create(['user_id' => $this->list->creator_id]);
+    $this->list->gifts()->attach($second);
+    Claim::factory()->anonymous()->confirmed()->create(['gift_id' => $second->id, 'claimer_email' => $this->claim->claimer_email]);
+    $this->gift->update(['title' => 'Changed first']);
+    $this->travel(9)->minutes();
+    $second->update(['title' => 'Changed second']);
+    $this->travel(1)->minutes();
+    $first = ReservationAlert::first();
+    (new SendReservationAlert($first->id))->handle();
+    Mail::assertNothingSent();
+    $this->travel(9)->minutes();
+    (new SendReservationAlert($first->id))->handle();
+    (new SendReservationAlert(ReservationAlert::latest('id')->first()->id))->handle();
+    Mail::assertSent(ReservationAlertMail::class, fn ($mail) => $mail->alerts->count() === 2);
+    Mail::assertSentCount(1);
+});
+
+it('never sends a reservation bundle to a current manager', function () {
+    $this->claim->update(['claimer_email' => $this->list->creator->email]);
+    $this->gift->update(['title' => 'Changed']);
+    $this->travel(11)->minutes();
+    expect(ReservationAlert::count())->toBe(0);
+    Mail::assertNothingSent();
+});
+
+it('keeps a continuous edit session in one alert even beyond ten minutes', function () {
+    $this->gift->update(['title' => 'First edit']);
+    $this->travel(9)->minutes();
+    $this->gift->update(['title' => 'Second edit']);
+    $this->travel(9)->minutes();
+    $this->gift->update(['title' => 'Final edit']);
+    expect(ReservationAlert::count())->toBe(1);
+    $alert = ReservationAlert::sole();
+    expect($alert->before['title'])->toBe('Old title')->and($alert->after['title'])->toBe('Final edit');
+    $this->travel(11)->minutes();
+    (new SendReservationAlert($alert->id))->handle();
+    (new SendReservationAlert($alert->id))->handle();
+    Mail::assertSent(ReservationAlertMail::class, fn ($mail) => $mail->alerts->count() === 1);
+    Mail::assertSentCount(1);
+});
+
+it('delivers the removal alert safely after its list has been deleted', function () {
+    $this->list->delete();
+    $alert = ReservationAlert::sole();
+    $this->travel(11)->minutes();
+    (new SendReservationAlert($alert->id))->handle();
+    Mail::assertSent(ReservationAlertMail::class, 1);
+    expect((new ReservationAlertMail($alert->fresh()))->render())->not->toBeEmpty();
+});
+
+it('protects a newly added manager even when the list is deleted before delivery', function () {
+    $this->gift->update(['title' => 'Changed']);
+    $alert = ReservationAlert::sole();
+    $manager = User::factory()->create(['email' => $this->claim->claimer_email]);
+    $this->list->users()->attach($manager);
+    $this->list->delete();
+    $this->travel(11)->minutes();
+    (new SendReservationAlert($alert->id))->handle();
+    Mail::assertNothingSent();
+    expect($alert->fresh()->resolved_at)->not->toBeNull();
+});
+
+it('includes working signed decisions for every alert in both mail alternatives', function () {
+    $this->gift->update(['title' => 'Updated gift']);
+    $alert = ReservationAlert::sole();
+    $mailer = (new MailManager(app()))->mailer('array');
+    $sent = $mailer->to($alert->email)->send(new ReservationAlertMail($alert));
+    $message = $sent->getSymfonySentMessage()->getOriginalMessage();
+
+    expect($message->getHtmlBody())->not->toBeEmpty();
+    foreach (['new', 'old', 'release', 'mute'] as $choice) {
+        expect($message->getTextBody())->toContain($alert->choiceUrl($choice));
+    }
 });

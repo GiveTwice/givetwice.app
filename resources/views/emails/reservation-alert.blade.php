@@ -1,13 +1,17 @@
 @extends('emails.layouts.base')
-@section('title', __('reservations.changed', ['owner' => $alert->before['owner']]))
+@section('title', __('reservations.updates'))
 @section('content')
-<h1 style="font-size:22px">{{ __('reservations.'.($alert->after['deleted'] ? 'deleted' : 'changed'), ['owner' => $alert->before['owner']]) }}</h1>
-<p>{{ $alert->before['title'] }}</p>
-@include('claims.change-values')
-@if($alert->after['deleted'])<p>{{ __('reservations.keep_done', ['owner' => $alert->before['owner']]) }}</p>@endif
-@foreach($alert->after['deleted'] ? ['keep', 'alternative', 'dismiss'] : ['new', 'old', 'release'] as $choice)
-    <p><a style="display:block;padding:12px;background:#FFF0ED;border-radius:8px;color:#b83a2b;text-align:center;text-decoration:none" href="{{ $alert->choiceUrl($choice) }}">{{ __('reservations.'.$choice) }}</a></p>
-@endforeach
-<p><a href="{{ $alert->claim->historyUrl($alert->locale) }}">{{ __('All my reservations') }}</a></p>
-<p style="font-size:12px"><a href="{{ $alert->choiceUrl('mute') }}">{{ __('reservations.mute', ['owner' => $alert->before['owner']]) }}</a></p>
+    <x-mail.heading>{{ __('reservations.updates') }}</x-mail.heading>
+    <p style="color: #6b7280; font-size: 14px;">{{ str_replace("\u{2014}", '·', $alert->before['list_name'] ?? $alert->before['owner']) }} · {{ $alert->before['owner'] }}</p>
+    @foreach($alerts as $alert)
+        <x-mail.panel>
+            <h2 style="color: #0f766e; font-size: 16px; line-height: 1.4; font-weight: 600; margin: 0 0 16px;">{{ $alert->before['title'] }}</h2>
+            @include('emails.partials.reservation-changes')
+            @foreach($alert->after['deleted'] ? ['keep', 'alternative', 'dismiss'] : ['new', 'old', 'release'] as $choice)
+                <x-mail.action :url="$alert->choiceUrl($choice)">{{ __('reservations.'.$choice) }}</x-mail.action>
+            @endforeach
+        </x-mail.panel>
+    @endforeach
+    <x-mail.action :url="$alert->claim->historyUrl($alert->locale)" :button="true">{{ __('All my reservations') }}</x-mail.action>
+    <x-mail.quiet-link :url="$alert->choiceUrl('mute')">{{ __('list-updates.stop') }}</x-mail.quiet-link>
 @endsection

@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'updates' => 'Your reservations have changed',
     'intro' => 'We send you a link to everything you reserved. No account needed.',
     'send' => 'Send me the link',
     'sent' => 'Check your inbox for your reservations link.',
