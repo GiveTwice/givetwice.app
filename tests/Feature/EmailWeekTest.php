@@ -5,6 +5,7 @@ use App\Actions\ClaimGiftAction;
 use App\Actions\CreateListAction;
 use App\Actions\InviteToListAction;
 use App\Actions\ReserveGiftAction;
+use App\Jobs\SendListUpdate;
 use App\Mail\FriendDigestMail;
 use App\Mail\ListInvitationMail;
 use App\Mail\ReservationMail;
@@ -18,7 +19,7 @@ use Illuminate\Support\Facades\Queue;
 it('replays the report week with the intended email count for each persona', function () {
     Mail::fake();
     Notification::fake();
-    Queue::fake()->except([\App\Jobs\SendListUpdate::class]);
+    Queue::fake()->except([SendListUpdate::class]);
     $this->travelTo(now()->setDate(2026, 11, 2)->setTime(8, 0));
     $mom = User::factory()->create(['locale_preference' => 'nl']);
     $partner = User::factory()->create(['locale_preference' => 'nl']);
