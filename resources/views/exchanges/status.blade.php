@@ -10,7 +10,7 @@
 
     @if($exchange->isDraft())
     <section class="bg-white rounded-2xl border border-cream-200 p-5 space-y-4" x-data="{ selected: null }">
-        <h2 class="text-xl font-bold">{{ __('Who should not draw each other?') }}</h2>
+        <x-section-heading>{{ __('Who should not draw each other?') }}</x-section-heading>
         <p class="text-sm text-gray-600">{{ __('Tap two names to make a couple. Couples never draw each other.') }}</p>
         <form method="POST" action="{{ route('exchanges.rules', [$locale, $exchange]) }}" x-ref="couple">
             @csrf
@@ -40,7 +40,7 @@
             @endforeach
         </div>
         <details>
-            <summary class="text-coral-600 cursor-pointer font-semibold">{{ __('More rules') }}</summary>
+            <summary class="btn-link cursor-pointer">{{ __('More rules') }}</summary>
             <form method="POST" action="{{ route('exchanges.rules', [$locale, $exchange]) }}" class="grid gap-3 pt-3">
                 @csrf
                 <input type="hidden" name="mutual" value="0">
@@ -57,10 +57,10 @@
             @csrf
             <button class="btn-primary w-full">{{ __('Draw names') }}</button>
         </form>
-        <p class="text-xs text-gray-500">{{ __('There is no overview of who drew whom. Not even for you.') }}</p>
+        <p class="text-sm text-gray-500">{{ __('There is no overview of who drew whom. Not even for you.') }}</p>
     </section>
     <details class="bg-white rounded-2xl border border-cream-200 p-5">
-        <summary class="font-semibold cursor-pointer">{{ __('Participants') }} ({{ $exchange->participants->count() }})</summary>
+        <summary class="text-lg font-semibold text-gray-900 cursor-pointer">{{ __('Participants') }} ({{ $exchange->participants->count() }})</summary>
         <div class="grid gap-3 py-4">
             @foreach($exchange->participants as $participant)
             <form method="POST" action="{{ route('exchanges.participants.destroy', [$locale, $exchange, $participant]) }}" class="flex items-center justify-between gap-2">
@@ -80,7 +80,7 @@
     </details>
     @else
     <section class="bg-white rounded-2xl border border-cream-200 p-5 space-y-4">
-        <h2 class="text-xl font-bold">{{ __('Drawn! Send everyone their private link') }}</h2>
+        <x-section-heading>{{ __('Drawn! Send everyone their private link') }}</x-section-heading>
         <p class="text-sm text-gray-600">{{ __('Each link is personal. Only send it to that person.') }}</p>
         <p class="text-sm text-gray-600">{{ __('Pick the right person in WhatsApp. Mark it sent yourself. Seen only counts after they tap Show my draw.') }}</p>
         @foreach($exchange->participants as $participant)

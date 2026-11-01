@@ -19,7 +19,7 @@
         <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{{ $title }}</h1>
     </div>
 
-    <ol class="mb-4 grid grid-cols-3 gap-2 text-xs sm:text-sm text-gray-600" aria-label="{{ __('Steps') }}">
+    <ol class="mb-4 grid grid-cols-3 gap-2 text-sm sm:text-sm text-gray-600" aria-label="{{ __('Steps') }}">
         <li aria-current="step" class="border-b-2 border-coral-600 pb-2 font-semibold text-coral-700">1. {{ __('Participants') }}</li>
         <li class="border-b-2 border-cream-300 pb-2">2. {{ __('Draw names') }}</li>
         <li class="border-b-2 border-cream-300 pb-2">3. {{ __('Share links') }}</li>
@@ -118,15 +118,15 @@
     <div class="grid grid-cols-3 gap-4 mb-8">
         <div class="text-center p-4">
             <div class="w-10 h-10 bg-coral-100 rounded-lg flex items-center justify-center text-lg mx-auto mb-2 font-bold text-coral-600">1</div>
-            <p class="text-gray-600 text-xs">{{ __('Names first. Email is optional.') }}</p>
+            <p class="text-gray-600 text-sm">{{ __('Names first. Email is optional.') }}</p>
         </div>
         <div class="text-center p-4">
             <div class="w-10 h-10 bg-sunny-100 rounded-lg flex items-center justify-center text-lg mx-auto mb-2 font-bold text-sunny-600">2</div>
-            <p class="text-gray-600 text-xs">{{ __('Add couples, draw names, then send each private link.') }}</p>
+            <p class="text-gray-600 text-sm">{{ __('Add couples, draw names, then send each private link.') }}</p>
         </div>
         <div class="text-center p-4">
             <div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center text-lg mx-auto mb-2 font-bold text-teal-600">3</div>
-            <p class="text-gray-600 text-xs">{{ __('If you later buy through our shop links, all our commission will go to charity. We are setting that up now.') }}</p>
+            <p class="text-gray-600 text-sm">{{ __('If you later buy through our shop links, all our commission will go to charity. We are setting that up now.') }}</p>
         </div>
     </div>
 

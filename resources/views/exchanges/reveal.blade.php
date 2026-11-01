@@ -24,9 +24,9 @@
             @endif
             @if(!$participantHasWishlist)
                 <div class="bg-sunny-50 rounded-xl p-4 space-y-3">
-                    <h2 class="font-bold">{{ __('And what would you like?') }}</h2>
+                    <x-section-heading>{{ __('And what would you like?') }}</x-section-heading>
                     <p class="text-sm">{{ __('Link your list so whoever drew you knows what to buy.') }}</p>
-                    <a href="{{ route('exchanges.wishlist', [app()->getLocale(), $participant->token]) }}" class="btn-primary">{{ __('Make or link my wishlist') }}</a>
+                    <a href="{{ route('exchanges.wishlist', [app()->getLocale(), $participant->token]) }}" class="btn-secondary">{{ __('Make or link my wishlist') }}</a>
                 </div>
             @endif
         @endif
