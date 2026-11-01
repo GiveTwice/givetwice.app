@@ -66,7 +66,7 @@ gh pr edit <number> --body "<the short description>"
 - [ ] Edge cases covered in tests
 - [ ] Code follows project conventions (CLAUDE.md)
 - [ ] PR is under 500 lines net new
-- [ ] Migrations flagged with `NEEDS_DEPLOY_REVIEW` label if present
+- [ ] PRs with a migration carry the `has-migration` label
 - [ ] All new Blade strings have entries in `lang/en.json`, `lang/nl.json`, `lang/fr.json`
 
 ## Babysitting CI
