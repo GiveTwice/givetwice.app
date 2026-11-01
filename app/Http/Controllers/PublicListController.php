@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\GiftList;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
+use Illuminate\Http\Response;
 
 class PublicListController extends Controller
 {
-    public function show(Request $request, string $locale, int $list, ?string $slug = null): View|RedirectResponse
+    public function show(Request $request, string $locale, int $list, ?string $slug = null): Response|RedirectResponse
     {
         $list = GiftList::findOrFail($list);
 
@@ -50,7 +50,10 @@ class PublicListController extends Controller
             $gifts->each(fn ($gift) => $gift->setRelation('claims', collect()));
         }
 
-        return view('public.list', [
+        $myReservationGiftIds = $isOwner ? collect() : $gifts->filter(fn ($gift) => $gift->claims->contains(fn ($claim) => $claim->belongsToBrowser($request)))->pluck('id');
+
+        return response()->view('public.list', [
+            'myReservationGiftIds' => $myReservationGiftIds,
             'showReservations' => $showReservations,
             'filter' => $filter,
             'totalGifts' => $totalGifts,
@@ -59,7 +62,7 @@ class PublicListController extends Controller
             'gifts' => $gifts,
             'isOwner' => $isOwner,
             'isFollowing' => $isFollowing,
-        ]);
+        ])->header('Cache-Control', 'private, no-store');
     }
 
     private function ensureOnCorrectSlugUrl(GiftList $list, ?string $slug, string $locale): ?RedirectResponse

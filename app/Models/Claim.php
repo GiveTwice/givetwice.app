@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
@@ -74,6 +75,13 @@ class Claim extends Model
     public function alerts(): HasMany
     {
         return $this->hasMany(ReservationAlert::class);
+    }
+
+    public function belongsToBrowser(Request $request): bool
+    {
+        return ($request->user() && $this->user_id === $request->user()->id)
+            || ($request->session()->has('reservations_email') && $this->claimer_email === $request->session()->get('reservations_email'))
+            || (filled($this->confirmation_token) && hash_equals($this->confirmation_token, $request->cookie('reservation_'.$this->gift_id, '')));
     }
 
     public function historyUrl(?string $locale = null): string

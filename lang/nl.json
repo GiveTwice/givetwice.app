@@ -2058,5 +2058,9 @@
     "This invitation expires in 30 days.": "Deze uitnodiging is 30 dagen geldig.",
     "More options": "Meer opties",
     "Photo (optional)": "Foto (optioneel)",
-    "Choose a list": "Kies een lijstje"
+    "Choose a list": "Kies een lijstje",
+    "Reserved by you": "Door jou gereserveerd",
+    "Your reservations are one click away. This link works for 30 minutes.": "Hier zijn je reservaties. Deze link werkt 30 minuten.",
+    "This reservation link no longer works": "Deze reservatielink werkt niet meer",
+    "It may have expired, or the reservation was already cancelled. Request a fresh link to see your current reservations.": "De link is verlopen of je reservatie is al geannuleerd. Vraag een nieuwe link voor je huidige reservaties."
 }

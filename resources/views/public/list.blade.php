@@ -51,6 +51,9 @@
                 <x-share-modal :list="$list" />
             </div>
         @endif
+        @unless($isOwner)
+            <a href="{{ route('reservations.index', ['locale' => app()->getLocale()]) }}" class="btn-link min-h-11 py-2 text-sm">{{ __('All my reservations') }}</a>
+        @endunless
     </header>
     @foreach($sections as $section)
         @if($loop->last && $section->isNotEmpty())
@@ -58,7 +61,7 @@
         @endif
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5" data-gift-grid>
             @foreach($section as $gift)
-                <x-shared-gift-tile :gift="$gift" :is-owner="$isOwner" :is-reserved="$reserved($gift)" />
+                <x-shared-gift-tile :gift="$gift" :is-owner="$isOwner" :is-reserved="$reserved($gift)" :is-mine="$myReservationGiftIds->contains($gift->id)" />
             @endforeach
         </div>
     @endforeach

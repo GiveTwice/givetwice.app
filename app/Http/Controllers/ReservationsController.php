@@ -19,7 +19,9 @@ class ReservationsController extends Controller
     public function index(Request $request): Response|RedirectResponse
     {
         if ($request->has('email')) {
-            abort_unless($request->hasValidSignature(), 403);
+            if (! $request->hasValidSignature()) {
+                return response()->view('claims.link-unavailable', [], 403)->header('Cache-Control', 'private, no-store');
+            }
             $request->session()->put('reservations_email', $request->string('email')->toString());
 
             return redirect()->route('reservations.index', ['locale' => app()->getLocale()]);
