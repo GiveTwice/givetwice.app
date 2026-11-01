@@ -25,7 +25,10 @@ describe('InviteToListAction', function () {
             $list->users()->attach($inviter->id);
 
             $action = new InviteToListAction;
+            $this->trackQueries();
             $invitation = $action->execute($list, $inviter, 'newuser@example.com');
+
+            $this->assertQueriesAreEfficient();
 
             expect($invitation)->toBeInstanceOf(ListInvitation::class);
             expect($invitation->list_id)->toBe($list->id);
@@ -33,8 +36,6 @@ describe('InviteToListAction', function () {
             expect($invitation->email)->toBe('newuser@example.com');
             expect($invitation->token)->toHaveLength(64);
             expect($invitation->invitee_id)->toBeNull();
-
-            $this->assertQueriesAreEfficient();
         });
 
         it('creates an invitation for an existing user and sets invitee_id', function () {

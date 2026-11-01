@@ -30,11 +30,12 @@ describe('AcceptListInvitationAction', function () {
             ]);
 
             $action = new AcceptListInvitationAction;
+            $this->trackQueries();
             $action->execute($invitation->token, $invitee);
 
-            expect($invitation->fresh()->accepted_at)->not->toBeNull();
-
             $this->assertQueriesAreEfficient();
+
+            expect($invitation->fresh()->accepted_at)->not->toBeNull();
         });
 
         it('attaches user to the list', function () {
