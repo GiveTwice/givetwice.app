@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\SendExchangeReminder;
 use App\Mail\ExchangeRevealReminderMail;
 use App\Mail\ExchangeWishlistNudgeMail;
 use App\Models\GiftExchange;
@@ -25,11 +26,11 @@ describe('exchange reminders', function () {
         $this->artisan('exchanges:send-reminders')->assertSuccessful();
         $this->travel(1)->days();
         $this->artisan('exchanges:send-reminders')->assertSuccessful();
-        Mail::assertQueued(ExchangeRevealReminderMail::class, 1);
-        Mail::assertQueued(ExchangeWishlistNudgeMail::class, 1);
+        Mail::assertSent(ExchangeRevealReminderMail::class, 1);
+        Mail::assertSent(ExchangeWishlistNudgeMail::class, 1);
         expect($unopened->fresh()->reveal_reminder_sent_at)->not->toBeNull()
             ->and($viewed->fresh()->wishlist_nudge_sent_at)->not->toBeNull();
-        Mail::assertQueued(ExchangeRevealReminderMail::class, fn ($mail) => $mail->locale === 'nl');
+        Mail::assertSent(ExchangeRevealReminderMail::class, fn ($mail) => $mail->locale === 'nl');
     });
 
     it('requires confirmation to mute and stops both kinds of reminder', function () {
@@ -41,7 +42,7 @@ describe('exchange reminders', function () {
         $this->artisan('exchanges:send-reminders')->assertSuccessful();
         $participant->update(['viewed_at' => now()->subDays(2)]);
         $this->artisan('exchanges:send-reminders')->assertSuccessful();
-        Mail::assertNothingQueued();
+        Mail::assertNothingSent();
         $this->post($url.'&tampered=1')->assertForbidden();
     });
 
@@ -55,7 +56,24 @@ describe('exchange reminders', function () {
             'exchange_id' => $this->exchange->id, 'token_generated_at' => now()->subDays(91),
         ]);
         $this->artisan('exchanges:send-reminders')->assertSuccessful();
-        Mail::assertQueued(ExchangeWishlistNudgeMail::class, fn ($mail) => $mail->participant->is($participant));
-        Mail::assertQueuedCount(1);
+        Mail::assertSent(ExchangeWishlistNudgeMail::class, fn ($mail) => $mail->participant->is($participant));
+        Mail::assertSentCount(1);
     });
+});
+
+it('rechecks mute and eligibility at delivery and ignores retried or deleted participants', function () {
+    Mail::fake();
+    $exchange = GiftExchange::factory()->create(['status' => 'drawn', 'draw_completed_at' => now()->subDays(4), 'event_date' => now()->addMonth()]);
+    $participant = GiftExchangeParticipant::factory()->create(['exchange_id' => $exchange->id]);
+    $job = new SendExchangeReminder($participant->id);
+    $participant->update(['reminders_muted_at' => now()]);
+    $job->handle();
+    Mail::assertNothingSent();
+    $participant->update(['reminders_muted_at' => null]);
+    $job->handle();
+    $job->handle();
+    Mail::assertSentCount(1);
+    $participant->delete();
+    $job->handle();
+    Mail::assertSentCount(1);
 });

@@ -2,12 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Mail\ExchangeRevealReminderMail;
-use App\Mail\ExchangeWishlistNudgeMail;
-use App\Models\GiftExchange;
+use App\Jobs\SendExchangeReminder;
 use App\Models\GiftExchangeParticipant;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Mail;
 
 class SendExchangeReminders extends Command
 {
@@ -44,18 +41,8 @@ class SendExchangeReminders extends Command
                 continue;
             }
 
-            /** @var GiftExchange $exchange */
-            $exchange = $participant->exchange;
-            $participant->getConnection()->transaction(function () use ($participant, $exchange, &$sent): void {
-                $locked = GiftExchangeParticipant::query()->lockForUpdate()->findOrFail($participant->id);
-                if ($locked->reveal_reminder_sent_at || $locked->reminders_muted_at) {
-                    return;
-                }
-                Mail::to($locked->email)->locale($exchange->locale)
-                    ->queue((new ExchangeRevealReminderMail($locked, $exchange))->afterCommit());
-                $locked->update(['reveal_reminder_sent_at' => now()]);
-                $sent++;
-            });
+            SendExchangeReminder::dispatch($participant->id)->afterCommit();
+            $sent++;
         }
 
         $this->info("Sent {$sent} reveal reminders.");
@@ -84,18 +71,8 @@ class SendExchangeReminders extends Command
                 continue;
             }
 
-            /** @var GiftExchange $exchange */
-            $exchange = $participant->exchange;
-            $participant->getConnection()->transaction(function () use ($participant, $exchange, &$sent): void {
-                $locked = GiftExchangeParticipant::query()->lockForUpdate()->findOrFail($participant->id);
-                if ($locked->wishlist_nudge_sent_at || $locked->reminders_muted_at) {
-                    return;
-                }
-                Mail::to($locked->email)->locale($exchange->locale)
-                    ->queue((new ExchangeWishlistNudgeMail($locked, $exchange))->afterCommit());
-                $locked->update(['wishlist_nudge_sent_at' => now()]);
-                $sent++;
-            });
+            SendExchangeReminder::dispatch($participant->id, true)->afterCommit();
+            $sent++;
         }
 
         $this->info("Sent {$sent} wishlist nudges.");
