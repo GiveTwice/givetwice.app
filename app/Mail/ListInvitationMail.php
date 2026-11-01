@@ -15,11 +15,14 @@ class ListInvitationMail extends Mailable
 
     public function __construct(
         public ListInvitation $invitation
-    ) {}
+    ) {
+        $invitation->loadMissing('inviter', 'invitee');
+        $this->locale($invitation->invitee->locale_preference ?? $invitation->inviter->locale_preference ?? 'en');
+    }
 
     public function envelope(): Envelope
     {
-        $inviterLocale = $this->invitation->inviter->locale_preference ?? 'en';
+        $inviterLocale = $this->locale;
 
         return new Envelope(
             subject: __(':name invited you to collaborate on ":list"', [
@@ -31,7 +34,7 @@ class ListInvitationMail extends Mailable
 
     public function content(): Content
     {
-        $inviterLocale = $this->invitation->inviter->locale_preference ?? 'en';
+        $inviterLocale = $this->locale;
         $isExistingUser = $this->invitation->invitee_id !== null;
 
         $acceptUrl = url("/{$inviterLocale}/lists/invitation/{$this->invitation->token}");
@@ -39,6 +42,7 @@ class ListInvitationMail extends Mailable
 
         return new Content(
             view: 'emails.list-invitation',
+            text: 'emails.text.list-invitation',
             with: [
                 'invitation' => $this->invitation,
                 'inviter' => $this->invitation->inviter,

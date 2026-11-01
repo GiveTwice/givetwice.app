@@ -17,12 +17,15 @@ class ExchangeRevealReminderMail extends Mailable
     public function __construct(
         public readonly GiftExchangeParticipant $participant,
         public readonly GiftExchange $exchange,
-    ) {}
+    ) {
+        $participant->loadMissing('user');
+        $this->locale($participant->user->locale_preference ?? $exchange->locale);
+    }
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: __('Your draw is getting lonely').' - '.$this->exchange->name,
+            subject: __('Your draw is ready').' - '.$this->exchange->name,
         );
     }
 

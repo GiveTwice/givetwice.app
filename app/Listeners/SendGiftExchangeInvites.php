@@ -12,7 +12,7 @@ class SendGiftExchangeInvites
     public function handle(GiftExchangeDrawCompleted $event): void
     {
         $exchange = $event->exchange;
-        $exchange->load('participants');
+        $exchange->load('participants.user');
 
         /** @var GiftExchangeParticipant $participant */
         foreach ($exchange->participants as $participant) {

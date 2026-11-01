@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,7 +27,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property Carbon|null $last_friend_digest_at
  * @property string|null $apple_id
  */
-class User extends Authenticatable implements HasMedia, MustVerifyEmail
+class User extends Authenticatable implements HasLocalePreference, HasMedia, MustVerifyEmail
 {
     use HasFactory;
     use Impersonate;
@@ -212,6 +213,11 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     public function canBeImpersonated(): bool
     {
         return ! $this->is_admin;
+    }
+
+    public function preferredLocale(): string
+    {
+        return $this->locale_preference ?? config('app.locale', 'en');
     }
 
     public function sendEmailVerificationNotification(): void

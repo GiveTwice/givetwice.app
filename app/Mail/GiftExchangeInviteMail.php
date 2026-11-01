@@ -17,7 +17,10 @@ class GiftExchangeInviteMail extends Mailable
     public function __construct(
         public readonly GiftExchangeParticipant $participant,
         public readonly GiftExchange $exchange,
-    ) {}
+    ) {
+        $participant->loadMissing('user');
+        $this->locale($participant->user->locale_preference ?? $exchange->locale);
+    }
 
     public function envelope(): Envelope
     {
@@ -30,6 +33,7 @@ class GiftExchangeInviteMail extends Mailable
     {
         return new Content(
             view: 'emails.exchange-invite',
+            text: 'emails.text.exchange-invite',
             with: [
                 'participant' => $this->participant,
                 'exchange' => $this->exchange,

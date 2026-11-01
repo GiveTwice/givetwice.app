@@ -91,7 +91,7 @@ class Claim extends Model
         $gift = $this->gift?->loadMissing('user');
         $list = $gift?->lists()->with('creator')->find(request()->integer('list')) ?? $gift?->lists()->with('creator')->first();
 
-        return ['title' => $gift?->title, 'price' => $gift?->formatPrice(), 'url' => $gift?->url, 'owner_note' => $gift?->owner_note,
+        return ['locale' => app()->getLocale(), 'title' => $gift?->title, 'price' => $gift?->formatPrice(), 'url' => $gift?->url, 'owner_note' => $gift?->owner_note,
             'image' => $gift?->getImageUrl('thumb'), 'list_id' => $list?->id, 'list_name' => $list?->name,
             'owner' => $list ? $list->creator->name : $gift?->user?->name, 'owner_id' => $list ? $list->creator_id : $gift?->user_id,
             'date' => $list?->occasion_date?->format('Y-m-d')];
