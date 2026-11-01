@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', __('Friends\' wishlists'))
+@section('title', __('Followed lists'))
 
 @section('robots', 'noindex, nofollow')
 
@@ -13,24 +13,24 @@
 @endphp
 
 <x-app-shell
-    :title="__('Keep up with people')"
+    :title="__('Followed lists')"
     :sidebar-items="$shell['sidebarItems']"
     :stats="$shell['sidebarStats']"
 >
     <x-app-content
-        :title="__('Friends\' wishlists')"
-        :description="__('Wishlists from people you\'ve claimed gifts from.')"
+        :title="__('Followed lists')"
+        :description="__('Save individual lists here. Following is one-way. Reserving while logged in follows that list automatically.')"
     >
         <div x-data="friendsPage()">
         {{-- Global notifications toggle --}}
-        <div class="flex items-center justify-between p-4 bg-cream-50 rounded-xl mb-8">
+        <div class="flex flex-col items-start gap-3 py-4 mb-6 border-b border-gray-200">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-coral-100 flex items-center justify-center">
                     <x-icons.bell class="w-5 h-5 text-coral-600" />
                 </div>
                 <div>
                     <p class="font-medium text-gray-900">{{ __('Email notifications') }}</p>
-                    <p class="text-sm text-gray-500">{{ __('Receive daily updates when friends update their wishlists') }}</p>
+                    <p class="text-sm text-gray-500">{{ __('Get one short email after changes to a followed list.') }}</p>
                 </div>
             </div>
             <div class="relative">
@@ -38,15 +38,13 @@
                     type="button"
                     x-on:click="toggleGlobalNotifications()"
                     :disabled="togglingGlobal"
-                    class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-coral-500 focus:ring-offset-2 disabled:opacity-50"
-                    :class="globalEnabled ? 'bg-coral-500' : 'bg-gray-200'"
+                    class="btn-secondary relative min-h-11 cursor-pointer focus:outline-none focus:ring-2 focus:ring-coral-500 focus:ring-offset-2 disabled:opacity-50"
+                    :class="globalEnabled ? 'bg-coral-500 border-coral-500 text-white' : 'bg-white text-gray-700'"
                     role="switch"
                     :aria-checked="globalEnabled"
+                    :style="globalEnabled ? { backgroundColor: 'var(--color-coral-500)', borderColor: 'var(--color-coral-500)', color: 'white' } : {}"
                 >
-                    <span
-                        class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-                        :class="globalEnabled ? 'translate-x-5' : 'translate-x-0'"
-                    ></span>
+                    <span>{{ __('Email updates') }}</span>
                 </button>
                 <div
                     x-show="globalSaved"
@@ -56,7 +54,7 @@
                     x-transition:leave="transition ease-in duration-300"
                     x-transition:leave-start="opacity-100"
                     x-transition:leave-end="opacity-0"
-                    class="absolute top-full left-1/2 -translate-x-1/2 mt-1 text-xs text-teal-600 font-medium whitespace-nowrap"
+                    class="absolute top-full left-1/2 -translate-x-1/2 mt-1 text-sm text-teal-600 font-medium whitespace-nowrap"
                 >
                     {{ __('Saved!') }}
                 </div>
@@ -70,8 +68,8 @@
                     <div class="w-20 h-20 bg-cream-100 rounded-full flex items-center justify-center mx-auto mb-6">
                         <x-icons.users class="w-10 h-10 text-cream-400" />
                     </div>
-                    <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ __('No friends\' wishlists yet') }}</h3>
-                    <p class="text-gray-500 mb-6">{{ __('When you claim gifts from someone\'s wishlist, their list will appear here so you can stay updated on their wishes.') }}</p>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ __('No followed lists yet') }}</h3>
+                    <p class="text-gray-500 mb-6">{{ __('Open a shared list and choose Follow. Reserving while logged in follows that list too.') }}</p>
                 </div>
             </div>
         @else
@@ -81,10 +79,10 @@
                     @php
                         $owner = $followedLists->first()->list->creator;
                     @endphp
-                    <div class="card">
+                    <div class="border-b border-gray-200 pb-5">
                         {{-- Owner header --}}
                         <div class="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
-                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-coral-400 to-coral-500 flex items-center justify-center text-white font-bold text-sm">
+                            <div class="w-10 h-10 rounded-full bg-coral-500 flex items-center justify-center text-white font-bold text-sm">
                                 {{ substr($owner->name, 0, 2) }}
                             </div>
                             <div>
@@ -97,7 +95,7 @@
                         <div class="space-y-3">
                             @foreach($followedLists as $followedList)
                                 <div
-                                    class="flex items-center justify-between p-3 bg-cream-50/50 rounded-lg"
+                                    class="flex flex-col items-stretch gap-3 py-3"
                                     x-data="{ notifications: {{ $followedList->notifications ? 'true' : 'false' }}, toggling: false, saved: false }"
                                 >
                                     <div class="flex items-center gap-3 min-w-0">
@@ -107,33 +105,31 @@
                                         <div class="min-w-0">
                                             <a
                                                 href="{{ $followedList->list->getPublicUrl() }}"
-                                                class="font-medium text-gray-900 hover:text-coral-600 truncate block"
+                                                class="font-medium text-gray-900 hover:text-coral-600 wrap-anywhere block"
                                             >
                                                 {{ $followedList->list->name }}
                                             </a>
-                                            <p class="text-xs text-gray-500">
+                                            <p class="text-sm text-gray-500">
                                                 {{ trans_choice(':count gift|:count gifts', $followedList->list->gifts->count(), ['count' => $followedList->list->gifts->count()]) }}
                                             </p>
                                         </div>
                                     </div>
 
-                                    <div class="flex items-center gap-3 flex-shrink-0">
+                                    <div class="flex items-center justify-between gap-3">
                                         {{-- Per-list notification toggle --}}
                                         <div class="relative">
                                             <button
                                                 type="button"
                                                 x-on:click="toggleListNotifications({{ $followedList->id }}, $data)"
                                                 :disabled="toggling || !globalEnabled"
-                                                class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-coral-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                                                :class="notifications && globalEnabled ? 'bg-coral-500' : 'bg-gray-200'"
+                                                class="btn-secondary relative min-h-11 cursor-pointer focus:outline-none focus:ring-2 focus:ring-coral-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                :class="notifications && globalEnabled ? 'bg-coral-500 border-coral-500 text-white' : 'bg-white text-gray-700'"
                                                 role="switch"
                                                 :aria-checked="notifications"
+                                                :style="notifications && globalEnabled ? { backgroundColor: 'var(--color-coral-500)', borderColor: 'var(--color-coral-500)', color: 'white' } : {}"
                                                 :title="globalEnabled ? '' : '{{ __('Enable global notifications first') }}'"
                                             >
-                                                <span
-                                                    class="pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-                                                    :class="notifications && globalEnabled ? 'translate-x-4' : 'translate-x-0'"
-                                                ></span>
+                                                <span>{{ __('Email updates') }}</span>
                                             </button>
                                             <div
                                                 x-show="saved"
@@ -143,7 +139,7 @@
                                                 x-transition:leave="transition ease-in duration-300"
                                                 x-transition:leave-start="opacity-100"
                                                 x-transition:leave-end="opacity-0"
-                                                class="absolute top-full left-1/2 -translate-x-1/2 mt-1 text-xs text-teal-600 font-medium whitespace-nowrap"
+                                                class="absolute top-full left-1/2 -translate-x-1/2 mt-1 text-sm text-teal-600 font-medium whitespace-nowrap"
                                             >
                                                 {{ __('Saved!') }}
                                             </div>
@@ -152,7 +148,7 @@
                                         {{-- View list link --}}
                                         <a
                                             href="{{ $followedList->list->getPublicUrl() }}"
-                                            class="text-sm text-coral-600 hover:text-coral-700 font-medium"
+                                            class="inline-flex min-h-11 items-center text-sm text-coral-600 hover:text-coral-700 font-medium"
                                         >
                                             {{ __('View') }}
                                         </a>

@@ -300,8 +300,8 @@
                                 <x-icons.users class="w-5 h-5 text-coral-600" />
                             </div>
                             <div>
-                                <p class="font-medium text-gray-900">{{ __('Friends\' wishlist updates') }}</p>
-                                <p class="text-sm text-gray-500">{{ __('Receive daily updates when friends update their wishlists') }}</p>
+                                <p class="font-medium text-gray-900">{{ __('Followed list updates') }}</p>
+                                <p class="text-sm text-gray-500">{{ __('Get one short email after changes to a followed list.') }}</p>
                             </div>
                         </div>
                         <div class="relative flex-shrink-0">
@@ -336,7 +336,7 @@
 
                     <p class="text-sm text-gray-500">
                         {{ __('You can also manage notifications for individual wishlists from the') }}
-                        <a href="{{ route('friends.index', ['locale' => app()->getLocale()]) }}" class="text-coral-600 hover:text-coral-700 font-medium">{{ __('Friends page') }}</a>.
+                        <a href="{{ route('friends.index', ['locale' => app()->getLocale()]) }}" class="text-coral-600 hover:text-coral-700 font-medium">{{ __('Followed lists') }}</a>.
                     </p>
                 </div>
             </div>

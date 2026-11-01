@@ -123,7 +123,7 @@ describe('Friends Feature', function () {
             $this->actingAs($user)
                 ->get('/en/friends')
                 ->assertOk()
-                ->assertSee(__("Friends' wishlists"));
+                ->assertViewIs('friends.index')->assertViewHas('globalNotificationsEnabled', $user->friend_notifications_enabled);
         });
 
         it('redirects guest to login', function () {
@@ -180,7 +180,7 @@ describe('Friends Feature', function () {
             $this->actingAs($user)
                 ->get('/en/friends')
                 ->assertOk()
-                ->assertSee(__("No friends' wishlists yet"));
+                ->assertViewHas('groupedByOwner', fn ($groups) => $groups->isEmpty());
         });
     });
 
@@ -528,4 +528,17 @@ describe('Friends Feature', function () {
         });
     });
 
+});
+
+it('keeps a followed list and its opt-out after cancelling an account reservation', function () {
+    Queue::fake();
+    $buyer = User::factory()->create();
+    $list = GiftList::factory()->create();
+    $gift = Gift::factory()->skipped()->create(['user_id' => $list->creator_id]);
+    $list->gifts()->attach($gift);
+    $claim = app(ClaimGiftAction::class)->execute($gift, $buyer);
+    $follow = $buyer->followedLists()->sole();
+    $this->actingAs($buyer)->post(route('friends.notifications.list', ['locale' => 'en', 'followedList' => $follow]))->assertOk();
+    $claim->delete();
+    expect($follow->fresh()->notifications)->toBeFalse()->and($buyer->followedLists()->count())->toBe(1);
 });

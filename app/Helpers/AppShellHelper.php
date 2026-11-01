@@ -63,7 +63,7 @@ class AppShellHelper
             'sidebarItems' => self::sidebarItems($base, 'settings'),
             'sidebarStats' => [
                 ['label' => __('Lists'), 'value' => $base['listCount']],
-                ['label' => __('Friends'), 'value' => $followedListCount],
+                ['label' => __('Followed lists'), 'value' => $followedListCount],
                 ['label' => __('Groups'), 'value' => $base['exchangeCount']],
             ],
         ];
@@ -111,7 +111,7 @@ class AppShellHelper
                 'active' => $activeSection === 'secret-santa',
             ],
             [
-                'label' => __('Friends'),
+                'label' => __('Followed lists'),
                 'meta' => $activeSection === 'friends'
                     ? trans_choice(':count followed wishlist|:count followed wishlists', $followedListCount, ['count' => $followedListCount])
                     : __('Wishlists you follow'),

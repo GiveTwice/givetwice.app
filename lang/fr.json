@@ -2062,5 +2062,13 @@
     "Reserved by you": "Réservé par toi",
     "Your reservations are one click away. This link works for 30 minutes.": "Voici tes réservations. Ce lien fonctionne pendant 30 minutes.",
     "This reservation link no longer works": "Ce lien de réservation ne fonctionne plus",
-    "It may have expired, or the reservation was already cancelled. Request a fresh link to see your current reservations.": "Le lien a expiré ou ta réservation a déjà été annulée. Demande un nouveau lien pour voir tes réservations."
+    "It may have expired, or the reservation was already cancelled. Request a fresh link to see your current reservations.": "Le lien a expiré ou ta réservation a déjà été annulée. Demande un nouveau lien pour voir tes réservations.",
+    "Followed lists": "Listes suivies",
+    "Followed list updates": "Nouvelles des listes suivies",
+    "Save individual lists here. Following is one-way. Reserving while logged in follows that list automatically.": "Garde des listes ici. Le suivi va dans un seul sens. Réserver en étant connecté te fait suivre cette liste automatiquement.",
+    "Get one short email after changes to a followed list.": "Un seul petit e-mail après des changements sur une liste suivie.",
+    "Email updates": "Nouvelles par e-mail",
+    "No followed lists yet": "Tu ne suis pas encore de listes",
+    "Open a shared list and choose Follow. Reserving while logged in follows that list too.": "Ouvre une liste partagée et choisis Suivre. Réserver en étant connecté te fait aussi suivre cette liste.",
+    "Reserving follows this list automatically. You can turn updates off in Followed lists.": "Ta réservation te fait suivre cette liste automatiquement. Tu peux couper les e-mails dans Listes suivies."
 }
