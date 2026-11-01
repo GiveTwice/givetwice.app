@@ -833,7 +833,7 @@ class OccasionHelper
             'communion' => [
                 'hero' => [
                     'h1_subtitle' => 'communion wishlist',
-                    'description' => 'Your child\'s First Communion is a once-in-a-lifetime moment. Help family and friends choose meaningful gifts — from keepsakes to practical wishes — with a shared list everyone can use.',
+                    'description' => 'Your child\'s First Communion is a once-in-a-lifetime moment. Help family and friends choose meaningful gifts, from keepsakes to practical wishes, with a shared list everyone can use.',
                     'bullets' => [
                         'No duplicate gifts from family',
                         'Grandparents and godparents covered',
@@ -851,7 +851,7 @@ class OccasionHelper
                     'title' => 'Why a communion wishlist?',
                     'subtitle' => 'Because dozens of well-meaning relatives all asking the same question shouldn\'t stress you out.',
                     'benefits' => [
-                        ['emoji' => '&#127873;', 'bg' => 'coral', 'title' => 'Gifts they\'ll actually treasure', 'description' => 'Guide family toward gifts that honor this special day — from religious keepsakes to things your child will genuinely love at this age.'],
+                        ['emoji' => '&#127873;', 'bg' => 'coral', 'title' => 'Gifts they\'ll actually treasure', 'description' => 'Guide family toward gifts that honor this special day, from religious keepsakes to things your child will genuinely love at this age.'],
                         ['emoji' => '&#128101;', 'bg' => 'sunny', 'title' => 'Coordinate the whole family', 'description' => 'Grandparents, godparents, aunts and uncles all want to give. One shared list means no duplicates and no awkward conversations.'],
                         ['emoji' => '&#128150;', 'bg' => 'teal', 'title' => 'Focus on what matters', 'description' => 'Less gift stress for everyone means more attention on the spiritual and family significance of the day.'],
                     ],
@@ -868,7 +868,7 @@ class OccasionHelper
                 'tips' => [
                     ['title' => 'Mix religious and everyday gifts', 'description' => 'A cross necklace or rosary alongside books, games, or a savings bond. Both are meaningful.'],
                     ['title' => 'Include keepsakes', 'description' => 'Photo frames, engraved jewelry, a special Bible. Gifts they\'ll treasure as reminders of this milestone.'],
-                    ['title' => 'Think about their age', 'description' => 'A 7 or 8 year old loves creative gifts, books, and experiences — not just religious items.'],
+                    ['title' => 'Think about their age', 'description' => 'A 7 or 8 year old loves creative gifts, books, and experiences, not just religious items.'],
                     ['title' => 'Add different price points', 'description' => 'Options for close family making big gestures, and for more casual guests with smaller budgets.'],
                 ],
                 'faqs' => [
@@ -878,15 +878,15 @@ class OccasionHelper
                     ],
                     [
                         'question' => 'How much should you give as a communion gift?',
-                        'answer' => 'For close family and godparents, €30–€100 is common. For more distant relatives or family friends, €15–€30 is typical. The most important thing is that the gift is thoughtful — a wishlist makes that easy regardless of budget.',
+                        'answer' => 'For close family and godparents, €30–€100 is common. For more distant relatives or family friends, €15–€30 is typical. The most important thing is that the gift is thoughtful, a wishlist makes that easy regardless of budget.',
                     ],
                     [
                         'question' => 'How does a communion wishlist work?',
-                        'answer' => 'You add gifts to your list and share a single link with family. When someone buys a gift, they can mark it as claimed so others don\'t duplicate it. No app download needed — just open the link and shop.',
+                        'answer' => 'You add gifts to your list and share a single link with family. When someone buys a gift, they can mark it as claimed so others don\'t duplicate it. No app download needed, just open the link and shop.',
                     ],
                     [
                         'question' => 'Can parents create a wishlist for their child\'s communion?',
-                        'answer' => 'Yes — most communion wishlists are created by parents on behalf of their child. You add items your child would love, set price ranges, and share the link with grandparents, godparents, and other guests ahead of the celebration.',
+                        'answer' => 'Yes, most communion wishlists are created by parents on behalf of their child. You add items your child would love, set price ranges, and share the link with grandparents, godparents, and other guests ahead of the celebration.',
                     ],
                 ],
                 'similar' => ['vormsel', 'birthday', 'graduation', 'christmas'],
@@ -900,7 +900,7 @@ class OccasionHelper
             'vormsel' => [
                 'hero' => [
                     'h1_subtitle' => 'vormsel wishlist',
-                    'description' => 'Confirmation is a personal and meaningful milestone. Help family and friends choose the perfect gift for your child — with a shared list that takes the guesswork out for everyone.',
+                    'description' => 'Confirmation is a personal and meaningful milestone. Help family and friends choose the perfect gift for your child, with a shared list that takes the guesswork out for everyone.',
                     'bullets' => [
                         'No duplicate gifts from godparents and grandparents',
                         'Gifts that fit who they actually are at 12',
@@ -916,9 +916,9 @@ class OccasionHelper
                 ],
                 'why' => [
                     'title' => 'Why a vormsel wishlist?',
-                    'subtitle' => 'Because a 12-year-old wants very different gifts than an 8-year-old — and that\'s the whole point.',
+                    'subtitle' => 'Because a 12-year-old wants very different gifts than an 8-year-old, and that\'s the whole point.',
                     'benefits' => [
-                        ['emoji' => '&#127873;', 'bg' => 'coral', 'title' => 'Gifts that actually fit', 'description' => 'Your child is 11 or 12 — with real opinions about music, sports, books, or tech. Help family choose something that matches who they are now.'],
+                        ['emoji' => '&#127873;', 'bg' => 'coral', 'title' => 'Gifts that actually fit', 'description' => 'Your child is 11 or 12, with real opinions about music, sports, books, or tech. Help family choose something that matches who they are now.'],
                         ['emoji' => '&#128101;', 'bg' => 'sunny', 'title' => 'No more duplicate surprises', 'description' => 'Godparents, grandparents, aunts and uncles all want to give. One shared list means no three identical gifts.'],
                         ['emoji' => '&#128150;', 'bg' => 'teal', 'title' => 'More focus on the moment', 'description' => 'Less stress about gifts for everyone means more attention on what the day actually means.'],
                     ],
@@ -933,7 +933,7 @@ class OccasionHelper
                 ],
                 'tips_title' => 'Tips for your vormsel wishlist',
                 'tips' => [
-                    ['title' => 'Think about their actual interests', 'description' => 'A 12-year-old loves music, sport, fashion, books, or tech. Add things that reflect who they really are — not just religious items.'],
+                    ['title' => 'Think about their actual interests', 'description' => 'A 12-year-old loves music, sport, fashion, books, or tech. Add things that reflect who they really are, not just religious items.'],
                     ['title' => 'Include a personal keepsake', 'description' => 'An engraved necklace, bracelet, or photo book is a lasting reminder of this milestone.'],
                     ['title' => 'Mix big and small', 'description' => 'Something larger for close family, smaller options for more distant guests. A range that works for every budget.'],
                     ['title' => 'Add experiences too', 'description' => 'A concert, a workshop, a day out, or a gift card. Memories are often the best gift at this age.'],
@@ -953,7 +953,7 @@ class OccasionHelper
                     ],
                     [
                         'question' => 'How does a vormsel wishlist work?',
-                        'answer' => 'You add gifts and share a single link with family. When someone buys a gift, they can claim it so others don\'t buy the same thing. No app needed — just open the link and shop.',
+                        'answer' => 'You add gifts and share a single link with family. When someone buys a gift, they can claim it so others don\'t buy the same thing. No app needed, just open the link and shop.',
                     ],
                 ],
                 'similar' => ['communion', 'birthday', 'graduation'],

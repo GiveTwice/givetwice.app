@@ -35,7 +35,7 @@
                     <li>{{ __('Provide, maintain, and improve our services') }}</li>
                     <li>{{ __('Send you technical notices and support messages') }}</li>
                     <li>{{ __('Respond to your comments and questions') }}</li>
-                    <li>{{ __('Analyze anonymized, aggregated data about claimed gifts (such as which retail platforms are most popular) to identify affiliate program opportunities — this helps us maximize charitable donations') }}</li>
+                    <li>{{ __('Analyze anonymized, aggregated data about claimed gifts (such as which retail platforms are most popular) to identify affiliate program opportunities, this helps us maximize charitable donations') }}</li>
                 </ul>
                 <p class="text-gray-600 leading-relaxed mt-3">{{ __('When analyzing gift claim data for affiliate program purposes, we only use anonymized information (e.g., domain names of gift URLs) and never associate this data with individual users.') }}</p>
             </section>
@@ -44,11 +44,11 @@
                 <h2 class="text-lg font-semibold text-gray-900 mb-3">{{ __('3. Data retention periods') }}</h2>
                 <p class="text-gray-600 leading-relaxed mb-3">{{ __('We retain your data only for as long as necessary. Specific retention periods are:') }}</p>
                 <ul class="list-disc pl-6 space-y-1 text-gray-600">
-                    <li><strong>{{ __('Account data') }}</strong> — {{ __('retained while your account is active, plus 2 years after your last activity. Inactive accounts are deleted after 24 months (with a warning email sent at 22 months).') }}</li>
-                    <li><strong>{{ __('Guest sessions') }}</strong> — {{ __('automatically deleted after 7 days of inactivity.') }}</li>
-                    <li><strong>{{ __('Authenticated sessions') }}</strong> — {{ __('automatically deleted after 30 days of inactivity.') }}</li>
-                    <li><strong>{{ __('List invitations') }}</strong> — {{ __('expired, accepted, or declined invitations are deleted after 60 days.') }}</li>
-                    <li><strong>{{ __('Password reset tokens') }}</strong> — {{ __('automatically deleted after 1 hour.') }}</li>
+                    <li><strong>{{ __('Account data') }}</strong>, {{ __('retained while your account is active, plus 2 years after your last activity. Inactive accounts are deleted after 24 months (with a warning email sent at 22 months).') }}</li>
+                    <li><strong>{{ __('Guest sessions') }}</strong>, {{ __('automatically deleted after 7 days of inactivity.') }}</li>
+                    <li><strong>{{ __('Authenticated sessions') }}</strong>, {{ __('automatically deleted after 30 days of inactivity.') }}</li>
+                    <li><strong>{{ __('List invitations') }}</strong>, {{ __('expired, accepted, or declined invitations are deleted after 60 days.') }}</li>
+                    <li><strong>{{ __('Password reset tokens') }}</strong>, {{ __('automatically deleted after 1 hour.') }}</li>
                 </ul>
             </section>
 
@@ -79,12 +79,12 @@
                 <h2 class="text-lg font-semibold text-gray-900 mb-3">{{ __('7. Your rights') }}</h2>
                 <p class="text-gray-600 leading-relaxed mb-3">{{ __('Under the General Data Protection Regulation (GDPR), you have the following rights:') }}</p>
                 <ul class="list-disc pl-6 space-y-1 text-gray-600">
-                    <li><strong>{{ __('Right of access (Art. 15)') }}</strong> — {{ __('you can request a copy of the personal data we hold about you.') }}</li>
-                    <li><strong>{{ __('Right to rectification (Art. 16)') }}</strong> — {{ __('you can update or correct inaccurate personal data via your account settings.') }}</li>
-                    <li><strong>{{ __('Right to erasure (Art. 17)') }}</strong> — {{ __('you can delete your account and all associated data from your account settings.') }}</li>
-                    <li><strong>{{ __('Right to data portability (Art. 20)') }}</strong> — {{ __('you can export all your personal data in a machine-readable JSON format from your account settings.') }}</li>
-                    <li><strong>{{ __('Right to object (Art. 21)') }}</strong> — {{ __('you can object to the processing of your personal data for certain purposes.') }}</li>
-                    <li><strong>{{ __('Right to lodge a complaint') }}</strong> — {{ __('you have the right to lodge a complaint with a supervisory authority if you believe your data protection rights have been violated.') }}</li>
+                    <li><strong>{{ __('Right of access (Art. 15)') }}</strong>, {{ __('you can request a copy of the personal data we hold about you.') }}</li>
+                    <li><strong>{{ __('Right to rectification (Art. 16)') }}</strong>, {{ __('you can update or correct inaccurate personal data via your account settings.') }}</li>
+                    <li><strong>{{ __('Right to erasure (Art. 17)') }}</strong>, {{ __('you can delete your account and all associated data from your account settings.') }}</li>
+                    <li><strong>{{ __('Right to data portability (Art. 20)') }}</strong>, {{ __('you can export all your personal data in a machine-readable JSON format from your account settings.') }}</li>
+                    <li><strong>{{ __('Right to object (Art. 21)') }}</strong>, {{ __('you can object to the processing of your personal data for certain purposes.') }}</li>
+                    <li><strong>{{ __('Right to lodge a complaint') }}</strong>, {{ __('you have the right to lodge a complaint with a supervisory authority if you believe your data protection rights have been violated.') }}</li>
                 </ul>
                 <p class="text-gray-600 leading-relaxed mt-3">{{ __('To exercise any of these rights, please') }} <a href="{{ route('contact', ['locale' => app()->getLocale()]) }}" class="text-coral-600 hover:text-coral-700 underline">{{ __('contact us') }}</a>.</p>
             </section>
@@ -103,8 +103,8 @@
                 <h2 class="text-lg font-semibold text-gray-900 mb-3">{{ __('10. Cookies') }}</h2>
                 <p class="text-gray-600 leading-relaxed mb-3">{{ __('We use only essential cookies that are strictly necessary for the operation of our service:') }}</p>
                 <ul class="list-disc pl-6 space-y-1 text-gray-600">
-                    <li><strong>{{ __('Session cookie') }}</strong> — {{ __('maintains your login session and remembers your preferences. Expires when you close your browser or after the session lifetime.') }}</li>
-                    <li><strong>{{ __('XSRF token') }}</strong> — {{ __('protects against cross-site request forgery attacks. Expires with your session.') }}</li>
+                    <li><strong>{{ __('Session cookie') }}</strong>, {{ __('maintains your login session and remembers your preferences. Expires when you close your browser or after the session lifetime.') }}</li>
+                    <li><strong>{{ __('XSRF token') }}</strong>, {{ __('protects against cross-site request forgery attacks. Expires with your session.') }}</li>
                 </ul>
                 <p class="text-gray-600 leading-relaxed mt-3">{{ __('We do not use analytics cookies, advertising cookies, or any third-party tracking cookies.') }}</p>
             </section>

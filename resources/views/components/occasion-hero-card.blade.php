@@ -28,7 +28,7 @@
                         <div class="relative aspect-square bg-gradient-to-br {{ $gifts[0]['gradient'] }} rounded-xl overflow-hidden mb-2">
                             <div class="absolute inset-0 flex items-center justify-center text-3xl">{{ $gifts[0]['emoji'] }}</div>
                             <div class="absolute top-1.5 right-1.5">
-                                <span class="text-[10px] leading-none bg-teal-500 text-white px-2 py-1 rounded-full font-medium shadow-sm flex items-center justify-center">{{ __('Available') }}</span>
+                                <span class="text-sm leading-none bg-teal-500 text-white px-2 py-1 rounded-full font-medium shadow-sm flex items-center justify-center">{{ __('Available') }}</span>
                             </div>
                         </div>
                         <p class="text-xs font-medium text-gray-800 leading-tight line-clamp-2">{{ __($gifts[0]['name']) }}</p>
@@ -40,8 +40,8 @@
                         <div class="relative aspect-square bg-gradient-to-br {{ $gifts[1]['gradient'] }} rounded-xl overflow-hidden mb-2">
                             <div class="absolute inset-0 flex items-center justify-center text-3xl hero-card-emoji">{{ $gifts[1]['emoji'] }}</div>
                             <div class="absolute top-1.5 right-1.5">
-                                <span class="hero-badge-available text-[10px] leading-none bg-teal-500 text-white px-2 py-1 rounded-full font-medium shadow-sm flex items-center justify-center">{{ __('Available') }}</span>
-                                <span class="hero-badge-claimed text-[10px] leading-none bg-sunny-500 text-white px-2 py-1 rounded-full font-medium shadow-sm absolute inset-0 flex items-center justify-center">{{ __('Claimed') }}</span>
+                                <span class="hero-badge-available text-sm leading-none bg-teal-500 text-white px-2 py-1 rounded-full font-medium shadow-sm flex items-center justify-center">{{ __('Available') }}</span>
+                                <span class="hero-badge-claimed text-sm leading-none bg-sunny-100 text-sunny-800 px-2 py-1 rounded-full font-medium shadow-sm absolute inset-0 flex items-center justify-center">{{ __('Claimed') }}</span>
                             </div>
 
                             <div class="hero-confetti-cozy absolute inset-0 pointer-events-none overflow-visible rounded-xl">
@@ -70,8 +70,8 @@
                         <div class="relative aspect-square bg-gradient-to-br {{ $gifts[2]['gradient'] }} rounded-xl overflow-hidden mb-2">
                             <div class="absolute inset-0 flex items-center justify-center text-3xl hero-card-emoji-book">{{ $gifts[2]['emoji'] }}</div>
                             <div class="absolute top-1.5 right-1.5">
-                                <span class="hero-badge-available-book text-[10px] leading-none bg-teal-500 text-white px-2 py-1 rounded-full font-medium shadow-sm flex items-center justify-center">{{ __('Available') }}</span>
-                                <span class="hero-badge-claimed-book text-[10px] leading-none bg-sunny-500 text-white px-2 py-1 rounded-full font-medium shadow-sm absolute inset-0 flex items-center justify-center">{{ __('Claimed') }}</span>
+                                <span class="hero-badge-available-book text-sm leading-none bg-teal-500 text-white px-2 py-1 rounded-full font-medium shadow-sm flex items-center justify-center">{{ __('Available') }}</span>
+                                <span class="hero-badge-claimed-book text-sm leading-none bg-sunny-100 text-sunny-800 px-2 py-1 rounded-full font-medium shadow-sm absolute inset-0 flex items-center justify-center">{{ __('Claimed') }}</span>
                             </div>
 
                             <div class="hero-confetti-book absolute inset-0 pointer-events-none overflow-visible rounded-xl">
@@ -106,7 +106,7 @@
                 </div>
                 <div>
                     <p class="text-sm font-semibold text-gray-800">{{ __('Sarah claimed a gift!') }}</p>
-                    <p class="text-[10px] text-gray-400 font-medium">{{ __('Just now') }}</p>
+                    <p class="text-sm text-gray-400 font-medium">{{ __('Just now') }}</p>
                 </div>
             </div>
         </div>
@@ -118,7 +118,7 @@
                 </div>
                 <div>
                     <p class="text-sm font-semibold text-gray-800">{{ __('Nick claimed a gift!') }}</p>
-                    <p class="text-[10px] text-gray-400 font-medium">{{ __('Just now') }}</p>
+                    <p class="text-sm text-gray-400 font-medium">{{ __('Just now') }}</p>
                 </div>
             </div>
         </div>

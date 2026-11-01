@@ -176,7 +176,7 @@
 
                 {{-- Subheading --}}
                 <p class="text-gray-600 mb-8 max-w-xs mx-auto leading-relaxed">
-                    {{ __("We're almost ready. Come back soon — it'll be worth the wait.") }}
+                    {{ __("We're almost ready. Come back soon, it'll be worth the wait.") }}
                 </p>
 
                 {{-- Status indicator --}}
@@ -200,7 +200,7 @@
 
                 {{-- Contact CTA --}}
                 <p class="text-gray-600 text-sm mb-4">
-                    {{ __("Drop us a line — we love enthusiasm.") }}
+                    {{ __("Drop us a line, we love enthusiasm.") }}
                 </p>
 
                 <a href="{{ url('/' . app()->getLocale() . '/contact') }}"
