@@ -53,7 +53,7 @@
             >
         </div>
 
-        <button type="submit" class="w-full bg-coral-500 text-white py-3 px-4 rounded-xl hover:bg-coral-600 font-semibold transition-colors shadow-sm">
+        <button type="submit" class="btn-primary w-full">
             {{ __('Verify') }}
         </button>
     </form>
@@ -74,7 +74,7 @@
             >
         </div>
 
-        <button type="submit" class="w-full bg-coral-500 text-white py-3 px-4 rounded-xl hover:bg-coral-600 font-semibold transition-colors shadow-sm">
+        <button type="submit" class="btn-primary w-full">
             {{ __('Verify') }}
         </button>
     </form>

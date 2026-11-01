@@ -14,7 +14,7 @@
             &#128075;
         </div>
         <div>
-            <h1 class="text-xl font-bold text-gray-900">{{ __('Welcome back!') }}</h1>
+            <h1 class="text-2xl font-bold text-gray-900">{{ __('Welcome back!') }}</h1>
             <p class="text-gray-500 text-sm mt-0.5">{{ __('Your wishlists missed you. Probably.') }}</p>
         </div>
     </div>
@@ -40,14 +40,14 @@
     <template x-if="!showEmailForm">
         <div class="space-y-3">
             <a href="{{ route('auth.google', ['locale' => app()->getLocale()]) }}"
-               class="flex items-center justify-center w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-colors font-medium text-gray-700">
+               class="btn-secondary w-full">
                 <img src="/icons/logo-google.svg" alt="Google" class="w-5 h-5 mr-3">
                 {{ __('Continue with Google') }}
             </a>
 
             <button type="button"
                     x-on:click="showEmailForm = true"
-                    class="flex items-center justify-center w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-colors font-medium text-gray-700">
+                    class="btn-secondary w-full">
                 <svg class="w-5 h-5 mr-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                 </svg>
@@ -102,7 +102,7 @@
                     </a>
                 </div>
 
-                <button type="submit" class="w-full bg-coral-500 text-white py-3 px-4 rounded-xl hover:bg-coral-600 font-semibold transition-colors shadow-sm">
+                <button type="submit" class="btn-primary w-full">
                     {{ __('Login') }}
                 </button>
             </form>
