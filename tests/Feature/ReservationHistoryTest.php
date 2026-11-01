@@ -90,7 +90,7 @@ it('denies another mailbox and the owner access to choices', function () {
 it('delivers the same expiring history link in both mail alternatives', function (string $locale) {
     $mail = (new ReservationLinkMail($this->claim->claimer_email, $locale))->locale($locale);
     $url = $mail->content()->with['historyUrl'];
-    $sent = (new MailManager(app()))->mailer('array')->to($this->claim->claimer_email)->send($mail);
+    $sent = $mail->to($this->claim->claimer_email)->send((new MailManager(app()))->mailer('array'));
     $message = $sent->getSymfonySentMessage()->getOriginalMessage();
     expect($message->getHtmlBody())->not->toBeEmpty()
         ->and($message->getTextBody())->toContain($url);
