@@ -11,6 +11,7 @@ use App\Models\GiftList;
 use App\Models\ReservationAlert;
 use App\Models\User;
 use Illuminate\Broadcasting\BroadcastEvent;
+use Illuminate\Mail\MailManager;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
@@ -205,4 +206,17 @@ it('protects a newly added manager even when the list is deleted before delivery
     (new SendReservationAlert($alert->id))->handle();
     Mail::assertNothingSent();
     expect($alert->fresh()->resolved_at)->not->toBeNull();
+});
+
+it('includes working signed decisions for every alert in both mail alternatives', function () {
+    $this->gift->update(['title' => 'Updated gift']);
+    $alert = ReservationAlert::sole();
+    $mailer = (new MailManager(app()))->mailer('array');
+    $sent = $mailer->to($alert->email)->send(new ReservationAlertMail($alert));
+    $message = $sent->getSymfonySentMessage()->getOriginalMessage();
+
+    expect($message->getHtmlBody())->not->toBeEmpty();
+    foreach (['new', 'old', 'release', 'mute'] as $choice) {
+        expect($message->getTextBody())->toContain($alert->choiceUrl($choice));
+    }
 });

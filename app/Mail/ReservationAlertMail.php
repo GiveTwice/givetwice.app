@@ -24,6 +24,6 @@ class ReservationAlertMail extends Mailable
 
     public function content(): Content
     {
-        return new Content(view: 'emails.reservation-alert');
+        return new Content(view: 'emails.reservation-alert', text: 'emails.reservation-alert-text');
     }
 }

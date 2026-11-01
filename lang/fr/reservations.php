@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'updates' => 'Tes réservations ont changé',
     'intro' => 'On t’envoie un lien vers tous tes cadeaux réservés. Pas besoin de compte.',
     'send' => 'Envoie-moi le lien',
     'sent' => 'Le lien arrive dans ta boîte mail.',

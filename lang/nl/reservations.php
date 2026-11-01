@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'updates' => 'Je reservaties zijn aangepast',
     'intro' => 'We sturen je een link naar alles wat je reserveerde. Ook zonder account.',
     'send' => 'Stuur me de link',
     'sent' => 'Je link zit zo in je mailbox.',
