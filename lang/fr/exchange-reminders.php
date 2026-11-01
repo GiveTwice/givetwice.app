@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'wishlist_title' => 'Quelques idées cadeaux ?',
     'reveal_title' => 'Ton tirage est prêt',
     'reveal' => 'Ouvre ton tirage pour découvrir à qui tu offres un cadeau dans :group.',
     'wishlist' => 'La personne qui t’offre un cadeau pour :group cherche des idées. Ajoute quelques envies à ta liste pour lui donner un coup de main.',

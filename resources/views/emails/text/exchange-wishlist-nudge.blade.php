@@ -1,4 +1,4 @@
-{!! __('Quick hint for whoever drew you') !!}
+{!! __('exchange-reminders.wishlist_title') !!}
 
 {!! __('Hey') !!} {!! $participant->name !!},
 {!! __('exchange-reminders.wishlist', ['group' => str_replace("\u{2014}", '·', $exchange->name)]) !!}

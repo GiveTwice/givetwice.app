@@ -1,9 +1,9 @@
 @extends('emails.layouts.base')
 
-@section('title', __('Quick hint for whoever drew you'))
+@section('title', __('exchange-reminders.wishlist_title'))
 
 @section('content')
-    <x-mail.heading>{{ __('Quick hint for whoever drew you') }}</x-mail.heading>
+    <x-mail.heading>{{ __('exchange-reminders.wishlist_title') }}</x-mail.heading>
     <p>{{ __('Hey') }} {{ $participant->name }},</p>
     <p>{{ __('exchange-reminders.wishlist', ['group' => str_replace("\u{2014}", '·', $exchange->name)]) }}</p>
     <x-mail.action :url="$registerUrl" :button="true">{{ __('Make a wishlist') }}</x-mail.action>
