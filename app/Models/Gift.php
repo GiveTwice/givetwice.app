@@ -57,10 +57,20 @@ class Gift extends Model implements HasMedia
 
     protected static function booted(): void
     {
-        static::deleting(fn (Gift $gift) => ReservationAlert::record($gift, true));
+        static::deleting(function (Gift $gift): void {
+            ReservationAlert::record($gift, true);
+            foreach ($gift->lists as $list) {
+                ListChange::record($gift, $list->id, 'removed');
+            }
+        });
         static::updated(function (Gift $gift): void {
             if ($gift->wasChanged(['title', 'price_in_cents', 'currency', 'url', 'owner_note'])) {
                 ReservationAlert::record($gift);
+            }
+            if ($gift->wasChanged(['title', 'description', 'price_in_cents', 'currency', 'url', 'owner_note', 'most_wanted', 'original_image_url'])) {
+                foreach ($gift->lists as $list) {
+                    ListChange::record($gift, $list->id, 'edited');
+                }
             }
             if ($gift->wasChanged('url')) {
                 GiftUrlChanged::dispatch($gift);
@@ -146,11 +156,12 @@ class Gift extends Model implements HasMedia
     }
 
     /**
-     * @return BelongsToMany<GiftList, $this>
+     * @return BelongsToMany<GiftList, $this, GiftListEntry>
      */
     public function lists(): BelongsToMany
     {
         return $this->belongsToMany(GiftList::class, 'gift_list', 'gift_id', 'list_id')
+            ->using(GiftListEntry::class)
             ->withPivot('sort_order', 'added_at')
             ->withTimestamps();
     }
