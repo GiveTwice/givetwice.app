@@ -66,3 +66,22 @@ describe('manager content updates', function () {
         Mail::assertNothingSent();
     })->with([true, false]);
 });
+
+it('stops a promoted follower subscription when their manager access is removed', function () {
+    Mail::fake();
+    Queue::fake()->except([SendListUpdate::class]);
+    $owner = User::factory()->create();
+    $manager = User::factory()->create();
+    $list = GiftList::factory()->create(['creator_id' => $owner->id]);
+    $follow = FollowedList::create(['user_id' => $manager->id, 'list_id' => $list->id, 'notifications' => false]);
+    $list->users()->attach($manager);
+    $this->artisan('friends:send-digest')->assertSuccessful();
+    expect($follow->fresh()->manager_updates)->toBeTrue()->and($follow->fresh()->notifications)->toBeFalse();
+    $follow->update(['notifications' => true]);
+    $list->users()->detach($manager);
+    $gift = Gift::factory()->skipped()->create(['user_id' => $owner->id]);
+    $list->gifts()->attach($gift);
+    $this->travel(11)->minutes();
+    (new SendListUpdate($follow->id))->handle();
+    Mail::assertNothingSent();
+});
