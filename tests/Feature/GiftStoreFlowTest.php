@@ -27,7 +27,7 @@ describe('Gift store flow — URL input', function () {
         expect($gift)->not->toBeNull();
         expect($gift->url)->toBe('https://www.bol.com/nl/p/some-product/123');
         expect($gift->fetch_status)->toBe('pending');
-        expect($gift->title)->toBeNull();
+        expect($gift->title)->toBe($gift->suggestedTitle());
     });
 
     it('prepends https:// to bare domain input', function () {
@@ -104,4 +104,16 @@ describe('Gift store flow — text input', function () {
             ->assertRedirect()
             ->assertSessionHasNoErrors();
     });
+});
+
+it('keeps a guessed title when fetching fails and saves edits without optional fields', function () {
+    $this->actingAs($this->user)->post('/en/gifts', [
+        'input' => 'https://www.bol.com/nl/p/lego-space-station/12345678', 'list_id' => $this->list->id,
+    ])->assertRedirect();
+    $gift = Gift::latest('id')->first();
+    $guess = $gift->title;
+    $gift->update(['fetch_status' => 'failed']);
+    expect($gift->fresh()->title)->toBe($guess)->not->toBeEmpty();
+    $this->put('/en/gifts/'.$gift->id, ['title' => 'My choice', 'price' => 25, 'currency' => 'EUR'])->assertRedirect();
+    expect($gift->fresh()->title)->toBe('My choice')->and($gift->fresh()->price_in_cents)->toBe(2500);
 });

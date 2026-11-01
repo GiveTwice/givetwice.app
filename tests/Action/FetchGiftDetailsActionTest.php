@@ -356,7 +356,7 @@ describe('FetchGiftDetailsAction', function () {
             (new FetchGiftDetailsAction($gift))->setFetcher($fetcher)->handle($images);
 
             expect($http->count())->toBe(0);
-            expect($gift->fresh())->fetch_status->toBe('failed')->title->toBeNull()
+            expect($gift->fresh())->fetch_status->toBe('failed')->title->toBe($gift->suggestedTitle())
                 ->fetch_error->toHaveKey('outcome', $outcome);
         })->with([
             'access denied' => [200, '<title>Access denied</title>', 'blocked'],

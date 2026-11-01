@@ -57,6 +57,11 @@ class Gift extends Model implements HasMedia
 
     protected static function booted(): void
     {
+        static::creating(function (Gift $gift): void {
+            if ($gift->url && blank($gift->title)) {
+                $gift->title = $gift->suggestedTitle();
+            }
+        });
         static::deleting(function (Gift $gift): void {
             ReservationAlert::record($gift, true);
             foreach ($gift->lists as $list) {
