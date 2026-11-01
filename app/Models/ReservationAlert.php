@@ -38,6 +38,15 @@ class ReservationAlert extends Model
             }
             $claim->getConnection()->transaction(function () use ($claim, $gift, $deleted) {
                 $claim->refreshForUpdate();
+                $email = $claim->claimer_email ?? $claim->user->email;
+                $isManager = GiftList::query()->whereKey($claim->reservation['list_id'])
+                    ->where(fn ($query) => $query->whereHas('creator', fn ($query) => $query->where('email', $email))
+                        ->orWhereHas('users', fn ($query) => $query->where('email', $email)))->exists();
+                if ($isManager) {
+                    $claim->alerts()->whereNull('sent_at')->update(['resolved_at' => now()]);
+
+                    return;
+                }
                 $old = new Gift($gift->getOriginal());
                 $before = array_replace($claim->reservation, ['title' => $old->title, 'price' => $old->formatPrice(), 'url' => $old->url, 'owner_note' => $old->owner_note]);
                 $after = array_replace($before, ['title' => $gift->title, 'price' => $gift->formatPrice(), 'url' => $gift->url, 'owner_note' => $gift->owner_note, 'deleted' => $deleted]);

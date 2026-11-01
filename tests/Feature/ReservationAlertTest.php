@@ -166,7 +166,7 @@ it('never sends a reservation bundle to a current manager', function () {
     $this->claim->update(['claimer_email' => $this->list->creator->email]);
     $this->gift->update(['title' => 'Changed']);
     $this->travel(11)->minutes();
-    (new SendReservationAlert(ReservationAlert::sole()->id))->handle();
+    expect(ReservationAlert::count())->toBe(0);
     Mail::assertNothingSent();
 });
 
@@ -193,4 +193,16 @@ it('delivers the removal alert safely after its list has been deleted', function
     (new SendReservationAlert($alert->id))->handle();
     Mail::assertSent(ReservationAlertMail::class, 1);
     expect((new ReservationAlertMail($alert->fresh()))->render())->not->toBeEmpty();
+});
+
+it('protects a newly added manager even when the list is deleted before delivery', function () {
+    $this->gift->update(['title' => 'Changed']);
+    $alert = ReservationAlert::sole();
+    $manager = User::factory()->create(['email' => $this->claim->claimer_email]);
+    $this->list->users()->attach($manager);
+    $this->list->delete();
+    $this->travel(11)->minutes();
+    (new SendReservationAlert($alert->id))->handle();
+    Mail::assertNothingSent();
+    expect($alert->fresh()->resolved_at)->not->toBeNull();
 });
