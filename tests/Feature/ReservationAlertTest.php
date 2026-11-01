@@ -137,6 +137,7 @@ it('rejects old decision links after another edit and keeps digest dedupe after 
     $this->gift->update(['title' => 'First']);
     $first = ReservationAlert::sole();
     $this->travel(11)->minutes();
+    (new SendReservationAlert($first->id))->handle();
     $this->gift->update(['title' => 'Second']);
     $this->post($first->choiceUrl('old'))->assertConflict();
     $this->post(ReservationAlert::latest('id')->first()->choiceUrl('release'))->assertRedirect();
