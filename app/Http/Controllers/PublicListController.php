@@ -37,15 +37,14 @@ class PublicListController extends Controller
                 ->orWhereDoesntHave('claims', fn ($query) => $query->whereNotNull('confirmed_at'));
             $availableGifts = (clone $query)->where($free)->count();
             $query->withCount(['claims' => fn ($query) => $query->whereNotNull('confirmed_at')])
-                ->with(['claims' => fn ($query) => $query->whereNotNull('confirmed_at')])
-                ->reorder()->orderByRaw('case when gifts.allow_multiple_claims = true or claims_count = 0 then 0 else 1 end');
+                ->with(['claims' => fn ($query) => $query->whereNotNull('confirmed_at')]);
             if ($filter === 'free') {
                 $query->where($free);
             } elseif ($filter === 'under20') {
                 $query->where('currency', 'EUR')->where('price_in_cents', '<', 2000);
             }
         }
-        $gifts = $query->orderBy('title')->paginate(100)->withQueryString();
+        $gifts = $query->orderBy('gifts.id')->paginate(100)->withQueryString();
         if (! $showReservations) {
             $gifts->each(fn ($gift) => $gift->setRelation('claims', collect()));
         }

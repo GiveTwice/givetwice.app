@@ -63,7 +63,7 @@ describe('reservation visibility', function () {
         Claim::factory()->create(['gift_id' => $this->free->id]);
         expect($this->get($this->list->getPublicUrl('en'))->viewData('gifts')->pluck('id')->all())->toBe($before);
         $this->list->update(['spoiler_mode' => true]);
-        expect($this->get($this->list->getPublicUrl('en'))->viewData('gifts')->pluck('id')->first())->toBe($this->multiple->id);
+        expect($this->get($this->list->getPublicUrl('en'))->viewData('gifts')->pluck('id')->all())->toBe($before);
     });
 
     it('keeps claim entry points from revealing status to managers', function (string $role) {
@@ -87,11 +87,11 @@ describe('reservation visibility', function () {
 });
 
 describe('buyer list', function () {
-    it('orders free and always available gifts ahead of reserved gifts', function () {
+    it('uses saved order regardless of reservation state', function () {
         $response = $this->get($this->list->getPublicUrl('en'))->assertOk();
-        expect($response->viewData('gifts')->pluck('id')->all())->toBe([$this->free->id, $this->multiple->id, $this->reserved->id]);
+        expect($response->viewData('gifts')->pluck('id')->all())->toBe([$this->reserved->id, $this->free->id, $this->multiple->id]);
         expect($response->viewData('availableGifts'))->toBe(2);
-        $response->assertSeeInOrder(['data-gift-id="'.$this->free->id.'"', 'data-reserved-heading', 'data-gift-id="'.$this->reserved->id.'"'], false);
+
     });
 
     it('filters free gifts and euro prices below twenty', function (string $filter, array $expected) {

@@ -2070,5 +2070,11 @@
     "Email updates": "Mailupdates",
     "No followed lists yet": "Je volgt nog geen lijstjes",
     "Open a shared list and choose Follow. Reserving while logged in follows that list too.": "Open een gedeeld lijstje en kies Volgen. Reserveer je ingelogd, dan volg je dat lijstje ook.",
-    "Reserving follows this list automatically. You can turn updates off in Followed lists.": "Met je reservatie volg je dit lijstje automatisch. Mailupdates zet je uit bij Gevolgde lijstjes."
+    "Reserving follows this list automatically. You can turn updates off in Followed lists.": "Met je reservatie volg je dit lijstje automatisch. Mailupdates zet je uit bij Gevolgde lijstjes.",
+    "Choose up or down.": "Kies omhoog of omlaag.",
+    "Gift order saved.": "Volgorde bewaard.",
+    "Move up": "Omhoog",
+    "Move down": "Omlaag",
+    "Move :gift up": "Zet :gift hoger",
+    "Move :gift down": "Zet :gift lager"
 }

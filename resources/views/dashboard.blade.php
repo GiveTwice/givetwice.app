@@ -164,7 +164,10 @@
                             @if($list->gifts->isNotEmpty())
                                 <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                                     @foreach($list->gifts as $gift)
-                                        <x-gift-card :gift="$gift" :editable="true" :show-reservations="$list->spoiler_mode" />
+                                        <div>
+                                            <x-gift-card :gift="$gift" :editable="true" :show-reservations="$list->spoiler_mode" />
+                                            <x-gift-order-controls :list="$list" :gift="$gift" :first="$loop->first" :last="$loop->last" />
+                                        </div>
                                     @endforeach
                                 </div>
                             @endif
