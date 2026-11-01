@@ -103,7 +103,7 @@ class GiftController extends Controller
         }
 
         $targetList->gifts()->attach($gift->id, [
-            'sort_order' => $targetList->gifts()->count(),
+            'sort_order' => ($targetList->gifts()->max('gift_list.sort_order') ?? -1) + 1,
             'added_at' => now(),
         ]);
 

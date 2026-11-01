@@ -2070,5 +2070,11 @@
     "Email updates": "Nouvelles par e-mail",
     "No followed lists yet": "Tu ne suis pas encore de listes",
     "Open a shared list and choose Follow. Reserving while logged in follows that list too.": "Ouvre une liste partagée et choisis Suivre. Réserver en étant connecté te fait aussi suivre cette liste.",
-    "Reserving follows this list automatically. You can turn updates off in Followed lists.": "Ta réservation te fait suivre cette liste automatiquement. Tu peux couper les e-mails dans Listes suivies."
+    "Reserving follows this list automatically. You can turn updates off in Followed lists.": "Ta réservation te fait suivre cette liste automatiquement. Tu peux couper les e-mails dans Listes suivies.",
+    "Choose up or down.": "Choisis vers le haut ou vers le bas.",
+    "Gift order saved.": "Ordre enregistré.",
+    "Move up": "Monter",
+    "Move down": "Descendre",
+    "Move :gift up": "Monter :gift",
+    "Move :gift down": "Descendre :gift"
 }

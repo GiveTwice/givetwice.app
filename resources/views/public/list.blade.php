@@ -11,7 +11,7 @@
 @section('content')
 @php
     $reserved = fn ($gift) => $showReservations && ! $gift->allow_multiple_claims && $gift->claims->isNotEmpty();
-    $sections = [$gifts->reject($reserved), $gifts->filter($reserved)];
+    $sections = [$gifts];
     $occasionLabels = ['sinterklaas' => __('Sinterklaas'), 'christmas' => __('Christmas'), 'birthday' => __('Birthday'), 'other' => __('Other')];
 @endphp
 <div x-data="publicList({ slug: @js($list->slug), showReservations: @js($showReservations) })">
@@ -56,12 +56,12 @@
         @endunless
     </header>
     @foreach($sections as $section)
-        @if($loop->last && $section->isNotEmpty())
-            <h2 class="mb-3 mt-6 text-sm font-semibold text-gray-700" data-reserved-heading>{{ __('Already reserved (:count)', ['count' => $section->count()]) }}</h2>
-        @endif
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5" data-gift-grid>
             @foreach($section as $gift)
-                <x-shared-gift-tile :gift="$gift" :is-owner="$isOwner" :is-reserved="$reserved($gift)" :is-mine="$myReservationGiftIds->contains($gift->id)" />
+                <div>
+                    <x-shared-gift-tile :gift="$gift" :is-owner="$isOwner" :is-reserved="$reserved($gift)" :is-mine="$myReservationGiftIds->contains($gift->id)" />
+                    @if($isOwner)<x-gift-order-controls :list="$list" :gift="$gift" :first="$loop->first && $gifts->onFirstPage()" :last="$loop->last && ! $gifts->hasMorePages()" />@endif
+                </div>
             @endforeach
         </div>
     @endforeach

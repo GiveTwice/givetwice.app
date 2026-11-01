@@ -35,7 +35,7 @@ class DashboardController extends Controller
     private function dashboardLists(Request $request)
     {
         $lists = $request->user()->lists()->withCount('gifts')
-            ->with(['gifts' => fn ($query) => $query->with('media')->reorder()->orderByDesc('created_at')])
+            ->with(['gifts' => fn ($query) => $query->with('media')->orderBy('gifts.id')])
             ->with('users:id,name,avatar')->orderBy('lists.created_at')->get();
 
         foreach ($lists as $list) {
