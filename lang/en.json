@@ -2076,5 +2076,6 @@
     "Move up": "Move up",
     "Move down": "Move down",
     "Move :gift up": "Move :gift up",
-    "Move :gift down": "Move :gift down"
+    "Move :gift down": "Move :gift down",
+    "Your session expired. Open the page again and retry.": "Your session expired. Open the page again and retry."
 }

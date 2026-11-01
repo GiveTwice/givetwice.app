@@ -2076,5 +2076,6 @@
     "Move up": "Monter",
     "Move down": "Descendre",
     "Move :gift up": "Monter :gift",
-    "Move :gift down": "Descendre :gift"
+    "Move :gift down": "Descendre :gift",
+    "Your session expired. Open the page again and retry.": "Ta session a expiré. Rouvre la page et réessaie."
 }

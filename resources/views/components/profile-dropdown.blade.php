@@ -40,7 +40,7 @@
         @click="open = !open"
         type="button"
         class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-cream-200 hover:border-coral-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-coral-300 focus:ring-offset-2 overflow-hidden group"
-        :class="hasImage ? '' : 'bg-gradient-to-br from-coral-400 to-coral-500'"
+        :class="hasImage ? '' : 'bg-coral-500'"
         aria-expanded="false"
         aria-haspopup="true"
         aria-label="{{ __('User menu') }}"
@@ -79,7 +79,7 @@
                 <div class="flex items-center gap-4">
                     <div
                         class="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center overflow-hidden"
-                        :class="hasImage ? 'ring-2 ring-cream-200' : 'bg-gradient-to-br from-coral-400 to-coral-500'"
+                        :class="hasImage ? 'ring-2 ring-cream-200' : 'bg-coral-500'"
                     >
                         <template x-if="hasImage">
                             <img

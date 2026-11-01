@@ -69,7 +69,7 @@
         <div class="absolute top-4 -left-4 w-3 h-3 bg-red-400 rounded-full opacity-40 animate-pulse" style="animation-delay: 0.5s"></div>
     </div>
 
-    <p class="text-coral-400 font-semibold text-lg mb-2">404</p>
+    <p class="text-coral-600 font-semibold text-lg mb-2">404</p>
 
     <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
         {{ __("Oops! This page got lost") }}
