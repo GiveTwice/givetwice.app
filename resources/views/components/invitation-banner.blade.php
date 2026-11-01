@@ -26,7 +26,7 @@
                         </form>
                         <form action="{{ route('lists.invitation.decline', ['locale' => app()->getLocale(), 'token' => $invitation->token]) }}" method="POST" class="inline">
                             @csrf
-                            <button type="submit" class="px-3 py-1.5 text-gray-500 text-sm hover:text-gray-700 transition-colors">
+                            <button type="submit" class="btn-cancel text-sm">
                                 {{ __('Decline') }}
                             </button>
                         </form>

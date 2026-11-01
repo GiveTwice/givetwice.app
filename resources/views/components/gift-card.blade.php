@@ -52,7 +52,7 @@
             @endif
         @else
 
-            <div class="w-full h-full flex flex-col items-center justify-center text-cream-400" data-gift-placeholder>
+            <div class="w-full h-full flex flex-col items-center justify-center text-gray-600" data-gift-placeholder>
                 @if($isPending)
                     <div class="relative">
                         <x-icons.image-placeholder class="{{ $editable ? 'w-6 h-6' : 'w-12 h-12' }} animate-pulse" />
@@ -61,7 +61,7 @@
                     <span class="mt-2 text-sm font-medium">{{ __('Loading...') }}</span>
                 @elseif($isFailed)
                     <x-icons.warning class="{{ $editable ? 'w-6 h-6' : 'w-12 h-12' }} text-coral-300" />
-                    <span class="mt-2 text-sm font-medium text-coral-400">{{ __('Failed') }}</span>
+                    <span class="mt-2 text-sm font-medium text-coral-600">{{ __('Failed') }}</span>
                 @else
                     <x-icons.image-placeholder class="{{ $editable ? 'w-6 h-6' : 'w-12 h-12' }}" />
                     <span class="mt-2 text-sm font-medium">{{ __('No image') }}</span>

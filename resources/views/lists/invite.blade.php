@@ -63,7 +63,7 @@
 
             <div class="space-y-6 lg:col-span-2">
                 <div class="rounded-xl border border-cream-200 bg-white p-6">
-                    <h2 class="mb-4 text-lg font-semibold text-gray-900">{{ __('Collaborators') }}</h2>
+                    <x-section-heading class="mb-4">{{ __('Collaborators') }}</x-section-heading>
 
                 <div class="space-y-3">
                     @foreach($list->users as $user)
@@ -72,7 +72,7 @@
                                 @if($user->hasProfileImage())
                                     <img src="{{ $user->getProfileImageUrl('thumb') }}" alt="{{ $user->name }}" class="w-10 h-10 rounded-full object-cover">
                                 @else
-                                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-coral-400 to-coral-500 flex items-center justify-center">
+                                    <div class="w-10 h-10 rounded-full bg-coral-500 flex items-center justify-center">
                                         <span class="text-white font-bold text-sm">{{ $user->getInitials() }}</span>
                                     </div>
                                 @endif
@@ -80,10 +80,10 @@
                                     <p class="text-sm font-medium text-gray-900">
                                         {{ $user->name }}
                                         @if($user->id === auth()->id())
-                                            <span class="text-xs text-gray-400 font-normal">({{ __('you') }})</span>
+                                            <span class="text-sm text-gray-400 font-normal">({{ __('you') }})</span>
                                         @endif
                                     </p>
-                                    <p class="text-xs text-gray-500">{{ $user->email }}</p>
+                                    <p class="text-sm text-gray-500">{{ $user->email }}</p>
                                 </div>
                             </div>
                             @if($list->users->count() > 1 && $user->id !== auth()->id() && $user->id !== $list->creator_id)
@@ -102,7 +102,7 @@
 
                 @if($list->pendingInvitations->isNotEmpty())
                     <div class="rounded-xl border border-cream-200 bg-white p-6">
-                        <h2 class="mb-4 text-lg font-semibold text-gray-900">{{ __('Pending invitations') }}</h2>
+                        <x-section-heading class="mb-4">{{ __('Pending invitations') }}</x-section-heading>
 
                     <div class="space-y-3">
                         @foreach($list->pendingInvitations as $invitation)
@@ -113,7 +113,7 @@
                                     </div>
                                     <div>
                                         <p class="text-sm text-gray-600">{{ $invitation->email }}</p>
-                                        <p class="text-xs text-gray-400">{{ __('Invited :time', ['time' => $invitation->created_at->diffForHumans()]) }}</p>
+                                        <p class="text-sm text-gray-400">{{ __('Invited :time', ['time' => $invitation->created_at->diffForHumans()]) }}</p>
                                     </div>
                                 </div>
                                 <form action="{{ route('lists.invitation.cancel', ['locale' => app()->getLocale(), 'invitation' => $invitation->id]) }}" method="POST">
