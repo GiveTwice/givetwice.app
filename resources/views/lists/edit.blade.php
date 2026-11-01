@@ -132,7 +132,7 @@
 
         <x-danger-zone
             id="delete-list"
-            :description="__('Deleting a list is permanent. Your gifts stay — they just won\'t be grouped anymore.')"
+            :description="__('Deleting a list is permanent. Your gifts stay, they just won\'t be grouped anymore.')"
             :buttonText="__('Delete List')"
             :modalTitle="__('Delete List')"
             :modalMessage="__('This can\'t be undone. Your gifts won\'t be deleted, just ungrouped.')"

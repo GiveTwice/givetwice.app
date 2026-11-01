@@ -37,7 +37,7 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
-        // Social auth users have no password — skip password confirmation for them
+        // Social auth users have no password, skip password confirmation for them
         Fortify::confirmPasswordsUsing(function ($user, ?string $password) {
             if (is_null($user->password)) {
                 return true;

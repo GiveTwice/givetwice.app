@@ -13,7 +13,7 @@ beforeEach(function () {
     $this->user->lists()->attach($this->list->id);
 });
 
-describe('Gift store flow — URL input', function () {
+describe('Gift store flow, URL input', function () {
     it('creates a pending gift and redirects to fetching page', function () {
         $this->actingAs($this->user)
             ->post('/en/gifts', [
@@ -59,7 +59,7 @@ describe('Gift store flow — URL input', function () {
     });
 });
 
-describe('Gift store flow — text input', function () {
+describe('Gift store flow, text input', function () {
     it('creates a skipped gift with title and redirects to edit', function () {
         $this->actingAs($this->user)
             ->post('/en/gifts', [

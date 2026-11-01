@@ -25,7 +25,7 @@
             </div>
             <div class="text-center md:text-left">
                 <h2 class="text-2xl font-bold text-gray-900 mb-4">{{ __('Get in Touch') }}</h2>
-                <p class="text-lg text-gray-700 leading-relaxed mb-4">{{ __('Whether it\'s a feature question, a wishlist problem, or just a friendly wave — we\'re real people and we actually reply.') }}</p>
+                <p class="text-lg text-gray-700 leading-relaxed mb-4">{{ __('Whether it\'s a feature question, a wishlist problem, or just a friendly wave, we\'re real people and we actually reply.') }}</p>
                 <a href="mailto:hello@givetwice.com" class="inline-flex items-center text-xl font-semibold text-coral-600 hover:text-coral-700 transition-colors">
                     <span class="mr-2">&#9993;</span> hello@givetwice.com
                 </a>

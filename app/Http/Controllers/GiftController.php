@@ -72,7 +72,7 @@ class GiftController extends Controller
             ->defaultCurrency()->value;
 
         if ($url !== null) {
-            // URL path — check for duplicates
+            // URL path, check for duplicates
             if ($targetList->gifts()->where('url', $url)->exists()) {
                 return back()
                     ->withInput()
@@ -86,7 +86,7 @@ class GiftController extends Controller
                 'currency' => $localeCurrency,
             ]);
         } else {
-            // Text path — create with title, skip fetching
+            // Text path, create with title, skip fetching
             if (mb_strlen($input) > 255) {
                 return back()
                     ->withInput()

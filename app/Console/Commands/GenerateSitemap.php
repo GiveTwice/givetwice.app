@@ -73,7 +73,7 @@ class GenerateSitemap extends Command
 
             $url = Url::create("{$baseUrl}/{$locale}/{$slug}")
                 ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
-                ->setPriority(0.8); // Higher than occasion pages — these are core product pages
+                ->setPriority(0.8); // Higher than occasion pages, these are core product pages
 
             $sitemap->add($url);
         }

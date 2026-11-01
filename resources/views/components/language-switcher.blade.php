@@ -20,7 +20,7 @@
         $occasionKey = $currentRoute->parameter('occasion');
     }
 
-    // Exchange landing pages use locale-specific route names AND slugs —
+    // Exchange landing pages use locale-specific route names AND slugs , 
     // each locale has its own registered route (e.g. exchange-landing.lootjes-trekken-nl).
     $isExchangeLanding = $routeName && str_starts_with($routeName, 'exchange-landing.');
 @endphp

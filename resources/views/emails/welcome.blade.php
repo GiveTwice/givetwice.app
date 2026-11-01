@@ -8,11 +8,11 @@
         <h2 style="color: #374151; font-size: 16px; line-height: 1.4; font-weight: 600; margin: 0 0 16px;">{{ __("Here's how it works:") }}</h2>
         <div style="margin: 16px 0;">
             <p style="margin: 0; font-weight: 600;">{{ __('1. Add your favorite items') }}</p>
-            <p style="margin: 4px 0 0;">{{ __('Paste a link from any store — we grab the details') }}</p>
+            <p style="margin: 4px 0 0;">{{ __('Paste a link from any store, we grab the details') }}</p>
         </div>
         <div style="margin: 16px 0;">
             <p style="margin: 0; font-weight: 600;">{{ __('2. Share with friends & family') }}</p>
-            <p style="margin: 4px 0 0;">{{ __('Send the link however you want — text, email, carrier pigeon') }}</p>
+            <p style="margin: 4px 0 0;">{{ __('Send the link however you want, text, email, carrier pigeon') }}</p>
         </div>
         <div style="margin: 16px 0 0;">
             <p style="margin: 0; font-weight: 600;">{{ __('3. Receive perfect gifts') }}</p>

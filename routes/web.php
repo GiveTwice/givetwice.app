@@ -102,7 +102,7 @@ Route::prefix('{locale}')
             ->whereNumber('list')
             ->name('public.list');
 
-        // Gift exchange landing pages (public — SEO entry points)
+        // Gift exchange landing pages (public, SEO entry points)
         Route::get('/{exchangeType}', [GiftExchangeController::class, 'landing'])
             ->where('exchangeType', 'lootjes-trekken|secret-santa|tirage-au-sort')
             ->name('exchanges.landing');

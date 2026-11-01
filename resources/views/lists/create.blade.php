@@ -88,7 +88,7 @@
                             </div>
                             <div>
                                 <p class="font-medium text-gray-700">{{ __('One list or many') }}</p>
-                                <p class="form-help mt-0">{{ __('Birthdays, holidays, secret wishlists — keep them separate or lump them together.') }}</p>
+                                <p class="form-help mt-0">{{ __('Birthdays, holidays, secret wishlists, keep them separate or lump them together.') }}</p>
                             </div>
                         </div>
 
