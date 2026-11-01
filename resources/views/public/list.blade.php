@@ -16,7 +16,7 @@
 @endphp
 <div x-data="publicList({ slug: @js($list->slug), showReservations: @js($showReservations) })">
     <header class="mb-3 flex flex-col gap-1.5">
-        <h1 class="text-xl font-bold text-gray-900 wrap-anywhere sm:text-3xl">{{ $list->name }}</h1>
+        <h1 class="text-2xl font-bold text-gray-900 wrap-anywhere sm:text-3xl">{{ $list->name }}</h1>
         <p class="text-xs text-gray-700">{{ __('Created by :name', ['name' => $list->creator->name]) }}</p>
         @if($list->occasion_date)
             <p class="text-xs text-gray-700">
@@ -47,7 +47,7 @@
         @if($isOwner)
             <div class="flex flex-wrap items-center gap-2 text-sm">
                 <a class="btn-primary" href="{{ route('gifts.create', ['locale' => app()->getLocale(), 'list' => $list->id]) }}">{{ __('Add Gift') }}</a>
-                <a class="text-coral-600" href="{{ route('list.edit', ['locale' => app()->getLocale(), 'list' => $list]) }}">{{ __('Edit List') }}</a>
+                <a class="btn-link" href="{{ route('list.edit', ['locale' => app()->getLocale(), 'list' => $list]) }}">{{ __('Edit List') }}</a>
                 <x-share-modal :list="$list" />
             </div>
         @endif
