@@ -75,7 +75,7 @@ This project is operated by an autonomous multi-agent system. State lives in `.a
 - **Never** invoke `claude` or spawn sub-agents — each agent runs as its own cron job
 - **Max** 500 lines net new code per PR
 - **Always** run Pint + PHPStan + tests before creating a PR
-- Flag migrations with `NEEDS_DEPLOY_REVIEW` label
+- Label PRs with a migration `has-migration`
 
 ### Lesson: Agent Containment (2026-03-23)
 
