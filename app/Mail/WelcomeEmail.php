@@ -21,7 +21,7 @@ class WelcomeEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: __('Welcome to :app!', ['app' => config('app.name')]),
+            subject: __('Welcome to :app!', ['app' => 'GiveTwice']),
         );
     }
 

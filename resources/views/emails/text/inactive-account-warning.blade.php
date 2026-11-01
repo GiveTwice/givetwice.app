@@ -10,3 +10,5 @@
 {!! __('Log in to keep your account') !!}: {!! $loginUrl !!}
 
 {!! __('You can also export your data before deletion from your') !!} {!! __('settings page') !!}: {!! $settingsUrl !!}
+
+@include('emails.text.footer')
