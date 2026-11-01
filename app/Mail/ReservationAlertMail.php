@@ -6,10 +6,16 @@ use App\Models\ReservationAlert;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Support\Collection;
 
 class ReservationAlertMail extends Mailable
 {
-    public function __construct(public ReservationAlert $alert) {}
+    public Collection $alerts;
+
+    public function __construct(public ReservationAlert $alert, ?Collection $alerts = null)
+    {
+        $this->alerts = $alerts ?? collect([$alert]);
+    }
 
     public function envelope(): Envelope
     {
