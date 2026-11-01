@@ -12,9 +12,14 @@ class DashboardController extends Controller
     {
         $lists = $this->dashboardLists($request);
         $exchanges = $this->dashboardExchanges($request);
+        $selectedList = $lists->firstWhere('slug', $request->query('list-added'))
+            ?? $lists->firstWhere('id', $request->integer('list', $request->session()->get('dashboard_list_id', 0)))
+            ?? $lists->first();
+        $request->session()->put('dashboard_list_id', $selectedList?->id);
 
         return view('dashboard', [
             'lists' => $lists,
+            'selectedListId' => $selectedList?->id,
             'exchanges' => $exchanges,
         ]);
     }
