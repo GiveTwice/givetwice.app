@@ -30,11 +30,12 @@ describe('DeclineListInvitationAction', function () {
             ]);
 
             $action = new DeclineListInvitationAction;
+            $this->trackQueries();
             $action->execute($invitation->token, $invitee);
 
-            expect($invitation->fresh()->declined_at)->not->toBeNull();
-
             $this->assertQueriesAreEfficient();
+
+            expect($invitation->fresh()->declined_at)->not->toBeNull();
         });
 
         it('does not attach user to the list', function () {
