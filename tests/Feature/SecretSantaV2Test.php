@@ -1,6 +1,7 @@
 <?php
 
 use App\Actions\PerformDrawAction;
+use App\Jobs\SendExchangeReminder;
 use App\Mail\ExchangeRevealReminderMail;
 use App\Mail\ExchangeWishlistNudgeMail;
 use App\Mail\GiftExchangeInviteMail;
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\Queue;
 describe('Secret Santa v2', function () {
     beforeEach(function () {
         Mail::fake();
-        Queue::fake();
+        Queue::fake()->except([SendExchangeReminder::class]);
         $this->organizer = User::factory()->create();
         $this->exchange = GiftExchange::factory()->create(['organizer_id' => $this->organizer->id, 'locale' => 'en']);
         $this->participants = GiftExchangeParticipant::factory()->count(4)->create(['exchange_id' => $this->exchange->id, 'email' => null]);
@@ -165,13 +166,13 @@ describe('Secret Santa v2', function () {
         $this->exchange->update(['draw_completed_at' => now()->subDays(4), 'event_date' => now()->addMonth()]);
         $this->get($participant->revealUrl());
         $this->artisan('exchanges:send-reminders')->assertSuccessful();
-        Mail::assertQueued(ExchangeRevealReminderMail::class, 1);
+        Mail::assertSent(ExchangeRevealReminderMail::class, 1);
         $this->exchange->participants()->update(['viewed_at' => now()->subDays(2)]);
         $this->artisan('exchanges:send-reminders')->assertSuccessful();
-        Mail::assertQueued(ExchangeWishlistNudgeMail::class, 1);
+        Mail::assertSent(ExchangeWishlistNudgeMail::class, 1);
         $participant->update(['wishlist_id' => GiftList::factory()->create()->id]);
         $this->artisan('exchanges:send-reminders')->assertSuccessful();
-        Mail::assertQueued(ExchangeWishlistNudgeMail::class, 1);
+        Mail::assertSent(ExchangeWishlistNudgeMail::class, 1);
         $this->actingAs($this->organizer)->post($this->base.'/resend-invite/'.$this->participants[1]->id)->assertUnprocessable();
     });
 });

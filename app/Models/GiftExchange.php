@@ -6,8 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
+/**
+ * @property Carbon|null $event_date
+ * @property Carbon|null $draw_completed_at
+ */
 class GiftExchange extends Model
 {
     use HasFactory;

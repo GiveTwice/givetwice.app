@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\SupportedLocale;
+use Illuminate\Support\Arr;
 
 beforeEach(function () {
     $this->bladeKeys = extractBladeTranslationKeys();
@@ -30,9 +31,21 @@ it('has all Blade template keys in the base English translation file', function 
     $missing = [];
 
     foreach ($this->bladeKeys as $key) {
-        if (! isset($en[$key])) {
-            $missing[] = $key;
+        if (isset($en[$key])) {
+            continue;
         }
+        if (str_contains($key, '.')) {
+            [$group, $item] = explode('.', $key, 2);
+            $present = true;
+            foreach (SupportedLocale::values() as $locale) {
+                $path = lang_path("{$locale}/{$group}.php");
+                $present = $present && is_file($path) && Arr::has(require $path, $item);
+            }
+            if ($present) {
+                continue;
+            }
+        }
+        $missing[] = $key;
     }
 
     expect($missing)
