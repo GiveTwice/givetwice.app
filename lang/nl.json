@@ -400,7 +400,7 @@
     "Create List": "Lijst maken",
     "Create Wishlist": "Maak verlanglijstje",
     "Create Your Own": "Maak je eigen",
-    "Create a free account and start adding gifts together.": "Maak een gratis account aan en begin samen cadeaus toe te voegen.",
+    "Create a free account and start adding gifts together.": "Maak een gratis account en vul samen het lijstje aan.",
     "Create a free account to save your group and draw names.": "Maak een gratis account om je groep op te slaan en lootjes te trekken.",
     "Create a group": "Maak een groep",
     "Create a password": "Maak een wachtwoord",
@@ -1090,7 +1090,7 @@
     "Plan eight nights of gifts": "Plan acht avonden cadeaus",
     "Planning ahead?": "Vooruit plannen?",
     "Please check your email to confirm your claim.": "Controleer je e-mail om je reservering te bevestigen.",
-    "Please click the button below to verify your email address.": "Klik op de knop hieronder om je e-mailadres te verifiëren.",
+    "Please click the button below to verify your email address.": "Bevestig even je e-mailadres. Dan is alles klaar voor je lijstje.",
     "Please finish setting up two-factor authentication.": "Voltooi de instellingen van tweefactorauthenticatie.",
     "Please keep proportions intact, don't modify the colors, and leave enough whitespace around the logo.": "Behoud de verhoudingen, pas de kleuren niet aan en laat voldoende witruimte rond het logo.",
     "Plush Bunny": "Plush Bunny",
@@ -1652,7 +1652,7 @@
     "Yes! You can invite anyone by email to collaborate on a list. Collaborators can add, edit, and remove gifts - great for couples building a shared wishlist or parents managing a list for their kids.": "Ja! Je kan iedereen per e-mail uitnodigen om samen aan een lijst te werken. Deelnemers kunnen cadeaus toevoegen, bewerken en verwijderen - ideaal voor koppels die een gedeelde verlanglijst maken of ouders die een lijst voor hun kinderen beheren.",
     "Yes. When you view someone's list, you can follow it to keep track. You'll get a daily email digest whenever they add or remove gifts - so you always know what they're wishing for. You can manage notifications per list or turn them off entirely.": "Ja. Wanneer je iemands lijst bekijkt, kan je deze volgen. Je ontvangt een dagelijkse e-mail wanneer er cadeaus worden toegevoegd of verwijderd - zodat je altijd weet wat ze wensen. Je kan meldingen per lijst beheren of helemaal uitschakelen.",
     "You are already a collaborator on this list.": "Je werkt al samen aan deze lijst.",
-    "You are receiving this email because we received a password reset request for your account.": "Je ontvangt deze e-mail omdat we een verzoek hebben ontvangen om het wachtwoord van je account te resetten.",
+    "You are receiving this email because we received a password reset request for your account.": "Je vroeg een nieuw wachtwoord aan. Met de knop hieronder kies je er eentje.",
     "You can also export your data before deletion from your": "Je kunt ook je gegevens exporteren voor verwijdering vanuit je",
     "You can also manage notifications for individual wishlists from the": "Je kunt ook notificaties voor individuele verlanglijstjes beheren vanaf de",
     "You can create additional lists for different occasions or recipients.": "Je kunt extra lijsten maken voor verschillende gelegenheden of ontvangers.",
@@ -2053,5 +2053,7 @@
     "You're invited!": "Beheer je mee?",
     "Create account & accept": "Maak een account en doe mee",
     "Your draw is ready": "Je lootje ligt klaar",
-    "Open your draw to see who you are buying for in :group.": "Open je lootje en ontdek voor wie jij koopt in :group."
+    "Open your draw to see who you are buying for in :group.": "Open je lootje en ontdek voor wie jij koopt in :group.",
+    "You can also accept or decline this invitation from your dashboard.": "Je kunt ook via je dashboard beslissen.",
+    "This invitation expires in 30 days.": "Deze uitnodiging is 30 dagen geldig."
 }

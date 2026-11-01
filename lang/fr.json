@@ -400,7 +400,7 @@
     "Create List": "Créer une liste",
     "Create Wishlist": "Créer une liste",
     "Create Your Own": "Crée la tienne",
-    "Create a free account and start adding gifts together.": "Crée un compte gratuit et commencez à ajouter des cadeaux ensemble.",
+    "Create a free account and start adding gifts together.": "Crée un compte gratuit et ajoutez vos idées ensemble.",
     "Create a free account to save your group and draw names.": "Crée un compte gratuit pour sauvegarder ton groupe et tirer les noms.",
     "Create a group": "Créer un groupe",
     "Create a password": "Crée un mot de passe",
@@ -1090,7 +1090,7 @@
     "Plan eight nights of gifts": "Planifie huit nuits de cadeaux",
     "Planning ahead?": "Planification à l'avance ?",
     "Please check your email to confirm your claim.": "Vérifie ton e-mail pour confirmer ta réservation.",
-    "Please click the button below to verify your email address.": "Clique sur le bouton ci-dessous pour vérifier ton adresse e-mail :",
+    "Please click the button below to verify your email address.": "Confirme ton adresse e-mail pour commencer ta liste.",
     "Please finish setting up two-factor authentication.": "Termine la configuration de l'authentification à deux facteurs.",
     "Please keep proportions intact, don't modify the colors, and leave enough whitespace around the logo.": "Conservez les proportions, ne modifiez pas les couleurs et laissez suffisamment d'espace autour du logo.",
     "Plush Bunny": "Plush Bunny",
@@ -1652,7 +1652,7 @@
     "Yes! You can invite anyone by email to collaborate on a list. Collaborators can add, edit, and remove gifts - great for couples building a shared wishlist or parents managing a list for their kids.": "Oui ! Vous pouvez inviter n'importe qui par e-mail à collaborer sur une liste. Les collaborateurs peuvent ajouter, modifier et supprimer des cadeaux - idéal pour les couples qui créent une liste partagée ou les parents qui gèrent une liste pour leurs enfants.",
     "Yes. When you view someone's list, you can follow it to keep track. You'll get a daily email digest whenever they add or remove gifts - so you always know what they're wishing for. You can manage notifications per list or turn them off entirely.": "Oui. Quand vous consultez la liste de quelqu'un, vous pouvez la suivre. Vous recevrez un e-mail quotidien quand des cadeaux sont ajoutés ou supprimés - pour toujours savoir ce qu'ils souhaitent. Vous pouvez gérer les notifications par liste ou les désactiver entièrement.",
     "You are already a collaborator on this list.": "Tu collabores déjà sur cette liste.",
-    "You are receiving this email because we received a password reset request for your account.": "Tu reçois cet e-mail parce qu'on a reçu une demande de réinitialisation de mot de passe pour ton compte.",
+    "You are receiving this email because we received a password reset request for your account.": "Tu as demandé un nouveau mot de passe. Choisis-en un avec le bouton ci-dessous.",
     "You can also export your data before deletion from your": "Vous pouvez également exporter vos données avant la suppression depuis votre",
     "You can also manage notifications for individual wishlists from the": "Tu peux aussi gérer les notifications pour chaque liste depuis la",
     "You can create additional lists for different occasions or recipients.": "Tu peux créer des listes supplémentaires pour différentes occasions ou destinataires.",
@@ -2053,5 +2053,7 @@
     "You're invited!": "On gère ensemble ?",
     "Create account & accept": "Crée un compte et rejoins la liste",
     "Your draw is ready": "Ton tirage est prêt",
-    "Open your draw to see who you are buying for in :group.": "Ouvre ton tirage pour découvrir à qui tu offres un cadeau dans :group."
+    "Open your draw to see who you are buying for in :group.": "Ouvre ton tirage pour découvrir à qui tu offres un cadeau dans :group.",
+    "You can also accept or decline this invitation from your dashboard.": "Tu peux aussi répondre depuis ton tableau de bord.",
+    "This invitation expires in 30 days.": "Cette invitation est valable 30 jours."
 }
