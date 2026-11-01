@@ -47,7 +47,7 @@ describe('list update bundles', function () {
         $this->list->gifts()->attach($gift);
         $this->travel(11)->minutes();
         $this->artisan('friends:send-digest')->assertSuccessful();
-        Mail::assertNothingSent();
+        Mail::assertNotSent(FriendDigestMail::class, fn ($mail) => $mail->hasTo($this->follower->email));
     })->with(['actor', 'unverified', 'global', 'list']);
 
     it('lets a signed recipient mute without logging in, after confirmation', function () {

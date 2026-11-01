@@ -14,12 +14,15 @@ class FollowedList extends Model
         'list_id',
         'notifications',
         'last_change_id',
+        'manager_updates',
     ];
 
     protected static function booted(): void
     {
         static::creating(function (self $follow): void {
-            $follow->last_change_id = ListChange::where('list_id', $follow->list_id)->max('id') ?? 0;
+            if (! $follow->isDirty('last_change_id')) {
+                $follow->last_change_id = ListChange::where('list_id', $follow->list_id)->max('id') ?? 0;
+            }
         });
     }
 
@@ -34,6 +37,7 @@ class FollowedList extends Model
     {
         return [
             'notifications' => 'boolean',
+            'manager_updates' => 'boolean',
         ];
     }
 

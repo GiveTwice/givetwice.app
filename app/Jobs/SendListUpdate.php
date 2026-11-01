@@ -32,8 +32,17 @@ class SendListUpdate implements ShouldQueue
             if (! $follow->user->friend_notifications_enabled) {
                 return;
             }
-            if (! $follow->isVisibleTo($follow->user)) {
+            if (! $follow->list) {
                 return;
+            }
+            $managesList = $follow->list->creator_id === $follow->user_id;
+            if (! $managesList) {
+                $managesList = $follow->list->hasUser($follow->user);
+            }
+            if ($follow->manager_updates) {
+                if (! $managesList) {
+                    return;
+                }
             }
             $changes = ListChange::where('list_id', $follow->list_id)->where('id', '>', $follow->last_change_id)
                 ->where(fn ($query) => $query->whereNull('actor_id')->orWhere('actor_id', '!=', $follow->user_id))
@@ -45,9 +54,11 @@ class SendListUpdate implements ShouldQueue
                 return;
             }
             $included = $changes;
-            $alerted = ReservationAlert::where('email', $follow->user->email)
-                ->where('list_id', $follow->list_id)->where('updated_at', '>=', $changes->first()->created_at)->pluck('gift_id');
-            $included = $changes->reject(fn ($change) => $alerted->contains($change->gift_id));
+            if (! $managesList) {
+                $alerted = ReservationAlert::where('email', $follow->user->email)
+                    ->where('list_id', $follow->list_id)->where('updated_at', '>=', $changes->first()->created_at)->pluck('gift_id');
+                $included = $changes->reject(fn ($change) => $alerted->contains($change->gift_id));
+            }
             if ($included->isEmpty()) {
                 $follow->update(['last_change_id' => $changes->last()->id]);
 

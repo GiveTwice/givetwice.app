@@ -94,6 +94,7 @@ class GiftList extends Model
         return $this->belongsTo(User::class, 'creator_id');
     }
 
+    /** @return BelongsToMany<User, $this> */
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'list_user', 'list_id', 'user_id')
