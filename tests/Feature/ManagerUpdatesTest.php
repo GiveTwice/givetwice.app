@@ -17,7 +17,7 @@ describe('manager content updates', function () {
         $this->mom = User::factory()->create();
         $this->partner = User::factory()->create();
         $this->list = GiftList::factory()->create(['creator_id' => $this->mom->id]);
-        $this->list->users()->attach([$this->mom->id, $this->partner->id]);
+        $this->list->users()->attach([$this->mom->id, $this->partner->id], ['joined_at' => now()]);
         $this->actingAs($this->partner);
         $this->gift = Gift::factory()->skipped()->create(['user_id' => $this->partner->id]);
         $this->list->gifts()->attach($this->gift);
