@@ -124,6 +124,12 @@ class GiftList extends Model
             ->where('expires_at', '>', now());
     }
 
+    /** @return HasMany<ListChange, $this> */
+    public function changes(): HasMany
+    {
+        return $this->hasMany(ListChange::class, 'list_id');
+    }
+
     public function followers(): HasMany
     {
         return $this->hasMany(FollowedList::class, 'list_id');

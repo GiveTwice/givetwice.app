@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 
 beforeEach(function () {
+    $this->travelTo(now()->setDate(2026, 11, 3)->setTime(12, 0));
     Queue::fake()->except([SendListUpdate::class]);
     Mail::fake();
 });
@@ -385,7 +386,7 @@ describe('Friends Feature', function () {
             $follower = User::factory()->create([
                 'email_verified_at' => now(),
                 'friend_notifications_enabled' => true,
-                'last_friend_digest_at' => now()->subDays(2),
+                'last_friend_digest_at' => now()->subDays(8),
             ]);
 
             $list = GiftList::factory()->create(['creator_id' => $creator->id]);
@@ -446,7 +447,7 @@ describe('Friends Feature', function () {
             $follower = User::factory()->create([
                 'email_verified_at' => now(),
                 'friend_notifications_enabled' => false,
-                'last_friend_digest_at' => now()->subDays(2),
+                'last_friend_digest_at' => now()->subDays(8),
             ]);
 
             $list = GiftList::factory()->create(['creator_id' => $creator->id]);
@@ -475,7 +476,7 @@ describe('Friends Feature', function () {
             $follower = User::factory()->create([
                 'email_verified_at' => now(),
                 'friend_notifications_enabled' => true,
-                'last_friend_digest_at' => now()->subDays(2),
+                'last_friend_digest_at' => now()->subDays(8),
             ]);
 
             $list = GiftList::factory()->create(['creator_id' => $creator->id]);
@@ -503,7 +504,7 @@ describe('Friends Feature', function () {
             $user = User::factory()->create([
                 'email_verified_at' => now(),
                 'friend_notifications_enabled' => true,
-                'last_friend_digest_at' => now()->subDays(2),
+                'last_friend_digest_at' => now()->subDays(8),
             ]);
 
             $list = GiftList::factory()->create(['creator_id' => $user->id]);

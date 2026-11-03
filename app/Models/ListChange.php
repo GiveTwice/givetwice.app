@@ -18,6 +18,18 @@ class ListChange extends Model
         return $this->belongsTo(GiftList::class, 'list_id');
     }
 
+    /** @return BelongsTo<Gift, $this> */
+    public function gift(): BelongsTo
+    {
+        return $this->belongsTo(Gift::class);
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function actor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'actor_id');
+    }
+
     public static function record(Gift $gift, int $listId, string $kind): void
     {
         static::create([

@@ -55,6 +55,18 @@ class FollowedList extends Model
         return $this->belongsTo(GiftList::class, 'list_id');
     }
 
+    public function scopeDigestReady(Builder $query): Builder
+    {
+        return $query->where('notifications', true)
+            ->whereHas('list', fn ($list) => $list
+                ->whereDoesntHave('changes', fn ($changes) => $changes->where('created_at', '>', now()->subMinutes(10)))
+                ->whereHas('changes', fn ($changes) => $changes->whereColumn('list_changes.id', '>', 'followed_lists.last_change_id')
+                    ->where(fn ($actor) => $actor->whereNull('actor_id')->orWhereColumn('actor_id', '!=', 'followed_lists.user_id'))))
+            ->where(fn ($follow) => $follow->where('manager_updates', false)
+                ->orWhereHas('list', fn ($list) => $list->whereColumn('creator_id', 'followed_lists.user_id')
+                    ->orWhereHas('users', fn ($users) => $users->whereColumn('users.id', 'followed_lists.user_id'))));
+    }
+
     public function scopeVisibleTo(Builder $query, User $user): Builder
     {
         return $query->whereHas('list', function (Builder $listQuery) use ($user) {

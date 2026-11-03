@@ -144,7 +144,7 @@
                 </div>
                 <div>
                     <h3 class="font-semibold text-lg text-gray-900 mb-2">{{ __('Can I follow someone\'s wishlist?') }}</h3>
-                    <p class="text-gray-600 leading-relaxed">{{ __('Yes. When you view someone\'s list, you can follow it to keep track. You\'ll get a daily email digest whenever they add or remove gifts - so you always know what they\'re wishing for. You can manage notifications per list or turn them off entirely.') }}</p>
+                    <p class="text-gray-600 leading-relaxed">{{ __('Yes. Follow a list to stay in the loop. We bundle updates into one email a week, or at most one a day in the 30 days before an occasion. Only when something changes, always during the day. You can mute each list or turn emails off entirely.') }}</p>
                 </div>
             </div>
         </div>
@@ -258,7 +258,7 @@
             "name": "{{ __('Can I follow someone\'s wishlist?') }}",
             "acceptedAnswer": {
                 "@@type": "Answer",
-                "text": {!! json_encode(__('Yes. When you view someone\'s list, you can follow it to keep track. You\'ll get a daily email digest whenever they add or remove gifts - so you always know what they\'re wishing for. You can manage notifications per list or turn them off entirely.'), JSON_UNESCAPED_UNICODE) !!}
+                "text": {!! json_encode(__('Yes. Follow a list to stay in the loop. We bundle updates into one email a week, or at most one a day in the 30 days before an occasion. Only when something changes, always during the day. You can mute each list or turn emails off entirely.'), JSON_UNESCAPED_UNICODE) !!}
             }
         }
     ]

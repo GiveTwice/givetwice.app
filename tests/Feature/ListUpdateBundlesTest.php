@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Queue;
 
 describe('list update bundles', function () {
     beforeEach(function () {
+        $this->travelTo(now()->setDate(2026, 11, 3)->setTime(12, 0));
         Mail::fake();
         Queue::fake()->except([SendListUpdate::class]);
         $this->owner = User::factory()->create();

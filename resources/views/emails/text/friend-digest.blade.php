@@ -5,14 +5,17 @@
 
 @foreach($digestData as $data)
 {!! str_replace("\u{2014}", '·', $data['list']->name) !!}
-{!! __('by') !!} {!! $data['list']->creator->name !!}
+{!! __('list-updates.actors', ['names' => $data['actors'] ?? $data['list']->creator->name]) !!}
 
 @foreach([__('Added') => $data['added_gifts'], __('list-updates.edited') => $data['edited_gifts'] ?? collect(), __('Removed') => $data['removed_gifts']] as $label => $gifts)
 @if($gifts->isNotEmpty())
 {!! $label !!}
-@foreach($gifts as $gift)
+@foreach($gifts->take(1) as $gift)
 - {!! $gift->title ?: __('Untitled gift') !!}
 @endforeach
+@if($gifts->count() > 1)
+{!! __('list-updates.more', ['count' => $gifts->count() - 1]) !!}
+@endif
 
 @endif
 @endforeach

@@ -11,12 +11,13 @@ use Illuminate\Support\Facades\Queue;
 
 describe('manager content updates', function () {
     beforeEach(function () {
+        $this->travelTo(now()->setDate(2026, 11, 3)->setTime(12, 0));
         Mail::fake();
         Queue::fake()->except([SendListUpdate::class]);
         $this->mom = User::factory()->create();
         $this->partner = User::factory()->create();
         $this->list = GiftList::factory()->create(['creator_id' => $this->mom->id]);
-        $this->list->users()->attach([$this->mom->id, $this->partner->id]);
+        $this->list->users()->attach([$this->mom->id, $this->partner->id], ['joined_at' => now()]);
         $this->actingAs($this->partner);
         $this->gift = Gift::factory()->skipped()->create(['user_id' => $this->partner->id]);
         $this->list->gifts()->attach($this->gift);
@@ -38,7 +39,7 @@ describe('manager content updates', function () {
         $this->artisan('friends:send-digest')->assertSuccessful();
         Mail::assertSent(FriendDigestMail::class, function ($mail) use ($buyer) {
             $data = $mail->digestData->sole();
-            expect(array_keys($data))->toBe(['list', 'added_gifts', 'edited_gifts', 'removed_gifts', 'mute_url']);
+            expect(array_keys($data))->toBe(['list', 'added_gifts', 'edited_gifts', 'removed_gifts', 'actors', 'mute_url']);
             foreach ($data['added_gifts'] as $change) {
                 expect(array_keys($change->getAttributes()))->not->toContain('claimer_email', 'reservation', 'confirmed_at');
             }
