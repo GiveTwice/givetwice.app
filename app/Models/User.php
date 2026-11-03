@@ -227,6 +227,20 @@ class User extends Authenticatable implements HasLocalePreference, HasMedia, Mus
         );
     }
 
+    public function scopeDueForFriendDigest(Builder $query): Builder
+    {
+        $today = now('Europe/Brussels')->toDateString();
+        $soon = now('Europe/Brussels')->addDays(30)->toDateString();
+
+        return $query->whereNotNull('email_verified_at')->where('friend_notifications_enabled', true)
+            ->whereIn('id', FollowedList::query()->digestReady()->select('user_id'))
+            ->where(fn ($cap) => $cap->whereNull('last_friend_digest_at')
+                ->orWhere('last_friend_digest_at', '<=', now()->subDays(7))
+                ->orWhere(fn ($daily) => $daily->where('last_friend_digest_at', '<=', now()->subHours(24))
+                    ->whereIn('id', FollowedList::query()->digestReady()->select('user_id')
+                        ->whereHas('list', fn ($list) => $list->whereDate('occasion_date', '>=', $today)->whereDate('occasion_date', '<=', $soon)))));
+    }
+
     #[Scope]
     protected function inactiveSince(Builder $query, int $months): Builder
     {

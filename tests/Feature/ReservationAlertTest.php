@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 
 beforeEach(function () {
+    $this->travelTo(now()->setDate(2026, 11, 3)->setTime(12, 0));
     Mail::fake();
     Queue::fake()->except([SendListUpdate::class]);
     $this->list = GiftList::factory()->create();

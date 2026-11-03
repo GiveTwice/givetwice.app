@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Queue;
 
 describe('manager content updates', function () {
     beforeEach(function () {
+        $this->travelTo(now()->setDate(2026, 11, 3)->setTime(12, 0));
         Mail::fake();
         Queue::fake()->except([SendListUpdate::class]);
         $this->mom = User::factory()->create();
@@ -38,7 +39,7 @@ describe('manager content updates', function () {
         $this->artisan('friends:send-digest')->assertSuccessful();
         Mail::assertSent(FriendDigestMail::class, function ($mail) use ($buyer) {
             $data = $mail->digestData->sole();
-            expect(array_keys($data))->toBe(['list', 'added_gifts', 'edited_gifts', 'removed_gifts', 'mute_url']);
+            expect(array_keys($data))->toBe(['list', 'added_gifts', 'edited_gifts', 'removed_gifts', 'actors', 'mute_url']);
             foreach ($data['added_gifts'] as $change) {
                 expect(array_keys($change->getAttributes()))->not->toContain('claimer_email', 'reservation', 'confirmed_at');
             }
@@ -75,6 +76,7 @@ it('stops a promoted follower subscription when their manager access is removed'
     $list = GiftList::factory()->create(['creator_id' => $owner->id]);
     $follow = FollowedList::create(['user_id' => $manager->id, 'list_id' => $list->id, 'notifications' => false]);
     $list->users()->attach($manager);
+    $list->gifts()->attach(Gift::factory()->skipped()->create(['user_id' => $owner->id]));
     $this->artisan('friends:send-digest')->assertSuccessful();
     expect($follow->fresh()->manager_updates)->toBeTrue()->and($follow->fresh()->notifications)->toBeFalse();
     $follow->update(['notifications' => true]);

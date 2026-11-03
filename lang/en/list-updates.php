@@ -1,6 +1,9 @@
 <?php
 
 return [
+    'subject' => '{1} Updates from :name|[2,*] Updates from :name and :count others',
+    'more' => '+ :count more',
+    'actors' => 'Changed by :names',
     'intro' => 'Here’s what changed on your lists.',
     'view' => 'View list',
     'settings' => 'Manage your notifications',

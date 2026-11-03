@@ -37,7 +37,7 @@ it('replays the report week with the intended email count for each persona', fun
     $gifts = [];
     $grandma = null;
     foreach (range(2, 8) as $day) {
-        $this->travelTo(now()->setDate(2026, 11, $day)->setTime(19, 0));
+        $this->travelTo(now()->setDate(2026, 11, $day)->setTime(17, 0));
         $this->actingAs($mom);
         foreach (range(1, [2 => 3, 3 => 3, 4 => 2][$day] ?? 1) as $number) {
             if ($day > 4) {
@@ -77,6 +77,6 @@ it('replays the report week with the intended email count for each persona', fun
         }
         $totals[$persona] = $total;
     }
-    expect($totals)->toBe(['mom' => 3, 'partner' => 4, 'grandma' => 1, 'lien' => 5]);
+    expect($totals)->toBe(['mom' => 2, 'partner' => 2, 'grandma' => 1, 'lien' => 2]);
     Mail::assertSent(FriendDigestMail::class, fn ($mail) => $mail->locale === 'nl');
 });

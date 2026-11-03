@@ -24,7 +24,10 @@ class FriendDigestMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: __('Updates from your friends\' wishlists'),
+            subject: trans_choice('list-updates.subject', $this->digestData->count(), [
+                'name' => $this->digestData->first()['list']->name,
+                'count' => $this->digestData->count() - 1,
+            ]),
         );
     }
 
