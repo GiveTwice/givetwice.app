@@ -37,7 +37,10 @@ class SendReservationReceipt implements ShouldQueue
         $bundle = $listId ?? 'gift:'.$seed->gift_id;
         Cache::lock('reservation-receipt:'.hash('sha256', $email).':'.$bundle, 120)->block(5, function () use ($seed, $email, $listId): void {
             $seed->getConnection()->transaction(function () use ($seed, $email, $listId): void {
-                $query = Claim::with('user', 'gift.media', 'gift.lists')->where('claimer_email', $email)
+                $query = Claim::with('user', 'gift.media', 'gift.lists')
+                    ->where(fn ($recipient) => $recipient->where('claimer_email', $email)
+                        ->orWhere(fn ($account) => $account->whereNull('claimer_email')
+                            ->whereHas('user', fn ($user) => $user->where('email', $email))))
                     ->whereNotNull('confirmed_at')->whereNotNull('receipt_requested_at')->whereNull('receipt_sent_at');
                 if ($listId === null) {
                     $query->whereNull('reservation->list_id')->where('gift_id', $seed->gift_id);

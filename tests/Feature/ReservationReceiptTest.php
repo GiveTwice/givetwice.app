@@ -122,3 +122,15 @@ it('renders multipart receipts with each gifts undo link in all locales', functi
         expect(html_entity_decode($message->getHtmlBody()))->toContain($url);
     }
 })->with(['en', 'nl', 'fr']);
+
+it('can resend older account reservations without a stored claimer address', function () {
+    $buyer = User::factory()->create();
+    $gift = Gift::factory()->skipped()->create(['user_id' => $this->list->creator_id]);
+    $this->list->gifts()->attach($gift);
+    $claim = Claim::factory()->create(['gift_id' => $gift->id, 'user_id' => $buyer->id]);
+    Claim::query()->whereKey($claim->id)->update(['claimer_email' => null]);
+    SendReservationReceipt::request($claim, 'en');
+    $this->travel(10)->minutes();
+    (new SendReservationReceipt($claim->id))->handle();
+    Mail::assertSent(ReservationMail::class, fn ($mail) => $mail->hasTo($buyer->email));
+});
