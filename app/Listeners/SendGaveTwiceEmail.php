@@ -3,8 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\GiftClaimed;
-use App\Mail\ReservationMail;
-use Illuminate\Support\Facades\Mail;
+use App\Jobs\SendReservationReceipt;
 
 class SendGaveTwiceEmail
 {
@@ -18,6 +17,6 @@ class SendGaveTwiceEmail
             return;
         }
 
-        Mail::to($email)->queue((new ReservationMail($claim, app()->getLocale()))->locale(app()->getLocale()));
+        SendReservationReceipt::request($claim, app()->getLocale());
     }
 }

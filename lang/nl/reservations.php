@@ -1,6 +1,9 @@
 <?php
 
 return [
+    'receipt_queued' => 'Je mail komt eraan. Na tien rustige minuten bundelen we je reserveringen.',
+    'receipt_subject' => '{1} Gereserveerd: :gift|[2,*] Je :count gereserveerde cadeaus',
+    'removed_closing' => 'Je reserveerde dit :time op :list. We hopen dat het in de smaak valt!',
     'updates' => 'Je reservaties zijn aangepast',
     'intro' => 'We sturen je een link naar alles wat je reserveerde. Ook zonder account.',
     'send' => 'Stuur me de link',
