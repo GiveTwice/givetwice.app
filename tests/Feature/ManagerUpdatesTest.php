@@ -76,7 +76,6 @@ it('stops a promoted follower subscription when their manager access is removed'
     $list = GiftList::factory()->create(['creator_id' => $owner->id]);
     $follow = FollowedList::create(['user_id' => $manager->id, 'list_id' => $list->id, 'notifications' => false]);
     $list->users()->attach($manager);
-    $list->gifts()->attach(Gift::factory()->skipped()->create(['user_id' => $owner->id]));
     $this->artisan('friends:send-digest')->assertSuccessful();
     expect($follow->fresh()->manager_updates)->toBeTrue()->and($follow->fresh()->notifications)->toBeFalse();
     $follow->update(['notifications' => true]);

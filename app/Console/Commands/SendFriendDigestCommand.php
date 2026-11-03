@@ -23,7 +23,7 @@ class SendFriendDigestCommand extends Command
         if (now('Europe/Brussels')->hour >= 20) {
             return self::SUCCESS;
         }
-        GiftList::query()->whereHas('changes')->where(fn ($lists) => $lists
+        GiftList::query()->where(fn ($lists) => $lists
             ->whereDoesntHave('followers', fn ($follows) => $follows->whereColumn('user_id', 'lists.creator_id')->where('manager_updates', true))
             ->orWhereHas('users', fn ($users) => $users->whereDoesntHave('followedLists', fn ($follows) => $follows
                 ->whereColumn('list_id', 'lists.id')->where('manager_updates', true))))
