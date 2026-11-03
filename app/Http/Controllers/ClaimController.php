@@ -8,7 +8,7 @@ use App\Actions\ReserveGiftAction;
 use App\Exceptions\Claim\AlreadyClaimedException;
 use App\Exceptions\Claim\ClaimException;
 use App\Http\Requests\ReservationRequest;
-use App\Mail\ReservationMail;
+use App\Jobs\SendReservationReceipt;
 use App\Models\Claim;
 use App\Models\Gift;
 use App\Support\EmailSuggestion;
@@ -16,7 +16,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -89,9 +88,9 @@ class ClaimController extends Controller
         $claim->update(['claimer_email' => $email, 'user_id' => $claim->user?->email === $email ? $claim->user_id : null, 'confirmation_token' => $claim->confirmation_token ?? Str::random(64)]);
         Cookie::queue('reservation_'.$gift->id, $claim->confirmation_token, 60 * 24 * 365);
         Cookie::queue('reservation_email', $email, 60 * 24 * 90);
-        Mail::to($email)->queue((new ReservationMail($claim, $locale))->locale($locale));
+        SendReservationReceipt::request($claim, $locale);
 
-        return $this->sheet($request, $gift, $claim, __('Email sent.'));
+        return $this->sheet($request, $gift, $claim, __('reservations.receipt_queued'));
     }
 
     public function resend(Request $request, string $locale, Gift $gift): View
@@ -99,9 +98,9 @@ class ClaimController extends Controller
         $claim = $this->browserClaim($request, $gift);
         abort_unless($claim !== null, 403);
         $this->limit($request, $claim->claimer_email ?? $claim->user->email, 'mail');
-        Mail::to($claim->claimer_email ?? $claim->user->email)->queue((new ReservationMail($claim, $locale))->locale($locale));
+        SendReservationReceipt::request($claim, $locale);
 
-        return $this->sheet($request, $gift, $claim, __('Email sent.'));
+        return $this->sheet($request, $gift, $claim, __('reservations.receipt_queued'));
     }
 
     public function destroy(Request $request, string $locale, Gift $gift): View|RedirectResponse

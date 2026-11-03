@@ -230,3 +230,25 @@ it('summarizes only changed fields and uses one removal summary', function () {
     expect($alert->fresh()->changedFields())->toBe([]);
     expect((new ReservationAlertMail($alert))->content()->text)->not->toBeNull();
 });
+
+it('chooses a gentle closing for older reservations and past occasions only on removals', function (int $ageDays, ?int $occasionDays, bool $deleted, bool $gentle) {
+    $this->travelTo(now()->startOfSecond());
+    $this->claim->delete();
+    $this->claim = Claim::factory()->anonymous()->confirmed()->create(['gift_id' => $this->gift->id, 'created_at' => now()->subDays($ageDays)]);
+    $this->list->update(['occasion_date' => $occasionDays === null ? null : now('Europe/Brussels')->addDays($occasionDays)]);
+    $deleted ? $this->gift->delete() : $this->gift->update(['title' => 'Updated']);
+    $alert = ReservationAlert::sole();
+    expect($alert->usesGentleRemoval())->toBe($gentle);
+})->with([
+    'recent' => [1, null, true, false], 'exactly seven days' => [7, null, true, false],
+    'older' => [8, null, true, true], 'occasion passed' => [1, -1, true, true],
+    'today' => [1, 0, true, false], 'future' => [1, 1, true, false],
+    'edit' => [8, -1, false, false],
+]);
+
+it('uses the saved occasion date when a list has been deleted', function () {
+    $reservation = array_replace($this->claim->reservation, ['date' => now('Europe/Brussels')->subDay()->toDateString()]);
+    $this->claim->update(['reservation' => $reservation]);
+    $this->list->delete();
+    expect(ReservationAlert::sole()->usesGentleRemoval())->toBeTrue();
+});

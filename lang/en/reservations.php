@@ -1,6 +1,9 @@
 <?php
 
 return [
+    'receipt_queued' => 'Email on its way. We’ll bundle your reservations after ten quiet minutes.',
+    'receipt_subject' => '{1} Reserved: :gift|[2,*] Your :count reserved gifts',
+    'removed_closing' => 'You reserved this :time on :list. We hope they love it!',
     'updates' => 'Your reservations have changed',
     'intro' => 'We send you a link to everything you reserved. No account needed.',
     'send' => 'Send me the link',

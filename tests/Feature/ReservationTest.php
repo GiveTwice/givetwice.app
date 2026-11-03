@@ -1,6 +1,7 @@
 <?php
 
 use App\Events\GiftClaimed;
+use App\Jobs\SendReservationReceipt;
 use App\Mail\ClaimConfirmationMail;
 use App\Mail\GaveTwiceMail;
 use App\Mail\ReservationMail;
@@ -27,13 +28,13 @@ beforeEach(function () {
     $this->withHeader('X-Reservation-Sheet', '1');
 });
 
-it('reserves immediately and sends one receipt without alerting the owner', function () {
+it('reserves immediately and schedules one receipt without alerting the owner', function () {
     $this->post($this->url.'/claim-anonymous', ['email' => 'Buyer@gmial.com'])->assertOk()->assertCookie('reservation_'.$this->gift->id)->assertCookie('reservation_email', 'buyer@gmial.com');
     $claim = $this->gift->claims()->sole();
     expect($this->gift->fresh()->isClaimed())->toBeTrue();
     expect($claim->isConfirmed())->toBeTrue();
-    Mail::assertQueued(ReservationMail::class, fn ($mail) => $mail->hasTo('buyer@gmial.com'));
-    Mail::assertQueuedCount(1);
+    Queue::assertPushed(SendReservationReceipt::class, fn ($job) => $job->claimId === $claim->id);
+    expect($claim->fresh()->receipt_requested_at)->not->toBeNull();
     Mail::assertNotSent(ClaimConfirmationMail::class);
     Mail::assertNotQueued(GaveTwiceMail::class);
     expect(collect((new GiftClaimed($this->gift, $claim, 1))->broadcastOn())->pluck('name')->all())->not->toContain('private-user.'.$this->list->creator_id);
@@ -52,7 +53,7 @@ it('gives the second buyer free alternatives from this list ordered by price dis
     expect($response->viewData('late'))->toBeTrue();
     expect($response->viewData('alternatives')->pluck('id')->all())->toBe([$near->id, $far->id]);
     expect($this->gift->claims()->count())->toBe(1);
-    Mail::assertQueuedCount(1);
+    Queue::assertPushed(SendReservationReceipt::class, 1);
 });
 
 it('limits reservations across gifts by device and normalized email', function (string $dimension) {
@@ -79,7 +80,7 @@ it('requires this browser for undo, email changes and resend', function (string 
         expect($this->gift->fresh()->isClaimed())->toBeFalse();
     } else {
         expect($this->gift->fresh()->isClaimed())->toBeTrue();
-        Mail::assertQueuedCount(1);
+        Queue::assertPushed(SendReservationReceipt::class, 1);
         expect($claim->fresh()->claimer_email)->toBe($method === 'patch' ? 'new@example.test' : $claim->claimer_email);
     }
 })->with([['delete', '/reservation'], ['patch', '/reservation'], ['post', '/reservation/resend']]);

@@ -21,6 +21,9 @@ class Claim extends Model
     use HasFactory;
 
     protected $fillable = [
+        'receipt_requested_at',
+        'receipt_sent_at',
+        'receipt_locale',
         'reservation',
         'resolution',
         'gift_id',
@@ -35,6 +38,8 @@ class Claim extends Model
     {
         return [
             'confirmed_at' => 'datetime',
+            'receipt_requested_at' => 'datetime',
+            'receipt_sent_at' => 'datetime',
             'reservation' => 'array',
         ];
     }

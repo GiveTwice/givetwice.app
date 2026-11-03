@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Jobs\SendReservationAlert;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\URL;
 
 /** @property array<string, mixed> $before
@@ -39,6 +40,32 @@ class ReservationAlert extends Model
         }
 
         return $changes;
+    }
+
+    public function usesGentleRemoval(): bool
+    {
+        if (! $this->after['deleted']) {
+            return false;
+        }
+        if ($this->claim?->created_at->lt(now()->subDays(7))) {
+            return true;
+        }
+        $date = GiftList::find($this->list_id)->occasion_date ?? $this->before['date'] ?? null;
+        if (! $date) {
+            return false;
+        }
+
+        return Carbon::parse($date)->toDateString() < now('Europe/Brussels')->toDateString();
+    }
+
+    public function removalSummary(): string
+    {
+        $key = $this->usesGentleRemoval() ? 'removed_closing' : 'removed_summary';
+
+        return __('reservations.'.$key, [
+            'list' => $this->before['list_name'] ?? $this->before['owner'],
+            'time' => $this->claim?->created_at->locale(app()->getLocale())->diffForHumans(),
+        ]);
     }
 
     public function summary(): string

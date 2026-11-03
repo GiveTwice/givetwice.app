@@ -6,6 +6,7 @@ use App\Actions\CreateListAction;
 use App\Actions\InviteToListAction;
 use App\Actions\ReserveGiftAction;
 use App\Jobs\SendListUpdate;
+use App\Jobs\SendReservationReceipt;
 use App\Mail\FriendDigestMail;
 use App\Mail\ListInvitationMail;
 use App\Mail\ReservationMail;
@@ -64,6 +65,9 @@ it('replays the report week with the intended email count for each persona', fun
             $liensGift->update(['title' => 'Updated idea']);
         }
         $this->travel(11)->minutes();
+        foreach (Queue::pushed(SendReservationReceipt::class) as $receipt) {
+            $receipt->handle();
+        }
         $this->artisan('friends:send-digest')->assertSuccessful();
         $this->artisan('friends:send-digest')->assertSuccessful();
     }
