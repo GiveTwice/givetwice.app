@@ -69,6 +69,7 @@ describe('manager content updates', function () {
 });
 
 it('stops a promoted follower subscription when their manager access is removed', function () {
+    $this->travelTo(now()->setDate(2026, 11, 3)->setTime(12, 0));
     Mail::fake();
     Queue::fake()->except([SendListUpdate::class]);
     $owner = User::factory()->create();
