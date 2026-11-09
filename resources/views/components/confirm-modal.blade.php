@@ -46,7 +46,7 @@
             <div class="p-6 pb-0">
                 <div class="flex items-start gap-4">
 
-                    <div class="flex-shrink-0 w-12 h-12 rounded-full {{ $destructive ? 'bg-red-100' : 'bg-sunny-100' }} flex items-center justify-center">
+                    <div class="shrink-0 w-12 h-12 rounded-full {{ $destructive ? 'bg-red-100' : 'bg-sunny-100' }} flex items-center justify-center">
                         @if($destructive)
                             <x-icons.warning class="w-6 h-6 text-red-600" />
                         @else

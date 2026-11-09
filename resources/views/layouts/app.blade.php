@@ -193,7 +193,7 @@
                         @profile-image-updated.window="hasImage = $event.detail.hasImage; imageUrl = $event.detail.imageUrl; initials = $event.detail.initials"
                     >
                         <div
-                            class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center overflow-hidden"
+                            class="shrink-0 w-10 h-10 rounded-full flex items-center justify-center overflow-hidden"
                             :class="hasImage ? 'ring-2 ring-cream-200' : 'bg-gradient-to-br from-coral-400 to-coral-500'"
                         >
                             <template x-if="hasImage">
@@ -272,11 +272,11 @@
                 role="alert"
                 aria-live="polite"
             >
-                <span class="flex-shrink-0 w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                <span class="shrink-0 w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
                     <x-icons.checkmark class="w-4 h-4" stroke-width="2.5" />
                 </span>
                 <span class="text-sm font-medium flex-1">{{ session('success') }}</span>
-                <button x-on:click="show = false" class="flex-shrink-0 text-white/70 hover:text-white transition-colors" aria-label="{{ __('Dismiss') }}">
+                <button x-on:click="show = false" class="shrink-0 text-white/70 hover:text-white transition-colors" aria-label="{{ __('Dismiss') }}">
                     <x-icons.close class="w-4 h-4" />
                 </button>
             </div>
@@ -298,11 +298,11 @@
                 role="alert"
                 aria-live="assertive"
             >
-                <span class="flex-shrink-0 w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                <span class="shrink-0 w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
                     <x-icons.warning class="w-4 h-4" stroke-width="2.5" />
                 </span>
                 <span class="text-sm font-medium flex-1">{{ session('error') }}</span>
-                <button x-on:click="show = false" class="flex-shrink-0 text-white/70 hover:text-white transition-colors" aria-label="{{ __('Dismiss') }}">
+                <button x-on:click="show = false" class="shrink-0 text-white/70 hover:text-white transition-colors" aria-label="{{ __('Dismiss') }}">
                     <x-icons.close class="w-4 h-4" />
                 </button>
             </div>
@@ -333,7 +333,7 @@
         <span class="text-sm font-medium text-gray-600">{{ __('Viewing offline') }}</span>
     </div>
 
-    <main id="main-content" class="flex-grow safe-area-x">
+    <main id="main-content" class="grow safe-area-x">
         <div class="{{ auth()->check() ? 'app-frame' : 'max-w-7xl mx-auto' }} pt-6 pb-20 px-4 sm:px-6 lg:px-8">
             @yield('content')
         </div>

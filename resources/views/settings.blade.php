@@ -34,7 +34,7 @@
 
                     <div class="flex items-start gap-6">
                         {{-- Avatar Upload Area --}}
-                        <div class="relative flex-shrink-0">
+                        <div class="relative shrink-0">
                             <input
                                 type="file"
                                 id="profile-image-upload"
@@ -228,7 +228,7 @@
                     @else
                         <div class="info-box-success mb-6">
                             <div class="flex gap-3">
-                                <x-icons.info-circle class="w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" />
+                                <x-icons.info-circle class="w-5 h-5 text-teal-600 shrink-0 mt-0.5" />
                                 <div class="text-sm">
                                     <p class="font-medium text-teal-800">{{ __('No password set') }}</p>
                                     <p class="text-teal-700">{{ __('You signed up using a social login. Set a password to enable email login.') }}</p>
@@ -296,7 +296,7 @@
                 <div class="space-y-4">
                     <div class="flex items-center justify-between gap-3 p-4 bg-cream-50 rounded-xl">
                         <div class="flex items-center gap-3">
-                            <div class="hidden sm:flex w-10 h-10 rounded-full bg-coral-100 flex-shrink-0 items-center justify-center">
+                            <div class="hidden sm:flex w-10 h-10 rounded-full bg-coral-100 shrink-0 items-center justify-center">
                                 <x-icons.users class="w-5 h-5 text-coral-600" />
                             </div>
                             <div>
@@ -304,7 +304,7 @@
                                 <p class="text-sm text-gray-500">{{ __('Get one short email after changes to a followed list.') }}</p>
                             </div>
                         </div>
-                        <div class="relative flex-shrink-0">
+                        <div class="relative shrink-0">
                             <button
                                 type="button"
                                 x-on:click="toggleNotifications()"
@@ -357,7 +357,7 @@
                     <template x-if="!enabling && !showPasswordConfirm">
                         <div>
                             <div class="flex items-start gap-4 p-4 bg-cream-50 rounded-xl mb-6">
-                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                                <div class="shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
                                     <x-icons.shield-check class="w-5 h-5 text-gray-400" />
                                 </div>
                                 <div>
@@ -387,7 +387,7 @@
                         <div class="space-y-6">
                             <div class="info-box">
                                 <div class="flex gap-3">
-                                    <x-icons.lock class="w-5 h-5 text-gray-600 flex-shrink-0 mt-0.5" />
+                                    <x-icons.lock class="w-5 h-5 text-gray-600 shrink-0 mt-0.5" />
                                     <div class="text-sm">
                                         <p class="font-medium text-gray-800">{{ __('Confirm your password') }}</p>
                                         <p class="text-gray-600">{{ __('For your security, please confirm your password before enabling two-factor authentication.') }}</p>
@@ -442,7 +442,7 @@
                         <div class="space-y-6">
                             <div class="info-box-success">
                                 <div class="flex gap-3">
-                                    <x-icons.info-circle class="w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" />
+                                    <x-icons.info-circle class="w-5 h-5 text-teal-600 shrink-0 mt-0.5" />
                                     <div class="text-sm">
                                         <p class="font-medium text-teal-800">{{ __('Finish enabling two-factor authentication') }}</p>
                                         <p class="text-teal-700">{{ __('Scan the QR code below with your authenticator app (like Google Authenticator or Authy), then enter the verification code.') }}</p>
@@ -463,7 +463,7 @@
                                         <p class="text-sm font-medium text-gray-700 mb-2">{{ __('Or enter this code manually:') }}</p>
                                         <div class="flex items-center gap-2">
                                             <code
-                                                x-text="secretKey || '{{ __('Loading...') }}'"
+                                                x-text="secretKey || @js(__('Loading...'))"
                                                 class="bg-gray-100 px-3 py-2 rounded-lg font-mono text-sm text-gray-800 tracking-wider select-all"
                                             ></code>
                                             <button
@@ -471,7 +471,7 @@
                                                 x-on:click="copySecret()"
                                                 x-show="secretKey"
                                                 class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-                                                :title="copied ? '{{ __('Copied!') }}' : '{{ __('Copy') }}'"
+                                                :title="copied ? @js(__('Copied!')) : @js(__('Copy'))"
                                             >
                                                 <x-icons.copy class="w-4 h-4" x-show="!copied" />
                                                 <x-icons.check-circle class="w-4 h-4 text-teal-600" x-show="copied" x-cloak />
@@ -533,7 +533,7 @@
                         @if (auth()->user()->two_factor_confirmed_at)
                             {{-- Confirmed --}}
                             <div class="flex items-start gap-4 p-4 bg-teal-50 rounded-xl border border-teal-100 mb-6">
-                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center">
+                                <div class="shrink-0 w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center">
                                     <x-icons.shield-check class="w-5 h-5 text-teal-600" />
                                 </div>
                                 <div>
@@ -598,7 +598,7 @@
                             {{-- Enabled but not confirmed (shouldn't happen normally) --}}
                             <div class="info-box-warning mb-6">
                                 <div class="flex gap-3">
-                                    <x-icons.warning class="w-5 h-5 text-sunny-600 flex-shrink-0 mt-0.5" />
+                                    <x-icons.warning class="w-5 h-5 text-sunny-600 shrink-0 mt-0.5" />
                                     <div class="text-sm">
                                         <p class="font-medium text-sunny-800">{{ __('Two-factor setup incomplete') }}</p>
                                         <p class="text-sunny-700">{{ __('Please finish setting up two-factor authentication.') }}</p>
@@ -645,7 +645,7 @@
                     @foreach($sessions as $session)
                         <div class="flex items-start sm:items-center justify-between gap-3 p-4 bg-cream-50 rounded-xl">
                             <div class="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0">
-                                <div class="hidden sm:flex flex-shrink-0 w-10 h-10 rounded-full bg-white items-center justify-center border border-cream-200">
+                                <div class="hidden sm:flex shrink-0 w-10 h-10 rounded-full bg-white items-center justify-center border border-cream-200">
                                     @if($session->device === 'Mobile' || $session->device === 'iPhone')
                                         <x-icons.device-mobile class="w-5 h-5 text-gray-500" />
                                     @elseif($session->device === 'Tablet' || $session->device === 'iPad')
@@ -673,7 +673,7 @@
                                 <form method="POST" action="{{ route('settings.sessions.destroy', ['locale' => app()->getLocale(), 'session' => $session->id]) }}">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="flex-shrink-0 text-sm text-gray-500 hover:text-red-600 transition-colors font-medium">
+                                    <button type="submit" class="shrink-0 text-sm text-gray-500 hover:text-red-600 transition-colors font-medium">
                                         {{ __('Log out') }}
                                     </button>
                                 </form>
@@ -920,14 +920,14 @@ function profileSettings() {
                 const data = await response.json();
 
                 if (!response.ok) {
-                    this.error = data.message || '{{ __('Failed to upload image.') }}';
+                    this.error = data.message || @js(__('Failed to upload image.'));
                 } else {
                     this.imageUrl = data.image_url;
                     this.hasImage = true;
                 }
             } catch (error) {
                 console.error('Upload error:', error);
-                this.error = '{{ __('Failed to upload image.') }}';
+                this.error = @js(__('Failed to upload image.'));
             } finally {
                 this.uploading = false;
                 event.target.value = '';
@@ -950,14 +950,14 @@ function profileSettings() {
                 const data = await response.json();
 
                 if (!response.ok) {
-                    this.error = data.message || '{{ __('Failed to delete image.') }}';
+                    this.error = data.message || @js(__('Failed to delete image.'));
                 } else {
                     this.imageUrl = null;
                     this.hasImage = false;
                 }
             } catch (error) {
                 console.error('Delete error:', error);
-                this.error = '{{ __('Failed to delete image.') }}';
+                this.error = @js(__('Failed to delete image.'));
             } finally {
                 this.deleting = false;
             }
@@ -1039,10 +1039,10 @@ function twoFactorAuth() {
                     await this.enableTwoFactor();
                 } else {
                     const data = await response.json();
-                    this.passwordError = data.message || '{{ __('The provided password was incorrect.') }}';
+                    this.passwordError = data.message || @js(__('The provided password was incorrect.'));
                 }
             } catch (error) {
-                this.passwordError = '{{ __('An error occurred. Please try again.') }}';
+                this.passwordError = @js(__('An error occurred. Please try again.'));
             } finally {
                 this.passwordLoading = false;
             }
@@ -1101,10 +1101,10 @@ function twoFactorAuth() {
                     window.location.reload();
                 } else {
                     const data = await response.json();
-                    this.confirmError = data.message || '{{ __('The provided two-factor authentication code was invalid.') }}';
+                    this.confirmError = data.message || @js(__('The provided two-factor authentication code was invalid.'));
                 }
             } catch (error) {
-                this.confirmError = '{{ __('An error occurred. Please try again.') }}';
+                this.confirmError = @js(__('An error occurred. Please try again.'));
             } finally {
                 this.confirmLoading = false;
             }

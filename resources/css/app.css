@@ -1,7 +1,6 @@
 @import 'tailwindcss';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
@@ -77,11 +76,6 @@ main :where([id], h1, h2, h3, form) {
     @apply inline-flex items-center gap-2 bg-sunny-200 text-sunny-800 px-5 py-2.5 rounded-xl hover:bg-sunny-300 transition-colors font-medium;
 }
 
-/* Claim button - teal/green (matches Step 3: Receive) */
-.btn-claim {
-    @apply inline-flex items-center gap-2 bg-teal-100 text-teal-700 px-5 py-2.5 rounded-xl hover:bg-teal-200 transition-colors font-medium;
-}
-
 /* Text link button style */
 .btn-link {
     @apply inline-flex items-center gap-2 text-coral-600 hover:text-coral-700 font-medium transition-colors;
@@ -131,11 +125,6 @@ main :where([id], h1, h2, h3, form) {
     @apply flex items-center justify-end gap-3 pt-6 mt-8 border-t border-gray-200;
 }
 
-/* Form section divider - subtle horizontal line between form sections */
-.form-divider {
-    @apply border-t border-gray-200 my-8;
-}
-
 /* ============================================
    Card & Container Classes
    ============================================ */
@@ -164,11 +153,6 @@ main :where([id], h1, h2, h3, form) {
     @apply p-4 bg-sunny-50 border border-sunny-200 rounded-xl;
 }
 
-/* Info box - red/danger variant */
-.info-box-danger {
-    @apply p-4 bg-red-50 border border-red-200 rounded-xl;
-}
-
 /* ============================================
    Alert Classes
    ============================================ */
@@ -186,16 +170,6 @@ main :where([id], h1, h2, h3, form) {
 /* Success alert */
 .alert-success {
     @apply mb-4 p-4 bg-teal-50 border border-teal-200 text-teal-700 rounded-xl;
-}
-
-/* Warning alert */
-.alert-warning {
-    @apply mb-4 p-4 bg-sunny-50 border border-sunny-200 text-sunny-700 rounded-xl;
-}
-
-/* Info alert */
-.alert-info {
-    @apply mb-4 p-4 bg-cream-50 border border-cream-200 text-gray-700 rounded-xl;
 }
 
 /* ============================================
@@ -976,12 +950,6 @@ main :where([id], h1, h2, h3, form) {
     --highlight-sunny-bg: oklch(0.80 0.15 85 / 0.15);
 }
 
-/* Static sunny highlight - can be applied directly */
-.highlight-sunny {
-    box-shadow: 0 0 0 3px var(--highlight-sunny-ring), 0 0 20px var(--highlight-sunny-glow);
-    background-color: var(--highlight-sunny-bg);
-}
-
 /* One-time pulse animation for claim confirmation page
    Ends with shadow-sm to preserve card's default shadow */
 .highlight-sunny-pulse {
@@ -1005,11 +973,6 @@ main :where([id], h1, h2, h3, form) {
         box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
         background-color: white;
     }
-}
-
-/* Delayed version for staggered effects */
-.highlight-sunny-pulse-delayed {
-    animation: sunny-pulse 2s ease-out 0.3s forwards;
 }
 
 /* ============================================
@@ -1049,14 +1012,6 @@ main :where([id], h1, h2, h3, form) {
 @media (min-width: 64rem) {
     .app-shell-layout-cozy {
         grid-template-columns: 18rem minmax(0, 1fr);
-    }
-
-    .app-shell-layout-rail {
-        grid-template-columns: 15rem minmax(0, 1fr);
-    }
-
-    .app-shell-layout-board {
-        grid-template-columns: 19rem minmax(0, 1fr);
     }
 }
 

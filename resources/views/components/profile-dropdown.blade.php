@@ -78,7 +78,7 @@
             <div class="px-5 py-5 bg-gradient-to-br from-cream-50 to-white border-b border-cream-100">
                 <div class="flex items-center gap-4">
                     <div
-                        class="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center overflow-hidden"
+                        class="shrink-0 w-12 h-12 rounded-full flex items-center justify-center overflow-hidden"
                         :class="hasImage ? 'ring-2 ring-cream-200' : 'bg-coral-500'"
                     >
                         <template x-if="hasImage">
@@ -106,7 +106,7 @@
                     class="flex items-center gap-4 px-4 py-3 rounded-xl text-gray-700 hover:bg-cream-50 hover:text-gray-900 transition-all duration-150 group"
                     @click="open = false"
                 >
-                    <span class="flex-shrink-0 w-9 h-9 rounded-xl bg-gray-100 group-hover:bg-coral-100 flex items-center justify-center transition-all duration-150">
+                    <span class="shrink-0 w-9 h-9 rounded-xl bg-gray-100 group-hover:bg-coral-100 flex items-center justify-center transition-all duration-150">
                         <x-icons.settings class="w-[18px] h-[18px] text-gray-500 group-hover:text-coral-600 transition-colors duration-150" />
                     </span>
                     <span class="font-medium">{{ __('Settings') }}</span>
@@ -117,7 +117,7 @@
                     class="flex items-center gap-4 px-4 py-3 rounded-xl text-gray-700 hover:bg-cream-50 hover:text-gray-900 transition-all duration-150 group"
                     @click="open = false"
                 >
-                    <span class="flex-shrink-0 w-9 h-9 rounded-xl bg-gray-100 group-hover:bg-coral-100 flex items-center justify-center transition-all duration-150">
+                    <span class="shrink-0 w-9 h-9 rounded-xl bg-gray-100 group-hover:bg-coral-100 flex items-center justify-center transition-all duration-150">
                         <x-icons.users class="w-[18px] h-[18px] text-gray-500 group-hover:text-coral-600 transition-colors duration-150" />
                     </span>
                     <span class="font-medium">{{ __('Friends') }}</span>
@@ -131,7 +131,7 @@
                         type="submit"
                         class="flex items-center gap-4 w-full px-4 py-3 rounded-xl text-gray-700 hover:bg-red-50 transition-all duration-150 group"
                     >
-                        <span class="flex-shrink-0 w-9 h-9 rounded-xl bg-gray-100 group-hover:bg-red-100 flex items-center justify-center transition-all duration-150">
+                        <span class="shrink-0 w-9 h-9 rounded-xl bg-gray-100 group-hover:bg-red-100 flex items-center justify-center transition-all duration-150">
                             <x-icons.logout class="w-[18px] h-[18px] text-gray-500 group-hover:text-red-600 transition-colors duration-150" />
                         </span>
                         <span class="font-medium group-hover:text-red-700 transition-colors duration-150">{{ __('Log out') }}</span>

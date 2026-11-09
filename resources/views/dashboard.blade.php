@@ -49,7 +49,7 @@
 
             const titleEl = card.querySelector('[data-gift-title]');
             if (titleEl) {
-                titleEl.textContent = gift.title || '{{ __('Untitled gift') }}';
+                titleEl.textContent = gift.title || @js(__('Untitled gift'));
                 titleEl.title = gift.title || '';
             }
 

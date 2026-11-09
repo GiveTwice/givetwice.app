@@ -29,7 +29,7 @@
 
         <div class="px-6 sm:px-8 py-5 bg-cream-50/50 border-t border-cream-100">
             <div class="flex items-start gap-3">
-                <div class="w-8 h-8 bg-cream-200 rounded-full flex items-center justify-center flex-shrink-0">
+                <div class="w-8 h-8 bg-cream-200 rounded-full flex items-center justify-center shrink-0">
                     <x-icons.info-circle class="w-4 h-4 text-gray-500" />
                 </div>
                 <div>

@@ -119,7 +119,7 @@
                 <p class="text-gray-900 font-medium">{{ __('Free. No ads.') }}</p>
                 <div class="shrink-0 flex items-center gap-2">
                     <span class="text-xs text-teal-600 transition-opacity duration-150" :class="copiedSnippet === 'tagline1' ? 'opacity-100' : 'opacity-0'">{{ __('Copied!') }}</span>
-                    <button @click="copySnippet({{ json_encode(__('Free. No ads.')) }}, 'tagline1')" class="text-gray-400 hover:text-coral-500 transition-colors cursor-pointer" :title="'{{ __('Copy') }}'">
+                    <button @click="copySnippet({{ json_encode(__('Free. No ads.')) }}, 'tagline1')" class="text-gray-400 hover:text-coral-500 transition-colors cursor-pointer" :title="@js(__('Copy'))">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" /></svg>
                     </button>
                 </div>
@@ -128,7 +128,7 @@
                 <p class="text-gray-900 font-medium">{{ __('Free. No ads.') }}</p>
                 <div class="shrink-0 flex items-center gap-2">
                     <span class="text-xs text-teal-600 transition-opacity duration-150" :class="copiedSnippet === 'tagline2' ? 'opacity-100' : 'opacity-0'">{{ __('Copied!') }}</span>
-                    <button @click="copySnippet({{ json_encode(__('Free. No ads.')) }}, 'tagline2')" class="text-gray-400 hover:text-coral-500 transition-colors cursor-pointer" :title="'{{ __('Copy') }}'">
+                    <button @click="copySnippet({{ json_encode(__('Free. No ads.')) }}, 'tagline2')" class="text-gray-400 hover:text-coral-500 transition-colors cursor-pointer" :title="@js(__('Copy'))">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" /></svg>
                     </button>
                 </div>
@@ -157,7 +157,7 @@
                             <p class="text-sm text-gray-700">{{ $tweet }}</p>
                             <div class="shrink-0 mt-0.5 flex items-center gap-2">
                                 <span class="text-xs text-teal-600 transition-opacity duration-150" :class="copiedSnippet === 'tweet{{ $loop->index }}' ? 'opacity-100' : 'opacity-0'">{{ __('Copied!') }}</span>
-                                <button @click="copySnippet({{ json_encode($tweet) }}, 'tweet{{ $loop->index }}')" class="text-gray-400 hover:text-coral-500 transition-colors cursor-pointer" :title="'{{ __('Copy') }}'">
+                                <button @click="copySnippet({{ json_encode($tweet) }}, 'tweet{{ $loop->index }}')" class="text-gray-400 hover:text-coral-500 transition-colors cursor-pointer" :title="@js(__('Copy'))">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" /></svg>
                                 </button>
                             </div>
@@ -180,7 +180,7 @@
                             <p class="text-sm text-gray-700 whitespace-pre-line">{{ $post }}</p>
                             <div class="shrink-0 mt-0.5 flex items-center gap-2">
                                 <span class="text-xs text-teal-600 transition-opacity duration-150" :class="copiedSnippet === 'linkedin{{ $loop->index }}' ? 'opacity-100' : 'opacity-0'">{{ __('Copied!') }}</span>
-                                <button @click="copySnippet({{ json_encode($post) }}, 'linkedin{{ $loop->index }}')" class="text-gray-400 hover:text-coral-500 transition-colors cursor-pointer" :title="'{{ __('Copy') }}'">
+                                <button @click="copySnippet({{ json_encode($post) }}, 'linkedin{{ $loop->index }}')" class="text-gray-400 hover:text-coral-500 transition-colors cursor-pointer" :title="@js(__('Copy'))">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" /></svg>
                                 </button>
                             </div>

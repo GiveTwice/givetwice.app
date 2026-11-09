@@ -6,7 +6,7 @@
             @foreach($invitations as $invitation)
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 {{ !$loop->last ? 'mb-3 pb-3 border-b border-teal-100' : '' }}">
                     <div class="flex items-center gap-3">
-                        <div class="flex-shrink-0 w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
+                        <div class="shrink-0 w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
                             <x-icons.users class="w-4 h-4 text-teal-600" />
                         </div>
                         <div>
@@ -17,7 +17,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2 sm:flex-shrink-0">
+                    <div class="flex items-center gap-2 sm:shrink-0">
                         <form action="{{ route('lists.invitation.accept', ['locale' => app()->getLocale(), 'token' => $invitation->token]) }}" method="POST" class="inline">
                             @csrf
                             <button type="submit" class="px-3 py-1.5 bg-teal-500 text-white text-sm font-medium rounded-lg hover:bg-teal-600 transition-colors">

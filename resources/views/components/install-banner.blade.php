@@ -13,14 +13,14 @@
     aria-label="{{ __('Install app') }}"
 >
     <div class="bg-white border border-cream-300 rounded-2xl shadow-lg p-4 flex items-center gap-3">
-        <div class="flex-shrink-0 w-10 h-10 bg-coral-100 rounded-xl flex items-center justify-center">
+        <div class="shrink-0 w-10 h-10 bg-coral-100 rounded-xl flex items-center justify-center">
             <span class="text-lg">🎁</span>
         </div>
         <div class="flex-1 min-w-0">
             <p class="text-sm font-semibold text-gray-900">{{ __('Install GiveTwice') }}</p>
             <p class="text-xs text-gray-500 mt-0.5" x-text="instructionText"></p>
         </div>
-        <div class="flex items-center gap-2 flex-shrink-0">
+        <div class="flex items-center gap-2 shrink-0">
             <button
                 x-show="canInstallNative"
                 @click="installNative()"
