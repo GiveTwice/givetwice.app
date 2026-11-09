@@ -43,7 +43,6 @@ class User extends Authenticatable implements HasLocalePreference, HasMedia, Mus
         'locale_preference',
         'google_id',
         'facebook_id',
-        'is_admin',
         'email_verified_at',
         'friend_notifications_enabled',
         'last_friend_digest_at',

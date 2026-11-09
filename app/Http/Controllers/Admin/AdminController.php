@@ -94,7 +94,7 @@ class AdminController extends Controller
             return back()->with('error', 'You cannot change your own admin status.');
         }
 
-        $user->update(['is_admin' => ! $user->is_admin]);
+        $user->forceFill(['is_admin' => ! $user->is_admin])->save();
 
         return back()->with('success', $user->is_admin ? 'User granted admin access.' : 'Admin access revoked.');
     }
