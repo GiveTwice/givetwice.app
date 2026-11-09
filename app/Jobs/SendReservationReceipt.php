@@ -29,7 +29,7 @@ class SendReservationReceipt implements ShouldQueue
         if (! $seed) {
             return;
         }
-        $email = $seed->claimer_email ?? $seed->user?->email;
+        $email = $seed->recipientEmail();
         if (! $email) {
             return;
         }
@@ -41,7 +41,7 @@ class SendReservationReceipt implements ShouldQueue
                     ->where(fn ($recipient) => $recipient->where('claimer_email', $email)
                         ->orWhere(fn ($account) => $account->whereNull('claimer_email')
                             ->whereHas('user', fn ($user) => $user->where('email', $email))))
-                    ->whereNotNull('confirmed_at')->whereNotNull('receipt_requested_at')->whereNull('receipt_sent_at');
+                    ->confirmed()->whereNotNull('receipt_requested_at')->whereNull('receipt_sent_at');
                 if ($listId === null) {
                     $query->whereNull('reservation->list_id')->where('gift_id', $seed->gift_id);
                 } else {

@@ -7,6 +7,7 @@ use App\Models\FollowedList;
 use App\Models\GiftList;
 use App\Models\ListChange;
 use App\Models\User;
+use App\Support\DigestHours;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
@@ -17,10 +18,7 @@ class SendFriendDigestCommand extends Command
 {
     public function handle(): int
     {
-        if (now('Europe/Brussels')->hour < 9) {
-            return self::SUCCESS;
-        }
-        if (now('Europe/Brussels')->hour >= 20) {
+        if (! DigestHours::isOpen()) {
             return self::SUCCESS;
         }
         GiftList::query()->where(fn ($lists) => $lists

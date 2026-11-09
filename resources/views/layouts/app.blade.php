@@ -92,8 +92,7 @@
     <header class="bg-white border-b border-cream-200 sticky top-0 z-40 md:static md:z-auto safe-area-header safe-area-x">
         <nav class="{{ auth()->check() ? 'app-frame' : 'max-w-7xl mx-auto' }} px-4 sm:px-6 lg:px-8" x-data="{ mobileOpen: false }" @click.outside="mobileOpen = false">
             @php
-                $navExchangeSlugs = ['en' => 'secret-santa', 'nl' => 'lootjes-trekken', 'fr' => 'tirage-au-sort'];
-                $navExchangeSlug = $navExchangeSlugs[app()->getLocale()] ?? 'secret-santa';
+                $navExchangeSlug = \App\Helpers\ExchangeHelper::exchangeTypeForLocale(app()->getLocale());
                 $navExchangeLabels = ['en' => __('Secret Santa'), 'nl' => __('Lootjes trekken'), 'fr' => __('Tirage au sort')];
                 $navExchangeLabel = $navExchangeLabels[app()->getLocale()] ?? __('Secret Santa');
                 $dashboardUrl = route('dashboard.locale', ['locale' => app()->getLocale()]);

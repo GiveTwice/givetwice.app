@@ -185,7 +185,7 @@ class Gift extends Model implements HasMedia
             return false;
         }
 
-        return $this->claims()->whereNotNull('confirmed_at')->exists();
+        return $this->claims()->confirmed()->exists();
     }
 
     public function allowsMultipleClaims(): bool
@@ -199,7 +199,7 @@ class Gift extends Model implements HasMedia
             return $this->claims->whereNotNull('confirmed_at')->count();
         }
 
-        return $this->claims()->whereNotNull('confirmed_at')->count();
+        return $this->claims()->confirmed()->count();
     }
 
     public function isPending(): bool

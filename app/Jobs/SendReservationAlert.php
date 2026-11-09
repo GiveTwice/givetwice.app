@@ -47,7 +47,7 @@ class SendReservationAlert implements ShouldQueue
                 }
                 $valid = $alerts->filter(function (ReservationAlert $alert): bool {
                     $claim = $alert->claim;
-                    if (! $claim || $alert->email !== ($claim->claimer_email ?? $claim->user?->email)) {
+                    if (! $claim || $alert->email !== $claim->recipientEmail()) {
                         $alert->update(['resolved_at' => now()]);
 
                         return false;

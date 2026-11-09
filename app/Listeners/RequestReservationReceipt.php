@@ -11,7 +11,7 @@ class RequestReservationReceipt
     {
         $claim = $event->claim;
 
-        $email = $claim->claimer_email ?? $claim->user?->email;
+        $email = $claim->recipientEmail();
 
         if (! $email) {
             return;

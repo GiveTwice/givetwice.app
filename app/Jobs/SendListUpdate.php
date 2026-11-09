@@ -7,6 +7,7 @@ use App\Models\FollowedList;
 use App\Models\ListChange;
 use App\Models\ReservationAlert;
 use App\Models\User;
+use App\Support\DigestHours;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Mail;
@@ -19,10 +20,7 @@ class SendListUpdate implements ShouldQueue
 
     public function handle(): void
     {
-        if (now('Europe/Brussels')->hour < 9) {
-            return;
-        }
-        if (now('Europe/Brussels')->hour >= 20) {
+        if (! DigestHours::isOpen()) {
             return;
         }
         $seed = FollowedList::find($this->followId);

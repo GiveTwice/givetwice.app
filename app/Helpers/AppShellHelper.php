@@ -74,7 +74,7 @@ class AppShellHelper
         $currentLocale = app()->getLocale();
         $dashboardUrl = route('dashboard.locale', ['locale' => $currentLocale]);
         $secretSantaUrl = route('dashboard.secret-santa', ['locale' => $currentLocale]);
-        $exchangeSlug = GiftExchange::exchangeTypeSlugs()[$currentLocale] ?? 'secret-santa';
+        $exchangeSlug = ExchangeHelper::exchangeTypeForLocale($currentLocale);
         $lists = $user->lists()->withCount('gifts')->get();
         $exchangeQuery = GiftExchange::query()->where('organizer_id', $user->id);
         $exchangeCount = (clone $exchangeQuery)->count();

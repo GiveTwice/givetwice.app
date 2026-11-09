@@ -24,7 +24,7 @@ class AdminController extends Controller
             'total_users' => User::count(),
             'total_gifts' => Gift::count(),
             'total_lists' => GiftList::count(),
-            'total_claims' => Claim::whereNotNull('confirmed_at')->count(),
+            'total_claims' => Claim::query()->confirmed()->count(),
             'gifts_today' => Gift::whereDate('created_at', today())->count(),
             'gifts_this_week' => Gift::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count(),
             'gifts_this_month' => Gift::whereMonth('created_at', now()->month)->whereYear('created_at', now()->year)->count(),
@@ -36,7 +36,7 @@ class AdminController extends Controller
         $recentUsers = User::latest()->take(5)->get();
         $recentGifts = Gift::with('user')->latest()->take(5)->get();
         $recentClaims = Claim::with(['gift' => fn ($query) => $query->withTrashed(), 'user'])
-            ->whereNotNull('confirmed_at')
+            ->confirmed()
             ->latest()
             ->take(5)
             ->get();
@@ -204,7 +204,7 @@ class AdminController extends Controller
             'signups' => array_values(array_merge($emptyData, $this->dailyCounts(User::query(), $startDate))),
             'gifts' => array_values(array_merge($emptyData, $this->dailyCounts(Gift::query(), $startDate))),
             'claims' => array_values(array_merge($emptyData, $this->dailyCounts(
-                Claim::query()->whereNotNull('confirmed_at'),
+                Claim::query()->confirmed(),
                 $startDate,
             ))),
         ];

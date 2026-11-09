@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -82,6 +84,12 @@ class Claim extends Model
         return $this->hasMany(ReservationAlert::class);
     }
 
+    #[Scope]
+    protected function confirmed(Builder $query): void
+    {
+        $query->whereNotNull('confirmed_at');
+    }
+
     public function belongsToBrowser(Request $request): bool
     {
         return ($request->user() && $this->user_id === $request->user()->id)
@@ -89,9 +97,18 @@ class Claim extends Model
             || (filled($this->confirmation_token) && hash_equals($this->confirmation_token, $request->cookie('reservation_'.$this->gift_id, '')));
     }
 
+    /**
+     * Returns the address that gets mail about this reservation. New claims store it in
+     * claimer_email; older account reservations only have it on the user.
+     */
+    public function recipientEmail(): string
+    {
+        return $this->claimer_email ?? $this->user->email ?? '';
+    }
+
     public function historyUrl(?string $locale = null): string
     {
-        return URL::temporarySignedRoute('reservations.index', now()->addDays(30), ['locale' => $locale ?? app()->getLocale(), 'email' => $this->claimer_email ?? $this->user->email]);
+        return URL::temporarySignedRoute('reservations.index', now()->addDays(30), ['locale' => $locale ?? app()->getLocale(), 'email' => $this->recipientEmail()]);
     }
 
     public function isRemoved(): bool

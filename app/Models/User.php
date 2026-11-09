@@ -99,17 +99,20 @@ class User extends Authenticatable implements HasLocalePreference, HasMedia, Mus
         return $this->hasMany(GiftList::class, 'creator_id');
     }
 
+    /**
+     * @return HasMany<ListInvitation, $this>
+     */
     public function listInvitations(): HasMany
     {
         return $this->hasMany(ListInvitation::class, 'invitee_id');
     }
 
+    /**
+     * @return HasMany<ListInvitation, $this>
+     */
     public function pendingListInvitations(): HasMany
     {
-        return $this->listInvitations()
-            ->whereNull('accepted_at')
-            ->whereNull('declined_at')
-            ->where('expires_at', '>', now());
+        return $this->listInvitations()->pending();
     }
 
     public function hasPendingListInvitations(): bool

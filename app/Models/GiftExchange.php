@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\SupportedCurrency;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\RouteKey;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -101,7 +102,7 @@ class GiftExchange extends Model
         }
 
         $amount = $this->budget_amount / 100;
-        $symbol = $this->budget_currency === 'USD' ? '$' : '€';
+        $symbol = SupportedCurrency::tryFrom((string) $this->budget_currency)?->symbol() ?? SupportedCurrency::EUR->symbol();
 
         return $symbol.number_format($amount, $amount == intval($amount) ? 0 : 2);
     }
@@ -112,14 +113,5 @@ class GiftExchange extends Model
             'locale' => $locale ?? $this->locale,
             'joinToken' => $this->join_token,
         ]);
-    }
-
-    public static function exchangeTypeSlugs(): array
-    {
-        return [
-            'en' => 'secret-santa',
-            'nl' => 'lootjes-trekken',
-            'fr' => 'tirage-au-sort',
-        ];
     }
 }

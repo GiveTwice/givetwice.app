@@ -83,13 +83,13 @@ class ReservationAlert extends Model
 
     public static function record(Gift $gift, bool $deleted = false, ?int $listId = null): void
     {
-        foreach ($gift->claims()->whereNotNull('confirmed_at')->get() as $claim) {
+        foreach ($gift->claims()->confirmed()->get() as $claim) {
             if ($listId && $claim->reservation['list_id'] !== $listId) {
                 continue;
             }
             $claim->getConnection()->transaction(function () use ($claim, $gift, $deleted) {
                 $claim->refreshForUpdate();
-                $email = $claim->claimer_email ?? $claim->user->email;
+                $email = $claim->recipientEmail();
                 $isManager = GiftList::query()->whereKey($claim->reservation['list_id'])
                     ->where(fn ($query) => $query->whereHas('creator', fn ($query) => $query->where('email', $email))
                         ->orWhereHas('users', fn ($query) => $query->where('email', $email)))->exists();
@@ -105,7 +105,7 @@ class ReservationAlert extends Model
                 if ($alert) {
                     $alert->update(['after' => $after]);
                 } else {
-                    $alert = static::create(['claim_id' => $claim->id, 'gift_id' => $gift->id, 'list_id' => $claim->reservation['list_id'], 'email' => $claim->claimer_email ?? $claim->user->email, 'locale' => $claim->user->locale_preference ?? $claim->reservation['locale'] ?? app()->getLocale(), 'before' => $before, 'after' => $after]);
+                    $alert = static::create(['claim_id' => $claim->id, 'gift_id' => $gift->id, 'list_id' => $claim->reservation['list_id'], 'email' => $claim->recipientEmail(), 'locale' => $claim->user->locale_preference ?? $claim->reservation['locale'] ?? app()->getLocale(), 'before' => $before, 'after' => $after]);
                     SendReservationAlert::dispatch($alert->id)->delay(now()->addMinutes(10))->afterCommit();
                 }
             });

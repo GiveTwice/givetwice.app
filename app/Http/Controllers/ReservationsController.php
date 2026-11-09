@@ -27,7 +27,7 @@ class ReservationsController extends Controller
             return redirect()->route('reservations.index', ['locale' => app()->getLocale()]);
         }
         $email = $request->user()?->hasVerifiedEmail() ? $request->user()->email : $request->session()->get('reservations_email');
-        $claims = $email ? Claim::with('gift.lists', 'user', 'alerts')->whereNotNull('confirmed_at')->where(fn ($query) => $query->where('claimer_email', $email)->when($request->user()?->hasVerifiedEmail(), fn ($query) => $query->orWhere('user_id', $request->user()->id)))->get()
+        $claims = $email ? Claim::with('gift.lists', 'user', 'alerts')->confirmed()->where(fn ($query) => $query->where('claimer_email', $email)->when($request->user()?->hasVerifiedEmail(), fn ($query) => $query->orWhere('user_id', $request->user()->id)))->get()
             ->reject(fn (Claim $claim) => $request->user() && ($claim->reservation['owner_id'] === $request->user()->id || $claim->gift?->hasAccessibleListFor($request->user()))) : collect();
 
         return response()->view('claims.history', ['email' => $email, 'groups' => $claims->sortByDesc(fn (Claim $claim) => $claim->latestAlert() !== null || ($claim->isRemoved() && ! $claim->resolution))->groupBy('reservation.list_id')])->header('Cache-Control', 'private, no-store')->header('Referrer-Policy', 'no-referrer');
@@ -58,7 +58,7 @@ class ReservationsController extends Controller
             if ($request->isMethod('post')) {
                 $claim->refreshForUpdate();
             }
-            abort_unless(hash_equals(hash('sha256', $claim->claimer_email ?? $claim->user->email), $request->string('email')->toString()), 403);
+            abort_unless(hash_equals(hash('sha256', $claim->recipientEmail()), $request->string('email')->toString()), 403);
             abort_if($request->user() && ($claim->reservation['owner_id'] === $request->user()->id || $claim->gift?->hasAccessibleListFor($request->user())), 403);
             $alert = $request->integer('alert') ? $claim->alerts()->findOrFail($request->integer('alert')) : null;
             abort_unless(in_array($choice, $alert ? ($alert->after['deleted'] ? ['review', 'keep', 'alternative', 'dismiss'] : ['review', 'new', 'old', 'release']) : ['keep', 'alternative', 'dismiss'], true), 404);

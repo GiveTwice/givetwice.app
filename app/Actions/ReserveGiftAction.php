@@ -18,7 +18,7 @@ class ReserveGiftAction
             if ($lockedGift->isClaimed()) {
                 throw new AlreadyClaimedException;
             }
-            if ($lockedGift->claims()->where('claimer_email', strtolower(trim($email)))->whereNotNull('confirmed_at')->exists()) {
+            if ($lockedGift->claims()->where('claimer_email', strtolower(trim($email)))->confirmed()->exists()) {
                 throw new EmailAlreadyClaimedException;
             }
             $claim = $lockedGift->claims()->create([

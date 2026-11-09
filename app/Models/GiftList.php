@@ -108,17 +108,20 @@ class GiftList extends Model
         return $this->users()->where('user_id', $user->id)->exists();
     }
 
+    /**
+     * @return HasMany<ListInvitation, $this>
+     */
     public function invitations(): HasMany
     {
         return $this->hasMany(ListInvitation::class, 'list_id');
     }
 
+    /**
+     * @return HasMany<ListInvitation, $this>
+     */
     public function pendingInvitations(): HasMany
     {
-        return $this->invitations()
-            ->whereNull('accepted_at')
-            ->whereNull('declined_at')
-            ->where('expires_at', '>', now());
+        return $this->invitations()->pending();
     }
 
     /** @return HasMany<ListChange, $this> */
