@@ -2080,5 +2080,12 @@
     "Your session expired. Open the page again and retry.": "Your session expired. Open the page again and retry.",
     "Edit :name": "Edit :name",
     "No duplicate gifts": "No duplicate gifts",
-    "Birthday wishlist": "Birthday wishlist"
+    "Birthday wishlist": "Birthday wishlist",
+    "Reserve": "Reserve",
+    "Already reserved": "Already reserved",
+    "View my reservation": "View my reservation",
+    "On for all lists": "On for all lists",
+    "Email me": "Email me",
+    "Photo": "Photo",
+    "Change photo": "Change photo"
 }

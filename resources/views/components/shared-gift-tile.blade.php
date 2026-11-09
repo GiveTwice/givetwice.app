@@ -13,6 +13,16 @@
         </div>
         <h2 class="mt-2 min-h-10 line-clamp-2 text-sm font-semibold leading-5 text-gray-900 wrap-anywhere">{{ $gift->title ?: __('Untitled gift') }}</h2>
         <p class="text-sm text-gray-600">{{ $gift->formatPrice() ?? __('No price') }}</p>
+        {{-- Every tile ends with an action row of the same height, so tiles in one row line up. --}}
+        @unless($isOwner)
+            @if($isMine)
+                <span class="mt-2 flex min-h-9 w-full items-center justify-center rounded-[10px] border border-teal-200 bg-white px-3 text-sm font-semibold text-teal-800">{{ __('View my reservation') }}</span>
+            @elseif($isReserved)
+                <span class="mt-2 flex min-h-9 w-full items-center justify-center rounded-[10px] border border-stone-200 bg-stone-50 px-3 text-sm font-semibold text-gray-500">{{ __('Already reserved') }}</span>
+            @else
+                <span class="mt-2 flex min-h-9 w-full items-center justify-center rounded-[10px] border border-coral-200 bg-white px-3 text-sm font-semibold text-coral-700 transition-colors hover:bg-coral-50">{{ __('Reserve') }}</span>
+            @endif
+        @endunless
     </a>
     @if($isOwner)
         <form method="POST" action="{{ route('gifts.update', ['locale' => app()->getLocale(), 'gift' => $gift, 'list' => $gift->pivot?->list_id]) }}">

@@ -225,74 +225,67 @@
             </form>
         </div>
 
-        <details class="lg:col-span-2">
-            <summary class="min-h-11 cursor-pointer py-3 font-medium">{{ __('Photo (optional)') }}</summary>
+        <div class="lg:col-span-2">
+            <p class="form-label">{{ __('Photo') }}</p>
 
-            <div class="bg-cream-50 rounded-xl p-6 mb-6">
-                <x-section-heading class="mb-4">{{ __('Current Image') }}</x-section-heading>
+            <input
+                type="file"
+                id="image-upload"
+                accept="image/jpeg,image/png,image/jpg,image/gif,image/webp"
+                class="hidden"
+                x-ref="imageInput"
+                x-on:change="uploadImage($event)"
+            >
 
-                <input
-                    type="file"
-                    id="image-upload"
-                    accept="image/jpeg,image/png,image/jpg,image/gif,image/webp"
-                    class="hidden"
-                    x-ref="imageInput"
-                    x-on:change="uploadImage($event)"
-                >
+            <div class="group relative aspect-square w-full rounded-2xl border border-stone-200 bg-white overflow-hidden cursor-pointer"
+                 x-on:click="$refs.imageInput.click()">
 
-                <div class="group relative w-full h-48 rounded-xl overflow-hidden cursor-pointer"
-                     x-on:click="$refs.imageInput.click()">
+                <template x-if="gift.image_url_card">
+                    <img :src="gift.image_url_card" :alt="gift.title" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                </template>
 
-                    <template x-if="gift.image_url_card">
-                        <img :src="gift.image_url_card" :alt="gift.title" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
-                    </template>
-
-                    <template x-if="!gift.image_url_card">
-                        <div class="w-full h-full bg-cream-100 flex items-center justify-center">
-                            <div class="text-center text-gray-400">
-                                <x-icons.image-placeholder class="w-12 h-12 mx-auto mb-2" />
-                                <p class="text-sm">{{ __('Add a photo') }}</p>
-                            </div>
+                <template x-if="!gift.image_url_card">
+                    <div class="w-full h-full bg-cream-100 flex items-center justify-center">
+                        <div class="text-center text-gray-400">
+                            <x-icons.image-placeholder class="w-12 h-12 mx-auto mb-2" />
+                            <p class="text-sm">{{ __('Add a photo') }}</p>
                         </div>
-                    </template>
-
-                    <div class="absolute inset-0 bg-gray-900/0 group-hover:bg-gray-900/20 transition-colors duration-300 flex items-center justify-center"
-                         x-show="!uploading">
-                        <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/95 backdrop-blur-sm text-gray-700 px-4 py-2 rounded-full text-sm font-medium shadow-lg inline-flex items-center gap-2">
-                            <x-icons.image-placeholder class="w-4 h-4" />
-                            {{ __('Upload image') }}
-                        </span>
                     </div>
+                </template>
 
-                    <div class="absolute inset-0 bg-gray-900/40 flex items-center justify-center"
-                         x-show="uploading" x-cloak>
-                        <span class="bg-white/95 backdrop-blur-sm text-gray-700 px-4 py-2 rounded-full text-sm font-medium shadow-lg inline-flex items-center gap-2">
-                            <x-icons.spinner class="w-4 h-4 animate-spin" />
-                            {{ __('Uploading...') }}
-                        </span>
-                    </div>
-
-                    <div class="absolute top-3 right-3 pointer-events-none"
-                         x-show="uploadedRecently"
-                         x-cloak
-                         x-transition:enter="transition ease-out duration-200"
-                         x-transition:enter-start="opacity-0 -translate-y-1"
-                         x-transition:enter-end="opacity-100 translate-y-0"
-                         x-transition:leave="transition ease-in duration-300"
-                         x-transition:leave-start="opacity-100"
-                         x-transition:leave-end="opacity-0">
-                        <span class="bg-teal-500 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg inline-flex items-center gap-1.5">
-                            <x-icons.check-circle class="w-4 h-4" />
-                            {{ __('Saved') }}
-                        </span>
-                    </div>
+                <div class="absolute inset-0 bg-gray-900/40 flex items-center justify-center"
+                     x-show="uploading" x-cloak>
+                    <span class="bg-white/95 backdrop-blur-sm text-gray-700 px-4 py-2 rounded-full text-sm font-medium shadow-lg inline-flex items-center gap-2">
+                        <x-icons.spinner class="w-4 h-4 animate-spin" />
+                        {{ __('Uploading...') }}
+                    </span>
                 </div>
 
-                <p class="text-sm text-gray-500 mt-2 text-center">{{ __('Paste a screenshot or choose a photo') }}</p>
+                <div class="absolute top-3 right-3 pointer-events-none"
+                     x-show="uploadedRecently"
+                     x-cloak
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 -translate-y-1"
+                     x-transition:enter-end="opacity-100 translate-y-0"
+                     x-transition:leave="transition ease-in duration-300"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0">
+                    <span class="bg-teal-500 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg inline-flex items-center gap-1.5">
+                        <x-icons.check-circle class="w-4 h-4" />
+                        {{ __('Saved') }}
+                    </span>
+                </div>
             </div>
 
+            <div class="mt-2.5">
+                <button type="button" class="btn-secondary" x-on:click="$refs.imageInput.click()" :disabled="uploading">
+                    <x-icons.image-placeholder class="w-4 h-4" />
+                    {{ __('Change photo') }}
+                </button>
+            </div>
 
-        </details>
+            <p class="form-help">{{ __('Paste a screenshot or choose a photo') }}</p>
+        </div>
     </div>
 </x-dynamic-component>
 
