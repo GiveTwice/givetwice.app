@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,20 +19,19 @@ use Illuminate\Support\Str;
  * @property User $inviter
  * @property User|null $invitee
  */
+#[Fillable([
+    'list_id',
+    'inviter_id',
+    'invitee_id',
+    'email',
+    'token',
+    'accepted_at',
+    'declined_at',
+    'expires_at',
+])]
 class ListInvitation extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'list_id',
-        'inviter_id',
-        'invitee_id',
-        'email',
-        'token',
-        'accepted_at',
-        'declined_at',
-        'expires_at',
-    ];
 
     protected function casts(): array
     {
@@ -50,6 +52,14 @@ class ListInvitation extends Model
                 $invitation->expires_at = now()->addDays(30);
             }
         });
+    }
+
+    #[Scope]
+    protected function pending(Builder $query): void
+    {
+        $query->whereNull('accepted_at')
+            ->whereNull('declined_at')
+            ->where('expires_at', '>', now());
     }
 
     public function list(): BelongsTo

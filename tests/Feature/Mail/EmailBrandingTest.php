@@ -1,18 +1,14 @@
 <?php
 
-use App\Mail\ClaimConfirmationMail;
-use App\Mail\ClaimNotificationMail;
 use App\Mail\ExchangeRevealReminderMail;
 use App\Mail\ExchangeWishlistNudgeMail;
 use App\Mail\FriendDigestMail;
-use App\Mail\GaveTwiceMail;
 use App\Mail\GiftExchangeInviteMail;
 use App\Mail\InactiveAccountWarningMail;
 use App\Mail\ListInvitationMail;
 use App\Mail\ReservationAlertMail;
 use App\Mail\ReservationLinkMail;
 use App\Mail\ReservationMail;
-use App\Mail\WelcomeEmail;
 use App\Models\Claim;
 use App\Models\GiftExchange;
 use App\Models\GiftExchangeParticipant;
@@ -57,19 +53,15 @@ describe('email branding', function () {
                 'removed_gifts' => collect(),
             ]]);
             $mailables = [
-                ClaimConfirmationMail::class => new ClaimConfirmationMail($claim, $locale),
-                ClaimNotificationMail::class => new ClaimNotificationMail($claim),
                 ExchangeRevealReminderMail::class => new ExchangeRevealReminderMail($participant, $exchange),
                 ExchangeWishlistNudgeMail::class => new ExchangeWishlistNudgeMail($participant, $exchange),
                 FriendDigestMail::class => new FriendDigestMail($user, $digest),
-                GaveTwiceMail::class => new GaveTwiceMail($claim, $gift),
                 GiftExchangeInviteMail::class => new GiftExchangeInviteMail($participant, $exchange),
                 InactiveAccountWarningMail::class => new InactiveAccountWarningMail($user),
                 ListInvitationMail::class => new ListInvitationMail($invitation),
                 ReservationAlertMail::class => new ReservationAlertMail($alert),
                 ReservationLinkMail::class => new ReservationLinkMail($user->email, $locale),
                 ReservationMail::class => new ReservationMail($claim, $locale),
-                WelcomeEmail::class => new WelcomeEmail($user),
             ];
             expect(array_map(fn (string $path): string => 'App\\Mail\\'.basename($path, '.php'), glob(app_path('Mail/*.php'))))
                 ->toEqualCanonicalizing(array_keys($mailables));

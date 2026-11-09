@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Translation\HasLocalePreference;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,6 +29,24 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property Carbon|null $last_friend_digest_at
  * @property string|null $apple_id
  */
+#[Fillable([
+    'name',
+    'email',
+    'password',
+    'avatar',
+    'locale_preference',
+    'google_id',
+    'facebook_id',
+    'email_verified_at',
+    'friend_notifications_enabled',
+    'last_friend_digest_at',
+    'last_active_at',
+    'inactive_warning_sent_at',
+])]
+#[Hidden([
+    'password',
+    'remember_token',
+])]
 class User extends Authenticatable implements HasLocalePreference, HasMedia, MustVerifyEmail
 {
     use HasFactory;
@@ -34,32 +54,6 @@ class User extends Authenticatable implements HasLocalePreference, HasMedia, Mus
     use InteractsWithMedia;
     use Notifiable;
     use TwoFactorAuthenticatable;
-
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'avatar',
-        'locale_preference',
-        'google_id',
-        'facebook_id',
-        'is_admin',
-        'email_verified_at',
-        'friend_notifications_enabled',
-        'last_friend_digest_at',
-        'last_active_at',
-        'inactive_warning_sent_at',
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
 
     /**
      * Get the attributes that should be cast.
@@ -79,6 +73,9 @@ class User extends Authenticatable implements HasLocalePreference, HasMedia, Mus
         ];
     }
 
+    /**
+     * @return HasMany<Gift, $this>
+     */
     public function gifts(): HasMany
     {
         return $this->hasMany(Gift::class);
@@ -102,17 +99,20 @@ class User extends Authenticatable implements HasLocalePreference, HasMedia, Mus
         return $this->hasMany(GiftList::class, 'creator_id');
     }
 
+    /**
+     * @return HasMany<ListInvitation, $this>
+     */
     public function listInvitations(): HasMany
     {
         return $this->hasMany(ListInvitation::class, 'invitee_id');
     }
 
+    /**
+     * @return HasMany<ListInvitation, $this>
+     */
     public function pendingListInvitations(): HasMany
     {
-        return $this->listInvitations()
-            ->whereNull('accepted_at')
-            ->whereNull('declined_at')
-            ->where('expires_at', '>', now());
+        return $this->listInvitations()->pending();
     }
 
     public function hasPendingListInvitations(): bool
@@ -168,14 +168,14 @@ class User extends Authenticatable implements HasLocalePreference, HasMedia, Mus
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumb')
-            ->fit(Fit::Crop, 96, 96)
             ->nonQueued()
-            ->performOnCollections('profile');
+            ->performOnCollections('profile')
+            ->fit(Fit::Crop, 96, 96);
 
         $this->addMediaConversion('medium')
-            ->fit(Fit::Crop, 256, 256)
             ->nonQueued()
-            ->performOnCollections('profile');
+            ->performOnCollections('profile')
+            ->fit(Fit::Crop, 256, 256);
     }
 
     public function getProfileImageUrl(?string $conversion = null): ?string
@@ -227,7 +227,8 @@ class User extends Authenticatable implements HasLocalePreference, HasMedia, Mus
         );
     }
 
-    public function scopeDueForFriendDigest(Builder $query): Builder
+    #[Scope]
+    protected function dueForFriendDigest(Builder $query): Builder
     {
         $today = now('Europe/Brussels')->toDateString();
         $soon = now('Europe/Brussels')->addDays(30)->toDateString();

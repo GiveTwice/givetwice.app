@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,23 +19,22 @@ use Illuminate\Support\Str;
  * @property Carbon|null $confirmed_at
  * @property string|null $notes
  */
+#[Fillable([
+    'receipt_requested_at',
+    'receipt_sent_at',
+    'receipt_locale',
+    'reservation',
+    'resolution',
+    'gift_id',
+    'user_id',
+    'claimer_email',
+    'claimer_name',
+    'confirmation_token',
+    'confirmed_at',
+])]
 class Claim extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'receipt_requested_at',
-        'receipt_sent_at',
-        'receipt_locale',
-        'reservation',
-        'resolution',
-        'gift_id',
-        'user_id',
-        'claimer_email',
-        'claimer_name',
-        'confirmation_token',
-        'confirmed_at',
-    ];
 
     protected function casts(): array
     {
@@ -82,6 +84,12 @@ class Claim extends Model
         return $this->hasMany(ReservationAlert::class);
     }
 
+    #[Scope]
+    protected function confirmed(Builder $query): void
+    {
+        $query->whereNotNull('confirmed_at');
+    }
+
     public function belongsToBrowser(Request $request): bool
     {
         return ($request->user() && $this->user_id === $request->user()->id)
@@ -89,9 +97,18 @@ class Claim extends Model
             || (filled($this->confirmation_token) && hash_equals($this->confirmation_token, $request->cookie('reservation_'.$this->gift_id, '')));
     }
 
+    /**
+     * Returns the address that gets mail about this reservation. New claims store it in
+     * claimer_email; older account reservations only have it on the user.
+     */
+    public function recipientEmail(): string
+    {
+        return $this->claimer_email ?? $this->user->email ?? '';
+    }
+
     public function historyUrl(?string $locale = null): string
     {
-        return URL::temporarySignedRoute('reservations.index', now()->addDays(30), ['locale' => $locale ?? app()->getLocale(), 'email' => $this->claimer_email ?? $this->user->email]);
+        return URL::temporarySignedRoute('reservations.index', now()->addDays(30), ['locale' => $locale ?? app()->getLocale(), 'email' => $this->recipientEmail()]);
     }
 
     public function isRemoved(): bool
@@ -120,26 +137,10 @@ class Claim extends Model
         return $this->confirmed_at === null;
     }
 
-    public function isAnonymous(): bool
-    {
-        return $this->user_id === null;
-    }
-
     public function confirm(): void
     {
         $this->update([
             'confirmed_at' => now(),
         ]);
-    }
-
-    public function getClaimerDisplayName(): string
-    {
-        /** @var User|null $user */
-        $user = $this->user;
-        if ($user) {
-            return $user->name;
-        }
-
-        return $this->claimer_name ?? $this->claimer_email ?? 'Someone';
     }
 }

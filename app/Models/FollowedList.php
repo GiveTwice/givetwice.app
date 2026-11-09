@@ -2,21 +2,22 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\URL;
 
+#[Fillable([
+    'user_id',
+    'list_id',
+    'notifications',
+    'last_change_id',
+    'manager_updates',
+])]
 class FollowedList extends Model
 {
-    protected $fillable = [
-        'user_id',
-        'list_id',
-        'notifications',
-        'last_change_id',
-        'manager_updates',
-    ];
-
     protected static function booted(): void
     {
         static::creating(function (self $follow): void {
@@ -55,7 +56,8 @@ class FollowedList extends Model
         return $this->belongsTo(GiftList::class, 'list_id');
     }
 
-    public function scopeDigestReady(Builder $query): Builder
+    #[Scope]
+    protected function digestReady(Builder $query): Builder
     {
         return $query->where('notifications', true)
             ->whereHas('list', fn ($list) => $list
@@ -67,7 +69,8 @@ class FollowedList extends Model
                     ->orWhereHas('users', fn ($users) => $users->whereColumn('users.id', 'followed_lists.user_id'))));
     }
 
-    public function scopeVisibleTo(Builder $query, User $user): Builder
+    #[Scope]
+    protected function visibleTo(Builder $query, User $user): Builder
     {
         return $query->whereHas('list', function (Builder $listQuery) use ($user) {
             $listQuery->where('creator_id', '!=', $user->id)
@@ -75,15 +78,5 @@ class FollowedList extends Model
                     $userQuery->where('user_id', $user->id);
                 });
         });
-    }
-
-    public function isVisibleTo(User $user): bool
-    {
-        if (! $this->list) {
-            return false;
-        }
-
-        return $this->list->creator_id !== $user->id
-            && ! $this->list->hasUser($user);
     }
 }

@@ -16,9 +16,7 @@ class LinkInvitationsToVerifiedUser
         ListInvitation::query()
             ->whereNull('invitee_id')
             ->where('email', $user->email)
-            ->whereNull('accepted_at')
-            ->whereNull('declined_at')
-            ->where('expires_at', '>', now())
+            ->pending()
             ->update(['invitee_id' => $user->id]);
     }
 }

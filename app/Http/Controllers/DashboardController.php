@@ -40,7 +40,7 @@ class DashboardController extends Controller
 
         foreach ($lists as $list) {
             if ($list->spoiler_mode) {
-                $list->gifts->load(['claims' => fn ($query) => $query->whereNotNull('confirmed_at')]);
+                $list->gifts->load(['claims' => fn ($query) => $query->confirmed()]);
             } else {
                 $list->gifts->each(fn ($gift) => $gift->setRelation('claims', collect()));
             }

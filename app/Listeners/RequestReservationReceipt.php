@@ -5,13 +5,13 @@ namespace App\Listeners;
 use App\Events\GiftClaimed;
 use App\Jobs\SendReservationReceipt;
 
-class SendGaveTwiceEmail
+class RequestReservationReceipt
 {
     public function handle(GiftClaimed $event): void
     {
         $claim = $event->claim;
 
-        $email = $claim->claimer_email ?? $claim->user?->email;
+        $email = $claim->recipientEmail();
 
         if (! $email) {
             return;

@@ -7,20 +7,18 @@ use App\Models\FollowedList;
 use App\Models\GiftList;
 use App\Models\ListChange;
 use App\Models\User;
+use App\Support\DigestHours;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
+#[Signature('friends:send-digest')]
+#[Description('Send bundled wishlist updates to eligible recipients during daytime')]
 class SendFriendDigestCommand extends Command
 {
-    protected $signature = 'friends:send-digest';
-
-    protected $description = 'Send bundled wishlist updates to eligible recipients during daytime';
-
     public function handle(): int
     {
-        if (now('Europe/Brussels')->hour < 9) {
-            return self::SUCCESS;
-        }
-        if (now('Europe/Brussels')->hour >= 20) {
+        if (! DigestHours::isOpen()) {
             return self::SUCCESS;
         }
         GiftList::query()->where(fn ($lists) => $lists

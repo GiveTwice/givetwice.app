@@ -4,14 +4,14 @@ namespace App\Console\Commands;
 
 use App\Jobs\SendExchangeReminder;
 use App\Models\GiftExchangeParticipant;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
+#[Signature('exchanges:send-reminders')]
+#[Description('Send reminder emails to exchange participants who haven\'t viewed their draw or created a wishlist')]
 class SendExchangeReminders extends Command
 {
-    protected $signature = 'exchanges:send-reminders';
-
-    protected $description = 'Send reminder emails to exchange participants who haven\'t viewed their draw or created a wishlist';
-
     public function handle(): int
     {
         $this->sendRevealReminders();

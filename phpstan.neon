@@ -5,12 +5,3 @@ parameters:
     level: 5
     paths:
         - app
-    ignoreErrors:
-        - message: '#Call to an undefined method Spatie\\Image\\Drivers\\ImageDriver::(nonQueued|performOnCollections)\(\)#'
-          paths:
-            - app/Models/Gift.php
-            - app/Models/User.php
-        - message: '#Call to an undefined method Illuminate\\Database\\Eloquent\\Relations\\HasMany.*::withTrashed\(\)#'
-          paths:
-            - app/Actions/DeleteAccountAction.php
-            - app/Actions/ExportPersonalDataAction.php

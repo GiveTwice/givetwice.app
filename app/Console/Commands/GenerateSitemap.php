@@ -5,16 +5,16 @@ namespace App\Console\Commands;
 use App\Enums\SupportedLocale;
 use App\Helpers\ExchangeHelper;
 use App\Helpers\OccasionHelper;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
 
+#[Signature('sitemap:generate')]
+#[Description('Generate the sitemap.xml file')]
 class GenerateSitemap extends Command
 {
-    protected $signature = 'sitemap:generate';
-
-    protected $description = 'Generate the sitemap.xml file';
-
     private array $staticPages = [
         'home' => '',
         'about' => '/about',

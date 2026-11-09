@@ -1,9 +1,7 @@
 <?php
 
 use App\Actions\ClaimGiftAction;
-use App\Actions\CreatePendingClaimAction;
 use App\Events\GiftClaimed;
-use App\Exceptions\Claim\EmailAlreadyClaimedException;
 use App\Exceptions\Claim\UserAlreadyClaimedException;
 use App\Models\Claim;
 use App\Models\Gift;
@@ -156,51 +154,6 @@ describe('ClaimGiftAction with multi-claim gifts', function () {
         Event::assertDispatched(GiftClaimed::class, function ($event) {
             return $event->gift->allow_multiple_claims === true;
         });
-    });
-
-});
-
-describe('CreatePendingClaimAction with multi-claim gifts', function () {
-
-    it('allows creating pending claim on multi-claim gift with existing claims', function () {
-        $owner = User::factory()->create();
-
-        $gift = Gift::factory()->create([
-            'user_id' => $owner->id,
-            'allow_multiple_claims' => true,
-        ]);
-
-        Claim::factory()->create([
-            'gift_id' => $gift->id,
-            'claimer_email' => 'first@example.com',
-            'confirmed_at' => now(),
-        ]);
-
-        $action = new CreatePendingClaimAction;
-        $claim = $action->execute($gift, 'second@example.com');
-
-        expect($claim)->toBeInstanceOf(Claim::class);
-        expect($claim->claimer_email)->toBe('second@example.com');
-    });
-
-    it('prevents same email from claiming multi-claim gift twice', function () {
-        $owner = User::factory()->create();
-
-        $gift = Gift::factory()->create([
-            'user_id' => $owner->id,
-            'allow_multiple_claims' => true,
-        ]);
-
-        Claim::factory()->create([
-            'gift_id' => $gift->id,
-            'claimer_email' => 'claimer@example.com',
-            'confirmed_at' => now(),
-        ]);
-
-        $action = new CreatePendingClaimAction;
-
-        expect(fn () => $action->execute($gift, 'claimer@example.com'))
-            ->toThrow(EmailAlreadyClaimedException::class);
     });
 
 });

@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\SupportedCurrency;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\RouteKey;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,22 +16,22 @@ use Illuminate\Support\Str;
  * @property Carbon|null $event_date
  * @property Carbon|null $draw_completed_at
  */
+#[Fillable([
+    'organizer_id',
+    'name',
+    'budget_amount',
+    'budget_currency',
+    'event_date',
+    'slug',
+    'join_token',
+    'status',
+    'draw_completed_at',
+    'locale',
+])]
+#[RouteKey('slug')]
 class GiftExchange extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'organizer_id',
-        'name',
-        'budget_amount',
-        'budget_currency',
-        'event_date',
-        'slug',
-        'join_token',
-        'status',
-        'draw_completed_at',
-        'locale',
-    ];
 
     protected function casts(): array
     {
@@ -66,11 +69,6 @@ class GiftExchange extends Model
         return $this->id.'-'.$baseSlug;
     }
 
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
-
     public function organizer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'organizer_id');
@@ -104,7 +102,7 @@ class GiftExchange extends Model
         }
 
         $amount = $this->budget_amount / 100;
-        $symbol = $this->budget_currency === 'USD' ? '$' : '€';
+        $symbol = SupportedCurrency::tryFrom((string) $this->budget_currency)?->symbol() ?? SupportedCurrency::EUR->symbol();
 
         return $symbol.number_format($amount, $amount == intval($amount) ? 0 : 2);
     }
@@ -115,21 +113,5 @@ class GiftExchange extends Model
             'locale' => $locale ?? $this->locale,
             'joinToken' => $this->join_token,
         ]);
-    }
-
-    public static function exchangeTypeSlugs(): array
-    {
-        return [
-            'en' => 'secret-santa',
-            'nl' => 'lootjes-trekken',
-            'fr' => 'tirage-au-sort',
-        ];
-    }
-
-    public function getExchangeTypeSlug(?string $locale = null): string
-    {
-        $locale = $locale ?? $this->locale;
-
-        return static::exchangeTypeSlugs()[$locale] ?? 'secret-santa';
     }
 }

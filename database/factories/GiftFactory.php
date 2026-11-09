@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\SupportedCurrency;
 use App\Models\Gift;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -21,7 +22,7 @@ class GiftFactory extends Factory
             'title' => fake()->sentence(3),
             'description' => fake()->paragraph(),
             'price_in_cents' => fake()->numberBetween(100, 50000),
-            'currency' => fake()->randomElement(['EUR', 'USD', 'GBP']),
+            'currency' => fake()->randomElement(SupportedCurrency::values()),
             'original_image_url' => null,
             'fetch_status' => 'completed',
             'fetched_at' => now(),

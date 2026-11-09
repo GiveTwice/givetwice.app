@@ -148,8 +148,6 @@ return [
         Features::resetPasswords(),
         // Email verification routes are custom (locale-prefixed) in routes/web.php
         // Features::emailVerification(),
-        Features::updateProfileInformation(),
-        Features::updatePasswords(),
         Features::twoFactorAuthentication([
             'confirm' => true,
             'confirmPassword' => true,

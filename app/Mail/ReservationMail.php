@@ -25,7 +25,7 @@ class ReservationMail extends Mailable
     {
         $this->claims = $claims ?? collect([$claim]);
         $this->undoUrls = $this->claims->mapWithKeys(fn (Claim $item) => [$item->id => URL::signedRoute('claim.undo', [
-            'locale' => $userLocale, 'claim' => $item, 'email' => hash('sha256', $item->claimer_email ?? $item->user->email),
+            'locale' => $userLocale, 'claim' => $item, 'email' => hash('sha256', $item->recipientEmail()),
         ])]);
         $this->undoUrl = $this->undoUrls->get($claim->id);
         $this->locale($userLocale);

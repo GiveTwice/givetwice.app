@@ -32,7 +32,7 @@ class ClaimController extends Controller
         if ($request->user() && ($gift->user_id === $request->user()->id || $gift->hasAccessibleListFor($request->user()))) {
             return $this->showAnonymousForm($request, $locale, $gift);
         }
-        $claim = $token ? $gift->claims()->where('confirmation_token', $token)->whereNotNull('confirmed_at')->first() : $this->browserClaim($request, $gift);
+        $claim = $token ? $gift->claims()->where('confirmation_token', $token)->confirmed()->first() : $this->browserClaim($request, $gift);
         if (! $claim) {
             return redirect()->route('claim.anonymous.form', ['locale' => $locale, 'gift' => $gift]);
         }
@@ -97,7 +97,7 @@ class ClaimController extends Controller
     {
         $claim = $this->browserClaim($request, $gift);
         abort_unless($claim !== null, 403);
-        $this->limit($request, $claim->claimer_email ?? $claim->user->email, 'mail');
+        $this->limit($request, $claim->recipientEmail(), 'mail');
         SendReservationReceipt::request($claim, $locale);
 
         return $this->sheet($request, $gift, $claim, __('reservations.receipt_queued'));
@@ -115,7 +115,7 @@ class ClaimController extends Controller
 
     public function undo(Request $request, string $locale, Claim $claim): View|RedirectResponse
     {
-        abort_unless(hash_equals(hash('sha256', $claim->claimer_email ?? $claim->user->email), $request->string('email')->toString()), 403);
+        abort_unless(hash_equals(hash('sha256', $claim->recipientEmail()), $request->string('email')->toString()), 403);
         if ($request->isMethod('post')) {
             $gift = $claim->gift;
             $claim->delete();
@@ -133,7 +133,7 @@ class ClaimController extends Controller
 
     private function browserClaim(Request $request, Gift $gift): ?Claim
     {
-        return $gift->claims()->whereNotNull('confirmed_at')->where(function ($query) use ($request, $gift) {
+        return $gift->claims()->confirmed()->where(function ($query) use ($request, $gift) {
             $query->where('confirmation_token', $request->cookie('reservation_'.$gift->id) ?: 'invalid');
             if ($request->user()) {
                 $query->orWhere('user_id', $request->user()->id);
@@ -156,9 +156,9 @@ class ClaimController extends Controller
         $list = $request->integer('list') ? $lists->whereKey($request->integer('list'))->firstOrFail() : $lists->first();
         $late = ! $claim && $gift->isClaimed();
         $alternatives = $late && $list ? $list->gifts()->with('media')->where('gifts.id', '!=', $gift->id)
-            ->where(fn ($query) => $query->where('allow_multiple_claims', true)->orWhereDoesntHave('claims', fn ($query) => $query->whereNotNull('confirmed_at')))
+            ->where(fn ($query) => $query->where('allow_multiple_claims', true)->orWhereDoesntHave('claims', fn ($query) => $query->confirmed()))
             ->get()->sortBy(fn (Gift $other) => $other->price_in_cents === null ? PHP_INT_MAX - 1 : ($other->currency === $gift->currency && $gift->price_in_cents !== null ? abs($other->price_in_cents - $gift->price_in_cents) : PHP_INT_MAX))->take(3) : collect();
-        $email = $claim ? ($claim->claimer_email ?? $claim->user->email) : $request->cookie('reservation_email', '');
+        $email = $claim ? $claim->recipientEmail() : $request->cookie('reservation_email', '');
 
         return view($request->header('X-Reservation-Sheet') ? 'claims.sheet-content' : 'claims.anonymous', compact('gift', 'claim', 'list', 'late', 'alternatives', 'email', 'notice') + ['suggestion' => EmailSuggestion::for($email)]);
     }

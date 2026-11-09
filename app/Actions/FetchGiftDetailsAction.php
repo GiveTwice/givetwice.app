@@ -8,30 +8,28 @@ use GiveTwice\ProductInfoFetcher\DataTransferObjects\TransportAttempt;
 use GiveTwice\ProductInfoFetcher\Enum\FetchOutcome;
 use GiveTwice\ProductInfoFetcher\ProductInfoFetcher;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Queue\Attributes\Backoff;
+use Illuminate\Queue\Attributes\Queue;
+use Illuminate\Queue\Attributes\Tries;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use RuntimeException;
 use Spatie\SlackAlerts\Facades\SlackAlert;
 use Throwable;
 
+#[Queue('fetch')]
+#[Tries(4)]
+#[Backoff([5, 30, 60])]
 class FetchGiftDetailsAction implements ShouldQueue
 {
-    use Dispatchable, Queueable;
-
-    public int $tries = 4;
-
-    /** @var array<int, int> */
-    public array $backoff = [5, 30, 60];
+    use Queueable;
 
     private ?ProductInfoFetcher $fetcher = null;
 
     public function __construct(
         public readonly Gift $gift
-    ) {
-        $this->onQueue('fetch');
-    }
+    ) {}
 
     public function setFetcher(ProductInfoFetcher $fetcher): self
     {

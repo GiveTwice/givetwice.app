@@ -12,7 +12,6 @@ use App\Models\GiftList;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\View\View;
 use Spatie\OgImage\OgImage;
 
@@ -303,29 +302,6 @@ class GiftController extends Controller
             'message' => __('Image uploaded successfully.'),
             'image_url_card' => $gift->fresh()->getImageUrl('card'),
         ]);
-    }
-
-    public function cardHtml(Request $request, string $locale, int $list, string $slug, int $giftId): Response
-    {
-        $giftList = GiftList::findOrFail($list);
-
-        if ($giftList->slug !== $slug) {
-            abort(404);
-        }
-
-        $gift = $giftList->gifts()->findOrFail($giftId);
-
-        $isOwner = auth()->check() && $giftList->hasUser(auth()->user());
-        $showReservations = ! $isOwner || $giftList->spoiler_mode;
-        $gift->load(['claims' => fn ($query) => $query->whereNotNull('confirmed_at')->when(! $showReservations, fn ($query) => $query->whereRaw('1 = 0'))]);
-        $html = view('components.shared-gift-tile', [
-            'gift' => $gift,
-            'isOwner' => $isOwner,
-            'isMine' => ! $isOwner && $gift->claims->contains(fn ($claim) => $claim->belongsToBrowser($request)),
-            'isReserved' => $showReservations && ! $gift->allow_multiple_claims && $gift->claims->isNotEmpty(),
-        ])->render().view('components.gift-modal', compact('gift', 'isOwner', 'showReservations'))->render();
-
-        return response($html)->header('Content-Type', 'text/html')->header('Cache-Control', 'private, no-store');
     }
 
     /**

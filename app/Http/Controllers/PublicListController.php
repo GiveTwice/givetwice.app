@@ -34,10 +34,10 @@ class PublicListController extends Controller
         $availableGifts = null;
         if ($showReservations) {
             $free = fn ($query) => $query->where('allow_multiple_claims', true)
-                ->orWhereDoesntHave('claims', fn ($query) => $query->whereNotNull('confirmed_at'));
+                ->orWhereDoesntHave('claims', fn ($query) => $query->confirmed());
             $availableGifts = (clone $query)->where($free)->count();
-            $query->withCount(['claims' => fn ($query) => $query->whereNotNull('confirmed_at')])
-                ->with(['claims' => fn ($query) => $query->whereNotNull('confirmed_at')]);
+            $query->withCount(['claims' => fn ($query) => $query->confirmed()])
+                ->with(['claims' => fn ($query) => $query->confirmed()]);
             if ($filter === 'free') {
                 $query->where($free);
             } elseif ($filter === 'under20') {
