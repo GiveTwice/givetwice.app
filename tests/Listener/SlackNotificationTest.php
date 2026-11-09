@@ -59,9 +59,9 @@ describe('Slack notification on gift created', function () {
         $user = User::factory()->create();
         $gift = Gift::factory()->create([
             'user_id' => $user->id,
-            'title' => null,
             'url' => 'https://example.com/product',
         ]);
+        $gift->title = null;
 
         event(new GiftCreated($gift));
 
