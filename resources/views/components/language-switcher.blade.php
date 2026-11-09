@@ -30,7 +30,7 @@
     <button
         @click="open = !open"
         type="button"
-        class="flex items-center space-x-2 px-3 py-2 rounded-xl bg-cream-100 hover:bg-cream-200 border border-cream-200 transition-all duration-200 group"
+        class="flex items-center space-x-2 px-2.5 py-1.5 rounded-[10px] hover:bg-cream-100 border border-transparent transition-colors duration-200 group"
         aria-expanded="false"
         aria-haspopup="true"
     >

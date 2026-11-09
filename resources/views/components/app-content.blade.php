@@ -5,12 +5,12 @@
     'fullWidth' => false,
 ])
 
-<div class="bg-white rounded-2xl shadow-sm border border-cream-200/60 overflow-hidden">
+<div class="bg-white rounded-2xl shadow-sm border border-stone-200/80 overflow-hidden">
 
-    <div class="px-6 sm:px-8 pt-6 sm:pt-8 pb-6 border-b border-gray-100">
+    <div class="px-4 sm:px-6 pt-4 sm:pt-5 pb-3.5 sm:pb-4 border-b border-gray-100">
 
         @if(count($breadcrumbs) > 0)
-            <nav class="flex items-center gap-2 text-sm text-gray-500 mb-4">
+            <nav class="flex items-center gap-2 text-sm text-gray-500 mb-3">
                 @foreach($breadcrumbs as $index => $crumb)
                     @if($index > 0)
                         <x-icons.chevron-right class="w-4 h-4 text-gray-400" />
@@ -31,7 +31,7 @@
                     {{ $titleSlot }}
                 @else
                     @if($title)
-                        <h1 class="text-2xl font-bold text-gray-900">{{ $title }}</h1>
+                        <h1 class="text-[1.375rem] sm:text-2xl font-bold tracking-tight text-gray-900">{{ $title }}</h1>
                     @endif
                     @if($description)
                         <p class="text-gray-600 mt-1">{{ $description }}</p>
@@ -47,7 +47,7 @@
         </div>
     </div>
 
-    <div class="{{ $fullWidth ? '' : 'px-6 sm:px-8 py-6 sm:py-8' }}">
+    <div class="{{ $fullWidth ? '' : 'p-4 sm:px-6 sm:py-5' }}">
         {{ $slot }}
     </div>
 </div>

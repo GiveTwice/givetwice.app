@@ -17,9 +17,9 @@
         <button
             type="button"
             x-on:click="$dispatch('open-confirm-{{ $id }}')"
-            class="inline-flex items-center gap-2 bg-red-600 text-white px-5 py-2.5 rounded-xl hover:bg-red-700 transition-colors font-medium whitespace-nowrap"
+            class="btn-danger-outline whitespace-nowrap"
         >
-            <x-icons.trash class="w-5 h-5" />
+            <x-icons.trash class="w-4 h-4" />
             {{ $buttonText }}
         </button>
     </div>

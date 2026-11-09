@@ -56,9 +56,13 @@ main :where([id], h1, h2, h3, form) {
    - Claim (teal/green): Claim, Receive actions
    ============================================ */
 
-/* Primary button - coral/red (Create, Add Gift, Submit - matches Step 1) */
+/* Inside the components layer, so a size or spacing utility in the markup (text-sm, min-h-11, px-1) can
+   still adjust one button. Outside a layer, these classes silently won over every utility. */
+@layer components {
+
+/* Primary button - coral/red. The one main action on a page: nothing else on the page is filled coral. */
 .btn-primary {
-    @apply inline-flex items-center gap-2 bg-coral-500 text-white px-5 py-2.5 rounded-xl hover:bg-coral-600 transition-colors font-medium shadow-sm;
+    @apply inline-flex items-center justify-center gap-1.5 bg-coral-500 text-white px-3.5 min-h-11 sm:min-h-10 rounded-[10px] hover:bg-coral-600 transition-colors font-semibold text-[0.906rem] leading-5 shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(120_30_20/0.18)];
 }
 
 /* Small variant of primary button */
@@ -66,14 +70,19 @@ main :where([id], h1, h2, h3, form) {
     @apply inline-flex items-center gap-1.5 bg-coral-500 text-white px-3 py-1.5 rounded-lg hover:bg-coral-600 transition-colors text-sm font-medium;
 }
 
-/* Secondary button - white/outlined */
+/* Secondary button - white with a neutral hairline. Every action that is not the main one. */
 .btn-secondary {
-    @apply inline-flex items-center gap-2 bg-white border border-cream-300 text-gray-700 px-4 py-2.5 rounded-xl hover:bg-cream-50 transition-colors font-medium;
+    @apply inline-flex items-center justify-center gap-1.5 bg-white border border-stone-300 text-gray-800 px-3.5 min-h-11 sm:min-h-10 rounded-[10px] hover:bg-cream-50 hover:border-stone-400 transition-colors font-semibold text-[0.906rem] leading-5 shadow-[0_1px_1px_rgb(60_40_20/0.04)];
+}
+
+/* Destructive action outside a confirm dialog: a red outline. The filled red button stays inside the dialog. */
+.btn-danger-outline {
+    @apply inline-flex items-center justify-center gap-1.5 bg-white border border-red-200 text-red-700 px-3.5 min-h-11 sm:min-h-10 rounded-[10px] hover:bg-red-50 transition-colors font-semibold text-[0.906rem] leading-5;
 }
 
 /* Share button - sunny/yellow (matches Step 2: Share) */
 .btn-share {
-    @apply inline-flex items-center gap-2 bg-sunny-200 text-sunny-800 px-5 py-2.5 rounded-xl hover:bg-sunny-300 transition-colors font-medium;
+    @apply inline-flex items-center justify-center gap-1.5 bg-sunny-200 text-sunny-800 px-3.5 min-h-11 sm:min-h-10 rounded-[10px] hover:bg-sunny-300 transition-colors font-semibold text-[0.906rem] leading-5;
 }
 
 /* Text link button style */
@@ -81,9 +90,9 @@ main :where([id], h1, h2, h3, form) {
     @apply inline-flex items-center gap-2 text-coral-600 hover:text-coral-700 font-medium transition-colors;
 }
 
-/* Cancel button - text style for form cancel actions */
+/* Cancel button - text style for form cancel actions. A flex box, so its words sit on the same line as Save. */
 .btn-cancel {
-    @apply px-5 py-2.5 text-gray-600 hover:text-gray-900 font-medium transition-colors;
+    @apply inline-flex items-center justify-center px-2.5 min-h-11 sm:min-h-10 text-gray-600 hover:text-gray-900 font-semibold text-[0.906rem] transition-colors;
 }
 
 /* ============================================
@@ -92,27 +101,27 @@ main :where([id], h1, h2, h3, form) {
 
 /* Standard form input - text, email, password, url, number */
 .form-input {
-    @apply w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-colors;
+    @apply w-full px-3 py-2.5 border border-stone-300 rounded-[10px] focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-colors;
 }
 
 /* Textarea - same as input but allows resize control */
 .form-textarea {
-    @apply w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-colors resize-none;
+    @apply w-full px-3 py-2.5 border border-stone-300 rounded-[10px] focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-colors resize-none;
 }
 
 /* Select dropdown */
 .form-select {
-    @apply w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-colors bg-white;
+    @apply w-full px-3 py-2.5 border border-stone-300 rounded-[10px] focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-colors bg-white;
 }
 
 /* Form label */
 .form-label {
-    @apply block text-gray-700 mb-2 font-medium;
+    @apply block text-gray-800 mb-1.5 font-semibold text-[0.906rem];
 }
 
 /* Form helper/description text */
 .form-help {
-    @apply text-sm text-gray-500 mt-2;
+    @apply text-sm text-gray-500 mt-1.5;
 }
 
 /* Form error message */
@@ -122,7 +131,7 @@ main :where([id], h1, h2, h3, form) {
 
 /* Form action row - contains cancel/submit buttons */
 .form-actions {
-    @apply flex items-center justify-end gap-3 pt-6 mt-8 border-t border-gray-200;
+    @apply flex items-center justify-end gap-2 pt-4 mt-5 border-t border-gray-200;
 }
 
 /* ============================================
@@ -131,7 +140,7 @@ main :where([id], h1, h2, h3, form) {
 
 /* Standard card container - minimal border, let whitespace define regions */
 .card {
-    @apply bg-white rounded-2xl p-6 shadow-sm border border-transparent;
+    @apply bg-white rounded-2xl p-5 shadow-sm border border-transparent;
 }
 
 .card-link {
@@ -218,12 +227,19 @@ main :where([id], h1, h2, h3, form) {
 
 /* Breadcrumb container */
 .breadcrumb {
-    @apply flex items-center gap-2 text-sm text-gray-500 mb-6;
+    @apply flex items-center gap-2 text-sm text-gray-500 mb-3;
 }
 
 /* Breadcrumb link */
 .breadcrumb-link {
     @apply hover:text-coral-600 transition-colors;
+}
+
+/* A switch that is on: teal, so coral stays reserved for actions. */
+.switch-on {
+    @apply bg-teal-600;
+}
+
 }
 
 @theme {
@@ -1011,7 +1027,7 @@ main :where([id], h1, h2, h3, form) {
 
 @media (min-width: 64rem) {
     .app-shell-layout-cozy {
-        grid-template-columns: 18rem minmax(0, 1fr);
+        grid-template-columns: 16.5rem minmax(0, 1fr);
     }
 }
 
@@ -1028,7 +1044,8 @@ main :where([id], h1, h2, h3, form) {
     --color-sunny-700: oklch(0.48 0.11 65);
 }
 
-.btn-primary, .btn-primary-sm, .btn-secondary, .btn-share, .btn-claim {
+/* The main button classes set their own height in the components layer: 44px on phones, 40px from sm up. */
+.btn-primary-sm, .btn-claim {
     justify-content: center;
     min-height: 2.75rem;
 }
@@ -1158,7 +1175,8 @@ main {
     }
 }
 
-.btn-primary, .btn-secondary, .btn-share, .btn-claim, .btn-link, .btn-cancel,
-.form-label, .form-input, .form-select, .form-textarea {
+/* Inputs stay at 16px: iOS zooms into any smaller input. Buttons and labels size themselves in the components layer. */
+.btn-claim, .btn-link,
+.form-input, .form-select, .form-textarea {
     font-size: 1rem;
 }

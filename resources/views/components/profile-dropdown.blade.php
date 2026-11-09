@@ -40,7 +40,7 @@
         @click="open = !open"
         type="button"
         class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-cream-200 hover:border-coral-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-coral-300 focus:ring-offset-2 overflow-hidden group"
-        :class="hasImage ? '' : 'bg-coral-500'"
+        :class="hasImage ? '' : 'bg-coral-50'"
         aria-expanded="false"
         aria-haspopup="true"
         aria-label="{{ __('User menu') }}"
@@ -53,7 +53,7 @@
             >
         </template>
         <template x-if="!hasImage">
-            <span class="text-white font-bold text-sm tracking-tight" x-text="initials"></span>
+            <span class="text-coral-700 font-bold text-sm tracking-tight" x-text="initials"></span>
         </template>
     </button>
 
@@ -79,7 +79,7 @@
                 <div class="flex items-center gap-4">
                     <div
                         class="shrink-0 w-12 h-12 rounded-full flex items-center justify-center overflow-hidden"
-                        :class="hasImage ? 'ring-2 ring-cream-200' : 'bg-coral-500'"
+                        :class="hasImage ? 'ring-2 ring-cream-200' : 'bg-coral-50'"
                     >
                         <template x-if="hasImage">
                             <img
@@ -89,7 +89,7 @@
                             >
                         </template>
                         <template x-if="!hasImage">
-                            <span class="text-white font-bold text-lg tracking-tight" x-text="initials"></span>
+                            <span class="text-coral-700 font-bold text-lg tracking-tight" x-text="initials"></span>
                         </template>
                     </div>
                     <div class="flex-1 min-w-0">
