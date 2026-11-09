@@ -21,7 +21,7 @@
     "9. Data breach notification": "9. Notification de violation de données",
     ":count claimed": ":count réservé|:count réservés",
     ":count gift available|:count gifts available": ":count cadeau disponible|:count cadeaux disponibles",
-    ":count gift idea|:count gift ideas": ":count gift idea|:count gift ideas",
+    ":count gift idea|:count gift ideas": ":count idée cadeau|:count idées cadeaux",
     ":count gift|:count gifts": ":count cadeau|:count cadeaux",
     ":count wishlist|:count wishlists": ":count liste de souhaits|:count listes de souhaits",
     ":name has invited you to collaborate on their wishlist:": " :name te propose de gérer cette liste ensemble :",
@@ -2078,5 +2078,7 @@
     "Move :gift up": "Monter :gift",
     "Move :gift down": "Descendre :gift",
     "Your session expired. Open the page again and retry.": "Ta session a expiré. Rouvre la page et réessaie.",
-    "Edit :name": "Modifier :name"
+    "Edit :name": "Modifier :name",
+    "No duplicate gifts": "Fini les cadeaux en double",
+    "Birthday wishlist": "Liste d'anniversaire"
 }

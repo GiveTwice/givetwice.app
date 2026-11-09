@@ -8,6 +8,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Exceptions\InvalidSignatureException;
+use Spatie\OgImage\Http\Middleware\RenderOgImageMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -22,8 +23,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => AdminMiddleware::class,
         ]);
 
+        // The OG image package adds its middleware itself, but only once the app has booted.
+        // A test builds the HTTP kernel after that, and the kernel then drops it again.
+        // Listing it here keeps it in every request. The router skips the second copy.
         $middleware->appendToGroup('web', [
             TrackLastActivity::class,
+            RenderOgImageMiddleware::class,
         ]);
 
         $middleware->redirectGuestsTo(function ($request) {

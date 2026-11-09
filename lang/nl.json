@@ -21,7 +21,7 @@
     "9. Data breach notification": "9. Melding van datalekken",
     ":count claimed": ":count gereserveerd",
     ":count gift available|:count gifts available": ":count cadeau beschikbaar|:count cadeaus beschikbaar",
-    ":count gift idea|:count gift ideas": ":count gift idea|:count gift ideas",
+    ":count gift idea|:count gift ideas": ":count cadeau-idee|:count cadeau-ideeën",
     ":count gift|:count gifts": ":count cadeau|:count cadeaus",
     ":count wishlist|:count wishlists": ":count verlanglijst|:count verlanglijstjes",
     ":name has invited you to collaborate on their wishlist:": ":name vraagt je om samen dit lijstje te beheren:",
@@ -2078,5 +2078,7 @@
     "Move :gift up": "Zet :gift hoger",
     "Move :gift down": "Zet :gift lager",
     "Your session expired. Open the page again and retry.": "Je sessie is verlopen. Open de pagina opnieuw en probeer nog eens.",
-    "Edit :name": ":name bewerken"
+    "Edit :name": ":name bewerken",
+    "No duplicate gifts": "Geen dubbele cadeaus",
+    "Birthday wishlist": "Verjaardagslijstje"
 }
