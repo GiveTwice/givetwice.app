@@ -35,7 +35,8 @@
     @endif
 >
 
-    <div class="relative {{ $editable && ! $gift->hasImage() ? 'h-20' : 'aspect-square' }} bg-cream-100 overflow-hidden" data-gift-image>
+    {{-- Square for every gift, photo or not: a shorter placeholder made cards in one row end at different heights. --}}
+    <div class="relative aspect-square bg-cream-100 overflow-hidden" data-gift-image>
         @if($gift->hasImage())
             <img
                 src="{{ $gift->getImageUrl('card') }}"
@@ -55,15 +56,15 @@
             <div class="w-full h-full flex flex-col items-center justify-center text-gray-600" data-gift-placeholder>
                 @if($isPending)
                     <div class="relative">
-                        <x-icons.image-placeholder class="{{ $editable ? 'w-6 h-6' : 'w-12 h-12' }} animate-pulse" />
+                        <x-icons.image-placeholder class="{{ $editable ? 'w-8 h-8' : 'w-12 h-12' }} animate-pulse" />
                         <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-sunny-400 rounded-full animate-bounce"></div>
                     </div>
                     <span class="mt-2 text-sm font-medium">{{ __('Loading...') }}</span>
                 @elseif($isFailed)
-                    <x-icons.warning class="{{ $editable ? 'w-6 h-6' : 'w-12 h-12' }} text-coral-300" />
+                    <x-icons.warning class="{{ $editable ? 'w-8 h-8' : 'w-12 h-12' }} text-coral-300" />
                     <span class="mt-2 text-sm font-medium text-coral-600">{{ __('Failed') }}</span>
                 @else
-                    <x-icons.image-placeholder class="{{ $editable ? 'w-6 h-6' : 'w-12 h-12' }}" />
+                    <x-icons.image-placeholder class="{{ $editable ? 'w-8 h-8' : 'w-12 h-12' }}" />
                     <span class="mt-2 text-sm font-medium">{{ __('No image') }}</span>
                 @endif
             </div>
@@ -142,7 +143,8 @@
 
     <div class="px-3 py-2.5 {{ $isClaimedByOthers ? 'gift-card-content-sunny' : '' }} {{ $showClaimActions && $isClaimedByMe ? 'gift-card-content-teal' : '' }}">
 
-        <h3 class="font-semibold text-sm leading-snug line-clamp-2 min-h-[2.25rem] {{ $isUnavailable ? 'gift-card-title-muted' : 'text-gray-900' }}" title="{{ $gift->title }}" data-gift-title>
+        {{-- Always exactly two lines tall, so the price and buttons under it line up across a row. --}}
+        <h3 class="font-semibold text-sm leading-snug line-clamp-2 h-[2.40625rem] {{ $isUnavailable ? 'gift-card-title-muted' : 'text-gray-900' }}" title="{{ $gift->title }}" data-gift-title>
             {{ $gift->title ?: __('Untitled gift') }}
         </h3>
 
