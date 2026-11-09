@@ -4,7 +4,8 @@
     $ogGifts = $list->gifts()->with('media')->reorder()->orderBy('gifts.id')->limit(3)->get();
 @endphp
 
-<div style="width:1200px;height:630px;position:relative;overflow:hidden;background:linear-gradient(135deg,#fef9f0 0%,#fdf3e3 50%,#fef0e8 100%);font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;">
+{{-- The lang attribute puts the locale in the template, so every locale gets its own image hash. --}}
+<div lang="{{ app()->getLocale() }}" style="width:1200px;height:630px;position:relative;overflow:hidden;background:linear-gradient(135deg,#fef9f0 0%,#fdf3e3 50%,#fef0e8 100%);font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;">
         {{-- Decorative blobs --}}
         <div style="position:absolute;width:500px;height:500px;top:-180px;right:-120px;border-radius:50%;background:radial-gradient(circle,rgba(245,214,128,0.45) 0%,transparent 70%);"></div>
         <div style="position:absolute;width:380px;height:380px;bottom:-140px;left:-80px;border-radius:50%;background:radial-gradient(circle,rgba(45,159,147,0.2) 0%,transparent 70%);"></div>

@@ -20,6 +20,7 @@
         "laravel/reverb": "^1.12",
         "laravel/socialite": "^5.31",
         "laravel/tinker": "^3.0.2",
+        "spatie/browsershot": "^5.0",
         "spatie/laravel-activitylog": "^5.1.4",
         "spatie/laravel-health": "^1.41",
         "spatie/laravel-medialibrary": "^11.23.12",
