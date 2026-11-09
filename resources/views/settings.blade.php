@@ -58,8 +58,8 @@
                                 </template>
 
                                 <template x-if="!imageUrl">
-                                    <div class="w-full h-full bg-coral-500 flex items-center justify-center">
-                                        <span class="text-white text-2xl font-bold tracking-tight">{{ auth()->user()->getInitials() }}</span>
+                                    <div class="w-full h-full bg-coral-50 flex items-center justify-center">
+                                        <span class="text-coral-700 text-2xl font-bold tracking-tight">{{ auth()->user()->getInitials() }}</span>
                                     </div>
                                 </template>
 
@@ -310,7 +310,7 @@
                                 x-on:click="toggleNotifications()"
                                 :disabled="saving"
                                 class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-coral-500 focus:ring-offset-2 disabled:opacity-50"
-                                :class="friendNotifications ? 'bg-coral-500' : 'bg-gray-200'"
+                                :class="friendNotifications ? 'bg-teal-600' : 'bg-gray-200'"
                                 role="switch"
                                 :aria-checked="friendNotifications"
                             >
@@ -370,7 +370,7 @@
                                 type="button"
                                 x-on:click="enableTwoFactor()"
                                 :disabled="loading"
-                                class="w-full sm:w-auto justify-center inline-flex items-center gap-2 bg-teal-600 text-white px-5 py-2.5 rounded-xl hover:bg-teal-700 transition-colors font-medium disabled:opacity-50"
+                                class="btn-secondary w-full sm:w-auto disabled:opacity-50"
                             >
                                 <x-icons.shield-check class="w-5 h-5" />
                                 <span x-show="!loading">{{ __('Enable two-factor authentication') }}</span>
@@ -416,7 +416,7 @@
                                     <button
                                         type="submit"
                                         :disabled="passwordLoading || !password"
-                                        class="inline-flex items-center gap-2 bg-teal-600 text-white px-5 py-2.5 rounded-xl hover:bg-teal-700 transition-colors font-medium disabled:opacity-50"
+                                        class="btn-primary disabled:opacity-50"
                                     >
                                         <span x-show="!passwordLoading">{{ __('Continue') }}</span>
                                         <span x-show="passwordLoading" class="flex items-center gap-2">
@@ -507,7 +507,7 @@
                                     <button
                                         type="submit"
                                         :disabled="confirmLoading || confirmationCode.length < 6"
-                                        class="inline-flex items-center gap-2 bg-teal-600 text-white px-5 py-2.5 rounded-xl hover:bg-teal-700 transition-colors font-medium disabled:opacity-50"
+                                        class="btn-primary disabled:opacity-50"
                                     >
                                         <span x-show="!confirmLoading">{{ __('Confirm') }}</span>
                                         <span x-show="confirmLoading" class="flex items-center gap-2">
@@ -589,7 +589,7 @@
                                 <button
                                     type="button"
                                     x-on:click="$dispatch('open-confirm-disable-2fa')"
-                                    class="w-full sm:w-auto justify-center inline-flex items-center gap-2 bg-gray-100 text-gray-700 px-4 py-2.5 rounded-xl hover:bg-gray-200 transition-colors font-medium"
+                                    class="btn-secondary w-full sm:w-auto"
                                 >
                                     {{ __('Disable two-factor authentication') }}
                                 </button>
@@ -689,7 +689,7 @@
                         <button
                             type="button"
                             x-on:click="$dispatch('open-confirm-logout-sessions')"
-                            class="w-full sm:w-auto justify-center inline-flex items-center gap-2 bg-gray-100 text-gray-700 px-4 py-2.5 rounded-xl hover:bg-gray-200 transition-colors font-medium"
+                            class="btn-secondary w-full sm:w-auto"
                         >
                             <x-icons.logout class="w-5 h-5" />
                             {{ __('Log out other browser sessions') }}
@@ -730,7 +730,7 @@
             <button
                 type="button"
                 x-on:click="$dispatch('open-confirm-delete-account')"
-                class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 font-medium text-white transition-colors hover:bg-red-700 sm:w-auto"
+                class="btn-danger-outline w-full sm:w-auto"
             >
                 <x-icons.trash class="w-5 h-5" />
                 {{ __('Delete account') }}
@@ -819,9 +819,9 @@
         @method('DELETE')
         <button
             type="submit"
-            class="inline-flex items-center gap-2 bg-coral-500 text-white px-4 py-2.5 rounded-xl hover:bg-coral-600 transition-colors font-medium"
+            class="btn-primary"
         >
-            <x-icons.logout class="w-5 h-5" />
+            <x-icons.logout class="w-4 h-4" />
             {{ __('Log out sessions') }}
         </button>
     </form>
