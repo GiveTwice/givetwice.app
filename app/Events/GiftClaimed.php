@@ -9,10 +9,15 @@ use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Events\ShouldDispatchAfterCommit;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class GiftClaimed implements ShouldBroadcast
+/**
+ * ClaimGiftAction fires this inside its transaction. ShouldDispatchAfterCommit holds the
+ * event until the commit, so the queued broadcast never looks for a claim that is not saved yet.
+ */
+class GiftClaimed implements ShouldBroadcast, ShouldDispatchAfterCommit
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
