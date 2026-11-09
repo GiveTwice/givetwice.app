@@ -4,16 +4,16 @@ namespace App\Console\Commands;
 
 use App\Mail\InactiveAccountWarningMail;
 use App\Models\User;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 use Throwable;
 
+#[Signature('app:warn-inactive-accounts')]
+#[Description('Send warning emails to users inactive for 22+ months')]
 class WarnInactiveAccountsCommand extends Command
 {
-    protected $signature = 'app:warn-inactive-accounts';
-
-    protected $description = 'Send warning emails to users inactive for 22+ months';
-
     public function handle(): int
     {
         $users = User::query()

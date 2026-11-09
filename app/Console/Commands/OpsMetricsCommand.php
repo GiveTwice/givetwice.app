@@ -6,15 +6,15 @@ use App\Models\Claim;
 use App\Models\Gift;
 use App\Models\GiftList;
 use App\Models\User;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
+#[Signature('ops:metrics')]
+#[Description('Output production metrics as JSON for the Monitor Agent')]
 class OpsMetricsCommand extends Command
 {
-    protected $signature = 'ops:metrics';
-
-    protected $description = 'Output production metrics as JSON for the Monitor Agent';
-
     public function handle(): int
     {
         $metrics = [

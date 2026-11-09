@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,20 +17,19 @@ use Illuminate\Support\Str;
  * @property User $inviter
  * @property User|null $invitee
  */
+#[Fillable([
+    'list_id',
+    'inviter_id',
+    'invitee_id',
+    'email',
+    'token',
+    'accepted_at',
+    'declined_at',
+    'expires_at',
+])]
 class ListInvitation extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'list_id',
-        'inviter_id',
-        'invitee_id',
-        'email',
-        'token',
-        'accepted_at',
-        'declined_at',
-        'expires_at',
-    ];
 
     protected function casts(): array
     {

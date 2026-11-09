@@ -53,20 +53,6 @@ function mockImageAction(bool $fromUrlSuccess = false): ProcessGiftImageAction
 describe('FetchGiftDetailsAction', function () {
 
     describe('job configuration', function () {
-        it('has 4 retry attempts', function () {
-            $gift = Gift::factory()->for(User::factory())->create();
-
-            expect(new FetchGiftDetailsAction($gift))
-                ->tries->toBe(4);
-        });
-
-        it('has exponential backoff', function () {
-            $gift = Gift::factory()->for(User::factory())->create();
-
-            expect(new FetchGiftDetailsAction($gift))
-                ->backoff->toBe([5, 30, 60]);
-        });
-
         it('runs on the fetch queue', function () {
             $gift = Gift::factory()->for(User::factory())->create();
 

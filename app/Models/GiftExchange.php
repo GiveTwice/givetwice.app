@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\RouteKey;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,22 +15,22 @@ use Illuminate\Support\Str;
  * @property Carbon|null $event_date
  * @property Carbon|null $draw_completed_at
  */
+#[Fillable([
+    'organizer_id',
+    'name',
+    'budget_amount',
+    'budget_currency',
+    'event_date',
+    'slug',
+    'join_token',
+    'status',
+    'draw_completed_at',
+    'locale',
+])]
+#[RouteKey('slug')]
 class GiftExchange extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'organizer_id',
-        'name',
-        'budget_amount',
-        'budget_currency',
-        'event_date',
-        'slug',
-        'join_token',
-        'status',
-        'draw_completed_at',
-        'locale',
-    ];
 
     protected function casts(): array
     {
@@ -64,11 +66,6 @@ class GiftExchange extends Model
         $baseSlug = Str::slug($this->name) ?: 'exchange';
 
         return $this->id.'-'.$baseSlug;
-    }
-
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
     }
 
     public function organizer(): BelongsTo

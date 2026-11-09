@@ -4,15 +4,15 @@ namespace App\Console\Commands;
 
 use App\Actions\DeleteAccountAction;
 use App\Models\User;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Throwable;
 
+#[Signature('app:delete-inactive-accounts {--dry-run : List accounts without deleting}')]
+#[Description('Delete accounts inactive for 24+ months that were warned 2+ months ago')]
 class DeleteInactiveAccountsCommand extends Command
 {
-    protected $signature = 'app:delete-inactive-accounts {--dry-run : List accounts without deleting}';
-
-    protected $description = 'Delete accounts inactive for 24+ months that were warned 2+ months ago';
-
     public function handle(DeleteAccountAction $action): int
     {
         $users = User::query()

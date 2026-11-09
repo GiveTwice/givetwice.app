@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,27 +13,26 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
 /** @property Carbon|null $viewed_at */
+#[Fillable([
+    'exchange_id',
+    'user_id',
+    'name',
+    'email',
+    'token',
+    'assigned_to_participant_id',
+    'joined_at',
+    'viewed_at',
+    'wishlist_id',
+    'whatsapp_opened_at',
+    'sent_at',
+    'token_generated_at',
+    'reveal_reminder_sent_at',
+    'wishlist_nudge_sent_at',
+    'reminders_muted_at',
+])]
 class GiftExchangeParticipant extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'exchange_id',
-        'user_id',
-        'name',
-        'email',
-        'token',
-        'assigned_to_participant_id',
-        'joined_at',
-        'viewed_at',
-        'wishlist_id',
-        'whatsapp_opened_at',
-        'sent_at',
-        'token_generated_at',
-        'reveal_reminder_sent_at',
-        'wishlist_nudge_sent_at',
-        'reminders_muted_at',
-    ];
 
     protected function casts(): array
     {

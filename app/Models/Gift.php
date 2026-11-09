@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\SupportedCurrency;
 use App\Events\GiftCreated;
 use App\Events\GiftUrlChanged;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,6 +23,26 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property array<int, string>|null $edited_fields
  * @property array<string, mixed>|null $fetch_error
  */
+#[Fillable([
+    'most_wanted',
+    'owner_note',
+    'shop_name',
+    'edited_fields',
+    'user_id',
+    'url',
+    'title',
+    'description',
+    'price_in_cents',
+    'currency',
+    'original_image_url',
+    'fetch_status',
+    'fetch_error',
+    'fetch_attempts',
+    'fetched_at',
+    'rating',
+    'review_count',
+    'allow_multiple_claims',
+])]
 class Gift extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia, SoftDeletes;
@@ -32,27 +53,6 @@ class Gift extends Model implements HasMedia
 
     protected $attributes = [
         'fetch_status' => 'pending',
-    ];
-
-    protected $fillable = [
-        'most_wanted',
-        'owner_note',
-        'shop_name',
-        'edited_fields',
-        'user_id',
-        'url',
-        'title',
-        'description',
-        'price_in_cents',
-        'currency',
-        'original_image_url',
-        'fetch_status',
-        'fetch_error',
-        'fetch_attempts',
-        'fetched_at',
-        'rating',
-        'review_count',
-        'allow_multiple_claims',
     ];
 
     protected static function booted(): void

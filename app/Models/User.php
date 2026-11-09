@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Translation\HasLocalePreference;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,6 +29,24 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property Carbon|null $last_friend_digest_at
  * @property string|null $apple_id
  */
+#[Fillable([
+    'name',
+    'email',
+    'password',
+    'avatar',
+    'locale_preference',
+    'google_id',
+    'facebook_id',
+    'email_verified_at',
+    'friend_notifications_enabled',
+    'last_friend_digest_at',
+    'last_active_at',
+    'inactive_warning_sent_at',
+])]
+#[Hidden([
+    'password',
+    'remember_token',
+])]
 class User extends Authenticatable implements HasLocalePreference, HasMedia, MustVerifyEmail
 {
     use HasFactory;
@@ -34,31 +54,6 @@ class User extends Authenticatable implements HasLocalePreference, HasMedia, Mus
     use InteractsWithMedia;
     use Notifiable;
     use TwoFactorAuthenticatable;
-
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'avatar',
-        'locale_preference',
-        'google_id',
-        'facebook_id',
-        'email_verified_at',
-        'friend_notifications_enabled',
-        'last_friend_digest_at',
-        'last_active_at',
-        'inactive_warning_sent_at',
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
 
     /**
      * Get the attributes that should be cast.
@@ -229,7 +224,8 @@ class User extends Authenticatable implements HasLocalePreference, HasMedia, Mus
         );
     }
 
-    public function scopeDueForFriendDigest(Builder $query): Builder
+    #[Scope]
+    protected function dueForFriendDigest(Builder $query): Builder
     {
         $today = now('Europe/Brussels')->toDateString();
         $soon = now('Europe/Brussels')->addDays(30)->toDateString();

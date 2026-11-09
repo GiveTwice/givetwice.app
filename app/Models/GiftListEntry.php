@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
+#[Table('gift_list')]
 class GiftListEntry extends Pivot
 {
-    protected $table = 'gift_list';
-
     protected static function booted(): void
     {
         static::created(fn (self $entry) => $entry->recordChange('added'));

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,23 +17,22 @@ use Illuminate\Support\Str;
  * @property Carbon|null $confirmed_at
  * @property string|null $notes
  */
+#[Fillable([
+    'receipt_requested_at',
+    'receipt_sent_at',
+    'receipt_locale',
+    'reservation',
+    'resolution',
+    'gift_id',
+    'user_id',
+    'claimer_email',
+    'claimer_name',
+    'confirmation_token',
+    'confirmed_at',
+])]
 class Claim extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'receipt_requested_at',
-        'receipt_sent_at',
-        'receipt_locale',
-        'reservation',
-        'resolution',
-        'gift_id',
-        'user_id',
-        'claimer_email',
-        'claimer_name',
-        'confirmation_token',
-        'confirmed_at',
-    ];
 
     protected function casts(): array
     {

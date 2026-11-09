@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Jobs\SendReservationAlert;
+use Illuminate\Database\Eloquent\Attributes\Unguarded;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
@@ -11,10 +12,9 @@ use Illuminate\Support\Facades\URL;
 /** @property array<string, mixed> $before
  * @property array<string, mixed> $after
  */
+#[Unguarded]
 class ReservationAlert extends Model
 {
-    protected $guarded = [];
-
     protected function casts(): array
     {
         return ['before' => 'array', 'after' => 'array', 'sent_at' => 'datetime'];

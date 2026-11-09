@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\RouteKey;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,23 +16,22 @@ use Illuminate\Support\Str;
 /**
  * @property Carbon|null $occasion_date
  */
+#[Table('lists')]
+#[Fillable([
+    'creator_id',
+    'name',
+    'description',
+    'slug',
+    'is_default',
+    'occasion',
+    'occasion_date',
+    'spoiler_mode',
+    'spoiler_confirmed_at',
+])]
+#[RouteKey('slug')]
 class GiftList extends Model
 {
     use HasFactory;
-
-    protected $table = 'lists';
-
-    protected $fillable = [
-        'creator_id',
-        'name',
-        'description',
-        'slug',
-        'is_default',
-        'occasion',
-        'occasion_date',
-        'spoiler_mode',
-        'spoiler_confirmed_at',
-    ];
 
     protected function casts(): array
     {
@@ -72,11 +74,6 @@ class GiftList extends Model
         $baseSlug = Str::slug($this->name) ?: 'list';
 
         return $this->id.'-'.$baseSlug;
-    }
-
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
     }
 
     public function getPublicUrl(?string $locale = null): string
