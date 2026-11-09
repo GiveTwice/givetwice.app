@@ -21,8 +21,6 @@
         "alpinejs": "^3.17.5",
         "canvas-confetti": "^1.9.4",
         "chart.js": "^4.6.1",
-        "puppeteer": "^25.16.0",
-        "puppeteer-extra": "^3.3.6",
-        "puppeteer-extra-plugin-stealth": "^2.11.2"
+        "puppeteer": "^25.16.0"
     }
 }
