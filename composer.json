@@ -10,7 +10,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.4",
-        "givetwice/product-info-fetcher": "^0.5.0",
+        "givetwice/product-info-fetcher": "^0.5.1",
         "jenssegers/agent": "^2.6.4",
         "lab404/laravel-impersonate": "^1.7.8",
         "laravel/fortify": "^1.41",
@@ -39,7 +39,7 @@
         "laravel/envoy": "^2.12.2",
         "laravel/pail": "^1.2.7",
         "laravel/pint": "^1.32.1",
-        "mattiasgeniar/phpunit-query-count-assertions": "^1.3.2",
+        "mattiasgeniar/phpunit-query-count-assertions": "^1.4.0",
         "mockery/mockery": "^1.6.15",
         "nunomaduro/collision": "^8.9.5",
         "pestphp/pest": "^5.3.5",
