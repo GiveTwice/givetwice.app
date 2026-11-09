@@ -5,6 +5,7 @@ use App\Helpers\ExchangeHelper;
 use App\Helpers\OccasionHelper;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Auth\SocialAuthController;
+use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExchangeReminderPreferenceController;
@@ -26,8 +27,6 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\ShowExchangeLandingController;
 use App\Http\Controllers\ShowOccasionController;
 use App\Http\Middleware\SetLocale;
-use App\Models\User;
-use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Route;
 
 // Redirect root to detected locale
@@ -155,17 +154,11 @@ Route::prefix('{locale}')
 
         // Auth view routes (GET only - POST handled by Fortify)
         Route::middleware('guest')->group(function () {
-            Route::get('/login', function () {
-                return view('auth.login');
-            })->name('login');
+            Route::view('/login', 'auth.login')->name('login');
 
-            Route::get('/register', function () {
-                return view('auth.register');
-            })->name('register');
+            Route::view('/register', 'auth.register')->name('register');
 
-            Route::get('/forgot-password', function () {
-                return view('auth.forgot-password');
-            })->name('password.request');
+            Route::view('/forgot-password', 'auth.forgot-password')->name('password.request');
 
             Route::get('/reset-password/{token}', function ($locale, $token) {
                 return view('auth.reset-password', ['token' => $token, 'email' => request('email')]);
@@ -174,28 +167,11 @@ Route::prefix('{locale}')
 
         // Email verification routes
         Route::middleware('auth')->group(function () {
-            Route::get('/verify-email', function () {
-                return view('auth.verify-email');
-            })->name('verification.notice');
+            Route::view('/verify-email', 'auth.verify-email')->name('verification.notice');
 
-            Route::get('/verify-email/{id}/{hash}', function ($locale, $id, $hash) {
-                $user = User::findOrFail($id);
+            Route::get('/verify-email/{id}/{hash}', VerifyEmailController::class)->middleware('signed')->name('verification.verify');
 
-                if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
-                    abort(403);
-                }
-
-                if (! $user->hasVerifiedEmail()) {
-                    $user->markEmailAsVerified();
-                    event(new Verified($user));
-                }
-
-                return redirect()->route('dashboard.locale', ['locale' => $locale]);
-            })->middleware('signed')->name('verification.verify');
-
-            Route::get('/confirm-password', function () {
-                return view('auth.confirm-password');
-            })->name('password.confirm');
+            Route::view('/confirm-password', 'auth.confirm-password')->name('password.confirm');
         });
 
         // Social auth routes
