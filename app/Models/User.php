@@ -78,6 +78,9 @@ class User extends Authenticatable implements HasLocalePreference, HasMedia, Mus
         ];
     }
 
+    /**
+     * @return HasMany<Gift, $this>
+     */
     public function gifts(): HasMany
     {
         return $this->hasMany(Gift::class);
@@ -167,14 +170,14 @@ class User extends Authenticatable implements HasLocalePreference, HasMedia, Mus
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumb')
-            ->fit(Fit::Crop, 96, 96)
             ->nonQueued()
-            ->performOnCollections('profile');
+            ->performOnCollections('profile')
+            ->fit(Fit::Crop, 96, 96);
 
         $this->addMediaConversion('medium')
-            ->fit(Fit::Crop, 256, 256)
             ->nonQueued()
-            ->performOnCollections('profile');
+            ->performOnCollections('profile')
+            ->fit(Fit::Crop, 256, 256);
     }
 
     public function getProfileImageUrl(?string $conversion = null): ?string
