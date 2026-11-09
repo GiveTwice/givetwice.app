@@ -383,7 +383,7 @@
                     const data = await response.json();
 
                     if (!response.ok) {
-                        alert(data.message || '{{ __('Failed to upload image.') }}');
+                        alert(data.message || @js(__('Failed to upload image.')));
                         return;
                     }
 
@@ -396,7 +396,7 @@
                     this.uploadedTimeout = setTimeout(() => { this.uploadedRecently = false; }, 2500);
                 } catch (error) {
                     console.error('Upload error:', error);
-                    alert('{{ __('Failed to upload image.') }}');
+                    alert(@js(__('Failed to upload image.')));
                 } finally {
                     this.uploading = false;
                     event.target.value = '';
@@ -412,7 +412,7 @@
                                 this.gift.title = e.gift.title;
                                 if (!this.uploadedRecently && !this.uploading) this.gift.image_url_card = e.gift.image_url_card;
                                 this.gift.fetch_status = e.gift.fetch_status;
-                                this.gift.fetched_at = '{{ __('Just now') }}';
+                                this.gift.fetched_at = @js(__('Just now'));
 
                                 for (const field of ['title', 'description', 'currency']) {
                                     if (!this.edited.includes(field) && e.gift[field]) this.form[field] = e.gift[field];

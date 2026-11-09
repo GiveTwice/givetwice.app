@@ -127,7 +127,7 @@
                                                 role="switch"
                                                 :aria-checked="notifications"
                                                 :style="notifications && globalEnabled ? { backgroundColor: 'var(--color-coral-500)', borderColor: 'var(--color-coral-500)', color: 'white' } : {}"
-                                                :title="globalEnabled ? '' : '{{ __('Enable global notifications first') }}'"
+                                                :title="globalEnabled ? '' : @js(__('Enable global notifications first'))"
                                             >
                                                 <span>{{ __('Email updates') }}</span>
                                             </button>

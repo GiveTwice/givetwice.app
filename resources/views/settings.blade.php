@@ -463,7 +463,7 @@
                                         <p class="text-sm font-medium text-gray-700 mb-2">{{ __('Or enter this code manually:') }}</p>
                                         <div class="flex items-center gap-2">
                                             <code
-                                                x-text="secretKey || '{{ __('Loading...') }}'"
+                                                x-text="secretKey || @js(__('Loading...'))"
                                                 class="bg-gray-100 px-3 py-2 rounded-lg font-mono text-sm text-gray-800 tracking-wider select-all"
                                             ></code>
                                             <button
@@ -471,7 +471,7 @@
                                                 x-on:click="copySecret()"
                                                 x-show="secretKey"
                                                 class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-                                                :title="copied ? '{{ __('Copied!') }}' : '{{ __('Copy') }}'"
+                                                :title="copied ? @js(__('Copied!')) : @js(__('Copy'))"
                                             >
                                                 <x-icons.copy class="w-4 h-4" x-show="!copied" />
                                                 <x-icons.check-circle class="w-4 h-4 text-teal-600" x-show="copied" x-cloak />
@@ -920,14 +920,14 @@ function profileSettings() {
                 const data = await response.json();
 
                 if (!response.ok) {
-                    this.error = data.message || '{{ __('Failed to upload image.') }}';
+                    this.error = data.message || @js(__('Failed to upload image.'));
                 } else {
                     this.imageUrl = data.image_url;
                     this.hasImage = true;
                 }
             } catch (error) {
                 console.error('Upload error:', error);
-                this.error = '{{ __('Failed to upload image.') }}';
+                this.error = @js(__('Failed to upload image.'));
             } finally {
                 this.uploading = false;
                 event.target.value = '';
@@ -950,14 +950,14 @@ function profileSettings() {
                 const data = await response.json();
 
                 if (!response.ok) {
-                    this.error = data.message || '{{ __('Failed to delete image.') }}';
+                    this.error = data.message || @js(__('Failed to delete image.'));
                 } else {
                     this.imageUrl = null;
                     this.hasImage = false;
                 }
             } catch (error) {
                 console.error('Delete error:', error);
-                this.error = '{{ __('Failed to delete image.') }}';
+                this.error = @js(__('Failed to delete image.'));
             } finally {
                 this.deleting = false;
             }
@@ -1039,10 +1039,10 @@ function twoFactorAuth() {
                     await this.enableTwoFactor();
                 } else {
                     const data = await response.json();
-                    this.passwordError = data.message || '{{ __('The provided password was incorrect.') }}';
+                    this.passwordError = data.message || @js(__('The provided password was incorrect.'));
                 }
             } catch (error) {
-                this.passwordError = '{{ __('An error occurred. Please try again.') }}';
+                this.passwordError = @js(__('An error occurred. Please try again.'));
             } finally {
                 this.passwordLoading = false;
             }
@@ -1101,10 +1101,10 @@ function twoFactorAuth() {
                     window.location.reload();
                 } else {
                     const data = await response.json();
-                    this.confirmError = data.message || '{{ __('The provided two-factor authentication code was invalid.') }}';
+                    this.confirmError = data.message || @js(__('The provided two-factor authentication code was invalid.'));
                 }
             } catch (error) {
-                this.confirmError = '{{ __('An error occurred. Please try again.') }}';
+                this.confirmError = @js(__('An error occurred. Please try again.'));
             } finally {
                 this.confirmLoading = false;
             }
