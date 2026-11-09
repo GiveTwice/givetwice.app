@@ -121,7 +121,7 @@
                                     target="_blank"
                                     class="flex items-center gap-2 break-all rounded-lg border border-cream-200 bg-white px-3 py-2 text-sm text-coral-600 hover:text-coral-700 hover:underline">
                                     <span class="flex-1">{{ $list->getPublicUrl() }}</span>
-                                    <x-icons.external-link class="h-4 w-4 flex-shrink-0" />
+                                    <x-icons.external-link class="h-4 w-4 shrink-0" />
                                 </a>
                             </div>
                         </div>

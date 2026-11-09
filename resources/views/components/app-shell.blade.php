@@ -35,7 +35,7 @@
                         href="{{ $item['href'] ?? null }}"
                         class="flex items-center gap-3 rounded-2xl border px-3 py-3 transition-colors duration-150 {{ $active ? 'border-cream-200 bg-cream-50 text-gray-900' : 'border-transparent bg-white hover:border-cream-200 hover:bg-cream-50/70' }}"
                     >
-                        <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-2xl {{ $active ? 'bg-coral-100 text-coral-600' : 'bg-cream-100 text-gray-600' }}">
+                        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl {{ $active ? 'bg-coral-100 text-coral-600' : 'bg-cream-100 text-gray-600' }}">
                             @if(isset($item['icon']))
                                 <x-dynamic-component :component="'icons.'.$item['icon']" class="h-5 w-5" />
                             @else

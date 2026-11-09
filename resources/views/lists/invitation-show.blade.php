@@ -24,9 +24,9 @@
         <div class="p-6 sm:p-8">
             <div class="flex items-start gap-4">
                 @if($inviter->hasProfileImage())
-                    <img src="{{ $inviter->getProfileImageUrl('thumb') }}" alt="{{ $inviter->name }}" class="w-12 h-12 rounded-full object-cover flex-shrink-0">
+                    <img src="{{ $inviter->getProfileImageUrl('thumb') }}" alt="{{ $inviter->name }}" class="w-12 h-12 rounded-full object-cover shrink-0">
                 @else
-                    <div class="w-12 h-12 rounded-full bg-coral-500 flex items-center justify-center flex-shrink-0">
+                    <div class="w-12 h-12 rounded-full bg-coral-500 flex items-center justify-center shrink-0">
                         <span class="text-white font-bold">{{ $inviter->getInitials() }}</span>
                     </div>
                 @endif

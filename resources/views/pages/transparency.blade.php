@@ -18,7 +18,7 @@
     {{-- Current Status --}}
     <div class="bg-sunny-50 border border-sunny-200 rounded-2xl p-6 lg:p-8 mb-8">
         <div class="flex items-start gap-4">
-            <div class="flex-shrink-0 w-10 h-10 bg-sunny-200 text-sunny-700 rounded-xl flex items-center justify-center text-lg">
+            <div class="shrink-0 w-10 h-10 bg-sunny-200 text-sunny-700 rounded-xl flex items-center justify-center text-lg">
                 &#128679;
             </div>
             <div>
@@ -82,7 +82,7 @@
     {{-- Open Source --}}
     <div class="bg-white border border-cream-200 rounded-2xl p-6 lg:p-8 shadow-sm mb-8">
         <div class="flex items-start gap-4">
-            <div class="flex-shrink-0 w-10 h-10 bg-gray-100 text-gray-700 rounded-xl flex items-center justify-center">
+            <div class="shrink-0 w-10 h-10 bg-gray-100 text-gray-700 rounded-xl flex items-center justify-center">
                 <x-icons.github class="w-5 h-5" />
             </div>
             <div>

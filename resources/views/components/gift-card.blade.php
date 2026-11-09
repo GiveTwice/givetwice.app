@@ -100,7 +100,7 @@
 
             <div class="absolute top-3 right-3">
                 <span class="inline-flex items-center gap-1.5 pl-2 pr-2.5 py-1 bg-white/95 backdrop-blur-sm text-sunny-700 text-xs font-semibold rounded-full shadow-sm border border-sunny-200/50">
-                    <span class="w-4 h-4 bg-sunny-400 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span class="w-4 h-4 bg-sunny-400 rounded-full flex items-center justify-center shrink-0">
                         <x-icons.checkmark class="w-2.5 h-2.5 text-white" stroke-width="3" />
                     </span>
                     {{ __('Claimed') }}

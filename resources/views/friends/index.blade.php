@@ -99,7 +99,7 @@
                                     x-data="{ notifications: {{ $followedList->notifications ? 'true' : 'false' }}, toggling: false, saved: false }"
                                 >
                                     <div class="flex items-center gap-3 min-w-0">
-                                        <div class="w-8 h-8 rounded-lg bg-white border border-cream-200 flex items-center justify-center flex-shrink-0">
+                                        <div class="w-8 h-8 rounded-lg bg-white border border-cream-200 flex items-center justify-center shrink-0">
                                             <span class="text-base">&#127873;</span>
                                         </div>
                                         <div class="min-w-0">

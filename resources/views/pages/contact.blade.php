@@ -18,7 +18,7 @@
 
     <div class="bg-gradient-to-br from-coral-50 to-sunny-50 rounded-3xl p-6 sm:p-8 lg:p-12 mb-12 border border-coral-100">
         <div class="flex flex-col md:flex-row items-center gap-8">
-            <div class="flex-shrink-0">
+            <div class="shrink-0">
                 <div class="w-24 h-24 bg-white rounded-2xl shadow-sm flex items-center justify-center text-5xl transform rotate-3">
                     &#128140;
                 </div>

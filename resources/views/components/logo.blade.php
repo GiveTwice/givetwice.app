@@ -25,7 +25,7 @@
 
 <a href="{{ url('/' . app()->getLocale()) }}" class="group/logo relative inline-flex items-center {{ $sizeClasses['container'] }}">
     {{-- Heart SVG (Noto Emoji) --}}
-    <x-heart-icon class="{{ $sizeClasses['heart'] }} flex-shrink-0" />
+    <x-heart-icon class="{{ $sizeClasses['heart'] }} shrink-0" />
 
     {{-- Brand name with relative positioning for badge anchor --}}
     <span class="relative {{ $sizeClasses['text'] }} font-bold">

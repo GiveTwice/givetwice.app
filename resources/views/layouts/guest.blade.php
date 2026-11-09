@@ -132,18 +132,18 @@
                 x-transition:leave-end="opacity-0 translate-x-8"
                 class="p-4 bg-white border border-teal-200 text-teal-800 rounded-xl shadow-lg flex items-center gap-3 max-w-sm"
             >
-                <span class="flex-shrink-0 w-6 h-6 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center">
+                <span class="shrink-0 w-6 h-6 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center">
                     <x-icons.checkmark class="w-4 h-4" />
                 </span>
                 <span class="text-sm">{{ session('status') }}</span>
-                <button x-on:click="show = false" class="flex-shrink-0 text-gray-400 hover:text-gray-600">
+                <button x-on:click="show = false" class="shrink-0 text-gray-400 hover:text-gray-600">
                     <x-icons.close class="w-4 h-4" />
                 </button>
             </div>
         @endif
     </div>
 
-    <main id="main-content" class="flex-grow flex items-center justify-center py-6 sm:py-12 px-4 sm:px-6 lg:px-8 safe-area-x">
+    <main id="main-content" class="grow flex items-center justify-center py-6 sm:py-12 px-4 sm:px-6 lg:px-8 safe-area-x">
         <div class="w-full max-w-md">
             @yield('content')
         </div>

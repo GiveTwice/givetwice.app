@@ -9,7 +9,7 @@
 
     <div class="flex gap-4 items-start bg-cream-50 rounded-xl p-4 border border-cream-200">
 
-        <div class="w-24 h-24 flex-shrink-0 bg-white rounded-lg overflow-hidden border border-cream-200">
+        <div class="w-24 h-24 shrink-0 bg-white rounded-lg overflow-hidden border border-cream-200">
             @if($gift->hasImage())
                 <img
                     src="{{ $gift->getImageUrl('thumb') }}"
