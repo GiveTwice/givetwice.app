@@ -5,7 +5,7 @@ namespace App\Listeners;
 use App\Events\GiftClaimed;
 use App\Jobs\SendReservationReceipt;
 
-class SendGaveTwiceEmail
+class RequestReservationReceipt
 {
     public function handle(GiftClaimed $event): void
     {

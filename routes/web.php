@@ -62,7 +62,7 @@ Route::get('/lists/create', function () {
 // Two-factor authentication challenge (no locale prefix - matches Fortify's POST route)
 Route::get('/two-factor-challenge', function () {
     return view('auth.two-factor-challenge');
-})->middleware('web')->name('two-factor.login');
+})->name('two-factor.login');
 
 // Locale-prefixed routes
 Route::prefix('{locale}')
