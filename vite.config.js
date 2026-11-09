@@ -8,10 +8,7 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
-                'resources/css/confetti.css',
-                'resources/js/confetti.js',
                 'resources/js/admin-charts.js',
-                'resources/js/confetti-reveal.js',
             ],
             refresh: true,
         }),
