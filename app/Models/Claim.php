@@ -120,26 +120,10 @@ class Claim extends Model
         return $this->confirmed_at === null;
     }
 
-    public function isAnonymous(): bool
-    {
-        return $this->user_id === null;
-    }
-
     public function confirm(): void
     {
         $this->update([
             'confirmed_at' => now(),
         ]);
-    }
-
-    public function getClaimerDisplayName(): string
-    {
-        /** @var User|null $user */
-        $user = $this->user;
-        if ($user) {
-            return $user->name;
-        }
-
-        return $this->claimer_name ?? $this->claimer_email ?? 'Someone';
     }
 }

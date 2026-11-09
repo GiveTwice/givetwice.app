@@ -146,12 +146,6 @@ Route::prefix('{locale}')
         Route::delete('/reservation-email', [ClaimController::class, 'forgetEmail'])->name('claim.forget-email');
         Route::match(['get', 'post'], '/reservation/{claim}/undo', [ClaimController::class, 'undo'])->middleware('signed')->name('claim.undo')->missing(fn () => response()->view('claims.link-unavailable', [], 410));
 
-        // Gift card HTML (for real-time updates on public lists)
-        Route::get('/v/{list}/{slug}/gifts/{giftId}/card', [GiftController::class, 'cardHtml'])
-            ->whereNumber('list')
-            ->whereNumber('giftId')
-            ->name('gifts.card-html');
-
         // Auth view routes (GET only - POST handled by Fortify)
         Route::middleware('guest')->group(function () {
             Route::view('/login', 'auth.login')->name('login');

@@ -2,8 +2,6 @@
 
 use App\Events\GiftClaimed;
 use App\Jobs\SendReservationReceipt;
-use App\Mail\ClaimConfirmationMail;
-use App\Mail\GaveTwiceMail;
 use App\Mail\ReservationMail;
 use App\Models\Claim;
 use App\Models\Gift;
@@ -35,8 +33,6 @@ it('reserves immediately and schedules one receipt without alerting the owner', 
     expect($claim->isConfirmed())->toBeTrue();
     Queue::assertPushed(SendReservationReceipt::class, fn ($job) => $job->claimId === $claim->id);
     expect($claim->fresh()->receipt_requested_at)->not->toBeNull();
-    Mail::assertNotSent(ClaimConfirmationMail::class);
-    Mail::assertNotQueued(GaveTwiceMail::class);
     expect(collect((new GiftClaimed($this->gift, $claim, 1))->broadcastOn())->pluck('name')->all())->not->toContain('private-user.'.$this->list->creator_id);
     $this->actingAs($this->list->creator)->get($this->list->getPublicUrl('en'))->assertDontSee('data-reservation-progress', false)->assertDontSee('data-reserved-heading', false);
     $this->get($this->url.'/claimed')->assertRedirect($this->list->getPublicUrl('en'));

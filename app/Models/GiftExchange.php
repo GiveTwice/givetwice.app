@@ -125,11 +125,4 @@ class GiftExchange extends Model
             'fr' => 'tirage-au-sort',
         ];
     }
-
-    public function getExchangeTypeSlug(?string $locale = null): string
-    {
-        $locale = $locale ?? $this->locale;
-
-        return static::exchangeTypeSlugs()[$locale] ?? 'secret-santa';
-    }
 }

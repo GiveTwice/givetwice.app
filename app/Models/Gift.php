@@ -238,11 +238,6 @@ class Gift extends Model implements HasMedia
         return $this->original_image_url;
     }
 
-    public function getImage(): ?Media
-    {
-        return $this->getFirstMedia('image');
-    }
-
     public function hasImage(): bool
     {
         return $this->hasMedia('image') || $this->original_image_url;

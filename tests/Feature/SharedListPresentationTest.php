@@ -46,12 +46,12 @@ describe('reservation visibility', function () {
         $list = $dashboard->viewData('lists')->firstWhere('id', $this->list->id);
         expect($list->gifts->firstWhere('id', $this->reserved->id)->claims->count())->toBe($spoiler ? 1 : 0);
         expect($list->getAttributes())->not->toHaveKey('claimed_gifts_count');
-        $reservationVisible = null;
+        $reservationVisible = [];
         Illuminate\Support\Facades\View::composer('components.shared-gift-tile', function (View $view) use (&$reservationVisible): void {
-            $reservationVisible = $view->getData()['isReserved'];
+            $reservationVisible[$view->getData()['gift']->id] = $view->getData()['isReserved'];
         });
-        $this->get('/en/v/'.$this->list->id.'/'.$this->list->slug.'/gifts/'.$this->reserved->id.'/card')->assertOk();
-        expect($reservationVisible)->toBe($spoiler);
+        $this->get($this->list->getPublicUrl('en'))->assertOk();
+        expect($reservationVisible[$this->reserved->id])->toBe($spoiler);
         $channels = collect((new GiftClaimed($this->reserved, $this->claim, 1))->broadcastOn())->pluck('name')->all();
         expect(in_array('private-user.'.$user->id, $channels, true))->toBe($spoiler);
         expect($channels)->not->toContain('list.'.$this->list->slug);

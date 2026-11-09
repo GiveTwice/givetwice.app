@@ -76,14 +76,4 @@ class FollowedList extends Model
                 });
         });
     }
-
-    public function isVisibleTo(User $user): bool
-    {
-        if (! $this->list) {
-            return false;
-        }
-
-        return $this->list->creator_id !== $user->id
-            && ! $this->list->hasUser($user);
-    }
 }
