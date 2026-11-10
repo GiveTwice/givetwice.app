@@ -97,7 +97,7 @@
                 $isAppNavActive = request()->routeIs('dashboard*', 'friends.*', 'settings*');
             @endphp
 
-            <div class="flex h-16 items-center justify-between gap-4 sm:gap-6">
+            <div class="flex h-14 items-center justify-between gap-4 sm:gap-6">
                 <div class="flex items-center gap-3 sm:gap-4 md:gap-8 lg:gap-12">
                     <x-logo :show-beta="! request()->routeIs('public.list')" />
 
@@ -115,12 +115,10 @@
 
                         <a
                             href="{{ $dashboardUrl }}"
-                            class="inline-flex items-center gap-2 rounded-full bg-coral-500 px-2.5 py-2 text-sm font-semibold text-white shadow-sm shadow-coral-500/20 transition-all duration-200 hover:bg-coral-600"
+                            class="inline-flex min-h-9 items-center gap-1.5 rounded-full px-3 text-sm font-semibold transition-colors duration-200 {{ $isAppNavActive ? 'bg-coral-50 text-coral-700' : 'text-gray-700 hover:bg-cream-100' }}"
                             @if($isAppNavActive) aria-current="page" @endif
                         >
-                            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 text-white">
-                                <x-icons.device-desktop class="h-4 w-4" />
-                            </span>
+                            <x-icons.device-desktop class="h-4 w-4 {{ $isAppNavActive ? 'text-coral-600' : 'text-gray-500' }}" />
                             <span>{{ __('Dashboard') }}</span>
                         </a>
                     @else
@@ -154,9 +152,9 @@
                 @auth
                     <a
                         href="{{ $dashboardUrl }}"
-                        class="flex items-center gap-3 rounded-2xl border px-4 py-3 shadow-sm transition-all {{ $isAppNavActive ? 'border-coral-500 bg-coral-500 text-white shadow-coral-500/20' : 'border-cream-200 bg-cream-50 text-gray-900' }}"
+                        class="flex items-center gap-3 rounded-2xl border px-4 py-3 shadow-sm transition-all {{ $isAppNavActive ? 'border-coral-200 bg-coral-50 text-coral-800' : 'border-cream-200 bg-cream-50 text-gray-900' }}"
                     >
-                        <span class="flex h-10 w-10 items-center justify-center rounded-2xl {{ $isAppNavActive ? 'bg-white/15 text-white' : 'bg-white text-coral-500' }}">
+                        <span class="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-coral-600">
                             <x-icons.device-desktop class="h-5 w-5" />
                         </span>
                         <span class="font-semibold">{{ __('Dashboard') }}</span>
@@ -328,7 +326,7 @@
     </div>
 
     <main id="main-content" class="grow safe-area-x">
-        <div class="{{ auth()->check() ? 'app-frame' : 'max-w-7xl mx-auto' }} pt-6 pb-20 px-4 sm:px-6 lg:px-8">
+        <div class="{{ auth()->check() ? 'app-frame' : 'max-w-7xl mx-auto' }} pt-3 sm:pt-5 pb-20 px-4 sm:px-6 lg:px-8">
             @yield('content')
         </div>
     </main>

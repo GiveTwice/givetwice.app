@@ -23,7 +23,7 @@
     >
         <div x-data="friendsPage()">
         {{-- Global notifications toggle --}}
-        <div class="flex flex-col items-start gap-3 py-4 mb-6 border-b border-gray-200">
+        <div class="flex flex-col items-start gap-3 py-4 mb-6 border-b border-gray-200 sm:flex-row sm:items-center sm:justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-coral-100 flex items-center justify-center">
                     <x-icons.bell class="w-5 h-5 text-coral-600" />
@@ -38,13 +38,14 @@
                     type="button"
                     x-on:click="toggleGlobalNotifications()"
                     :disabled="togglingGlobal"
-                    class="btn-secondary relative min-h-11 cursor-pointer focus:outline-none focus:ring-2 focus:ring-coral-500 focus:ring-offset-2 disabled:opacity-50"
-                    :class="globalEnabled ? 'bg-coral-500 border-coral-500 text-white' : 'bg-white text-gray-700'"
+                    class="inline-flex min-h-11 sm:min-h-10 cursor-pointer items-center gap-2.5 rounded-[10px] px-1 text-[0.906rem] font-semibold text-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-coral-500 focus-visible:ring-offset-2 disabled:opacity-50"
                     role="switch"
                     :aria-checked="globalEnabled"
-                    :style="globalEnabled ? { backgroundColor: 'var(--color-coral-500)', borderColor: 'var(--color-coral-500)', color: 'white' } : {}"
                 >
-                    <span>{{ __('Email updates') }}</span>
+                    <span>{{ __('On for all lists') }}</span>
+                    <span aria-hidden="true" class="relative h-5 w-9 shrink-0 rounded-full transition-colors" :class="globalEnabled ? 'bg-teal-600' : 'bg-gray-300'">
+                        <span class="absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-transform" :class="globalEnabled ? 'translate-x-4' : 'translate-x-0'"></span>
+                    </span>
                 </button>
                 <div
                     x-show="globalSaved"
@@ -82,7 +83,7 @@
                     <div class="border-b border-gray-200 pb-5">
                         {{-- Owner header --}}
                         <div class="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
-                            <div class="w-10 h-10 rounded-full bg-coral-500 flex items-center justify-center text-white font-bold text-sm">
+                            <div class="w-10 h-10 rounded-full bg-coral-50 flex items-center justify-center text-coral-700 font-bold text-sm">
                                 {{ substr($owner->name, 0, 2) }}
                             </div>
                             <div>
@@ -95,7 +96,7 @@
                         <div class="space-y-3">
                             @foreach($followedLists as $followedList)
                                 <div
-                                    class="flex flex-col items-stretch gap-3 py-3"
+                                    class="flex flex-col items-stretch gap-3 py-3 sm:flex-row sm:items-center sm:justify-between"
                                     x-data="{ notifications: {{ $followedList->notifications ? 'true' : 'false' }}, toggling: false, saved: false }"
                                 >
                                     <div class="flex items-center gap-3 min-w-0">
@@ -115,21 +116,22 @@
                                         </div>
                                     </div>
 
-                                    <div class="flex items-center justify-between gap-3">
+                                    <div class="flex items-center justify-between gap-3 sm:justify-end sm:gap-4">
                                         {{-- Per-list notification toggle --}}
                                         <div class="relative">
                                             <button
                                                 type="button"
                                                 x-on:click="toggleListNotifications({{ $followedList->id }}, $data)"
                                                 :disabled="toggling || !globalEnabled"
-                                                class="btn-secondary relative min-h-11 cursor-pointer focus:outline-none focus:ring-2 focus:ring-coral-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                                                :class="notifications && globalEnabled ? 'bg-coral-500 border-coral-500 text-white' : 'bg-white text-gray-700'"
+                                                class="inline-flex min-h-11 sm:min-h-10 cursor-pointer items-center gap-2.5 rounded-[10px] px-1 text-[0.906rem] font-semibold text-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-coral-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                                 role="switch"
                                                 :aria-checked="notifications"
-                                                :style="notifications && globalEnabled ? { backgroundColor: 'var(--color-coral-500)', borderColor: 'var(--color-coral-500)', color: 'white' } : {}"
                                                 :title="globalEnabled ? '' : @js(__('Enable global notifications first'))"
                                             >
-                                                <span>{{ __('Email updates') }}</span>
+                                                <span>{{ __('Email me') }}</span>
+                                                <span aria-hidden="true" class="relative h-5 w-9 shrink-0 rounded-full transition-colors" :class="notifications && globalEnabled ? 'bg-teal-600' : 'bg-gray-300'">
+                                                    <span class="absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-transform" :class="notifications && globalEnabled ? 'translate-x-4' : 'translate-x-0'"></span>
+                                                </span>
                                             </button>
                                             <div
                                                 x-show="saved"

@@ -63,7 +63,7 @@ class AppShellHelper
             'sidebarItems' => self::sidebarItems($base, 'settings'),
             'sidebarStats' => [
                 ['label' => __('Lists'), 'value' => $base['listCount']],
-                ['label' => __('Followed lists'), 'value' => $followedListCount],
+                ['label' => __('Following'), 'value' => $followedListCount],
                 ['label' => __('Groups'), 'value' => $base['exchangeCount']],
             ],
         ];

@@ -6,36 +6,36 @@
     'stats' => [],
 ])
 
-<div class="grid gap-6 app-shell-layout-cozy">
-    <aside class="hidden lg:block self-start rounded-[1.75rem] border border-cream-200 bg-white shadow-sm lg:sticky lg:top-[5.5625rem]">
-        <div class="rounded-t-[1.75rem] border-b border-cream-200 bg-cream-50 px-5 py-5">
-            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-coral-600">{{ __('App') }}</p>
-            <h2 class="mt-2 text-xl font-semibold text-gray-900">{{ $title }}</h2>
+<div class="grid gap-5 app-shell-layout-cozy">
+    <aside class="hidden lg:block self-start rounded-2xl border border-stone-200/80 bg-white shadow-sm lg:sticky lg:top-[5.5625rem]">
+        <div class="rounded-t-2xl border-b border-cream-200 bg-cream-50 px-4 py-3.5">
+            <p class="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-coral-600">{{ __('App') }}</p>
+            <h2 class="mt-0.5 text-[1.0625rem] font-semibold text-gray-900">{{ $title }}</h2>
             @if($description)
                 <p class="mt-2 text-sm leading-6 text-gray-600">{{ $description }}</p>
             @endif
         </div>
 
         @if($stats !== [])
-            <div class="grid grid-cols-3 gap-3 border-b border-cream-200 px-5 py-4">
+            <div class="grid grid-cols-3 gap-2 border-b border-cream-200 px-4 py-3">
                 @foreach($stats as $stat)
-                    <div class="rounded-2xl border border-cream-200 bg-cream-50 px-3 py-3">
-                        <p class="text-lg font-semibold text-gray-900">{{ $stat['value'] }}</p>
-                        <p class="text-xs text-gray-500">{{ $stat['label'] }}</p>
+                    <div class="rounded-[10px] border border-cream-200 bg-cream-50 px-2 py-2">
+                        <p class="text-base font-semibold text-gray-900">{{ $stat['value'] }}</p>
+                        <p class="truncate text-[0.6875rem] text-gray-500">{{ $stat['label'] }}</p>
                     </div>
                 @endforeach
             </div>
         @endif
 
-        <nav class="px-4 pt-4 pb-4">
-            <div class="space-y-2">
+        <nav class="p-2.5">
+            <div class="space-y-0.5">
                 @foreach($sidebarItems as $item)
                     @php $active = (bool) ($item['active'] ?? false); @endphp
                     <a
                         href="{{ $item['href'] ?? null }}"
-                        class="flex items-center gap-3 rounded-2xl border px-3 py-3 transition-colors duration-150 {{ $active ? 'border-cream-200 bg-cream-50 text-gray-900' : 'border-transparent bg-white hover:border-cream-200 hover:bg-cream-50/70' }}"
+                        class="flex items-center gap-2.5 rounded-[10px] border px-2.5 py-2 transition-colors duration-150 {{ $active ? 'border-cream-200 bg-cream-50 text-gray-900' : 'border-transparent bg-white hover:border-cream-200 hover:bg-cream-50/70' }}"
                     >
-                        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl {{ $active ? 'bg-coral-100 text-coral-600' : 'bg-cream-100 text-gray-600' }}">
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px] {{ $active ? 'bg-coral-100 text-coral-600' : 'bg-cream-100 text-gray-600' }}">
                             @if(isset($item['icon']))
                                 <x-dynamic-component :component="'icons.'.$item['icon']" class="h-5 w-5" />
                             @else
