@@ -760,6 +760,7 @@
                     type="password"
                     id="delete_password"
                     name="password"
+                    autocomplete="current-password"
                     required
                     class="form-input @error('password') border-red-500 @enderror"
                     placeholder="{{ __('Password') }}"
