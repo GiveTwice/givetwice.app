@@ -38,7 +38,7 @@
 
         <div class="mb-6">
             <label for="password" class="form-label">{{ __('Password') }}</label>
-            <input type="password" name="password" id="password" required autofocus class="form-input">
+            <input type="password" name="password" id="password" autocomplete="current-password" required autofocus class="form-input">
         </div>
 
         <button type="submit" class="btn-primary w-full">

@@ -38,7 +38,7 @@
 
         <div class="mb-6">
             <label for="email" class="form-label">{{ __('Email') }}</label>
-            <input type="email" name="email" id="email" value="{{ old('email') }}" required autofocus class="form-input">
+            <input type="email" name="email" id="email" value="{{ old('email') }}" autocomplete="username" spellcheck="false" required autofocus class="form-input">
         </div>
 
         <button type="submit" class="btn-primary w-full">

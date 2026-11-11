@@ -78,6 +78,8 @@
                            name="email"
                            id="email"
                            value="{{ old('email') }}"
+                           autocomplete="username"
+                           spellcheck="false"
                            required
                            x-init="$el.focus()"
                            class="form-input">
@@ -88,6 +90,7 @@
                     <input type="password"
                            name="password"
                            id="password"
+                           autocomplete="current-password"
                            required
                            class="form-input">
                 </div>
