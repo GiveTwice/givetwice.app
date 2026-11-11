@@ -38,17 +38,17 @@
 
         <div class="mb-4">
             <label for="email" class="form-label">{{ __('Email') }}</label>
-            <input type="email" name="email" id="email" value="{{ old('email', $email ?? '') }}" required autofocus class="form-input">
+            <input type="email" name="email" id="email" value="{{ old('email', $email ?? '') }}" autocomplete="username" spellcheck="false" required autofocus class="form-input">
         </div>
 
         <div class="mb-4">
             <label for="password" class="form-label">{{ __('New Password') }}</label>
-            <input type="password" name="password" id="password" required class="form-input">
+            <input type="password" name="password" id="password" autocomplete="new-password" required class="form-input">
         </div>
 
         <div class="mb-6">
             <label for="password_confirmation" class="form-label">{{ __('Confirm Password') }}</label>
-            <input type="password" name="password_confirmation" id="password_confirmation" required class="form-input">
+            <input type="password" name="password_confirmation" id="password_confirmation" autocomplete="new-password" required class="form-input">
         </div>
 
         <button type="submit" class="btn-primary w-full">
