@@ -5,6 +5,7 @@ namespace App\Actions\Fortify;
 use App\Enums\SupportedLocale;
 use App\Helpers\OccasionHelper;
 use App\Models\User;
+use App\Rules\PassesTurnstile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Validator;
@@ -46,6 +47,7 @@ class CreateNewUser implements CreatesNewUsers
                 Rule::unique(User::class),
             ],
             'password' => $this->passwordRules(),
+            'cf-turnstile-response' => Rule::when(filled(config('services.turnstile.secret_key')), [new PassesTurnstile]),
         ])->validate();
 
         $occasion = $input['occasion'] ?? null;
