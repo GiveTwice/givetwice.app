@@ -57,8 +57,12 @@ givetwice.app {
         -X-Powered-By
     }
 
-    # Static assets: serve directly with aggressive caching
+    # Static assets: serve directly with aggressive caching.
+    # The file matcher only matches files that exist on disk. Without it, a missing
+    # image such as /og-image/{hash}.jpeg gets an empty 404 here and never reaches
+    # Laravel, which is what generates those images on the first request.
     @static {
+        file
         path *.css *.js *.ico *.gif *.jpg *.jpeg *.png *.svg *.webp *.avif
         path *.woff *.woff2 *.ttf *.eot *.otf
         path *.mp4 *.webm *.ogg *.mp3 *.wav
