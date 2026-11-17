@@ -14,9 +14,9 @@ class PassesTurnstile implements ValidationRule
     public bool $implicit = true;
 
     /**
-     * Asks Cloudflare whether the Turnstile token from the sign-up form is genuine.
+     * Asks Cloudflare whether the Turnstile token from a form is genuine.
      *
-     * When Cloudflare cannot be reached, the sign-up fails rather than letting a bot through.
+     * When Cloudflare cannot be reached, the check fails rather than letting a bot through.
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {

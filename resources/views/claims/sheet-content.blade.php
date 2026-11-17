@@ -42,6 +42,7 @@
                 <input id="reservation-email" x-ref="email" x-model="email" type="email" name="email" required maxlength="255" autocomplete="email" placeholder="{{ __('Your email address') }}" class="form-input w-full min-w-0">
                 @if($suggestion)<button type="button" x-on:click="email = @js($suggestion)" class="text-left text-coral-600">{{ $suggestion }}</button>@endif
             @endif
+            @if(!$claim && !auth()->check())<x-turnstile />@endif
             <button class="btn-primary w-full" :disabled="busy">{{ $claim ? __('Save and send again') : __('Reserve this gift') }}</button>
             @if($claim)<button type="button" x-on:click="editing = false" class="btn-cancel">{{ __('Cancel') }}</button>@endif
         </form>

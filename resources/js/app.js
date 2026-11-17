@@ -1,7 +1,9 @@
 import './bootstrap';
 import Alpine from 'alpinejs';
 import reservationSheet from './reservation-sheet';
+import turnstile from './turnstile';
 Alpine.data('reservationSheet', reservationSheet);
+Alpine.data('turnstile', turnstile);
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {

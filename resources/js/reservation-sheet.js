@@ -24,6 +24,8 @@ export default () => ({
             if (!response.ok) {
                 const data = await response.json();
                 this.error = Object.values(data.errors || {}).flat().join(' ') || data.message;
+                // Cloudflare accepts each token once, so a failed send needs a fresh challenge before the retry.
+                this.$refs.content.querySelectorAll('[data-turnstile]').forEach((el) => window.turnstile?.reset(el.dataset.turnstile));
                 return;
             }
             this.$refs.content.innerHTML = await response.text();

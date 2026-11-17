@@ -111,14 +111,7 @@
                                class="form-input">
                     </div>
 
-                    @if (config('services.turnstile.site_key'))
-                        {{-- The form only exists once Alpine adds it, so the widget is drawn here instead of on page load. --}}
-                        <div class="min-h-[65px]"
-                             x-init="const draw = () => window.turnstile
-                                 ? turnstile.render($el, { sitekey: @js(config('services.turnstile.site_key')), language: @js(app()->getLocale()), theme: 'light', size: 'flexible' })
-                                 : setTimeout(draw, 100);
-                             draw()"></div>
-                    @endif
+                    <x-turnstile />
 
                     <button type="submit" class="btn-primary w-full">
                         {{ __('Create Account') }}
@@ -288,9 +281,3 @@
     </style>
 @endif
 @endsection
-
-@if (config('services.turnstile.site_key'))
-    @push('scripts')
-        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
-    @endpush
-@endif
