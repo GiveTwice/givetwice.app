@@ -20,6 +20,18 @@
     servers {
         protocols h1 h2
     }
+
+    # FrankenPHP's embedded PHP reads no php.ini here, so it runs on PHP's built-in
+    # defaults. Those defaults are unsafe for two advisories from 2026-11-19.
+    frankenphp {
+        # Keeps arguments out of backtraces. With them included, a fatal error inside
+        # __call() or __callStatic() (Laravel facades) can lead to remote code
+        # execution on PHP 8.5.12 and older (CVE-2026-129474).
+        php_ini zend.exception_ignore_args 1
+        # Laravel does not use PHP's native sessions, so the upload progress feature
+        # is unused. It is the input path for CVE-2026-115560 and CVE-2026-126714.
+        php_ini session.upload_progress.enabled 0
+    }
 }
 
 # Redirect www to non-www (both HTTP and HTTPS)
