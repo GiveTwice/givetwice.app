@@ -41,7 +41,7 @@
                             <div class="absolute inset-0 flex items-center justify-center text-3xl hero-card-emoji">{{ $gifts[1]['emoji'] }}</div>
                             <div class="absolute top-1.5 right-1.5">
                                 <span class="hero-badge-available text-sm leading-none bg-teal-500 text-white px-2 py-1 rounded-full font-medium shadow-sm flex items-center justify-center">{{ __('Available') }}</span>
-                                <span class="hero-badge-claimed text-sm leading-none bg-sunny-100 text-sunny-800 px-2 py-1 rounded-full font-medium shadow-sm absolute inset-0 flex items-center justify-center">{{ __('Claimed') }}</span>
+                                <span class="hero-badge-claimed text-sm leading-none bg-sunny-100 text-sunny-800 px-2 py-1 rounded-full font-medium shadow-sm absolute top-0 right-0 whitespace-nowrap flex items-center justify-center">{{ __('Claimed') }}</span>
                             </div>
 
                             <div class="hero-confetti-cozy absolute inset-0 pointer-events-none overflow-visible rounded-xl">
@@ -71,7 +71,7 @@
                             <div class="absolute inset-0 flex items-center justify-center text-3xl hero-card-emoji-book">{{ $gifts[2]['emoji'] }}</div>
                             <div class="absolute top-1.5 right-1.5">
                                 <span class="hero-badge-available-book text-sm leading-none bg-teal-500 text-white px-2 py-1 rounded-full font-medium shadow-sm flex items-center justify-center">{{ __('Available') }}</span>
-                                <span class="hero-badge-claimed-book text-sm leading-none bg-sunny-100 text-sunny-800 px-2 py-1 rounded-full font-medium shadow-sm absolute inset-0 flex items-center justify-center">{{ __('Claimed') }}</span>
+                                <span class="hero-badge-claimed-book text-sm leading-none bg-sunny-100 text-sunny-800 px-2 py-1 rounded-full font-medium shadow-sm absolute top-0 right-0 whitespace-nowrap flex items-center justify-center">{{ __('Claimed') }}</span>
                             </div>
 
                             <div class="hero-confetti-book absolute inset-0 pointer-events-none overflow-visible rounded-xl">
