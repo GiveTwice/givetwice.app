@@ -1,7 +1,8 @@
-@props(['title' => null, 'subtitle' => null, 'icon' => null, 'width' => 'max-w-lg'])
+@props(['title' => null, 'subtitle' => null, 'icon' => null])
 
-{{-- One white card for single-purpose pages (a form, a confirmation, a notice), styled like the sign-in card. --}}
-<div class="mx-auto w-full {{ $width }} sm:pt-4 wrap-anywhere">
+{{-- One white card for single-purpose pages (a form, a confirmation, a notice), styled like the sign-in card.
+     Every one of these pages has the same 512px width, so the width is not a prop. See the layout rule in CLAUDE.md. --}}
+<div class="mx-auto w-full max-w-lg sm:pt-4 wrap-anywhere">
     <div {{ $attributes->merge(['class' => 'rounded-2xl border border-cream-200 bg-white p-6 shadow-sm sm:p-8']) }}>
         @if($title)
             <div class="mb-6 flex items-center gap-4">

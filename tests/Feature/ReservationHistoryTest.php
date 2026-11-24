@@ -48,6 +48,17 @@ it('mails a magic link without exposing history and allows verified login', func
     $this->actingAs(User::factory()->unverified()->create())->get('/en/reservations')->assertViewHas('email', null);
 });
 
+it('marks reservations in the sidebar for a logged-in buyer and shows a guest no sidebar', function () {
+    $buyer = User::factory()->create(['email' => $this->claim->claimer_email]);
+    $sidebarLink = '#<a\s+href="'.preg_quote(route('reservations.index', ['locale' => 'en']), '#').'"[^>]*aria-current="page"#';
+
+    expect($this->actingAs($buyer)->get('/en/reservations')->assertOk()->getContent())->toMatch($sidebarLink);
+
+    auth()->logout();
+    $this->get($this->claim->historyUrl('en'))->assertRedirect('/en/reservations');
+    expect($this->get('/en/reservations')->assertOk()->getContent())->not->toContain('<aside');
+});
+
 it('retains the snapshot through gift, list and database cascade deletion', function (string $target) {
     if ($target === 'list') {
         $this->actingAs($this->list->creator)->delete(route('list.destroy', ['locale' => 'en', 'list' => $this->list]))->assertRedirect();

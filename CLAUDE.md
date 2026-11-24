@@ -33,6 +33,21 @@ Bad: "The details have been automatically populated." / "Processing complete."
 - Use factories for test data, not raw DB inserts (unless testing DB-level concerns)
 - Invokable controllers, action classes where appropriate
 
+## Page layout: which width a page gets
+
+Pick the layout from what the page is, never by hand per page. Measured at 1440px wide.
+
+| The page is… | Layout | Width |
+|---|---|---|
+| About the user's own things, and they are logged in | `<x-app-shell>` with sidebar + `<x-app-content>` | ~1077px next to the sidebar |
+| A grid of gifts seen by a guest (public list, reservations from the email link) | `<x-app-content>` on its own, no sidebar | full container |
+| One action or one message (mute, undo, choose, share, 419, invalid link) | `<x-page-card>` | always 512px (`max-w-lg`) |
+
+- A logged-in page gets a sidebar section, so something in the sidebar is marked active. Add one to `AppShellHelper` when a new area needs it (as done for Reservations).
+- Forms inside the wide shell keep a readable width (`max-w-2xl` or `max-w-md`), not the full 1077px.
+- `<x-page-card>` has no width prop on purpose. Three card widths (448, 512, 576px) is what this rule replaced.
+- Exceptions with their own design: marketing pages, admin, the auth pages (guest layout) and the illustrated 404 and offline pages.
+
 ## Production Access (read-only)
 
 ```bash

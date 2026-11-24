@@ -56,6 +56,21 @@ class AppShellHelper
         ];
     }
 
+    public static function reservations(User $user): array
+    {
+        $base = self::base($user);
+
+        return [
+            ...$base,
+            'sidebarItems' => self::sidebarItems($base, 'reservations'),
+            'sidebarStats' => [
+                ['label' => __('Lists'), 'value' => $base['listCount']],
+                ['label' => __('Gifts'), 'value' => $base['giftCount']],
+                ['label' => __('Groups'), 'value' => $base['exchangeCount']],
+            ],
+        ];
+    }
+
     public static function settings(User $user): array
     {
         $base = self::base($user);
@@ -127,6 +142,14 @@ class AppShellHelper
                 'icon' => 'users',
                 'accent' => 'teal',
                 'active' => $activeSection === 'friends',
+            ],
+            [
+                'label' => __('Reservations'),
+                'meta' => __('Gifts you reserved'),
+                'href' => route('reservations.index', ['locale' => $base['currentLocale']]),
+                'emoji' => '🛍️',
+                'accent' => 'teal',
+                'active' => $activeSection === 'reservations',
             ],
             [
                 'label' => __('Settings'),
