@@ -23,9 +23,9 @@
     >
         <x-slot:titleSlot>
             <h1 class="text-[1.375rem] sm:text-2xl font-bold tracking-tight text-gray-900">
-                <x-marker-underline class="{{ $colour['underline'] }}"><span class="text-gray-900">{{ $list->name }}</span></x-marker-underline>
+                <x-ribbon-underline class="{{ $colour['underline'] }}"><span class="text-gray-900">{{ $list->name }}</span></x-ribbon-underline>
             </h1>
-            <p class="text-gray-600 mt-1">{{ $list->description ?: trans_choice(':count gift|:count gifts', $list->gifts_count, ['count' => $list->gifts_count]) }}</p>
+            <p class="text-gray-600 mt-1.5">{{ $list->description ?: trans_choice(':count gift|:count gifts', $list->gifts_count, ['count' => $list->gifts_count]) }}</p>
         </x-slot:titleSlot>
 
         <x-slot:actions>
