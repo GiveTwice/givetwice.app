@@ -47,6 +47,10 @@
         class="grid grid-cols-1 gap-8 lg:grid-cols-5"
         x-data="giftEdit()"
         @paste.window="pasteImage($event)"
+        @dragenter.window="dragEnter($event)"
+        @dragover.window="dragOver($event)"
+        @dragleave.window="dragLeave($event)"
+        @drop.window="dropImage($event)"
     >
 
         <div class="lg:col-span-3">
@@ -253,6 +257,14 @@
                     </div>
                 </template>
 
+                <div class="absolute inset-0 rounded-2xl border-2 border-dashed border-coral-500 bg-coral-50/90 flex items-center justify-center pointer-events-none"
+                     x-show="dragging && !uploading" x-cloak>
+                    <span class="bg-white text-coral-600 px-4 py-2 rounded-full text-sm font-semibold shadow-lg inline-flex items-center gap-2">
+                        <x-icons.image-placeholder class="w-4 h-4" />
+                        {{ __('Drop it here') }}
+                    </span>
+                </div>
+
                 <div class="absolute inset-0 bg-gray-900/40 flex items-center justify-center"
                      x-show="uploading" x-cloak>
                     <span class="bg-white/95 backdrop-blur-sm text-gray-700 px-4 py-2 rounded-full text-sm font-medium shadow-lg inline-flex items-center gap-2">
@@ -284,7 +296,7 @@
                 </button>
             </div>
 
-            <p class="form-help">{{ __('Paste a screenshot or choose a photo') }}</p>
+            <p class="form-help">{{ __('Paste a screenshot, drop a photo here or choose one') }}</p>
         </div>
     </div>
 </x-app-content>
@@ -314,9 +326,38 @@
                 const field = name === 'price' ? 'price_in_cents' : name;
                 if (['title', 'description', 'price_in_cents', 'currency', 'shop_name'].includes(field) && !this.edited.includes(field)) this.edited.push(field);
             },
+            dragging: false,
+            dragDepth: 0,
+            uploadFirstImage(files) {
+                const file = Array.from(files || []).find(file => file.type.startsWith('image/'));
+                if (file) this.uploadImage({ target: { files: [file], value: '' } });
+                return Boolean(file);
+            },
             pasteImage(event) {
-                const file = Array.from(event.clipboardData?.files || []).find(file => file.type.startsWith('image/'));
-                if (file) { event.preventDefault(); this.uploadImage({ target: { files: [file], value: '' } }); }
+                if (this.uploadFirstImage(event.clipboardData?.files)) event.preventDefault();
+            },
+            draggingFiles(event) {
+                return Array.from(event.dataTransfer?.types || []).includes('Files');
+            },
+            dragEnter(event) {
+                if (!this.draggingFiles(event)) return;
+                this.dragDepth++;
+                this.dragging = true;
+            },
+            dragOver(event) {
+                if (this.draggingFiles(event)) event.preventDefault();
+            },
+            dragLeave(event) {
+                if (!this.draggingFiles(event)) return;
+                this.dragDepth = Math.max(0, this.dragDepth - 1);
+                if (this.dragDepth === 0) this.dragging = false;
+            },
+            dropImage(event) {
+                if (!this.draggingFiles(event)) return;
+                event.preventDefault();
+                this.dragDepth = 0;
+                this.dragging = false;
+                if (!this.uploading) this.uploadFirstImage(event.dataTransfer.files);
             },
             originalUrl: @js($gift->url),
             form: {
