@@ -58,14 +58,13 @@
         @dragover.window="dragOver($event)"
         @dragleave.window="dragLeave($event)"
         @drop.window="dropImage($event)"
-        class="[&_:is(input,textarea,select)]:scroll-mb-24"
     >
         @csrf
         @method('PUT')
         <input type="hidden" name="tracks_edits" value="0" :value="1">
         <template x-for="field in edited" :key="field"><input type="hidden" name="edited_fields[]" :value="field"></template>
 
-        <div class="grid grid-cols-1 gap-8 p-4 sm:px-6 sm:py-5 lg:grid-cols-5">
+        <div class="grid grid-cols-1 gap-8 p-4 sm:px-6 sm:py-5 lg:grid-cols-5 [&_:is(a,button,input,textarea,select)]:scroll-mb-24">
 
             <div class="space-y-6 lg:col-span-3">
                 <div>
