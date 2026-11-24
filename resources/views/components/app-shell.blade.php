@@ -53,7 +53,7 @@
                         {{-- Indented by the item's border, padding, icon and gap, so each list name starts on the same left edge as the "Lists" label above it. --}}
                         <div class="flex flex-col pb-1 pl-[3.3125rem] pr-2.5" data-sidebar-children>
                             @foreach($item['children']['links'] as $child)
-                                <a href="{{ $child['href'] }}" class="break-words py-1 text-sm {{ $child['active'] ? 'font-semibold text-coral-600' : 'text-gray-600 hover:text-gray-900' }}" @if($child['active']) aria-current="page" @endif>{{ $child['label'] }}</a>
+                                <a href="{{ $child['href'] }}" class="flex items-baseline gap-2 py-1 text-sm {{ $child['active'] ? 'font-semibold text-gray-900' : 'text-gray-600 hover:text-gray-900' }}" @if($child['active']) aria-current="page" @endif><span class="size-2 shrink-0 translate-y-[-1px] rounded-full {{ $child['dot'] }}"></span><span class="min-w-0 break-words">{{ $child['label'] }}</span></a>
                             @endforeach
                             @if($item['children']['moreHref'])
                                 <a href="{{ $item['children']['moreHref'] }}" class="py-1 text-sm text-gray-500 hover:text-gray-900">{{ __('All lists') }}</a>
