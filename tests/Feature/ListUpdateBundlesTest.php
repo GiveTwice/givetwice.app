@@ -2,9 +2,11 @@
 
 use App\Jobs\SendListUpdate;
 use App\Mail\FriendDigestMail;
+use App\Models\Claim;
 use App\Models\FollowedList;
 use App\Models\Gift;
 use App\Models\GiftList;
+use App\Models\ListChange;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
@@ -59,6 +61,31 @@ describe('list update bundles', function () {
         expect($this->follow->fresh()->notifications)->toBeFalse();
         $this->post($url.'&tampered=1')->assertForbidden();
     });
+
+    it('only shows followers gifts that nobody has reserved', function () {
+        $open = Gift::factory()->skipped()->create(['user_id' => $this->owner->id]);
+        $reserved = Gift::factory()->skipped()->create(['user_id' => $this->owner->id]);
+        $shared = Gift::factory()->skipped()->create(['user_id' => $this->owner->id, 'allow_multiple_claims' => true]);
+        $removed = Gift::factory()->skipped()->create(['user_id' => $this->owner->id]);
+        $this->list->gifts()->attach([$open->id, $reserved->id, $shared->id, $removed->id]);
+        foreach ([$reserved, $shared] as $gift) {
+            Claim::factory()->anonymous()->confirmed()->create(['gift_id' => $gift->id]);
+        }
+        $removed->delete();
+        $this->travel(11)->minutes();
+        $this->artisan('friends:send-digest')->assertSuccessful();
+        Mail::assertSent(FriendDigestMail::class, fn ($mail) => $mail->digestData->sole()['added_gifts']->pluck('gift_id')->all() === [$open->id]);
+    });
+
+    it('sends nothing when the only change was a gift added and removed again', function () {
+        $gift = Gift::factory()->skipped()->create(['user_id' => $this->owner->id]);
+        $this->list->gifts()->attach($gift);
+        $this->list->gifts()->detach($gift);
+        $this->travel(11)->minutes();
+        $this->artisan('friends:send-digest')->assertSuccessful();
+        Mail::assertNothingSent();
+        expect($this->follow->fresh()->last_change_id)->toBe(ListChange::max('id'));
+    });
 });
 
 it('rechecks queued recipients after mute, global opt-out, or list deletion', function (string $change) {
@@ -92,7 +119,6 @@ it('delivers localized bundles as multipart mail with usable list and opt-out UR
         'list' => $list,
         'added_gifts' => collect(),
         'edited_gifts' => collect(),
-        'removed_gifts' => collect(),
         'mute_url' => $follow->muteUrl(),
     ]]);
     $originalLocale = app()->getLocale();

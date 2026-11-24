@@ -93,24 +93,32 @@ it('records gift and list deletions and confirms opt-out for only that list', fu
     Mail::assertNothingOutgoing();
 })->with([true, false]);
 
-it('dedupes the digest for a buyer but keeps news for another follower', function (string $state) {
-    $buyer = User::factory()->create(['email' => $this->claim->claimer_email, 'last_friend_digest_at' => now()->subDay()]);
-    $other = User::factory()->create();
+it('keeps a reserved gift out of follower digests', function (string $state) {
+    $follower = User::factory()->create(['last_friend_digest_at' => now()->subWeeks(2)]);
+    $follower->followedLists()->create(['list_id' => $this->list->id, 'notifications' => true]);
+    $this->gift->update(['title' => 'Changed']);
+    if ($state === 'sent') {
+        $this->travel(11)->minutes();
+        (new SendReservationAlert(ReservationAlert::sole()->id))->handle();
+    }
+    $this->travel(11)->minutes();
+    $this->artisan('friends:send-digest')->assertSuccessful();
+    Mail::assertNotSent(FriendDigestMail::class);
+})->with(['pending', 'sent']);
+
+it('shows a released gift to other followers but not to the buyer who released it', function () {
+    $buyer = User::factory()->create(['email' => $this->claim->claimer_email, 'last_friend_digest_at' => now()->subWeeks(2)]);
+    $other = User::factory()->create(['last_friend_digest_at' => now()->subWeeks(2)]);
     foreach ([$buyer, $other] as $user) {
         $user->followedLists()->create(['list_id' => $this->list->id, 'notifications' => true]);
     }
-    $this->gift->delete();
-    $alert = ReservationAlert::sole();
-    if ($state === 'sent') {
-        (new SendReservationAlert($alert->id))->handle();
-    } elseif ($state === 'released') {
-        $this->post($alert->choiceUrl('dismiss'))->assertRedirect();
-    }
+    $this->gift->update(['title' => 'Changed']);
+    $this->post(ReservationAlert::sole()->choiceUrl('release'))->assertRedirect();
     $this->travel(11)->minutes();
     $this->artisan('friends:send-digest')->assertSuccessful();
     Mail::assertSent(FriendDigestMail::class, 1);
     Mail::assertSent(FriendDigestMail::class, fn ($mail) => $mail->hasTo($other->email));
-})->with(['pending', 'sent', 'released']);
+});
 
 it('keeps opt-out after cancellation, applies it to future alerts, and honours follower settings', function () {
     $buyer = User::factory()->create(['email' => $this->claim->claimer_email]);
