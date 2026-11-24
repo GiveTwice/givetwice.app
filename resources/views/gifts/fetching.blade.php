@@ -21,35 +21,38 @@
         ['label' => __('Lists'), 'url' => $dashboardUrl],
         ['label' => __('Fetching Details')]
     ]"
+    :full-width="true"
 >
     {{-- No-JS fallback: redirect to edit after 15s --}}
     <noscript>
         <meta http-equiv="refresh" content="15;url={{ route('gifts.edit', ['locale' => app()->getLocale(), 'gift' => $gift]) }}">
     </noscript>
 
-    <div
-        class="flex flex-col items-center justify-center py-16 text-center"
-        x-data="giftFetching()"
-    >
-        <div class="mb-6">
-            <x-icons.spinner class="w-12 h-12 text-coral-500 animate-spin" />
+    <div x-data="giftFetching()">
+        <div class="space-y-5 p-4 sm:px-6 sm:py-6">
+            <div class="flex items-start gap-3">
+                <x-icons.spinner class="mt-0.5 h-5 w-5 shrink-0 animate-spin text-coral-500" />
+                <div class="min-w-0">
+                    <p class="font-semibold text-gray-900">{{ __('Looking at :shop...', ['shop' => $gift->siteName()]) }}</p>
+                    <p class="mt-0.5 text-sm text-gray-500">{{ __('This usually takes a few seconds.') }}</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4 rounded-xl border border-cream-200 bg-cream-50 p-4">
+                <div class="flex h-20 w-20 shrink-0 items-center justify-center rounded-lg border border-cream-200 bg-white text-gray-400">
+                    <x-icons.image-placeholder class="h-8 w-8" />
+                </div>
+                <div class="min-w-0">
+                    <p class="font-bold text-gray-900 break-words">{{ $gift->title ?: $gift->suggestedTitle() }}</p>
+                    <p class="mt-1 text-sm text-gray-500">{{ __('Taken from the link. Price and photo will follow.') }}</p>
+                </div>
+            </div>
         </div>
 
-        <h2 class="text-xl font-semibold text-gray-900 mb-2">{{ __('Looking at :shop...', ['shop' => $gift->siteName()]) }}</h2>
-        <p class="text-gray-500 mb-4">{{ __('This usually takes a few seconds.') }}</p>
-
-        @if($gift->siteName())
-            <p class="text-sm text-gray-400">
-                {{ $gift->siteName() }}
-            </p>
-        @endif
-
-        <div class="w-full max-w-sm rounded-xl bg-cream-50 p-5 text-left">
-            <p class="font-medium break-words">{{ $gift->title ?: $gift->suggestedTitle() }}</p>
-            <p class="mt-2 text-sm text-gray-500">{{ __('Taken from the link. Price and photo will follow.') }}</p>
+        <div class="flex min-h-[4.25rem] flex-col gap-3 border-t border-gray-100 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+            <p class="text-sm text-gray-500">{{ __('We never overwrite what you fill in.') }}</p>
+            <a x-show="canSkip" x-cloak href="{{ route('gifts.edit', ['locale' => app()->getLocale(), 'gift' => $gift, 'context' => 'fetch_timeout']) }}" class="btn-secondary shrink-0 text-wrap">{{ __("Don't wait, I'll fill it in myself") }}</a>
         </div>
-        <a x-show="canSkip" x-cloak href="{{ route('gifts.edit', ['locale' => app()->getLocale(), 'gift' => $gift, 'context' => 'fetch_timeout']) }}" class="btn-secondary mt-6 max-w-full text-wrap">{{ __("Don't wait, I'll fill it in myself") }}</a>
-        <p class="mt-3 text-sm text-gray-500">{{ __('We never overwrite what you fill in.') }}</p>
     </div>
 
     <script>
