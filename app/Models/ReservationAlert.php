@@ -42,15 +42,15 @@ class ReservationAlert extends Model
     }
 
     /**
-     * Tells whether the buyer has most likely already bought and given this gift.
+     * Returns the occasion date that decides whether this reservation is settled.
      * The list's current occasion date wins while the list exists. After the list is gone,
      * the date saved on the alert when it was recorded is used instead.
      */
-    public function isSettled(): bool
+    public function occasionDate(): ?string
     {
         $list = GiftList::find($this->list_id);
 
-        return $this->claim->isSettled($list ? $list->occasion_date?->toDateString() : ($this->after['date'] ?? null));
+        return $list ? $list->occasion_date?->toDateString() : ($this->after['date'] ?? null);
     }
 
     public function removalSummary(): string

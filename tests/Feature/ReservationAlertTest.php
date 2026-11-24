@@ -278,6 +278,19 @@ it('lets a settled removal replace an edit alert that was already sent', functio
     Mail::assertSentCount(1);
 });
 
+it('clears a sent edit when the removal for a muted buyer settles while queued', function () {
+    $this->claim->update(['confirmed_at' => now()->subDays(30)->addMinutes(30)]);
+    $this->gift->update(['title' => 'Updated']);
+    $this->travel(11)->minutes();
+    (new SendReservationAlert(ReservationAlert::sole()->id))->handle();
+    $this->post(ReservationAlert::sole()->choiceUrl('mute'))->assertRedirect();
+    $this->gift->delete();
+    $this->travel(30)->minutes();
+    (new SendReservationAlert(ReservationAlert::latest('id')->first()->id))->handle();
+    expect($this->claim->fresh('alerts')->latestAlert())->toBeNull();
+    Mail::assertSentCount(1);
+});
+
 it('checks the current occasion date when a queued alert is delivered', function (?int $occasionDays, bool $mailed) {
     $this->list->update(['occasion_date' => now('Europe/Brussels')->addDays(2)]);
     $this->gift->update(['title' => 'Updated']);
