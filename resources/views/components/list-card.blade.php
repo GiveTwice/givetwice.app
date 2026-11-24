@@ -21,7 +21,7 @@
 
     <div class="flex items-end justify-between gap-3">
         <div class="min-w-0">
-            <h3 class="truncate text-base font-semibold text-gray-900 group-hover:text-coral-600">{{ $list->name }}</h3>
+            <h3 class="break-words text-base font-semibold text-gray-900 group-hover:text-coral-600">{{ $list->name }}</h3>
             <p class="text-sm text-gray-500">{{ trans_choice(':count gift|:count gifts', $list->gifts_count, ['count' => $list->gifts_count]) }}</p>
         </div>
         @if($list->users->count() > 1)
