@@ -14,7 +14,8 @@
     $confirmedClaimCount = $showReservations ? $gift->getConfirmedClaimCount() : 0;
     $isClaimed = !$allowsMultipleClaims && $hasAnyClaims;
     $isClaimedByMe = $showReservations && auth()->check() && $gift->claims->where('user_id', auth()->id())->whereNotNull('confirmed_at')->isNotEmpty();
-    $isPending = $gift->isPending() || $gift->isFetching();
+    // A gift that already shows its photo and price has nothing left to wait for, even while the fetch still runs in the background.
+    $isPending = ($gift->isPending() || $gift->isFetching()) && ! ($gift->hasImage() && $gift->hasPrice());
     $isFailed = $gift->isFetchFailed();
     $isClaimedByOthers = $showClaimActions && $isClaimed && !$isClaimedByMe && !$isOwner;
     $isUnavailable = $isClaimedByOthers || ($showClaimActions && $isClaimedByMe && !$allowsMultipleClaims);

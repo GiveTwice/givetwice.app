@@ -129,3 +129,16 @@ it('sends an edit opened from the public preview back to that list', function ()
     $editPage = $this->get("/en/gifts/{$gift->id}/edit?list={$second->id}")->getContent();
     expect(substr_count($editPage, 'action="'.url("/en/gifts/{$gift->id}").'?list='.$second->id.'"'))->toBe(2);
 });
+
+it('shows the fetching badge only while a gift still misses its photo or price', function (array $details, bool $showsBadge) {
+    $gift = Gift::factory()->fetching()->create(['price_in_cents' => null, ...$details]);
+    $this->list->gifts()->attach($gift);
+
+    $response = $this->actingAs($this->owner)->get('/en/list/'.$this->list->slug)->assertOk();
+
+    expect(str_contains($response->getContent(), 'data-gift-badge>'))->toBe($showsBadge);
+})->with([
+    'nothing filled in yet' => [[], true],
+    'price but no photo' => [['price_in_cents' => 2500], true],
+    'photo and price filled in by hand' => [['price_in_cents' => 2500, 'original_image_url' => 'https://example.com/wow.jpg'], false],
+]);

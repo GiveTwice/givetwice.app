@@ -52,7 +52,7 @@
             }
 
             const badgeEl = card.querySelector('[data-gift-badge]');
-            if (badgeEl && gift.fetch_status === 'completed') {
+            if (badgeEl && ['completed', 'failed'].includes(gift.fetch_status)) {
                 badgeEl.remove();
             }
         }
