@@ -1,6 +1,6 @@
 @props(['users', 'max' => 3])
 
-<div class="flex items-center -space-x-1.5">
+<div {{ $attributes->merge(['class' => 'flex items-center -space-x-1.5']) }}>
     @foreach($users->take($max) as $user)
         @if($user->hasProfileImage())
             <img
