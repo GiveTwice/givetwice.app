@@ -20,6 +20,16 @@
         :description="__('Your wishlists, gift groups, and settings are all here.')"
     >
         @if($lists->isNotEmpty())
+            {{-- Mobile has no sidebar, so without this the only way to start a list is the card after every existing one. --}}
+            <x-slot:actions>
+                <a href="{{ route('lists.create', ['locale' => $currentLocale]) }}" class="btn-secondary whitespace-nowrap lg:hidden">
+                    <x-icons.plus class="w-4 h-4" />
+                    {{ __('Create List') }}
+                </a>
+            </x-slot:actions>
+        @endif
+
+        @if($lists->isNotEmpty())
             <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 @foreach($lists as $list)
                     <x-list-card :list="$list" />
