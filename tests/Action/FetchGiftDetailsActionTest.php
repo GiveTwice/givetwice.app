@@ -309,12 +309,12 @@ describe('FetchGiftDetailsAction', function () {
             expect($gift->fresh()->original_image_url)->toBe('https://example.com/second.jpg');
         });
 
-        it('skips empty image URLs', function () {
+        it('skips image URLs that are empty or not web addresses', function () {
             $gift = Gift::factory()->for(User::factory())->create();
 
             $fetcher = mockFetcher(new ProductInfo(outcome: FetchOutcome::Success,
                 name: 'Test',
-                allImageUrls: ['', null, 'https://example.com/valid.jpg'],
+                allImageUrls: ['', null, 'false', 'https://example.com/valid.jpg'],
             ));
 
             $imageAction = Mockery::mock(ProcessGiftImageAction::class);
