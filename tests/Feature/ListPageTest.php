@@ -79,3 +79,16 @@ it('returns from the add gift page to the list it was opened for', function () {
         ->assertViewHas('returnList', null)
         ->assertViewHas('selectedListId', $this->list->id);
 });
+
+it('ignores a list parameter that is not exactly a list id', function (string $suffix) {
+    $this->list->update(['is_default' => true]);
+    $second = GiftList::factory()->create(['creator_id' => $this->owner->id]);
+    $this->owner->lists()->attach($second);
+
+    $this->actingAs($this->owner)->get('/en/gifts/create?list='.$second->id.$suffix)
+        ->assertViewHas('returnList', null)
+        ->assertViewHas('selectedListId', $this->list->id);
+})->with([
+    'slug suffix' => ['-kerstlijstje'],
+    'decimal' => ['.5'],
+]);

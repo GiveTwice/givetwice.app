@@ -24,7 +24,7 @@ class GiftController extends Controller
         $defaultList = $lists->firstWhere('is_default', true) ?? $lists->first();
 
         /** @var GiftList|null $returnList */
-        $returnList = $request->query('list') ? $lists->firstWhere('id', (int) $request->query('list')) : null;
+        $returnList = $request->query('list') ? $lists->firstWhere('id', $request->query('list')) : null;
 
         return view('gifts.create', [
             'lists' => $lists,
