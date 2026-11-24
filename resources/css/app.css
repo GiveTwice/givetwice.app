@@ -63,12 +63,12 @@ main :where([id], h1, h2, h3, form) {
 
 /* Primary button - coral/red. The one main action on a page: nothing else on the page is filled coral. */
 .btn-primary {
-    @apply inline-flex items-center justify-center gap-1.5 bg-coral-500 text-white px-3.5 min-h-11 sm:min-h-10 rounded-[10px] hover:bg-coral-600 transition-colors font-semibold text-[0.906rem] leading-5 shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(120_30_20/0.18)];
+    @apply inline-flex items-center justify-center gap-1.5 bg-coral-500 text-white px-3.5 min-h-11 sm:min-h-10 rounded-[10px] hover:bg-coral-700 active:translate-y-px transition font-semibold text-[0.906rem] leading-5 shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(120_30_20/0.18)];
 }
 
 /* Small variant of primary button */
 .btn-primary-sm {
-    @apply inline-flex items-center gap-1.5 bg-coral-500 text-white px-3 py-1.5 rounded-lg hover:bg-coral-600 transition-colors text-sm font-medium;
+    @apply inline-flex items-center gap-1.5 bg-coral-500 text-white px-3 py-1.5 rounded-lg hover:bg-coral-700 active:translate-y-px transition text-sm font-medium;
 }
 
 /* Secondary button - white with a neutral hairline. Every action that is not the main one. */

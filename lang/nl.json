@@ -2059,7 +2059,6 @@
     "Open your draw to see who you are buying for in :group.": "Open je lootje en ontdek voor wie jij koopt in :group.",
     "You can also accept or decline this invitation from your dashboard.": "Je kunt ook via je dashboard beslissen.",
     "This invitation expires in 30 days.": "Deze uitnodiging is 30 dagen geldig.",
-    "More options": "Meer opties",
     "Photo (optional)": "Foto (optioneel)",
     "Choose a list": "Kies een lijstje",
     "Reserved by you": "Door jou gereserveerd",
@@ -2095,5 +2094,7 @@
     "New list": "Nieuw lijstje",
     "All lists": "Alle lijstjes",
     "Reservations": "Reservaties",
-    "Gifts you reserved": "Cadeaus die jij reserveerde"
+    "Gifts you reserved": "Cadeaus die jij reserveerde",
+    "Saving...": "Opslaan...",
+    "Description (optional)": "Beschrijving (optioneel)"
 }
