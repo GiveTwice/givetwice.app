@@ -24,7 +24,7 @@
             </nav>
         @endif
 
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-4">
             <div>
                 @isset($titleSlot)
 
@@ -40,7 +40,7 @@
             </div>
 
             @isset($actions)
-                <div class="flex items-center gap-2 shrink-0">
+                <div class="flex min-w-0 flex-wrap items-center gap-2">
                     {{ $actions }}
                 </div>
             @endisset
