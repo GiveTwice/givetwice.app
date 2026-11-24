@@ -52,8 +52,13 @@ class SendReservationAlert implements ShouldQueue
 
                         return false;
                     }
-                    if ($alert->before === array_diff_key($alert->after, ['deleted' => true]) && ! $alert->after['deleted']) {
+                    if (! $alert->after['deleted'] && $alert->changedFields() === []) {
                         $alert->update(['resolved_at' => now()]);
+
+                        return false;
+                    }
+                    if ($alert->isSettled()) {
+                        $claim->alerts()->whereNull('resolved_at')->when(! $alert->after['deleted'], fn ($alerts) => $alerts->whereNull('sent_at'))->update(['resolved_at' => now()]);
 
                         return false;
                     }

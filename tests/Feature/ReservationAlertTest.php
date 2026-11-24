@@ -231,24 +231,67 @@ it('summarizes only changed fields and uses one removal summary', function () {
     expect((new ReservationAlertMail($alert))->content()->text)->not->toBeNull();
 });
 
-it('chooses a gentle closing for older reservations and past occasions only on removals', function (int $ageDays, ?int $occasionDays, bool $deleted, bool $gentle) {
-    $this->travelTo(now()->startOfSecond());
-    $this->claim->delete();
-    $this->claim = Claim::factory()->anonymous()->confirmed()->create(['gift_id' => $this->gift->id, 'created_at' => now()->subDays($ageDays)]);
+it('only mails reservations that are still open', function (int $confirmedDaysAgo, ?int $occasionDays, bool $deleted, bool $mailed) {
+    $this->claim->update(['confirmed_at' => now()->subDays($confirmedDaysAgo)]);
     $this->list->update(['occasion_date' => $occasionDays === null ? null : now('Europe/Brussels')->addDays($occasionDays)]);
     $deleted ? $this->gift->delete() : $this->gift->update(['title' => 'Updated']);
-    $alert = ReservationAlert::sole();
-    expect($alert->usesGentleRemoval())->toBe($gentle);
+    $this->travel(11)->minutes();
+    ReservationAlert::whereNull('resolved_at')->each(fn (ReservationAlert $alert) => (new SendReservationAlert($alert->id))->handle());
+    Mail::assertSentCount($mailed ? 1 : 0);
 })->with([
-    'recent' => [1, null, true, false], 'exactly seven days' => [7, null, true, false],
-    'older' => [8, null, true, true], 'occasion passed' => [1, -1, true, true],
-    'today' => [1, 0, true, false], 'future' => [1, 1, true, false],
-    'edit' => [8, -1, false, false],
+    'recent removal' => [1, null, true, true],
+    'removal at twenty-nine days' => [29, null, true, true],
+    'removal after thirty days' => [31, null, true, false],
+    'edit after thirty days' => [31, null, false, false],
+    'removal after the occasion' => [1, -1, true, false],
+    'edit after the occasion' => [1, -1, false, false],
+    'removal on the occasion day' => [1, 0, true, true],
 ]);
 
-it('uses the saved occasion date when a list has been deleted', function () {
-    $reservation = array_replace($this->claim->reservation, ['date' => now('Europe/Brussels')->subDay()->toDateString()]);
-    $this->claim->update(['reservation' => $reservation]);
-    $this->list->delete();
-    expect(ReservationAlert::sole()->usesGentleRemoval())->toBeTrue();
+it('drops a queued edit when the reservation settles before a removal', function () {
+    $this->claim->update(['confirmed_at' => now()->subDays(30)->addMinutes(5)]);
+    $this->gift->update(['title' => 'Updated']);
+    $this->travel(6)->minutes();
+    $this->gift->delete();
+    $this->travel(11)->minutes();
+    (new SendReservationAlert(ReservationAlert::sole()->id))->handle();
+    Mail::assertNothingSent();
+    expect(ReservationAlert::whereNull('resolved_at')->count())->toBe(0);
 });
+
+it('lets a settled removal replace an edit alert that was already sent', function () {
+    $this->gift->update(['title' => 'Updated']);
+    $this->travel(11)->minutes();
+    (new SendReservationAlert(ReservationAlert::sole()->id))->handle();
+    $this->travel(31)->days();
+    $this->gift->delete();
+    $claim = $this->claim->fresh(['alerts', 'gift']);
+    expect($claim->latestAlert())->toBeNull()->and($claim->isRemoved())->toBeTrue();
+    Mail::assertSentCount(1);
+});
+
+it('checks the current occasion date when a queued alert is delivered', function (?int $occasionDays, bool $mailed) {
+    $this->list->update(['occasion_date' => now('Europe/Brussels')->addDays(2)]);
+    $this->gift->update(['title' => 'Updated']);
+    $this->list->update(['occasion_date' => $occasionDays === null ? null : now('Europe/Brussels')->addDays($occasionDays)]);
+    $this->travel(11)->minutes();
+    (new SendReservationAlert(ReservationAlert::sole()->id))->handle();
+    Mail::assertSentCount($mailed ? 1 : 0);
+})->with([
+    'moved into the past' => [-1, false],
+    'moved later' => [5, true],
+    'cleared' => [null, true],
+]);
+
+it('uses the occasion date of a deleted list as it was at deletion', function (int $savedDays, int $currentDays, int $travelDays, bool $mailed) {
+    $this->claim->update(['reservation' => array_replace($this->claim->reservation, ['date' => now('Europe/Brussels')->addDays($savedDays)->toDateString()])]);
+    $this->list->update(['occasion_date' => now('Europe/Brussels')->addDays($currentDays)]);
+    $this->list->delete();
+    $this->travel($travelDays)->days();
+    $this->travel(11)->minutes();
+    (new SendReservationAlert(ReservationAlert::sole()->id))->handle();
+    Mail::assertSentCount($mailed ? 1 : 0);
+})->with([
+    'rescheduled to later' => [-1, 5, 0, true],
+    'passed before delivery' => [5, 1, 2, false],
+]);
