@@ -333,7 +333,9 @@
 
     <x-footer />
 
-    <x-install-banner />
+    @unless(View::hasSection('hide_install_banner'))
+        <x-install-banner />
+    @endunless
 
     @unless(View::hasSection('dynamic_og_image'))
         <x-default-og-image />

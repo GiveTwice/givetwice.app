@@ -8,6 +8,8 @@
 
 @section('robots', 'noindex, nofollow')
 
+@section('hide_install_banner', '1')
+
 @section('content')
 @php
     $shell = \App\Helpers\AppShellHelper::lists(auth()->user(), $returnList);
@@ -42,25 +44,31 @@
     :title="$pageTitle"
     :description="$pageDescription"
     :breadcrumbs="$breadcrumbs"
+    :full-width="true"
 >
-    <div
-        class="grid grid-cols-1 gap-8 lg:grid-cols-5"
+    <form
+        method="POST"
+        action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id) . $listQuery }}"
         x-data="giftEdit()"
+        @input="markEdited($event.target.name)"
+        @submit="submitting = true"
+        @pageshow.window="submitting = false"
         @paste.window="pasteImage($event)"
         @dragenter.window="dragEnter($event)"
         @dragover.window="dragOver($event)"
         @dragleave.window="dragLeave($event)"
         @drop.window="dropImage($event)"
+        class="[&_:is(input,textarea,select)]:scroll-mb-24"
     >
+        @csrf
+        @method('PUT')
+        <input type="hidden" name="tracks_edits" value="0" :value="1">
+        <template x-for="field in edited" :key="field"><input type="hidden" name="edited_fields[]" :value="field"></template>
 
-        <div class="lg:col-span-3">
-            <form @input="markEdited($event.target.name)" method="POST" action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id) . $listQuery }}">
-                @csrf
-                @method('PUT')
-                <input type="hidden" name="tracks_edits" value="0" :value="1">
-                <template x-for="field in edited" :key="field"><input type="hidden" name="edited_fields[]" :value="field"></template>
+        <div class="grid grid-cols-1 gap-8 p-4 sm:px-6 sm:py-5 lg:grid-cols-5">
 
-                <div class="mb-6">
+            <div class="space-y-6 lg:col-span-3">
+                <div>
                     <label for="title" class="form-label">
                         {{ __('Title') }}
                     </label>
@@ -78,64 +86,58 @@
                     @enderror
                 </div>
 
-                <div class="mb-6">
-                    <label for="price" class="form-label">
-                        {{ __('Price') }}
-                    </label>
-                    <div class="flex">
-
-                        <div class="relative">
-                            <select
-                                id="currency"
-                                name="currency"
-                                x-model="form.currency"
-                                aria-label="{{ __('Currency') }}"
-                                class="h-full pl-4 pr-8 py-3 border border-r-0 border-gray-200 rounded-l-xl bg-gray-50 text-gray-700 font-medium focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 focus:z-10 appearance-none cursor-pointer transition-colors hover:bg-gray-100"
-                            >
-                                @foreach (SupportedCurrency::cases() as $currency)
-                                    <option value="{{ $currency->value }}">
-                                        {{ $currency->displayOption() }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <div class="absolute inset-y-0 right-2 flex items-center pointer-events-none">
-                                <x-icons.chevron-down class="w-4 h-4 text-gray-400" />
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-5">
+                    <div class="sm:col-span-3">
+                        <label for="price" class="form-label">
+                            {{ __('Price') }}
+                        </label>
+                        <div class="flex">
+                            <div class="relative">
+                                <select
+                                    id="currency"
+                                    name="currency"
+                                    x-model="form.currency"
+                                    aria-label="{{ __('Currency') }}"
+                                    class="h-full pl-3 pr-8 py-2.5 border border-r-0 border-stone-300 rounded-l-[10px] bg-gray-50 text-gray-700 font-medium focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 focus:z-10 appearance-none cursor-pointer transition-colors hover:bg-gray-100"
+                                >
+                                    @foreach (SupportedCurrency::cases() as $currency)
+                                        <option value="{{ $currency->value }}">
+                                            {{ $currency->displayOption() }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <div class="absolute inset-y-0 right-2 flex items-center pointer-events-none">
+                                    <x-icons.chevron-down class="w-4 h-4 text-gray-400" />
+                                </div>
                             </div>
+
+                            <input
+                                type="number"
+                                id="price"
+                                name="price"
+                                x-model="form.price"
+                                step="0.01"
+                                min="0"
+                                placeholder="0.00"
+                                class="flex-1 min-w-0 px-3 py-2.5 border border-stone-300 rounded-r-[10px] focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-colors @error('price') border-red-500 @enderror"
+                            >
                         </div>
-
-                        <input
-                            type="number"
-                            id="price"
-                            name="price"
-                            x-model="form.price"
-                            step="0.01"
-                            min="0"
-                            placeholder="0.00"
-                            class="flex-1 min-w-0 px-4 py-3 border border-gray-200 rounded-r-xl focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-colors @error('price') border-red-500 @enderror"
-                        >
+                        @error('price')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                        @error('currency')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
                     </div>
-                    @error('price')
-                        <p class="form-error">{{ $message }}</p>
-                    @enderror
-                    @error('currency')
-                        <p class="form-error">{{ $message }}</p>
-                    @enderror
+
+                    <div class="sm:col-span-2">
+                        <label for="shop_name" class="form-label">{{ __('Shop') }}</label>
+                        <input id="shop_name" name="shop_name" x-model="form.shop_name" class="form-input" maxlength="255">
+                        @error('shop_name')<p class="form-error">{{ $message }}</p>@enderror
+                    </div>
                 </div>
 
-                <div class="flex flex-col-reverse gap-3 border-t border-gray-100 pt-6 sm:flex-row sm:items-center sm:justify-end">
-                    <a href="{{ $cancelUrl }}" class="btn-cancel text-center">
-                        {{ __('Cancel') }}
-                    </a>
-                    <button type="submit" class="btn-primary justify-center">
-                        <x-icons.checkmark class="w-5 h-5" />
-                        {{ __('Save') }}
-                    </button>
-                </div>
-                <details class="mt-6" @if($errors->any()) open @endif>
-                    <summary class="min-h-11 cursor-pointer py-3 font-medium">{{ __('More options') }}</summary>
-                <details class="mb-6">
-                    <summary class="cursor-pointer text-sm text-gray-500">{{ __('Product URL') }}</summary>
-                <div class="mb-6">
+                <div>
                     <label for="url" class="form-label">
                         {{ __('Product URL') }}
                     </label>
@@ -150,9 +152,8 @@
                     @error('url')
                         <p class="form-error">{{ $message }}</p>
                     @enderror
-                    <div class="flex items-center justify-between mt-2">
+                    <div class="flex items-center justify-between mt-2" x-show="form.url" x-cloak>
                         <a
-                            x-show="form.url"
                             :href="form.url"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -163,30 +164,22 @@
                         </a>
                         <span
                             x-show="form.url !== originalUrl"
-                            x-cloak
                             class="text-sm text-gray-400"
                         >
                             {{ __("We'll re-fetch the details when you save") }}
                         </span>
                     </div>
                 </div>
-                </details>
 
-                <div class="mb-6">
-                    <label for="shop_name" class="form-label">{{ __('Shop') }}</label>
-                    <input id="shop_name" name="shop_name" x-model="form.shop_name" class="form-input" maxlength="255">
-                    @error('shop_name')<p class="form-error">{{ $message }}</p>@enderror
-                </div>
-                <div class="mb-6">
+                <div>
                     <label for="owner_note" class="form-label">{{ __('Note for the buyer (optional)') }}</label>
-                    <textarea id="owner_note" name="owner_note" rows="2" class="form-textarea" maxlength="1500" placeholder="{{ __('E.g. gold, size S...') }}">{{ old('owner_note', $gift->owner_note) }}</textarea>
+                    <textarea id="owner_note" name="owner_note" rows="2" class="form-textarea field-sizing-content min-h-20" maxlength="1500" placeholder="{{ __('E.g. gold, size S...') }}">{{ old('owner_note', $gift->owner_note) }}</textarea>
                     @error('owner_note')<p class="form-error">{{ $message }}</p>@enderror
                 </div>
-                <details class="mb-6">
-                    <summary class="cursor-pointer text-sm text-gray-500">{{ __('Description') }}</summary>
-                <div class="mb-6">
+
+                <div>
                     <label for="description" class="form-label">
-                        {{ __('Description') }}
+                        {{ __('Description (optional)') }}
                     </label>
                     <textarea
                         id="description"
@@ -194,111 +187,131 @@
                         rows="3"
                         x-model="form.description"
                         placeholder="{{ __('Brief description of the gift') }}"
-                        class="form-textarea @error('description') border-red-500 @enderror"
+                        class="form-textarea field-sizing-content min-h-20 @error('description') border-red-500 @enderror"
                     ></textarea>
                     @error('description')
                         <p class="form-error">{{ $message }}</p>
                     @enderror
                 </div>
-                </details>
 
-                <div class="mb-4">
-                    <input type="hidden" name="most_wanted" value="0">
-                    <label class="flex items-center gap-2"><input type="checkbox" name="most_wanted" value="1" @checked(old('most_wanted', $gift->most_wanted))> ★ {{ __('Most wanted') }}</label>
-                </div>
-                <div class="mb-6 flex items-start gap-3 pt-4 border-t border-gray-100">
+                <div class="space-y-4 border-t border-gray-100 pt-5">
+                    <div class="flex items-start gap-3">
+                        <input type="hidden" name="most_wanted" value="0">
                         <input
-                        type="checkbox"
-                        name="allow_multiple_claims"
-                        id="allow_multiple_claims"
-                        value="1"
-                        x-model="form.allow_multiple_claims"
-                        class="mt-1 w-4 h-4 text-teal-500 border-cream-300 rounded focus:ring-teal-400"
-                    >
-                    <div>
-                        <label for="allow_multiple_claims" class="form-label mb-0 cursor-pointer">
-                            {{ __('Allow multiple claims') }}
+                            type="checkbox"
+                            name="most_wanted"
+                            id="most_wanted"
+                            value="1"
+                            @checked(old('most_wanted', $gift->most_wanted))
+                            class="mt-[0.1875rem] w-4 h-4 shrink-0 text-teal-500 border-cream-300 rounded focus:ring-teal-400"
+                        >
+                        <label for="most_wanted" class="form-label mb-0 cursor-pointer">
+                            {{ __('Most wanted') }}
                         </label>
-                        <p class="form-help mt-1">
-                            {{ __('Useful for gift cards or big-ticket items.') }}
-                        </p>
                     </div>
-                </div>
-
-                </details>
-            </form>
-        </div>
-
-        <div class="lg:col-span-2">
-            <p class="form-label">{{ __('Photo') }}</p>
-
-            <input
-                type="file"
-                id="image-upload"
-                accept="image/jpeg,image/png,image/jpg,image/gif,image/webp"
-                class="hidden"
-                x-ref="imageInput"
-                x-on:change="uploadImage($event)"
-            >
-
-            <div class="group relative aspect-square w-full rounded-2xl border border-stone-200 bg-white overflow-hidden cursor-pointer"
-                 x-on:click="$refs.imageInput.click()">
-
-                <template x-if="gift.image_url_card">
-                    <img :src="gift.image_url_card" :alt="gift.title" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
-                </template>
-
-                <template x-if="!gift.image_url_card">
-                    <div class="w-full h-full bg-cream-100 flex items-center justify-center">
-                        <div class="text-center text-gray-400">
-                            <x-icons.image-placeholder class="w-12 h-12 mx-auto mb-2" />
-                            <p class="text-sm">{{ __('Add a photo') }}</p>
+                    <div class="flex items-start gap-3">
+                        <input
+                            type="checkbox"
+                            name="allow_multiple_claims"
+                            id="allow_multiple_claims"
+                            value="1"
+                            x-model="form.allow_multiple_claims"
+                            class="mt-[0.1875rem] w-4 h-4 shrink-0 text-teal-500 border-cream-300 rounded focus:ring-teal-400"
+                        >
+                        <div>
+                            <label for="allow_multiple_claims" class="form-label mb-0 cursor-pointer">
+                                {{ __('Allow multiple claims') }}
+                            </label>
+                            <p class="form-help mt-1">
+                                {{ __('Useful for gift cards or big-ticket items.') }}
+                            </p>
                         </div>
                     </div>
-                </template>
+                </div>
+            </div>
 
-                <div class="absolute inset-0 rounded-2xl border-2 border-dashed border-coral-500 bg-coral-50/90 flex items-center justify-center pointer-events-none"
-                     x-show="dragging && !uploading" x-cloak>
-                    <span class="bg-white text-coral-600 px-4 py-2 rounded-full text-sm font-semibold shadow-lg inline-flex items-center gap-2">
+            <div class="lg:col-span-2">
+                <p class="form-label">{{ __('Photo') }}</p>
+
+                <input
+                    type="file"
+                    id="image-upload"
+                    accept="image/jpeg,image/png,image/jpg,image/gif,image/webp"
+                    class="hidden"
+                    x-ref="imageInput"
+                    x-on:change="uploadImage($event)"
+                >
+
+                <div class="group relative aspect-square w-full rounded-2xl border border-stone-200 bg-white overflow-hidden cursor-pointer"
+                     x-on:click="$refs.imageInput.click()">
+
+                    <template x-if="gift.image_url_card">
+                        <img :src="gift.image_url_card" :alt="gift.title" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    </template>
+
+                    <template x-if="!gift.image_url_card">
+                        <div class="w-full h-full bg-cream-100 flex items-center justify-center">
+                            <div class="text-center text-gray-400">
+                                <x-icons.image-placeholder class="w-12 h-12 mx-auto mb-2" />
+                                <p class="text-sm">{{ __('Add a photo') }}</p>
+                            </div>
+                        </div>
+                    </template>
+
+                    <div class="absolute inset-0 rounded-2xl border-2 border-dashed border-coral-500 bg-coral-50/90 flex items-center justify-center pointer-events-none"
+                         x-show="dragging && !uploading" x-cloak>
+                        <span class="bg-white text-coral-600 px-4 py-2 rounded-full text-sm font-semibold shadow-lg inline-flex items-center gap-2">
+                            <x-icons.image-placeholder class="w-4 h-4" />
+                            {{ __('Drop it here') }}
+                        </span>
+                    </div>
+
+                    <div class="absolute inset-0 bg-gray-900/40 flex items-center justify-center"
+                         x-show="uploading" x-cloak>
+                        <span class="bg-white/95 backdrop-blur-sm text-gray-700 px-4 py-2 rounded-full text-sm font-medium shadow-lg inline-flex items-center gap-2">
+                            <x-icons.spinner class="w-4 h-4 animate-spin" />
+                            {{ __('Uploading...') }}
+                        </span>
+                    </div>
+
+                    <div class="absolute top-3 right-3 pointer-events-none"
+                         x-show="uploadedRecently"
+                         x-cloak
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 -translate-y-1"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-300"
+                         x-transition:leave-start="opacity-100"
+                         x-transition:leave-end="opacity-0">
+                        <span class="bg-teal-500 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg inline-flex items-center gap-1.5">
+                            <x-icons.check-circle class="w-4 h-4" />
+                            {{ __('Saved') }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mt-2.5">
+                    <button type="button" class="btn-secondary" x-on:click="$refs.imageInput.click()" :disabled="uploading">
                         <x-icons.image-placeholder class="w-4 h-4" />
-                        {{ __('Drop it here') }}
-                    </span>
+                        {{ __('Change photo') }}
+                    </button>
                 </div>
 
-                <div class="absolute inset-0 bg-gray-900/40 flex items-center justify-center"
-                     x-show="uploading" x-cloak>
-                    <span class="bg-white/95 backdrop-blur-sm text-gray-700 px-4 py-2 rounded-full text-sm font-medium shadow-lg inline-flex items-center gap-2">
-                        <x-icons.spinner class="w-4 h-4 animate-spin" />
-                        {{ __('Uploading...') }}
-                    </span>
-                </div>
-
-                <div class="absolute top-3 right-3 pointer-events-none"
-                     x-show="uploadedRecently"
-                     x-cloak
-                     x-transition:enter="transition ease-out duration-200"
-                     x-transition:enter-start="opacity-0 -translate-y-1"
-                     x-transition:enter-end="opacity-100 translate-y-0"
-                     x-transition:leave="transition ease-in duration-300"
-                     x-transition:leave-start="opacity-100"
-                     x-transition:leave-end="opacity-0">
-                    <span class="bg-teal-500 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg inline-flex items-center gap-1.5">
-                        <x-icons.check-circle class="w-4 h-4" />
-                        {{ __('Saved') }}
-                    </span>
-                </div>
+                <p class="form-help">{{ __('Paste a screenshot, drop a photo here or choose one') }}</p>
             </div>
-
-            <div class="mt-2.5">
-                <button type="button" class="btn-secondary" x-on:click="$refs.imageInput.click()" :disabled="uploading">
-                    <x-icons.image-placeholder class="w-4 h-4" />
-                    {{ __('Change photo') }}
-                </button>
-            </div>
-
-            <p class="form-help">{{ __('Paste a screenshot, drop a photo here or choose one') }}</p>
         </div>
-    </div>
+
+        <div class="sticky bottom-0 z-10 flex items-center justify-end gap-3 border-t border-gray-100 bg-white px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-6">
+            <a href="{{ $cancelUrl }}" class="btn-cancel">
+                {{ __('Cancel') }}
+            </a>
+            <button type="submit" class="btn-primary flex-1 sm:flex-none disabled:cursor-wait disabled:opacity-75" :disabled="submitting">
+                <x-icons.checkmark class="w-5 h-5" x-show="!submitting" />
+                <x-icons.spinner class="w-5 h-5" x-show="submitting" x-cloak />
+                <span x-text="submitting ? @js(__('Saving...')) : @js(__('Save'))">{{ __('Save') }}</span>
+            </button>
+        </div>
+    </form>
 </x-app-content>
 
 @unless($isGiftFlow)
@@ -379,6 +392,7 @@
             refreshing: false,
             uploading: false,
             uploadedRecently: false,
+            submitting: false,
 
             async refresh() {
                 this.refreshing = true;
