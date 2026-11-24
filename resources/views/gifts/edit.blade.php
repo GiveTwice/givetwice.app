@@ -14,35 +14,32 @@
     $dashboardUrl = $shell['dashboardUrl'];
     $giftContext = session('gift_context') ?? request('context');
     $isGiftFlow = $giftContext || session('first_gift') === $gift->id;
+    [$pageTitle, $pageDescription] = match (true) {
+        $giftContext === 'fetch_success' => [__('Found it! Does this look right?'), null],
+        $giftContext === 'fetch_failed', $gift->isFetchFailed() => [
+            __(':shop is keeping the door shut', ['shop' => ucfirst(explode('.', $gift->siteName() ?? '')[0])]),
+            __("We couldn't get the photo and price. Can you fill them in? We'll keep the link."),
+        ],
+        $giftContext === 'manual_entry' => [__('Fill in the details for your gift.'), null],
+        $giftContext === 'fetch_timeout' => [__('Edit Gift'), __('Still fetching in the background. We never overwrite what you fill in.')],
+        default => [__('Edit Gift'), __('Tweak the details.')],
+    };
 @endphp
 
-<x-dynamic-component
-    :component="$isGiftFlow ? 'gift-flow-shell' : 'app-shell'"
+<x-app-shell
     :title="__('Lists')"
     :sidebar-items="$shell['sidebarItems']"
     :stats="$shell['sidebarStats']"
 >
 <div class="space-y-8">
-<x-dynamic-component
-    :component="$isGiftFlow ? 'gift-flow-shell' : 'app-content'"
-    :title="__('Edit Gift')"
-    :description="__('Tweak the details.')"
+<x-app-content
+    :title="$pageTitle"
+    :description="$pageDescription"
     :breadcrumbs="[
         ['label' => __('Lists'), 'url' => $dashboardUrl],
         ['label' => __('Edit Gift')]
     ]"
 >
-    @if($giftContext === 'fetch_success')
-        <x-section-heading class="mb-6">{{ __('Found it! Does this look right?') }}</x-section-heading>
-    @elseif($giftContext === 'fetch_failed' || $gift->isFetchFailed())
-        <x-section-heading class="mb-2">{{ __(':shop is keeping the door shut', ['shop' => ucfirst(explode('.', $gift->siteName() ?? '')[0])]) }}</x-section-heading>
-        <p class="mb-6 text-gray-600">{{ __("We couldn't get the photo and price. Can you fill them in? We'll keep the link.") }}</p>
-    @elseif($giftContext === 'manual_entry')
-        <x-section-heading class="mb-6">{{ __('Fill in the details for your gift.') }}</x-section-heading>
-    @elseif($giftContext === 'fetch_timeout')
-        <p class="mb-6 text-gray-600">{{ __('Still fetching in the background. We never overwrite what you fill in.') }}</p>
-    @endif
-
     <div
         class="grid grid-cols-1 gap-8 lg:grid-cols-5"
         x-data="giftEdit()"
@@ -287,7 +284,7 @@
             <p class="form-help">{{ __('Paste a screenshot or choose a photo') }}</p>
         </div>
     </div>
-</x-dynamic-component>
+</x-app-content>
 
 @unless($isGiftFlow)
 <x-danger-zone
@@ -300,7 +297,7 @@
 />
 @endunless
 </div>
-</x-dynamic-component>
+</x-app-shell>
 
 <script>
     function giftEdit() {
