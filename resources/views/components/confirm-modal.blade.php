@@ -39,7 +39,7 @@
         class="fixed inset-0 z-50 flex items-center justify-center p-4"
     >
         <div
-            class="relative bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
+            class="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden"
             x-on:click.stop
         >
 
