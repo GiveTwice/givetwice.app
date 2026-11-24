@@ -995,6 +995,15 @@ main :where([id], h1, h2, h3, form) {
     background: oklch(0.88 0.06 65);
 }
 
+/*
+ * Reserves room for the scrollbar on every page, also on pages too short to scroll.
+ * Without it, a centered page moves sideways by half a scrollbar when you go from a short page to a long one.
+ * Browsers with overlay scrollbars reserve nothing, so they look the same as before.
+ */
+html {
+    scrollbar-gutter: stable;
+}
+
 .app-frame {
     width: 100%;
     max-width: 96rem;
