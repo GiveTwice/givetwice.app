@@ -54,10 +54,10 @@ it('saves just a name and shows the share step once after the first gift', funct
     $this->put("/en/gifts/{$gift->id}", ['title' => 'A nice book'])
         ->assertSessionHasNoErrors()->assertRedirect("/en/gifts/{$gift->id}/share");
     $this->get("/en/gifts/{$gift->id}/share")->assertOk()->assertViewIs('gifts.share')->assertSee('https://wa.me/?text=', false);
-    $this->put("/en/gifts/{$gift->id}", ['title' => 'Still a nice book'])->assertRedirect('/en/dashboard');
+    $this->put("/en/gifts/{$gift->id}", ['title' => 'Still a nice book'])->assertRedirect("/en/list/{$this->list->slug}");
     $this->post('/en/gifts', ['input' => 'AVA gift voucher', 'list_id' => $this->list->id]);
     $second = $this->user->gifts()->latest('id')->first();
-    $this->put("/en/gifts/{$second->id}", ['title' => 'AVA gift voucher'])->assertRedirect('/en/dashboard');
+    $this->put("/en/gifts/{$second->id}", ['title' => 'AVA gift voucher'])->assertRedirect("/en/list/{$this->list->slug}");
     $this->get("/en/gifts/{$second->id}/share")->assertRedirect('/en/dashboard');
 });
 

@@ -2088,5 +2088,9 @@
     "Couldn't save the order. Refresh and try again.": "Impossible d'enregistrer l'ordre. Recharge la page et réessaie.",
     "Drag to change the order": "Fais glisser pour changer l'ordre",
     "Change the order of :gift. Drag it, or use the arrow keys.": "Déplace :gift. Fais-le glisser, ou utilise les flèches du clavier.",
-    "This list changed. Refresh and try again.": "Cette liste vient de changer. Recharge la page et réessaie."
+    "This list changed. Refresh and try again.": "Cette liste vient de changer. Recharge la page et réessaie.",
+    "Another list?": "Une autre liste ?",
+    "One for your birthday, one for the holidays, one for the kids.": "Une pour ton anniversaire, une pour les fêtes, une pour les enfants.",
+    "New list": "Nouvelle liste",
+    "All lists": "Toutes les listes"
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "37b409a3a1cb4e37b4088b686db27f7e",
+    "content-hash": "bc359085d0c9b6d03ce9056476941271",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1065,16 +1065,16 @@
         },
         {
             "name": "givetwice/product-info-fetcher",
-            "version": "0.5.1",
+            "version": "0.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/GiveTwice/product-info-fetcher.git",
-                "reference": "ba3de38ccfee1c0ecc51b283b54b0f38649e1637"
+                "reference": "4e0ec565d6171c1a329960f9c31ac7fdfbc76935"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/GiveTwice/product-info-fetcher/zipball/ba3de38ccfee1c0ecc51b283b54b0f38649e1637",
-                "reference": "ba3de38ccfee1c0ecc51b283b54b0f38649e1637",
+                "url": "https://api.github.com/repos/GiveTwice/product-info-fetcher/zipball/4e0ec565d6171c1a329960f9c31ac7fdfbc76935",
+                "reference": "4e0ec565d6171c1a329960f9c31ac7fdfbc76935",
                 "shasum": ""
             },
             "require": {
@@ -1112,7 +1112,7 @@
             ],
             "support": {
                 "issues": "https://github.com/GiveTwice/product-info-fetcher/issues",
-                "source": "https://github.com/GiveTwice/product-info-fetcher/tree/0.5.1"
+                "source": "https://github.com/GiveTwice/product-info-fetcher/tree/0.5.2"
             },
             "funding": [
                 {
@@ -1120,7 +1120,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-11-09T14:17:33+00:00"
+            "time": "2026-11-24T12:09:14+00:00"
         },
         {
             "name": "graham-campbell/result-type",

@@ -42,8 +42,7 @@ describe('reservation visibility', function () {
                 expect($gift->getAttributes())->not->toHaveKey('claims_count');
             }
         }
-        $dashboard = $this->get('/en/dashboard')->assertOk();
-        $list = $dashboard->viewData('lists')->firstWhere('id', $this->list->id);
+        $list = $this->get('/en/list/'.$this->list->slug)->assertOk()->viewData('list');
         expect($list->gifts->firstWhere('id', $this->reserved->id)->claims->count())->toBe($spoiler ? 1 : 0);
         expect($list->getAttributes())->not->toHaveKey('claimed_gifts_count');
         $reservationVisible = [];

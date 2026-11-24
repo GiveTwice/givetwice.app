@@ -6,7 +6,7 @@
 
 @section('content')
 @php
-    $shell = \App\Helpers\AppShellHelper::lists(auth()->user());
+    $shell = \App\Helpers\AppShellHelper::lists(auth()->user(), $list);
     $dashboardUrl = $shell['dashboardUrl'];
 @endphp
 

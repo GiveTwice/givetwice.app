@@ -78,7 +78,7 @@
         <x-sortable-gift-grid :list="$list" :sortable="$sortable" class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             @foreach($list->gifts as $gift)
                 <div class="relative" data-sort-id="{{ $gift->id }}" @if($sortable) x-sort:item="{{ $gift->id }}" @endif>
-                    <x-gift-card :gift="$gift" :editable="true" :show-reservations="$list->spoiler_mode" />
+                    <x-gift-card :gift="$gift" :list="$list" :editable="true" :show-reservations="$list->spoiler_mode" />
                     @if($sortable)<x-gift-sort-handle :gift="$gift" />@endif
                 </div>
             @endforeach

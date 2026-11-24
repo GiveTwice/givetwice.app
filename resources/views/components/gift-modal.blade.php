@@ -258,7 +258,7 @@
                     @else
 
                         <div class="space-y-3 mt-4">
-                            <a href="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/edit') }}"
+                            <a href="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/edit') . ($gift->pivot?->list_id ? '?list=' . $gift->pivot->list_id : '') }}"
                                class="w-full inline-flex items-center justify-center gap-2 bg-cream-100 text-gray-700 px-5 py-3 rounded-xl hover:bg-cream-200 transition-colors font-medium">
                                 <x-icons.edit class="w-5 h-5" />
                                 {{ __('Edit gift') }}

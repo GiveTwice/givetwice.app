@@ -4,7 +4,8 @@
     'editable' => false,
     'showClaimActions' => false,
     'isOwner' => false,
-    'openModal' => false
+    'openModal' => false,
+    'list' => null,
 ])
 
 @php
@@ -118,7 +119,7 @@
 
         @if($editable)
             <div class="gift-card-hover-overlay gift-card-hover-overlay-gray flex-col gap-2">
-                <a href="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/edit') }}"
+                <a href="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id . '/edit') . ($list ? '?list=' . $list->id : '') }}"
                    class="gift-card-hover-label text-gray-700">
                     {{ __('Edit') }}
                 </a>
@@ -232,7 +233,7 @@
         :message="__('This can\'t be undone. Sure?')"
         :confirmText="__('Delete Gift')"
     >
-        <form method="POST" action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id) }}" x-on:click.stop>
+        <form method="POST" action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id) . ($list ? '?list=' . $list->id : '') }}" x-on:click.stop>
             @csrf
             @method('DELETE')
             <button

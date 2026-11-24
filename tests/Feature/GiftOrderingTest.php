@@ -25,7 +25,7 @@ it('persists a dragged order and uses it in the owner and shared views', functio
 
     $this->actingAs($this->parent)->putJson($this->url, ['gifts' => $expected])->assertNoContent();
 
-    $this->get('/en/dashboard')->assertViewHas('lists', fn ($lists) => $lists->sole()->gifts->pluck('id')->all() === $expected);
+    $this->get('/en/list/'.$this->list->slug)->assertViewHas('list', fn ($list) => $list->gifts->pluck('id')->all() === $expected);
     auth()->logout();
     $this->get($this->list->getPublicUrl('en'))->assertViewHas('gifts', fn ($gifts) => $gifts->pluck('id')->all() === $expected);
 });
