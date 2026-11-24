@@ -43,7 +43,7 @@ it('shows every list the user manages, oldest first, and none of anyone else', f
 it('previews the same first four gifts as the list page, with the full count and no reservations', function () {
     $list = managedList($this->owner, ['spoiler_mode' => true]);
     $gifts = Gift::factory()->skipped()->count(6)->create();
-    foreach ($gifts as $index => $gift) {
+    foreach ($gifts->reverse()->values() as $index => $gift) {
         $list->gifts()->attach($gift, ['sort_order' => min($index, 3)]);
     }
     $gifts[0]->claims()->create(['user_id' => User::factory()->create()->id, 'confirmed_at' => now()]);
