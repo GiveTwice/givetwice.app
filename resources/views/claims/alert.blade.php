@@ -2,7 +2,7 @@
 @section('title', $alert->summary())
 @section('robots', 'noindex, nofollow')
 @section('content')
-<x-page-card width="max-w-xl" icon="🎁" :title="$alert->summary()" :subtitle="$alert->before['title'].' · '.$claim->created_at->translatedFormat('j M Y')">
+<x-page-card icon="🎁" :title="$alert->summary()" :subtitle="$alert->before['title'].' · '.$claim->created_at->translatedFormat('j M Y')">
     <div class="flex flex-col gap-4">
         <div class="rounded-xl bg-cream-50 p-3">@include('claims.change-values')</div>
         @foreach($choice === 'review' ? ($alert->after['deleted'] ? ['keep', 'alternative', 'dismiss'] : ['new', 'old', 'release']) : [$choice] as $option)

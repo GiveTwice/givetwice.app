@@ -2,59 +2,27 @@
 @section('title', __('All my reservations'))
 @section('robots', 'noindex, nofollow')
 @section('content')
-@if(!$email)
+{{-- The page width follows the layout rule in CLAUDE.md. A logged-in user gets the app shell with the sidebar.
+     A guest who opened the email link sees a grid of gifts, so it gets the wide card. A guest without the link only sees a form, so it gets the single card. --}}
+@auth
+    @php($shell = \App\Helpers\AppShellHelper::reservations(auth()->user()))
+    <x-app-shell :title="__('Your account')" :sidebar-items="$shell['sidebarItems']" :stats="$shell['sidebarStats']">
+        <x-app-content :title="__('All my reservations')" :description="$email ?? __('reservations.intro')">
+            @if($email)
+                @include('claims.history-body')
+            @else
+                <div class="max-w-md">@include('claims.history-form')</div>
+            @endif
+        </x-app-content>
+    </x-app-shell>
+@elseif($email)
+    <x-app-content :title="__('All my reservations')" :description="$email">
+        @include('claims.history-body')
+    </x-app-content>
+@else
     <x-page-card icon="🎁" :title="__('All my reservations')" :subtitle="__('reservations.intro')">
-        <form method="POST" action="{{ route('reservations.link', ['locale' => app()->getLocale()]) }}" class="flex flex-col gap-3">@csrf
-            <label for="email" class="form-label mb-0">{{ __('Email') }}</label><input id="email" name="email" type="email" required autocomplete="email" class="form-input" value="{{ old('email') }}">
-            @error('email')<p class="text-red-700">{{ $message }}</p>@enderror
-            <button class="btn-primary justify-center">{{ __('reservations.send') }}</button>
-        </form>
+        @include('claims.history-form')
         <a class="btn-link mt-4 flex justify-center" href="{{ route('login', ['locale' => app()->getLocale()]) }}">{{ __('Log in') }}</a>
     </x-page-card>
-@else
-    <x-page-card width="max-w-3xl" icon="🎁" :title="__('All my reservations')" :subtitle="$email">
-    <div class="flex flex-col gap-4">
-        @forelse($groups as $claims)
-            @php($context = $claims->first()->reservation)
-            <x-section-heading>{{ $context['owner'] }} · {{ $context['list_name'] }} @if($context['date']) · {{ \Illuminate\Support\Carbon::parse($context['date'])->translatedFormat('j M') }} @endif</x-section-heading>
-            <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            @foreach($claims as $claim)
-                @php($item = $claim->reservation)
-                @php($image = $claim->gift?->hasImage() ? $claim->gift->getImageUrl('card') : $item['image'])
-                <article class="flex min-w-0 flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-                    <div class="relative aspect-square bg-cream-100">
-                        @if($image)
-                            <img src="{{ $image }}" alt="" class="absolute inset-0 h-full w-full object-cover {{ $claim->isRemoved() ? 'opacity-50' : '' }}" loading="lazy">
-                        @else
-                            <div class="flex h-full items-center justify-center text-sm text-gray-600">{{ __('No image') }}</div>
-                        @endif
-                    </div>
-                    <div class="flex flex-1 flex-col gap-1.5 px-3 pt-2.5 pb-3">
-                        {{-- Exactly two lines tall, so the prices and buttons of neighbouring cards line up. --}}
-                        <h3 class="h-[2.40625rem] line-clamp-2 text-sm font-semibold leading-snug {{ $claim->isRemoved() ? 'line-through text-gray-500' : 'text-gray-900' }}">{{ $item['title'] }}</h3>
-                        <p class="font-bold text-coral-600">{{ $item['price'] }}</p>
-                        @if($alert = $claim->latestAlert())
-                            <a class="rounded-lg bg-coral-50 p-2.5 text-sm font-semibold text-coral-700" href="{{ $alert->choiceUrl('review') }}">{{ __('reservations.changed', ['owner' => $item['owner']]) }} →</a>
-                        @elseif($claim->isRemoved())
-                            <p class="text-sm text-coral-700">{{ __('reservations.deleted', ['owner' => $item['owner']]) }}</p>
-                            @if($claim->resolution === 'keep')<p class="text-sm">{{ __('reservations.keep_done', ['owner' => $item['owner']]) }}</p>
-                            @else
-                                <p class="text-sm">{{ __('reservations.private', ['owner' => $item['owner']]) }}</p>
-                                @foreach(['keep', 'alternative', 'dismiss'] as $choice)
-                                    <a class="btn-secondary w-full text-center text-sm" href="{{ \Illuminate\Support\Facades\URL::temporarySignedRoute('reservations.choose', now()->addDays(30), ['locale' => app()->getLocale(), 'claim' => $claim, 'choice' => $choice, 'email' => hash('sha256', $email)]) }}">{{ __('reservations.'.$choice) }}</a>
-                                @endforeach
-                            @endif
-                        @endif
-                        <div class="mt-auto grid gap-1 pt-1">
-                            @if($item['url'])<a class="btn-secondary min-h-9 w-full whitespace-nowrap px-2 text-sm" href="{{ $item['url'] }}" target="_blank" rel="noopener noreferrer">{{ __('Go to the shop') }} ↗</a>@endif
-                            <a class="inline-flex min-h-8 items-center justify-center text-sm font-semibold text-coral-700" href="{{ (new \App\Mail\ReservationMail($claim, app()->getLocale()))->undoUrl }}">{{ __('Undo reservation') }}</a>
-                        </div>
-                    </div>
-                </article>
-            @endforeach
-            </div>
-        @empty<p class="text-gray-600">{{ __('reservations.empty') }}</p>@endforelse
-    </div>
-    </x-page-card>
-@endif
+@endauth
 @endsection

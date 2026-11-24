@@ -1,11 +1,19 @@
 @extends('layouts.app')
 @section('title', $exchange->name)
 @section('content')
-@php($locale = app()->getLocale())
-<div class="max-w-2xl mx-auto space-y-6 py-6">
-    <p class="text-sm text-gray-500">{{ $exchange->isDraft() ? __('Step 2 of 3') : __('Step 3 of 3') }}</p>
-    <h1 class="text-2xl font-bold break-words">{{ $exchange->name }}</h1>
-    <p class="text-gray-600">{{ $exchange->event_date?->format('d/m/Y') }} {{ $exchange->formatBudget() }}</p>
+@php
+    $locale = app()->getLocale();
+    $shell = \App\Helpers\AppShellHelper::secretSanta(auth()->user());
+@endphp
+<x-app-shell :title="__('Secret Santa')" :sidebar-items="$shell['sidebarItems']" :stats="$shell['sidebarStats']">
+<x-app-content :breadcrumbs="[['label' => __('Secret Santa'), 'url' => $shell['secretSantaUrl']], ['label' => $exchange->name]]">
+    <x-slot:titleSlot>
+        <p class="text-sm text-gray-500">{{ $exchange->isDraft() ? __('Step 2 of 3') : __('Step 3 of 3') }}</p>
+        <h1 class="text-[1.375rem] font-bold tracking-tight text-gray-900 break-words sm:text-2xl">{{ $exchange->name }}</h1>
+        <p class="mt-1 text-gray-600">{{ $exchange->event_date?->format('d/m/Y') }} {{ $exchange->formatBudget() }}</p>
+    </x-slot:titleSlot>
+{{-- The forms stay at a readable width inside the wide app shell. --}}
+<div class="max-w-2xl space-y-6">
     @if($errors->any()) <div class="alert-error" role="alert">{{ $errors->first() }}</div> @endif
 
     @if($exchange->isDraft())
@@ -110,4 +118,6 @@
     </section>
     @endif
 </div>
+</x-app-content>
+</x-app-shell>
 @endsection
