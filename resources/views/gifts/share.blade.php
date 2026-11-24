@@ -6,11 +6,8 @@
     $publicUrl = $list->getPublicUrl();
     $message = __('You can view my wish list here:') . ' ' . $publicUrl;
 @endphp
-<div class="mx-auto w-full max-w-lg px-5 py-10">
-    <a href="{{ route('list.show', ['locale' => app()->getLocale(), 'list' => $list]) }}" class="btn-link">{{ __('Later') }}</a>
-    <h1 class="mt-6 text-2xl font-bold">{{ __('Your first gift is on the list!') }}</h1>
-    <p class="mt-3 text-gray-600">{{ __('Send your list to the family. Add more gifts later: they will see those too.') }}</p>
-    <div class="my-6 rounded-xl bg-teal-50 p-3">
+<x-page-card icon="🎉" :title="__('Your first gift is on the list!')" :subtitle="__('Send your list to the family. Add more gifts later: they will see those too.')">
+    <div class="mb-6 rounded-xl bg-teal-50 p-3">
         <div class="overflow-hidden rounded-xl border border-teal-100 bg-white">
             <img x-on:error.once="$el.remove()" src="{{ $imageUrl }}" alt="" class="aspect-[1200/630] w-full object-contain">
             <div class="p-3"><p class="font-semibold break-words">{{ $list->name }}</p><p class="text-sm text-gray-500">{{ trans_choice(':count gift|:count gifts', $list->gifts()->count()) }} · givetwice.app</p></div>
@@ -18,5 +15,6 @@
     </div>
     <x-list-share-actions :list="$list" />
     <p class="mt-5 text-center text-sm text-gray-500">{{ __('Anyone with the link can view the list.') }}</p>
-</div>
+    <a href="{{ route('list.show', ['locale' => app()->getLocale(), 'list' => $list]) }}" class="btn-link mt-4 flex justify-center">{{ __('Later') }}</a>
+</x-page-card>
 @endsection

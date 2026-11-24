@@ -1,10 +1,8 @@
 @extends('layouts.app')
 @section('title', __('Make or link my wishlist'))
 @section('content')
-<div class="max-w-lg mx-auto py-8 space-y-5">
-    <h1 class="text-2xl font-bold">{{ __('And what would you like?') }}</h1>
-    <p>{{ __('Link your list so whoever drew you knows what to buy.') }}</p>
-    @if($errors->any())<p class="alert-error">{{ $errors->first() }}</p>@endif
+<x-page-card icon="🎁" :title="__('And what would you like?')" :subtitle="__('Link your list so whoever drew you knows what to buy.')">
+    @if($errors->any())<p class="alert-error mb-4">{{ $errors->first() }}</p>@endif
     <form method="POST" action="{{ route('exchanges.wishlist.store', [app()->getLocale(), $participant->token]) }}" class="grid gap-4">
         @csrf
         <label class="form-label">{{ __('Choose a wishlist') }}
@@ -14,7 +12,7 @@
             </select>
         </label>
         <label class="form-label">{{ __('New list name') }}<input name="name" class="form-input" value="{{ old('name') }}"></label>
-        <button class="btn-primary">{{ __('Link my wishlist') }}</button>
+        <button class="btn-primary justify-center">{{ __('Link my wishlist') }}</button>
     </form>
-</div>
+</x-page-card>
 @endsection

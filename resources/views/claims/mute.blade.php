@@ -2,7 +2,7 @@
 @section('title', __('reservations.mute', ['owner' => $alert->before['owner']]))
 @section('robots', 'noindex, nofollow')
 @section('content')
-<div class="mx-auto max-w-md rounded-xl bg-white p-5 wrap-anywhere">
-    <form method="POST" action="{{ request()->fullUrl() }}">@csrf<button class="btn-primary">{{ __('reservations.mute', ['owner' => $alert->before['owner']]) }}</button></form>
-</div>
+<x-page-card icon="🔕" :title="__('reservations.mute', ['owner' => $alert->before['owner']])">
+    <form method="POST" action="{{ request()->fullUrl() }}">@csrf<button class="btn-primary w-full justify-center">{{ __('reservations.mute', ['owner' => $alert->before['owner']]) }}</button></form>
+</x-page-card>
 @endsection

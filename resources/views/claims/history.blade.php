@@ -2,18 +2,18 @@
 @section('title', __('All my reservations'))
 @section('robots', 'noindex, nofollow')
 @section('content')
-<div class="mx-auto flex max-w-2xl flex-col gap-4 p-4 wrap-anywhere">
-    <h1 class="font-display text-2xl font-bold">{{ __('All my reservations') }}</h1>
-    @if(!$email)
-        <p>{{ __('reservations.intro') }}</p>
+@if(!$email)
+    <x-page-card icon="🎁" :title="__('All my reservations')" :subtitle="__('reservations.intro')">
         <form method="POST" action="{{ route('reservations.link', ['locale' => app()->getLocale()]) }}" class="flex flex-col gap-3">@csrf
             <label for="email" class="form-label mb-0">{{ __('Email') }}</label><input id="email" name="email" type="email" required autocomplete="email" class="form-input" value="{{ old('email') }}">
             @error('email')<p class="text-red-700">{{ $message }}</p>@enderror
-            <button class="btn-primary">{{ __('reservations.send') }}</button>
+            <button class="btn-primary justify-center">{{ __('reservations.send') }}</button>
         </form>
-        <a class="btn-link" href="{{ route('login', ['locale' => app()->getLocale()]) }}">{{ __('Log in') }}</a>
-    @else
-        <p class="text-sm text-gray-600">{{ $email }}</p>
+        <a class="btn-link mt-4 flex justify-center" href="{{ route('login', ['locale' => app()->getLocale()]) }}">{{ __('Log in') }}</a>
+    </x-page-card>
+@else
+    <x-page-card width="max-w-3xl" icon="🎁" :title="__('All my reservations')" :subtitle="$email">
+    <div class="flex flex-col gap-4">
         @forelse($groups as $claims)
             @php($context = $claims->first()->reservation)
             <x-section-heading>{{ $context['owner'] }} · {{ $context['list_name'] }} @if($context['date']) · {{ \Illuminate\Support\Carbon::parse($context['date'])->translatedFormat('j M') }} @endif</x-section-heading>
@@ -53,7 +53,8 @@
                 </article>
             @endforeach
             </div>
-        @empty<p>{{ __('reservations.empty') }}</p>@endforelse
-    @endif
-</div>
+        @empty<p class="text-gray-600">{{ __('reservations.empty') }}</p>@endforelse
+    </div>
+    </x-page-card>
+@endif
 @endsection
