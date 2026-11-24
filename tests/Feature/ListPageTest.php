@@ -126,6 +126,6 @@ it('sends an edit opened from the public preview back to that list', function ()
 
     $this->actingAs($this->owner)->get($second->getPublicUrl('en'))
         ->assertSee(url("/en/gifts/{$gift->id}/edit").'?list='.$second->id, false);
-    $this->get("/en/gifts/{$gift->id}/edit?list={$second->id}")
-        ->assertSee('action="'.url("/en/gifts/{$gift->id}").'?list='.$second->id.'"', false);
+    $editPage = $this->get("/en/gifts/{$gift->id}/edit?list={$second->id}")->getContent();
+    expect(substr_count($editPage, 'action="'.url("/en/gifts/{$gift->id}").'?list='.$second->id.'"'))->toBe(2);
 });
