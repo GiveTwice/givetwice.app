@@ -6,7 +6,7 @@
 
 @section('content')
 @php
-    $shell = \App\Helpers\AppShellHelper::lists(auth()->user());
+    $shell = \App\Helpers\AppShellHelper::lists(auth()->user(), $returnList);
     $dashboardUrl = $shell['dashboardUrl'];
     $cancelUrl = $returnList ? route('list.show', ['locale' => app()->getLocale(), 'list' => $returnList]) : $dashboardUrl;
     $breadcrumbs = collect([['label' => __('Lists'), 'url' => $dashboardUrl]])

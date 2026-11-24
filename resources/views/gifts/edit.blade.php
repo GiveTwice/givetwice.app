@@ -10,8 +10,14 @@
 
 @section('content')
 @php
-    $shell = \App\Helpers\AppShellHelper::lists(auth()->user());
+    $shell = \App\Helpers\AppShellHelper::lists(auth()->user(), $returnList);
     $dashboardUrl = $shell['dashboardUrl'];
+    $cancelUrl = $returnList ? route('list.show', ['locale' => app()->getLocale(), 'list' => $returnList]) : $dashboardUrl;
+    $listQuery = $returnList ? '?list=' . $returnList->id : '';
+    $breadcrumbs = collect([['label' => __('Lists'), 'url' => $dashboardUrl]])
+        ->when($returnList, fn ($crumbs) => $crumbs->push(['label' => $returnList->name, 'url' => $cancelUrl]))
+        ->push(['label' => __('Edit Gift')])
+        ->all();
     $giftContext = session('gift_context') ?? request('context');
     $isGiftFlow = $giftContext || session('first_gift') === $gift->id;
 @endphp
@@ -27,10 +33,7 @@
     :component="$isGiftFlow ? 'gift-flow-shell' : 'app-content'"
     :title="__('Edit Gift')"
     :description="__('Tweak the details.')"
-    :breadcrumbs="[
-        ['label' => __('Lists'), 'url' => $dashboardUrl],
-        ['label' => __('Edit Gift')]
-    ]"
+    :breadcrumbs="$breadcrumbs"
 >
     @if($giftContext === 'fetch_success')
         <x-section-heading class="mb-6">{{ __('Found it! Does this look right?') }}</x-section-heading>
@@ -50,7 +53,7 @@
     >
 
         <div class="lg:col-span-3">
-            <form @input="markEdited($event.target.name)" method="POST" action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id) }}">
+            <form @input="markEdited($event.target.name)" method="POST" action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id) . $listQuery }}">
                 @csrf
                 @method('PUT')
                 <input type="hidden" name="tracks_edits" value="0" :value="1">
@@ -119,7 +122,7 @@
                 </div>
 
                 <div class="flex flex-col-reverse gap-3 border-t border-gray-100 pt-6 sm:flex-row sm:items-center sm:justify-end">
-                    <a href="{{ $dashboardUrl }}" class="btn-cancel text-center">
+                    <a href="{{ $cancelUrl }}" class="btn-cancel text-center">
                         {{ __('Cancel') }}
                     </a>
                     <button type="submit" class="btn-primary justify-center">
@@ -296,7 +299,7 @@
     :buttonText="__('Delete Gift')"
     :modalTitle="__('Delete Gift')"
     :modalMessage="__('This can\'t be undone. Sure?')"
-    :action="url('/' . app()->getLocale() . '/gifts/' . $gift->id)"
+    :action="url('/' . app()->getLocale() . '/gifts/' . $gift->id) . $listQuery"
 />
 @endunless
 </div>

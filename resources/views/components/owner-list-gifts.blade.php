@@ -77,7 +77,7 @@
         <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             @foreach($list->gifts as $gift)
                 <div>
-                    <x-gift-card :gift="$gift" :editable="true" :show-reservations="$list->spoiler_mode" />
+                    <x-gift-card :gift="$gift" :list="$list" :editable="true" :show-reservations="$list->spoiler_mode" />
                     <x-gift-order-controls :list="$list" :gift="$gift" :first="$loop->first" :last="$loop->last" />
                 </div>
             @endforeach

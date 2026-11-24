@@ -153,12 +153,13 @@ class GiftController extends Controller
         ]);
     }
 
-    public function edit(string $locale, Gift $gift): View
+    public function edit(Request $request, string $locale, Gift $gift): View
     {
         $this->authorize('update', $gift);
 
         return view('gifts.edit', [
             'gift' => $gift,
+            'returnList' => $this->returnListFor($request, $gift),
         ]);
     }
 
@@ -218,8 +219,7 @@ class GiftController extends Controller
             }
         }
 
-        return redirect()
-            ->to("/{$locale}/dashboard")
+        return $this->redirectToList($this->returnListFor($request, $gift), $locale)
             ->with('success', __('Gift updated successfully.'));
     }
 
@@ -239,15 +239,40 @@ class GiftController extends Controller
         return view('gifts.share', ['list' => $list, 'imageUrl' => $og->url($hash)]);
     }
 
-    public function destroy(string $locale, Gift $gift): RedirectResponse
+    public function destroy(Request $request, string $locale, Gift $gift): RedirectResponse
     {
         $this->authorize('delete', $gift);
 
+        $returnList = $this->returnListFor($request, $gift);
         $gift->delete();
 
-        return redirect()
-            ->to("/{$locale}/dashboard")
+        return $this->redirectToList($returnList, $locale)
             ->with('success', __('Gift deleted successfully.'));
+    }
+
+    /**
+     * Finds the list a gift action should return to.
+     * The `list` the action was started from wins, but only when the user manages it and it holds the gift.
+     * Otherwise it is the user's oldest list that holds the gift, or null when none does.
+     */
+    private function returnListFor(Request $request, Gift $gift): ?GiftList
+    {
+        $listsWithGift = $request->user()->lists()
+            ->whereHas('gifts', fn ($query) => $query->whereKey($gift->id))
+            ->orderBy('lists.created_at')
+            ->orderBy('lists.id')
+            ->get();
+
+        return $listsWithGift->firstWhere('id', $request->input('list')) ?? $listsWithGift->first();
+    }
+
+    private function redirectToList(?GiftList $list, string $locale): RedirectResponse
+    {
+        if (! $list) {
+            return redirect()->route('dashboard.locale', ['locale' => $locale]);
+        }
+
+        return redirect()->route('list.show', ['locale' => $locale, 'list' => $list]);
     }
 
     public function refreshGiftDetails(Request $request, string $locale, Gift $gift): RedirectResponse|JsonResponse

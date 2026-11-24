@@ -49,6 +49,21 @@
                             @endif
                         </span>
                     </a>
+                    @isset($item['children'])
+                        {{-- Indented by the item's border, padding, icon and gap, so each list name starts on the same left edge as the "Lists" label above it. --}}
+                        <div class="flex flex-col pb-1 pl-[3.3125rem] pr-2.5" data-sidebar-children>
+                            @foreach($item['children']['links'] as $child)
+                                <a href="{{ $child['href'] }}" class="truncate py-1 text-sm {{ $child['active'] ? 'font-semibold text-coral-600' : 'text-gray-600 hover:text-gray-900' }}" @if($child['active']) aria-current="page" @endif>{{ $child['label'] }}</a>
+                            @endforeach
+                            @if($item['children']['moreHref'])
+                                <a href="{{ $item['children']['moreHref'] }}" class="py-1 text-sm text-gray-500 hover:text-gray-900">{{ __('All lists') }}</a>
+                            @endif
+                            <a href="{{ $item['children']['createHref'] }}" class="inline-flex items-center gap-1 py-1 text-sm text-coral-600 hover:text-coral-700">
+                                <x-icons.plus class="h-3.5 w-3.5" />
+                                {{ __('New list') }}
+                            </a>
+                        </div>
+                    @endisset
                 @endforeach
             </div>
         </nav>

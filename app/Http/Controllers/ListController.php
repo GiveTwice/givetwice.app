@@ -22,7 +22,6 @@ class ListController extends Controller
             'users:id,name,avatar',
         ])->loadCount('gifts');
         $list->applyOwnerClaimVisibility();
-        $request->session()->put('dashboard_list_id', $list->id);
 
         return view('lists.show', [
             'list' => $list,

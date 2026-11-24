@@ -7,7 +7,7 @@
     $message = __('You can view my wish list here:') . ' ' . $publicUrl;
 @endphp
 <div class="mx-auto w-full max-w-lg px-5 py-10">
-    <a href="{{ route('dashboard.locale', ['locale' => app()->getLocale()]) }}" class="btn-link">{{ __('Later') }}</a>
+    <a href="{{ route('list.show', ['locale' => app()->getLocale(), 'list' => $list]) }}" class="btn-link">{{ __('Later') }}</a>
     <h1 class="mt-6 text-2xl font-bold">{{ __('Your first gift is on the list!') }}</h1>
     <p class="mt-3 text-gray-600">{{ __('Send your list to the family. Add more gifts later: they will see those too.') }}</p>
     <div class="my-6 rounded-xl bg-teal-50 p-3">

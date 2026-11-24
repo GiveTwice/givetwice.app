@@ -80,11 +80,9 @@ describe('Shared Lists Feature', function () {
                 ->get('/en/dashboard');
 
             $response->assertStatus(200);
-            // The collaborators button should link to invite page and show multiple avatars
-            $response->assertSee(route('lists.invite', ['locale' => 'en', 'list' => $list->slug]));
-            // Both user initials should be visible in the stacked avatars
             $response->assertSee($creator->getInitials());
             $response->assertSee($collaborator->getInitials());
+            $this->get('/en/list/'.$list->slug)->assertSee(route('lists.invite', ['locale' => 'en', 'list' => $list->slug]));
         });
     });
 
