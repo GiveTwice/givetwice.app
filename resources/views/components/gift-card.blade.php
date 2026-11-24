@@ -233,6 +233,10 @@
         :message="__('This can\'t be undone. Sure?')"
         :confirmText="__('Delete Gift')"
     >
+        <x-slot:preview>
+            <x-gift-preview :gift="$gift" variant="compact" :show-link="false" />
+        </x-slot:preview>
+
         <form method="POST" action="{{ url('/' . app()->getLocale() . '/gifts/' . $gift->id) . ($list ? '?list=' . $list->id : '') }}" x-on:click.stop>
             @csrf
             @method('DELETE')
