@@ -972,6 +972,22 @@ main :where([id], h1, h2, h3, form) {
    Subtle, cream-themed scrollbar for content areas
    ============================================ */
 
+/* The wavy ribbon under a list title (x-ribbon-underline).
+   It is a mask over the text colour, repeated, so the waves keep their size on any title length.
+   Its centre sits 6px above the bottom and it runs 17px past the text, which is exactly where the bow's knot is. */
+.ribbon-squiggle::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: -17px;
+    bottom: 2px;
+    height: 8px;
+    background: currentColor;
+    pointer-events: none;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='8' viewBox='0 0 18 8'%3E%3Cpath d='M0 4 Q4.5 0.5 9 4 T18 4' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x left center / 18px 8px;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='8' viewBox='0 0 18 8'%3E%3Cpath d='M0 4 Q4.5 0.5 9 4 T18 4' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x left center / 18px 8px;
+}
+
 .scrollbar-subtle {
     scrollbar-width: thin;
     scrollbar-color: oklch(0.93 0.04 70) oklch(0.98 0.02 80);
