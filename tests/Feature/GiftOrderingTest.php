@@ -22,7 +22,7 @@ it('persists a managers move and uses the same order in owner and shared views',
     Claim::factory()->anonymous()->confirmed()->create(['gift_id' => $this->gifts[1]->id]);
     $this->actingAs($this->parent)->post(($this->url)($this->gifts[1]), ['direction' => 'up'])->assertRedirect();
     $expected = [$this->gifts[1]->id, $this->gifts[0]->id, $this->gifts[2]->id];
-    $this->get('/en/dashboard')->assertViewHas('lists', fn ($lists) => $lists->sole()->gifts->pluck('id')->all() === $expected);
+    $this->get('/en/list/'.$this->list->slug)->assertViewHas('list', fn ($list) => $list->gifts->pluck('id')->all() === $expected);
     auth()->logout();
     $this->get($this->list->getPublicUrl('en'))->assertViewHas('gifts', fn ($gifts) => $gifts->pluck('id')->all() === $expected);
 });

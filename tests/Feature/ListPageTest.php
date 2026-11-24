@@ -26,7 +26,7 @@ it('returns to the list page after editing the list', function () {
         ->assertRedirect('/en/list/'.$this->list->fresh()->slug);
 });
 
-it('shows the list to its owner and to collaborators and remembers it for the dashboard', function () {
+it('shows the list to its owner and to collaborators', function () {
     $collaborator = User::factory()->create();
     $this->list->users()->attach($collaborator);
     $gift = Gift::factory()->skipped()->create();
@@ -34,9 +34,7 @@ it('shows the list to its owner and to collaborators and remembers it for the da
 
     $this->actingAs($this->owner)->get('/en/list/'.$this->list->slug)->assertOk()
         ->assertViewHas('list', fn ($list) => $list->gifts->sole()->is($gift));
-    $this->actingAs($collaborator)->get('/en/list/'.$this->list->slug)->assertOk()
-        ->assertSessionHas('dashboard_list_id', $this->list->id);
-    $this->get('/en/dashboard')->assertViewHas('selectedListId', $this->list->id);
+    $this->actingAs($collaborator)->get('/en/list/'.$this->list->slug)->assertOk();
 });
 
 it('sends someone who does not manage the list to its public page', function () {
@@ -92,3 +90,42 @@ it('ignores a list parameter that is not exactly a list id', function (string $s
     'slug suffix' => ['-kerstlijstje'],
     'decimal' => ['.5'],
 ]);
+
+it('returns gift edits and deletes to the list they were started from', function () {
+    $second = GiftList::factory()->create(['creator_id' => $this->owner->id, 'created_at' => now()->addMinute()]);
+    $this->owner->lists()->attach($second);
+    $gift = Gift::factory()->skipped()->create(['user_id' => $this->owner->id]);
+    $this->list->gifts()->attach($gift);
+    $second->gifts()->attach($gift);
+    $foreign = GiftList::factory()->create();
+    $this->actingAs($this->owner);
+
+    $this->get("/en/gifts/{$gift->id}/edit?list={$second->id}")->assertViewHas('returnList', fn ($list) => $list->is($second));
+    $this->put("/en/gifts/{$gift->id}?list={$second->id}", ['title' => 'Kite'])->assertRedirect('/en/list/'.$second->slug);
+    $this->put("/en/gifts/{$gift->id}?list={$foreign->id}", ['title' => 'Kite'])->assertRedirect('/en/list/'.$this->list->slug);
+    $this->delete("/en/gifts/{$gift->id}?list={$second->id}")->assertRedirect('/en/list/'.$second->slug);
+});
+
+it('ignores a list that does not hold the gift', function () {
+    $empty = GiftList::factory()->create(['creator_id' => $this->owner->id]);
+    $this->owner->lists()->attach($empty);
+    $gift = Gift::factory()->skipped()->create(['user_id' => $this->owner->id]);
+    $this->list->gifts()->attach($gift);
+
+    $this->actingAs($this->owner)
+        ->put("/en/gifts/{$gift->id}?list={$empty->id}", ['title' => 'Kite'])
+        ->assertRedirect('/en/list/'.$this->list->slug);
+});
+
+it('sends an edit opened from the public preview back to that list', function () {
+    $second = GiftList::factory()->create(['creator_id' => $this->owner->id, 'created_at' => now()->addMinute()]);
+    $this->owner->lists()->attach($second);
+    $gift = Gift::factory()->skipped()->create(['user_id' => $this->owner->id]);
+    $this->list->gifts()->attach($gift);
+    $second->gifts()->attach($gift);
+
+    $this->actingAs($this->owner)->get($second->getPublicUrl('en'))
+        ->assertSee(url("/en/gifts/{$gift->id}/edit").'?list='.$second->id, false);
+    $editPage = $this->get("/en/gifts/{$gift->id}/edit?list={$second->id}")->getContent();
+    expect(substr_count($editPage, 'action="'.url("/en/gifts/{$gift->id}").'?list='.$second->id.'"'))->toBe(2);
+});

@@ -10,16 +10,9 @@ class DashboardController extends Controller
 {
     public function index(Request $request): View
     {
-        $lists = $this->dashboardLists($request);
-        $exchanges = $this->dashboardExchanges($request);
-        $selectedList = $lists->firstWhere('id', $request->integer('list', $request->session()->get('dashboard_list_id', 0)))
-            ?? $lists->first();
-        $request->session()->put('dashboard_list_id', $selectedList?->id);
-
         return view('dashboard', [
-            'lists' => $lists,
-            'selectedListId' => $selectedList?->id,
-            'exchanges' => $exchanges,
+            'lists' => $this->dashboardLists($request),
+            'exchanges' => $this->dashboardExchanges($request),
         ]);
     }
 
@@ -33,13 +26,15 @@ class DashboardController extends Controller
 
     private function dashboardLists(Request $request)
     {
-        $lists = $request->user()->lists()->withCount('gifts')
-            ->with(['gifts' => fn ($query) => $query->with('media')->orderBy('gifts.id')])
-            ->with('users:id,name,avatar')->orderBy('lists.created_at')->get();
-
-        $lists->each(fn ($list) => $list->applyOwnerClaimVisibility());
-
-        return $lists;
+        return $request->user()->lists()
+            ->withCount('gifts')
+            ->with([
+                'gifts' => fn ($query) => $query->with('media')->orderBy('gifts.id')->limit(4),
+                'users:id,name,avatar',
+                'users.media',
+            ])
+            ->orderBy('lists.created_at')
+            ->get();
     }
 
     private function dashboardExchanges(Request $request)

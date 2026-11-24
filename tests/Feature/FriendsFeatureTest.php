@@ -172,7 +172,7 @@ describe('Friends Feature', function () {
             $this->actingAs($user)
                 ->get('/en/friends')
                 ->assertOk()
-                ->assertDontSee('Collaborated List');
+                ->assertViewHas('groupedByOwner', fn ($groups) => $groups->isEmpty());
         });
 
         it('shows empty state when no followed lists', function () {

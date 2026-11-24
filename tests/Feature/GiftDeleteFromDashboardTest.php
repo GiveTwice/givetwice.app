@@ -18,11 +18,23 @@ describe('Delete gift from dashboard', function () {
         $gift = Gift::factory()->create(['user_id' => $owner->id]);
         $gift->lists()->attach($list->id);
 
-        $response = $this->actingAs($owner)->get('/en/dashboard');
+        $response = $this->actingAs($owner)->get('/en/list/'.$list->slug);
 
         $response->assertStatus(200);
         $response->assertSee('open-confirm-delete-gift-'.$gift->id, false);
-        $response->assertSee('action="'.url('/en/gifts/'.$gift->id).'"', false);
+        $response->assertSee('action="'.url('/en/gifts/'.$gift->id).'?list='.$list->id.'"', false);
+    });
+
+    it('returns to the list the gift was deleted from', function () {
+        $owner = User::factory()->create();
+        $list = GiftList::factory()->create(['creator_id' => $owner->id]);
+        $list->users()->attach($owner->id);
+        $gift = Gift::factory()->create(['user_id' => $owner->id]);
+        $gift->lists()->attach($list->id);
+
+        $this->actingAs($owner)
+            ->delete('/en/gifts/'.$gift->id.'?list='.$list->id)
+            ->assertRedirect('/en/list/'.$list->slug);
     });
 
     it('deletes the gift via the destroy route', function () {
