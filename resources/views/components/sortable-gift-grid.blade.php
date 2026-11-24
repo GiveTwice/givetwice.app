@@ -3,7 +3,7 @@
 {{-- Each gift in the slot needs data-sort-id and x-sort:item, and an <x-gift-sort-handle> to drag it by. --}}
 @if($sortable)
     <div x-data="giftSort(@js([
-        'url' => route('gifts.order', ['locale' => app()->getLocale(), 'list' => $list]),
+        'url' => route('gifts.order', ['locale' => app()->getLocale(), 'list' => $list], false),
         'saved' => __('Order saved.'),
         'failed' => __("Couldn't save the order. Refresh and try again."),
     ]))">

@@ -7,7 +7,7 @@
             @else
                 <div class="flex h-full items-center justify-center text-sm text-gray-600">{{ __('No image') }}</div>
             @endif
-            @if($gift->most_wanted)<span class="absolute {{ $isOwner ? 'left-13' : 'left-2' }} top-2 rounded-full bg-sunny-100 px-2 py-1 text-xs text-gray-800">★ {{ __('Really wants this') }}</span>@endif
+            @if($gift->most_wanted)<span class="absolute {{ $isOwner ? 'left-13 top-3' : 'left-2 top-2' }} rounded-full bg-sunny-100 px-2 py-1 text-xs text-gray-800">★ {{ __('Really wants this') }}</span>@endif
             @if($isMine)<span class="absolute bottom-2 left-2 rounded-full bg-teal-100 px-2 py-1 text-sm font-medium text-teal-900">{{ __('Reserved by you') }}</span>
             @elseif($isReserved)<span class="absolute bottom-2 left-2 rounded-full bg-white px-2 py-1 text-xs text-gray-900">{{ __('Reserved') }}</span>@endif
         </div>
