@@ -77,6 +77,17 @@ describe('list update bundles', function () {
         Mail::assertSent(FriendDigestMail::class, fn ($mail) => $mail->digestData->sole()['added_gifts']->pluck('gift_id')->all() === [$open->id]);
     });
 
+    it('leaves out a gift that was edited after it left the list', function () {
+        $gift = Gift::factory()->skipped()->create(['user_id' => $this->owner->id]);
+        $this->list->gifts()->attach($gift);
+        $gift->load('lists');
+        $this->list->gifts()->detach($gift);
+        $gift->update(['title' => 'Edited elsewhere']);
+        $this->travel(11)->minutes();
+        $this->artisan('friends:send-digest')->assertSuccessful();
+        Mail::assertNothingSent();
+    });
+
     it('sends nothing when the only change was a gift added and removed again', function () {
         $gift = Gift::factory()->skipped()->create(['user_id' => $this->owner->id]);
         $this->list->gifts()->attach($gift);

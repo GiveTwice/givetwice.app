@@ -46,7 +46,8 @@ class SendListUpdate implements ShouldQueue
                 }
                 $changes = ListChange::where('list_id', $follow->list_id)->where('id', '>', $follow->last_change_id)
                     ->where(fn ($query) => $query->whereNull('actor_id')->orWhere('actor_id', '!=', $follow->user_id))
-                    ->with(['gift' => fn ($gift) => $gift->with('media')->withCount(['claims' => fn ($claims) => $claims->confirmed()]), 'actor'])
+                    ->with(['gift' => fn ($gift) => $gift->with('media')->withCount(['claims' => fn ($claims) => $claims->confirmed()])
+                        ->withExists(['lists' => fn ($lists) => $lists->where('lists.id', $follow->list_id)]), 'actor'])
                     ->orderBy('id')->get();
                 $follow->update(['last_change_id' => $changes->last()->id]);
                 if ($managesList) {
@@ -58,7 +59,7 @@ class SendListUpdate implements ShouldQueue
                     ->where('list_id', $follow->list_id)->where('updated_at', '>=', $changes->first()->created_at)->pluck('gift_id');
                 $open = $changes->reject(fn ($change) => $alerted->contains($change->gift_id))
                     ->reverse()->unique('gift_id')->reverse()
-                    ->filter(fn ($change) => $change->kind !== 'removed' && $change->gift?->claims_count === 0);
+                    ->filter(fn ($change) => $change->kind !== 'removed' && $change->gift?->lists_exists && $change->gift->claims_count === 0);
                 if ($open->isEmpty()) {
                     continue;
                 }
