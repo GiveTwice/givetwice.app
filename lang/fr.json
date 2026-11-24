@@ -2073,12 +2073,6 @@
     "No followed lists yet": "Tu ne suis pas encore de listes",
     "Open a shared list and choose Follow. Reserving while logged in follows that list too.": "Ouvre une liste partagée et choisis Suivre. Réserver en étant connecté te fait aussi suivre cette liste.",
     "Reserving follows this list automatically. You can turn updates off in Followed lists.": "Ta réservation te fait suivre cette liste automatiquement. Tu peux couper les e-mails dans Listes suivies.",
-    "Choose up or down.": "Choisis vers le haut ou vers le bas.",
-    "Gift order saved.": "Ordre enregistré.",
-    "Move up": "Monter",
-    "Move down": "Descendre",
-    "Move :gift up": "Monter :gift",
-    "Move :gift down": "Descendre :gift",
     "Your session expired. Open the page again and retry.": "Ta session a expiré. Rouvre la page et réessaie.",
     "Edit :name": "Modifier :name",
     "No duplicate gifts": "Fini les cadeaux en double",
@@ -2089,5 +2083,10 @@
     "On for all lists": "Activé pour toutes les listes",
     "Email me": "Préviens-moi par e-mail",
     "Photo": "Photo",
-    "Change photo": "Changer de photo"
+    "Change photo": "Changer de photo",
+    "Order saved.": "Ordre enregistré.",
+    "Couldn't save the order. Refresh and try again.": "Impossible d'enregistrer l'ordre. Recharge la page et réessaie.",
+    "Drag to change the order": "Fais glisser pour changer l'ordre",
+    "Change the order of :gift. Drag it, or use the arrow keys.": "Déplace :gift. Fais-le glisser, ou utilise les flèches du clavier.",
+    "This list changed. Refresh and try again.": "Cette liste vient de changer. Recharge la page et réessaie."
 }

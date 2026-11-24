@@ -56,14 +56,15 @@
         @endunless
     </header>
     @foreach($sections as $section)
-        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5" data-gift-grid>
+        @php $sortable = $isOwner && $section->count() > 1; @endphp
+        <x-sortable-gift-grid :list="$list" :sortable="$sortable" class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5" data-gift-grid>
             @foreach($section as $gift)
-                <div>
+                <div class="relative" data-sort-id="{{ $gift->id }}" @if($sortable) x-sort:item="{{ $gift->id }}" @endif>
                     <x-shared-gift-tile :gift="$gift" :is-owner="$isOwner" :is-reserved="$reserved($gift)" :is-mine="$myReservationGiftIds->contains($gift->id)" />
-                    @if($isOwner)<x-gift-order-controls :list="$list" :gift="$gift" :first="$loop->first && $gifts->onFirstPage()" :last="$loop->last && ! $gifts->hasMorePages()" />@endif
+                    @if($sortable)<x-gift-sort-handle :gift="$gift" />@endif
                 </div>
             @endforeach
-        </div>
+        </x-sortable-gift-grid>
     @endforeach
     @if($gifts->isEmpty())<p class="py-8 text-gray-700" data-empty-state>{{ __('No gifts yet') }}</p>@endif
     @if($isOwner)

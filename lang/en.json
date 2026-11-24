@@ -2073,12 +2073,6 @@
     "No followed lists yet": "No followed lists yet",
     "Open a shared list and choose Follow. Reserving while logged in follows that list too.": "Open a shared list and choose Follow. Reserving while logged in follows that list too.",
     "Reserving follows this list automatically. You can turn updates off in Followed lists.": "Reserving follows this list automatically. You can turn updates off in Followed lists.",
-    "Choose up or down.": "Choose up or down.",
-    "Gift order saved.": "Gift order saved.",
-    "Move up": "Move up",
-    "Move down": "Move down",
-    "Move :gift up": "Move :gift up",
-    "Move :gift down": "Move :gift down",
     "Your session expired. Open the page again and retry.": "Your session expired. Open the page again and retry.",
     "Edit :name": "Edit :name",
     "No duplicate gifts": "No duplicate gifts",
@@ -2089,5 +2083,10 @@
     "On for all lists": "On for all lists",
     "Email me": "Email me",
     "Photo": "Photo",
-    "Change photo": "Change photo"
+    "Change photo": "Change photo",
+    "Order saved.": "Order saved.",
+    "Couldn't save the order. Refresh and try again.": "Couldn't save the order. Refresh and try again.",
+    "Drag to change the order": "Drag to change the order",
+    "Change the order of :gift. Drag it, or use the arrow keys.": "Change the order of :gift. Drag it, or use the arrow keys.",
+    "This list changed. Refresh and try again.": "This list changed. Refresh and try again."
 }

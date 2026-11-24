@@ -203,7 +203,7 @@ Route::prefix('{locale}')
             Route::post('/gifts', [GiftController::class, 'store'])->name('gifts.store');
             Route::get('/gifts/{gift}/fetching', [GiftController::class, 'fetching'])->name('gifts.fetching');
             Route::get('/gifts/{gift}/edit', [GiftController::class, 'edit'])->name('gifts.edit');
-            Route::post('/list/{list}/gifts/{gift}/order', GiftOrderController::class)->name('gifts.order');
+            Route::put('/list/{list}/gifts/order', GiftOrderController::class)->name('gifts.order');
             Route::put('/gifts/{gift}', [GiftController::class, 'update'])->name('gifts.update');
             Route::delete('/gifts/{gift}', [GiftController::class, 'destroy'])->name('gifts.destroy');
             Route::post('/gifts/{gift}/refresh', [GiftController::class, 'refreshGiftDetails'])

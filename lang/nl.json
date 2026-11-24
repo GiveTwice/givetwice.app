@@ -2073,12 +2073,6 @@
     "No followed lists yet": "Je volgt nog geen lijstjes",
     "Open a shared list and choose Follow. Reserving while logged in follows that list too.": "Open een gedeeld lijstje en kies Volgen. Reserveer je ingelogd, dan volg je dat lijstje ook.",
     "Reserving follows this list automatically. You can turn updates off in Followed lists.": "Met je reservatie volg je dit lijstje automatisch. Mailupdates zet je uit bij Gevolgde lijstjes.",
-    "Choose up or down.": "Kies omhoog of omlaag.",
-    "Gift order saved.": "Volgorde bewaard.",
-    "Move up": "Omhoog",
-    "Move down": "Omlaag",
-    "Move :gift up": "Zet :gift hoger",
-    "Move :gift down": "Zet :gift lager",
     "Your session expired. Open the page again and retry.": "Je sessie is verlopen. Open de pagina opnieuw en probeer nog eens.",
     "Edit :name": ":name bewerken",
     "No duplicate gifts": "Geen dubbele cadeaus",
@@ -2089,5 +2083,10 @@
     "On for all lists": "Aan voor alle lijstjes",
     "Email me": "Mail me",
     "Photo": "Foto",
-    "Change photo": "Andere foto"
+    "Change photo": "Andere foto",
+    "Order saved.": "Volgorde bewaard.",
+    "Couldn't save the order. Refresh and try again.": "Volgorde niet bewaard. Herlaad de pagina en probeer opnieuw.",
+    "Drag to change the order": "Sleep om de volgorde te wijzigen",
+    "Change the order of :gift. Drag it, or use the arrow keys.": "Verplaats :gift. Sleep het, of gebruik de pijltjestoetsen.",
+    "This list changed. Refresh and try again.": "Dit lijstje is net veranderd. Herlaad de pagina en probeer opnieuw."
 }

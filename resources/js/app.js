@@ -1,9 +1,13 @@
 import './bootstrap';
 import Alpine from 'alpinejs';
+import sort from '@alpinejs/sort';
+import giftSort from './gift-sort';
 import reservationSheet from './reservation-sheet';
 import turnstile from './turnstile';
 Alpine.data('reservationSheet', reservationSheet);
 Alpine.data('turnstile', turnstile);
+Alpine.plugin(sort);
+Alpine.data('giftSort', giftSort);
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {

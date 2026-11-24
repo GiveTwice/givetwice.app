@@ -17,6 +17,7 @@
         "vite": "^8.3.7"
     },
     "dependencies": {
+        "@alpinejs/sort": "3.17.5",
         "alpinejs": "^3.17.5",
         "chart.js": "^4.6.1",
         "puppeteer": "^25.16.0"
