@@ -22,6 +22,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property 'pending'|'fetching'|'completed'|'failed'|'skipped' $fetch_status
  * @property array<int, string>|null $edited_fields
  * @property array<string, mixed>|null $fetch_error
+ * @property-read bool|null $lists_exists
  */
 #[Fillable([
     'most_wanted',

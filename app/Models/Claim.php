@@ -111,6 +111,24 @@ class Claim extends Model
         return URL::temporarySignedRoute('reservations.index', now()->addDays(30), ['locale' => $locale ?? app()->getLocale(), 'email' => $this->recipientEmail()]);
     }
 
+    /**
+     * Tells whether the buyer has most likely already bought and given this gift.
+     * That is the case 30 days after the reservation, or once the occasion has passed.
+     * A settled reservation gets no more mail about edits or removals, because the
+     * owner is then usually just tidying up the list.
+     */
+    public function isSettled(?string $occasionDate): bool
+    {
+        if ($this->confirmed_at?->lt(now()->subDays(30))) {
+            return true;
+        }
+        if ($occasionDate === null) {
+            return false;
+        }
+
+        return $occasionDate < now('Europe/Brussels')->toDateString();
+    }
+
     public function isRemoved(): bool
     {
         return ! $this->gift || $this->gift->trashed() || (! empty($this->reservation['list_id']) && ! $this->gift->lists->contains('id', $this->reservation['list_id']));

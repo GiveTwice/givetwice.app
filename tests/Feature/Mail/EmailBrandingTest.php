@@ -50,7 +50,6 @@ describe('email branding', function () {
             $digest = collect([[
                 'list' => $invitation->list,
                 'added_gifts' => collect([$gift]),
-                'removed_gifts' => collect(),
             ]]);
             $mailables = [
                 ExchangeRevealReminderMail::class => new ExchangeRevealReminderMail($participant, $exchange),

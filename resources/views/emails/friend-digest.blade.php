@@ -16,11 +16,7 @@
                     <img src="{{ $first->gift->getImageUrl('thumb') }}" alt="" width="80" style="border-radius: 8px;">
                 @endif
             @endif
-            <x-mail.change-section :label="__('Added')" :gifts="$data['added_gifts']->take(1)" />
-            @if($data['added_gifts']->count() > 1)
-                <p>{{ __('list-updates.more', ['count' => $data['added_gifts']->count() - 1]) }}</p>
-            @endif
-            @foreach([__('list-updates.edited') => $data['edited_gifts'] ?? collect(), __('Removed') => $data['removed_gifts']] as $label => $gifts)
+            @foreach([__('Added') => $data['added_gifts'], __('list-updates.edited') => $data['edited_gifts'] ?? collect()] as $label => $gifts)
                 <x-mail.change-section :label="$label" :gifts="$gifts->take(1)" />
                 @if($gifts->count() > 1)
                     <p>{{ __('list-updates.more', ['count' => $gifts->count() - 1]) }}</p>

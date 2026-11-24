@@ -36,6 +36,17 @@ class SendReservationAlert implements ShouldQueue
 
                     return;
                 }
+                $alerts = $alerts->reject(function (ReservationAlert $alert): bool {
+                    if (! $alert->claim?->isSettled($alert->occasionDate())) {
+                        return false;
+                    }
+                    $alert->claim->alerts()->whereNull('resolved_at')->when(! $alert->after['deleted'], fn ($alerts) => $alerts->whereNull('sent_at'))->update(['resolved_at' => now()]);
+
+                    return true;
+                });
+                if ($alerts->isEmpty()) {
+                    return;
+                }
                 $user = User::where('email', $seed->email)->first();
                 $list = GiftList::find($seed->list_id);
                 if (($user && $list && ($list->creator_id === $user->id || $list->hasUser($user)))
@@ -52,7 +63,7 @@ class SendReservationAlert implements ShouldQueue
 
                         return false;
                     }
-                    if ($alert->before === array_diff_key($alert->after, ['deleted' => true]) && ! $alert->after['deleted']) {
+                    if (! $alert->after['deleted'] && $alert->changedFields() === []) {
                         $alert->update(['resolved_at' => now()]);
 
                         return false;

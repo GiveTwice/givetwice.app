@@ -2,6 +2,7 @@
 
 use App\Jobs\SendListUpdate;
 use App\Mail\FriendDigestMail;
+use App\Models\Claim;
 use App\Models\FollowedList;
 use App\Models\Gift;
 use App\Models\GiftList;
@@ -39,7 +40,7 @@ describe('manager content updates', function () {
         $this->artisan('friends:send-digest')->assertSuccessful();
         Mail::assertSent(FriendDigestMail::class, function ($mail) use ($buyer) {
             $data = $mail->digestData->sole();
-            expect(array_keys($data))->toBe(['list', 'added_gifts', 'edited_gifts', 'removed_gifts', 'actors', 'mute_url']);
+            expect(array_keys($data))->toBe(['list', 'added_gifts', 'edited_gifts', 'actors', 'mute_url']);
             foreach ($data['added_gifts'] as $change) {
                 expect(array_keys($change->getAttributes()))->not->toContain('claimer_email', 'reservation', 'confirmed_at');
             }
@@ -52,6 +53,21 @@ describe('manager content updates', function () {
         $this->artisan('friends:send-digest')->assertSuccessful();
         Mail::assertNothingSent();
     });
+
+    it('tells the other parent who changed the list without naming gifts, reserved or not', function (bool $reserved, bool $deleted) {
+        if ($reserved) {
+            Claim::factory()->anonymous()->confirmed()->create(['gift_id' => $this->gift->id]);
+        }
+        $deleted ? $this->gift->delete() : $this->gift->update(['title' => 'New title']);
+        $this->travel(11)->minutes();
+        $this->artisan('friends:send-digest')->assertSuccessful();
+        Mail::assertSent(FriendDigestMail::class, function ($mail) {
+            $data = $mail->digestData->sole();
+
+            return $mail->hasTo($this->mom->email) && $data['added_gifts']->isEmpty() && $data['edited_gifts']->isEmpty()
+                && $data['actors'] === $this->partner->name && ! str_contains($mail->render(), 'New title');
+        });
+    })->with(['reserved' => true, 'open' => false])->with(['deleted' => true, 'edited' => false]);
 
     it('honours a manager mute and stops after removing their access', function (bool $mute) {
         $this->artisan('friends:send-digest')->assertSuccessful();
