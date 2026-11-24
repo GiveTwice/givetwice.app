@@ -3,11 +3,12 @@
     'description' => null,
     'breadcrumbs' => [],
     'fullWidth' => false,
+    'headerClass' => '',
 ])
 
 <div class="bg-white rounded-2xl shadow-sm border border-stone-200/80 overflow-hidden">
 
-    <div class="px-4 sm:px-6 pt-4 sm:pt-5 pb-3.5 sm:pb-4 border-b border-gray-100">
+    <div class="px-4 sm:px-6 pt-4 sm:pt-5 pb-3.5 sm:pb-4 border-b border-gray-100 {{ $headerClass }}">
 
         @if(count($breadcrumbs) > 0)
             <nav class="flex items-center gap-2 text-sm text-gray-500 mb-3">

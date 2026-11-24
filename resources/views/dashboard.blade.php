@@ -35,7 +35,7 @@
         @if($lists->isNotEmpty())
             <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                 @foreach($lists as $list)
-                    <x-list-card :list="$list" :index="$loop->index" />
+                    <x-list-card :list="$list" :position="$shell['listPositions'][$list->id]" />
                 @endforeach
                 <x-new-list-card />
             </div>

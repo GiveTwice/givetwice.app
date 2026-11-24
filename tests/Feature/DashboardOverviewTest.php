@@ -3,6 +3,7 @@
 use App\Models\Gift;
 use App\Models\GiftList;
 use App\Models\User;
+use App\Support\ListColour;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Queue;
@@ -126,3 +127,16 @@ it('replaces the fourth photo with the number of gifts not shown', function (int
     'five gifts' => [5, '+2', 3],
     'thirteen gifts' => [13, '+10', 3],
 ]);
+
+it('gives a list the same colour on the dashboard, in the sidebar and on its own page', function () {
+    $lists = collect(range(1, 3))->map(fn ($day) => managedList($this->owner, ['created_at' => now()->subDays(4 - $day)]));
+    $second = $lists->get(1);
+    $colour = ListColour::forPosition(1);
+
+    $dashboard = $this->actingAs($this->owner)->get('/en/dashboard')->getContent();
+    $listPage = $this->get('/en/list/'.$second->slug)->getContent();
+
+    expect($dashboard)->toMatch('#href="'.preg_quote(route('list.show', ['locale' => 'en', 'list' => $second]), '#').'"\s+class="[^"]*'.preg_quote($colour['card'], '#').'#')
+        ->and($listPage)->toContain($colour['header'])
+        ->and($listPage)->toMatch('#<a href="'.preg_quote(route('list.show', ['locale' => 'en', 'list' => $second]), '#').'"[^>]*><span class="[^"]*'.preg_quote($colour['dot'], '#').'#');
+});

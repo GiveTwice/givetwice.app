@@ -7,6 +7,7 @@
 @section('content')
 @php
     $shell = \App\Helpers\AppShellHelper::lists(auth()->user(), $list);
+    $colour = \App\Support\ListColour::forPosition($shell['listPositions'][$list->id] ?? 0);
 @endphp
 
 <x-app-shell
@@ -15,6 +16,7 @@
     :stats="$shell['sidebarStats']"
 >
     <x-app-content
+        :header-class="$colour['header']"
         :title="$list->name"
         :description="$list->description ?: trans_choice(':count gift|:count gifts', $list->gifts_count, ['count' => $list->gifts_count])"
         :breadcrumbs="[

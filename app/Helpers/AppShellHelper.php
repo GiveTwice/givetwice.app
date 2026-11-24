@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Models\GiftExchange;
 use App\Models\GiftList;
 use App\Models\User;
+use App\Support\ListColour;
 use Illuminate\Support\Collection;
 
 class AppShellHelper
@@ -88,6 +89,7 @@ class AppShellHelper
             'secretSantaUrl' => $secretSantaUrl,
             'exchangeSlug' => $exchangeSlug,
             'listCount' => $lists->count(),
+            'listPositions' => $lists->pluck('id')->flip()->all(),
             'listLinks' => self::listLinks($lists, $activeList, $currentLocale),
             'giftCount' => $lists->sum('gifts_count'),
             'exchangeCount' => $exchangeCount,
@@ -140,7 +142,7 @@ class AppShellHelper
      * The open list always gets a place, so it can be marked active even when it is the sixth or later.
      *
      * @param  Collection<int, GiftList>  $lists
-     * @return array{links: array<int, array{label: string, href: string, active: bool}>, moreHref: string|null, createHref: string}
+     * @return array{links: array<int, array{label: string, href: string, active: bool, dot: string}>, moreHref: string|null, createHref: string}
      */
     private static function listLinks(Collection $lists, ?GiftList $activeList, string $locale): array
     {
@@ -155,6 +157,7 @@ class AppShellHelper
                 'label' => $list->name,
                 'href' => route('list.show', ['locale' => $locale, 'list' => $list]),
                 'active' => $activeList?->id === $list->id,
+                'dot' => ListColour::forPosition($lists->search(fn (GiftList $candidate) => $candidate->id === $list->id))['dot'],
             ])->values()->all(),
             'moreHref' => $lists->count() > 5 ? route('dashboard.locale', ['locale' => $locale]) : null,
             'createHref' => route('lists.create', ['locale' => $locale]),

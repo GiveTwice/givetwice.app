@@ -34,6 +34,7 @@ class DashboardController extends Controller
                 'users.media',
             ])
             ->orderBy('lists.created_at')
+            ->orderBy('lists.id')
             ->get();
     }
 

@@ -1,14 +1,7 @@
-@props(['list', 'index' => 0])
+@props(['list', 'position' => 0])
 
 @php
-    // Each list gets the next brand colour, like a stack of differently wrapped presents.
-    // These shades are not redefined for dark mode, so the cards look the same in both.
-    // That is also why the tile uses bg-[#fff]/15 and not bg-white/15: app.css restyles every bg-white/* class in dark mode.
-    $wrapping = [
-        ['card' => 'bg-coral-500 text-white shadow-[0_12px_28px_-12px_oklch(0.57_0.19_25/0.75)]', 'muted' => 'text-white/80', 'empty' => 'border-white/50', 'more' => 'bg-[#fff]/15 ring-white/60 text-white'],
-        ['card' => 'bg-teal-700 text-white shadow-[0_12px_28px_-12px_oklch(0.48_0.10_175/0.8)]', 'muted' => 'text-white/80', 'empty' => 'border-white/50', 'more' => 'bg-[#fff]/15 ring-white/60 text-white'],
-        ['card' => 'bg-sunny-300 text-sunny-900 shadow-[0_12px_28px_-12px_oklch(0.78_0.18_85/0.9)]', 'muted' => 'text-sunny-900/80', 'empty' => 'border-sunny-700/40', 'more' => 'bg-sunny-900/10 ring-sunny-900/30 text-sunny-900'],
-    ][$index % 3];
+    $wrapping = \App\Support\ListColour::forPosition($position);
 
     // With more gifts than tiles, the last tile says how many more there are instead of showing a fourth photo.
     $hasMore = $list->gifts_count > 4;
@@ -33,10 +26,10 @@
 
     {{-- Pushed to the bottom, so the photos of cards in one row line up even when a long name wraps. --}}
     <div class="mt-auto grid grid-cols-4 gap-2.5">
-        @for($position = 0; $position < 4; $position++)
-            @php $gift = $photos->get($position); @endphp
+        @for($tile = 0; $tile < 4; $tile++)
+            @php $gift = $photos->get($tile); @endphp
             @if($gift)
-                <div class="aspect-square rounded-md bg-[#fff] p-1 shadow-md {{ $tilt[$position] }}">
+                <div class="aspect-square rounded-md bg-[#fff] p-1 shadow-md {{ $tilt[$tile] }}">
                     @if($gift->hasImage())
                         <img src="{{ $gift->getImageUrl('card') }}" alt="{{ $gift->title }}" class="h-full w-full rounded-sm object-cover" loading="lazy">
                     @else
@@ -46,11 +39,11 @@
                     @endif
                 </div>
             @elseif($hasMore)
-                <div class="flex aspect-square flex-col items-center justify-center rounded-md ring-2 {{ $tilt[$position] }} {{ $wrapping['more'] }}" data-more-gifts>
+                <div class="flex aspect-square flex-col items-center justify-center rounded-md ring-2 {{ $tilt[$tile] }} {{ $wrapping['more'] }}" data-more-gifts>
                     <span class="text-lg font-bold leading-none">+{{ $list->gifts_count - 3 }}</span>
                 </div>
             @else
-                <div class="aspect-square rounded-md border-2 border-dashed {{ $tilt[$position] }} {{ $wrapping['empty'] }}"></div>
+                <div class="aspect-square rounded-md border-2 border-dashed {{ $tilt[$tile] }} {{ $wrapping['empty'] }}"></div>
             @endif
         @endfor
     </div>
