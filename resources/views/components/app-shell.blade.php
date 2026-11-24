@@ -7,7 +7,7 @@
 ])
 
 <div class="grid gap-5 app-shell-layout-cozy">
-    <aside class="hidden lg:block self-start rounded-2xl border border-stone-200/80 bg-white shadow-sm lg:sticky lg:top-[5.5625rem]">
+    <aside class="hidden lg:block self-start rounded-2xl border border-stone-200/80 bg-white shadow-sm lg:sticky lg:top-5">
         <div class="rounded-t-2xl border-b border-cream-200 bg-cream-50 px-4 py-3.5">
             <p class="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-coral-600">{{ __('App') }}</p>
             <h2 class="mt-0.5 text-[1.0625rem] font-semibold text-gray-900">{{ $title }}</h2>
