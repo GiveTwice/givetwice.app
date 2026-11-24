@@ -137,6 +137,6 @@ it('gives a list the same colour on the dashboard, in the sidebar and on its own
     $listPage = $this->get('/en/list/'.$second->slug)->getContent();
 
     expect($dashboard)->toMatch('#href="'.preg_quote(route('list.show', ['locale' => 'en', 'list' => $second]), '#').'"\s+class="[^"]*'.preg_quote($colour['card'], '#').'#')
-        ->and($listPage)->toContain($colour['header'])
+        ->and($listPage)->toContain('<span class="relative inline-block pb-2.5 '.$colour['underline'].'"')
         ->and($listPage)->toMatch('#<a href="'.preg_quote(route('list.show', ['locale' => 'en', 'list' => $second]), '#').'"[^>]*><span class="[^"]*'.preg_quote($colour['dot'], '#').'#');
 });

@@ -16,14 +16,18 @@
     :stats="$shell['sidebarStats']"
 >
     <x-app-content
-        :header-class="$colour['header']"
-        :title="$list->name"
-        :description="$list->description ?: trans_choice(':count gift|:count gifts', $list->gifts_count, ['count' => $list->gifts_count])"
         :breadcrumbs="[
             ['label' => __('Lists'), 'url' => $shell['dashboardUrl']],
             ['label' => $list->name],
         ]"
     >
+        <x-slot:titleSlot>
+            <h1 class="text-[1.375rem] sm:text-2xl font-bold tracking-tight text-gray-900">
+                <x-marker-underline class="{{ $colour['underline'] }}"><span class="text-gray-900">{{ $list->name }}</span></x-marker-underline>
+            </h1>
+            <p class="text-gray-600 mt-1">{{ $list->description ?: trans_choice(':count gift|:count gifts', $list->gifts_count, ['count' => $list->gifts_count]) }}</p>
+        </x-slot:titleSlot>
+
         <x-slot:actions>
             <x-owner-list-actions :list="$list" />
         </x-slot:actions>
