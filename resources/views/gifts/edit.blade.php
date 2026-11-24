@@ -297,7 +297,11 @@
     :modalTitle="__('Delete Gift')"
     :modalMessage="__('This can\'t be undone. Sure?')"
     :action="url('/' . app()->getLocale() . '/gifts/' . $gift->id) . $listQuery"
-/>
+>
+    <x-slot:preview>
+        <x-gift-preview :gift="$gift" variant="compact" :show-link="false" />
+    </x-slot:preview>
+</x-danger-zone>
 @endunless
 </div>
 </x-app-shell>

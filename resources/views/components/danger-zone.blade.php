@@ -31,6 +31,10 @@
     :message="$modalMessage"
     :confirmText="$buttonText"
 >
+    @isset($preview)
+        <x-slot:preview>{{ $preview }}</x-slot:preview>
+    @endisset
+
     <form method="POST" action="{{ $action }}">
         @csrf
         @method('DELETE')

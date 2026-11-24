@@ -63,6 +63,12 @@
                         </p>
                     </div>
                 </div>
+
+                @isset($preview)
+                    <div class="mt-5">
+                        {{ $preview }}
+                    </div>
+                @endisset
             </div>
 
             <div class="p-6 @if(!$customButtons) flex items-center justify-end gap-3 @endif">
