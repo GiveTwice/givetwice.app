@@ -973,19 +973,20 @@ main :where([id], h1, h2, h3, form) {
    ============================================ */
 
 /* The wavy ribbon under a list title (x-ribbon-underline).
-   It is a mask over the text colour, repeated, so the waves keep their size on any title length.
+   It is a mask over the text colour. The waves differ in height and width, with one small twist, so it looks drawn by hand,
+   and the 120px pattern repeats rather than stretches, so a short and a long title get the same waves.
    Its centre sits 6px above the bottom and it runs 17px past the text, which is exactly where the bow's knot is. */
 .ribbon-squiggle::after {
     content: "";
     position: absolute;
     left: 0;
     right: -17px;
-    bottom: 2px;
-    height: 8px;
+    bottom: -1px;
+    height: 14px;
     background: currentColor;
     pointer-events: none;
-    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='8' viewBox='0 0 18 8'%3E%3Cpath d='M0 4 Q4.5 0.5 9 4 T18 4' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x left center / 18px 8px;
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='8' viewBox='0 0 18 8'%3E%3Cpath d='M0 4 Q4.5 0.5 9 4 T18 4' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x left center / 18px 8px;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='14' viewBox='0 0 120 14'%3E%3Cpath d='M0 7 Q4 2 8 7 Q14 12.5 20 7 Q24 3 28 7 Q33 13 38 7 C 42 2, 50 0.5, 52 4 C 54 9, 46 11, 45 6 C 44 2, 52 1.5, 58 6 Q64 11 70 7 Q77 1.5 84 7 Q89 11.5 94 7 Q99 3.5 104 7 Q112 12 120 7' fill='none' stroke='black' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") repeat-x left center / 120px 14px;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='14' viewBox='0 0 120 14'%3E%3Cpath d='M0 7 Q4 2 8 7 Q14 12.5 20 7 Q24 3 28 7 Q33 13 38 7 C 42 2, 50 0.5, 52 4 C 54 9, 46 11, 45 6 C 44 2, 52 1.5, 58 6 Q64 11 70 7 Q77 1.5 84 7 Q89 11.5 94 7 Q99 3.5 104 7 Q112 12 120 7' fill='none' stroke='black' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") repeat-x left center / 120px 14px;
 }
 
 .scrollbar-subtle {
