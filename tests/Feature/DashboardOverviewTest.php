@@ -3,6 +3,7 @@
 use App\Models\Gift;
 use App\Models\GiftList;
 use App\Models\User;
+use App\Support\ListColour;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Queue;
@@ -108,4 +109,34 @@ it('keeps the open list in the sidebar and marks it, even when it is the sixth',
 
     expect($links->take(5)->pluck('href')->all())->toContain(route('list.show', ['locale' => 'en', 'list' => $sixth]))
         ->and($links->where('active', true)->pluck('href')->all())->toBe([route('list.show', ['locale' => 'en', 'list' => $sixth])]);
+});
+
+it('replaces the fourth photo with the number of gifts not shown', function (int $giftCount, ?string $moreLabel, int $photoCount) {
+    $list = managedList($this->owner);
+    foreach (range(1, $giftCount) as $position) {
+        $list->gifts()->attach(Gift::factory()->skipped()->create(['original_image_url' => "https://example.test/{$position}.jpg"]), ['sort_order' => $position]);
+    }
+
+    $html = $this->actingAs($this->owner)->get('/en/dashboard')->getContent();
+
+    preg_match('/data-more-gifts[^>]*>\s*<span[^>]*>([^<]+)</', $html, $more);
+    expect($more[1] ?? null)->toBe($moreLabel)
+        ->and(preg_match_all('#src="https://example\.test/\d+\.jpg"#', $html))->toBe($photoCount);
+})->with([
+    'four gifts fit' => [4, null, 4],
+    'five gifts' => [5, '+2', 3],
+    'thirteen gifts' => [13, '+10', 3],
+]);
+
+it('gives a list the same colour on the dashboard, in the sidebar and on its own page', function () {
+    $lists = collect(range(1, 3))->map(fn ($day) => managedList($this->owner, ['created_at' => now()->subDays(4 - $day)]));
+    $second = $lists->get(1);
+    $colour = ListColour::forPosition(1);
+
+    $dashboard = $this->actingAs($this->owner)->get('/en/dashboard')->getContent();
+    $listPage = $this->get('/en/list/'.$second->slug)->getContent();
+
+    expect($dashboard)->toMatch('#href="'.preg_quote(route('list.show', ['locale' => 'en', 'list' => $second]), '#').'"\s+class="[^"]*'.preg_quote($colour['card'], '#').'#')
+        ->and($listPage)->toMatch('#<span class="relative mr-8 inline-block[^"]* '.preg_quote($colour['underline'], '#').'">#')
+        ->and($listPage)->toMatch('#<a href="'.preg_quote(route('list.show', ['locale' => 'en', 'list' => $second]), '#').'"[^>]*><span class="[^"]*'.preg_quote($colour['dot'], '#').'#');
 });

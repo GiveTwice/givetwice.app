@@ -3,6 +3,7 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
+@source '../../app/Support/ListColour.php';
 
 /* Alpine.js x-cloak directive - hide elements until Alpine initializes */
 [x-cloak] {
