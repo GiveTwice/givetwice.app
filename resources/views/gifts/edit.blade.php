@@ -197,27 +197,31 @@
                 <div class="space-y-4 border-t border-gray-100 pt-5">
                     <div class="flex items-start gap-3">
                         <input type="hidden" name="most_wanted" value="0">
-                        <input
-                            type="checkbox"
-                            name="most_wanted"
-                            id="most_wanted"
-                            value="1"
-                            @checked(old('most_wanted', $gift->most_wanted))
-                            class="mt-[0.1875rem] w-4 h-4 shrink-0 text-teal-500 border-cream-300 rounded focus:ring-teal-400"
-                        >
+                        <span class="form-label mb-0 flex h-lh shrink-0 items-center">
+                            <input
+                                type="checkbox"
+                                name="most_wanted"
+                                id="most_wanted"
+                                value="1"
+                                @checked(old('most_wanted', $gift->most_wanted))
+                                class="w-4 h-4 text-teal-500 border-cream-300 rounded focus:ring-teal-400"
+                            >
+                        </span>
                         <label for="most_wanted" class="form-label mb-0 cursor-pointer">
                             {{ __('Most wanted') }}
                         </label>
                     </div>
                     <div class="flex items-start gap-3">
-                        <input
-                            type="checkbox"
-                            name="allow_multiple_claims"
-                            id="allow_multiple_claims"
-                            value="1"
-                            x-model="form.allow_multiple_claims"
-                            class="mt-[0.1875rem] w-4 h-4 shrink-0 text-teal-500 border-cream-300 rounded focus:ring-teal-400"
-                        >
+                        <span class="form-label mb-0 flex h-lh shrink-0 items-center">
+                            <input
+                                type="checkbox"
+                                name="allow_multiple_claims"
+                                id="allow_multiple_claims"
+                                value="1"
+                                x-model="form.allow_multiple_claims"
+                                class="w-4 h-4 text-teal-500 border-cream-300 rounded focus:ring-teal-400"
+                            >
+                        </span>
                         <div>
                             <label for="allow_multiple_claims" class="form-label mb-0 cursor-pointer">
                                 {{ __('Allow multiple claims') }}
