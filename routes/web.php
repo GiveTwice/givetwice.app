@@ -182,6 +182,7 @@ Route::prefix('{locale}')
             // List routes
             Route::get('/lists/create', [ListController::class, 'create'])->name('lists.create');
             Route::post('/lists', [ListController::class, 'store'])->name('lists.store');
+            Route::get('/list/{list}', [ListController::class, 'show'])->name('list.show');
             Route::get('/list/{list}/edit', [ListController::class, 'edit'])->name('list.edit');
             Route::put('/list/{list}', [ListController::class, 'update'])->name('list.update');
             Route::delete('/list/{list}', [ListController::class, 'destroy'])->name('list.destroy');

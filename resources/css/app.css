@@ -966,31 +966,6 @@ main :where([id], h1, h2, h3, form) {
     --highlight-sunny-bg: oklch(0.80 0.15 85 / 0.15);
 }
 
-/* One-time pulse animation for claim confirmation page
-   Ends with shadow-sm to preserve card's default shadow */
-.highlight-sunny-pulse {
-    animation: sunny-pulse 2s ease-out forwards;
-}
-
-@keyframes sunny-pulse {
-    0% {
-        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-        background-color: white;
-    }
-    15% {
-        box-shadow: 0 0 0 4px var(--highlight-sunny-ring), 0 0 30px var(--highlight-sunny-glow), 0 1px 2px 0 rgb(0 0 0 / 0.05);
-        background-color: var(--highlight-sunny-bg);
-    }
-    40% {
-        box-shadow: 0 0 0 3px var(--highlight-sunny-ring), 0 0 20px var(--highlight-sunny-glow), 0 1px 2px 0 rgb(0 0 0 / 0.05);
-        background-color: var(--highlight-sunny-bg);
-    }
-    100% {
-        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-        background-color: white;
-    }
-}
-
 /* ============================================
    Custom Scrollbar Styling
    Subtle, cream-themed scrollbar for content areas

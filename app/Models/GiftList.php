@@ -146,4 +146,20 @@ class GiftList extends Model
             ->withTimestamps()
             ->orderByPivot('sort_order');
     }
+
+    /**
+     * Loads the claims an owner may see on this list's already-loaded gifts.
+     * Confirmed claims are only shown when the owner turned spoiler mode on.
+     * Otherwise every gift gets an empty claims relation, so nothing reserved leaks into the view.
+     */
+    public function applyOwnerClaimVisibility(): void
+    {
+        if ($this->spoiler_mode) {
+            $this->gifts->load(['claims' => fn ($query) => $query->confirmed()]);
+
+            return;
+        }
+
+        $this->gifts->each(fn (Gift $gift) => $gift->setRelation('claims', collect()));
+    }
 }

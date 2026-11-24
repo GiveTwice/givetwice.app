@@ -23,17 +23,14 @@ class GiftController extends Controller
         /** @var GiftList|null $defaultList */
         $defaultList = $lists->firstWhere('is_default', true) ?? $lists->first();
 
-        $selectedListId = $request->query('list');
-        if ($selectedListId && $lists->contains('id', $selectedListId)) {
-            $selectedListId = (int) $selectedListId;
-        } else {
-            $selectedListId = $defaultList?->id;
-        }
+        /** @var GiftList|null $returnList */
+        $returnList = $request->query('list') ? $lists->firstWhere('id', (int) $request->query('list')) : null;
 
         return view('gifts.create', [
             'lists' => $lists,
             'defaultList' => $defaultList,
-            'selectedListId' => $selectedListId,
+            'selectedListId' => $returnList->id ?? $defaultList?->id,
+            'returnList' => $returnList,
             'isSingleListMode' => $lists->count() === 1,
         ]);
     }

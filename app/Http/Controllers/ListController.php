@@ -11,6 +11,24 @@ use Illuminate\View\View;
 
 class ListController extends Controller
 {
+    public function show(Request $request, string $locale, GiftList $list): View|RedirectResponse
+    {
+        if ($request->user()->cannot('update', $list)) {
+            return redirect()->to($list->getPublicUrl($locale));
+        }
+
+        $list->load([
+            'gifts' => fn ($query) => $query->with('media')->orderBy('gifts.id'),
+            'users:id,name,avatar',
+        ])->loadCount('gifts');
+        $list->applyOwnerClaimVisibility();
+        $request->session()->put('dashboard_list_id', $list->id);
+
+        return view('lists.show', [
+            'list' => $list,
+        ]);
+    }
+
     public function create(): View
     {
         return view('lists.create');
@@ -30,7 +48,7 @@ class ListController extends Controller
         );
 
         return redirect()
-            ->route('dashboard.locale', ['locale' => app()->getLocale(), 'list-added' => $list->slug])
+            ->route('list.show', ['locale' => app()->getLocale(), 'list' => $list])
             ->with('success', __('List created successfully.'));
     }
 
@@ -54,7 +72,7 @@ class ListController extends Controller
         $list->update($validated);
 
         return redirect()
-            ->route('dashboard.locale', ['locale' => app()->getLocale()])
+            ->route('list.show', ['locale' => app()->getLocale(), 'list' => $list])
             ->with('success', __('List updated successfully.'));
     }
 

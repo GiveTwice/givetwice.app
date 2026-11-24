@@ -8,6 +8,11 @@
 @php
     $shell = \App\Helpers\AppShellHelper::lists(auth()->user());
     $dashboardUrl = $shell['dashboardUrl'];
+    $cancelUrl = $returnList ? route('list.show', ['locale' => app()->getLocale(), 'list' => $returnList]) : $dashboardUrl;
+    $breadcrumbs = collect([['label' => __('Lists'), 'url' => $dashboardUrl]])
+        ->when($returnList, fn ($crumbs) => $crumbs->push(['label' => $returnList->name, 'url' => $cancelUrl]))
+        ->push(['label' => __('Add Gift')])
+        ->all();
 @endphp
 
 <x-app-shell
@@ -18,10 +23,7 @@
 <x-app-content
     :title="__('Add Gift')"
     :description="__('Paste a link or describe what you\'d like.')"
-    :breadcrumbs="[
-        ['label' => __('Lists'), 'url' => $dashboardUrl],
-        ['label' => __('Add Gift')]
-    ]"
+    :breadcrumbs="$breadcrumbs"
 >
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
 
@@ -73,7 +75,7 @@
                 @endif
 
                 <div class="flex flex-col-reverse gap-3 border-t border-gray-100 pt-6 sm:flex-row sm:items-center sm:justify-end">
-                    <a href="{{ $dashboardUrl }}" class="btn-cancel text-center">
+                    <a href="{{ $cancelUrl }}" class="btn-cancel text-center">
                         {{ __('Cancel') }}
                     </a>
                     <button type="submit" class="btn-primary justify-center">

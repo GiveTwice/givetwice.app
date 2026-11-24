@@ -12,8 +12,7 @@ class DashboardController extends Controller
     {
         $lists = $this->dashboardLists($request);
         $exchanges = $this->dashboardExchanges($request);
-        $selectedList = $lists->firstWhere('slug', $request->query('list-added'))
-            ?? $lists->firstWhere('id', $request->integer('list', $request->session()->get('dashboard_list_id', 0)))
+        $selectedList = $lists->firstWhere('id', $request->integer('list', $request->session()->get('dashboard_list_id', 0)))
             ?? $lists->first();
         $request->session()->put('dashboard_list_id', $selectedList?->id);
 
@@ -38,13 +37,7 @@ class DashboardController extends Controller
             ->with(['gifts' => fn ($query) => $query->with('media')->orderBy('gifts.id')])
             ->with('users:id,name,avatar')->orderBy('lists.created_at')->get();
 
-        foreach ($lists as $list) {
-            if ($list->spoiler_mode) {
-                $list->gifts->load(['claims' => fn ($query) => $query->confirmed()]);
-            } else {
-                $list->gifts->each(fn ($gift) => $gift->setRelation('claims', collect()));
-            }
-        }
+        $lists->each(fn ($list) => $list->applyOwnerClaimVisibility());
 
         return $lists;
     }
