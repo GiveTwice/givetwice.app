@@ -106,6 +106,7 @@ class AppShellHelper
                 'meta' => trans_choice(':count wishlist|:count wishlists', $base['listCount'], ['count' => $base['listCount']]),
                 'href' => $base['dashboardUrl'],
                 'emoji' => '🎁',
+                'accent' => 'coral',
                 'active' => $activeSection === 'lists',
                 'children' => $base['listLinks'],
             ],
@@ -114,6 +115,7 @@ class AppShellHelper
                 'meta' => __('Secret Santa groups, draws, and reveals'),
                 'href' => $base['secretSantaUrl'],
                 'emoji' => '🎲',
+                'accent' => 'sunny',
                 'active' => $activeSection === 'secret-santa',
             ],
             [
@@ -123,6 +125,7 @@ class AppShellHelper
                     : __('Wishlists you follow'),
                 'href' => route('friends.index', ['locale' => $base['currentLocale']]),
                 'icon' => 'users',
+                'accent' => 'teal',
                 'active' => $activeSection === 'friends',
             ],
             [
@@ -132,6 +135,7 @@ class AppShellHelper
                     : __('Profile, sessions, and account'),
                 'href' => route('settings', ['locale' => $base['currentLocale']]),
                 'icon' => 'settings',
+                'accent' => 'gray',
                 'active' => $activeSection === 'settings',
             ],
         ];
