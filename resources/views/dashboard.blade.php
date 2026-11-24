@@ -15,10 +15,13 @@
     :sidebar-items="$shell['sidebarItems']"
     :stats="$shell['sidebarStats']"
 >
-    <x-app-content
-        :title="__('Welcome back, :name!', ['name' => auth()->user()->name])"
-        :description="__('Your wishlists, gift groups, and settings are all here.')"
-    >
+    <x-app-content>
+        <x-slot:titleSlot>
+            <h1 class="text-[1.375rem] sm:text-2xl font-bold tracking-tight text-gray-900">
+                {!! __('Welcome back, :name!', ['name' => '<span class="text-coral-600">' . e(auth()->user()->name) . '</span>']) !!}
+            </h1>
+            <p class="text-gray-600 mt-1">{{ __('Your wishlists, gift groups, and settings are all here.') }}</p>
+        </x-slot:titleSlot>
         @if($lists->isNotEmpty())
             {{-- Mobile has no sidebar, so without this the only way to start a list is the card after every existing one. --}}
             <x-slot:actions>
@@ -30,9 +33,9 @@
         @endif
 
         @if($lists->isNotEmpty())
-            <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                 @foreach($lists as $list)
-                    <x-list-card :list="$list" />
+                    <x-list-card :list="$list" :index="$loop->index" />
                 @endforeach
                 <x-new-list-card />
             </div>
