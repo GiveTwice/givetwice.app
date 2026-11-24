@@ -7,7 +7,7 @@
 {!! str_replace("\u{2014}", '·', $data['list']->name) !!}
 {!! __('list-updates.actors', ['names' => $data['actors'] ?? $data['list']->creator->name]) !!}
 
-@foreach([__('Added') => $data['added_gifts'], __('list-updates.edited') => $data['edited_gifts'] ?? collect(), __('Removed') => $data['removed_gifts']] as $label => $gifts)
+@foreach([__('Added') => $data['added_gifts'], __('list-updates.edited') => $data['edited_gifts'] ?? collect()] as $label => $gifts)
 @if($gifts->isNotEmpty())
 {!! $label !!}
 @foreach($gifts->take(1) as $gift)

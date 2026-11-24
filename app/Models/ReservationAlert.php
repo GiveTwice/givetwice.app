@@ -6,7 +6,6 @@ use App\Jobs\SendReservationAlert;
 use Illuminate\Database\Eloquent\Attributes\Unguarded;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\URL;
 
 /** @property array<string, mixed> $before
@@ -42,30 +41,21 @@ class ReservationAlert extends Model
         return $changes;
     }
 
-    public function usesGentleRemoval(): bool
+    /**
+     * Returns the occasion date that decides whether this reservation is settled.
+     * The list's current occasion date wins while the list exists. After the list is gone,
+     * the date saved on the alert when it was recorded is used instead.
+     */
+    public function occasionDate(): ?string
     {
-        if (! $this->after['deleted']) {
-            return false;
-        }
-        if ($this->claim?->created_at->lt(now()->subDays(7))) {
-            return true;
-        }
-        $date = GiftList::find($this->list_id)->occasion_date ?? $this->before['date'] ?? null;
-        if (! $date) {
-            return false;
-        }
+        $list = GiftList::find($this->list_id);
 
-        return Carbon::parse($date)->toDateString() < now('Europe/Brussels')->toDateString();
+        return $list ? $list->occasion_date?->toDateString() : ($this->after['date'] ?? null);
     }
 
     public function removalSummary(): string
     {
-        $key = $this->usesGentleRemoval() ? 'removed_closing' : 'removed_summary';
-
-        return __('reservations.'.$key, [
-            'list' => $this->before['list_name'] ?? $this->before['owner'],
-            'time' => $this->claim?->created_at->locale(app()->getLocale())->diffForHumans(),
-        ]);
+        return __('reservations.removed_summary', ['list' => $this->before['list_name'] ?? $this->before['owner']]);
     }
 
     public function summary(): string
@@ -98,9 +88,16 @@ class ReservationAlert extends Model
 
                     return;
                 }
+                $list = GiftList::find($claim->reservation['list_id']);
+                $occasionDate = $list ? $list->occasion_date?->toDateString() : ($claim->reservation['date'] ?? null);
+                if ($claim->isSettled($occasionDate)) {
+                    $claim->alerts()->whereNull('resolved_at')->when(! $deleted, fn ($alerts) => $alerts->whereNull('sent_at'))->update(['resolved_at' => now()]);
+
+                    return;
+                }
                 $old = new Gift($gift->getOriginal());
                 $before = array_replace($claim->reservation, ['title' => $old->title, 'price' => $old->formatPrice(), 'url' => $old->url, 'owner_note' => $old->owner_note]);
-                $after = array_replace($before, ['title' => $gift->title, 'price' => $gift->formatPrice(), 'url' => $gift->url, 'owner_note' => $gift->owner_note, 'deleted' => $deleted]);
+                $after = array_replace($before, ['title' => $gift->title, 'price' => $gift->formatPrice(), 'url' => $gift->url, 'owner_note' => $gift->owner_note, 'date' => $occasionDate, 'deleted' => $deleted]);
                 $alert = static::where('claim_id', $claim->id)->whereNull('sent_at')->whereNull('resolved_at')->first();
                 if ($alert) {
                     $alert->update(['after' => $after]);

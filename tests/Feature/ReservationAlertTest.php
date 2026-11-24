@@ -93,24 +93,32 @@ it('records gift and list deletions and confirms opt-out for only that list', fu
     Mail::assertNothingOutgoing();
 })->with([true, false]);
 
-it('dedupes the digest for a buyer but keeps news for another follower', function (string $state) {
-    $buyer = User::factory()->create(['email' => $this->claim->claimer_email, 'last_friend_digest_at' => now()->subDay()]);
-    $other = User::factory()->create();
+it('keeps a reserved gift out of follower digests', function (string $state) {
+    $follower = User::factory()->create(['last_friend_digest_at' => now()->subWeeks(2)]);
+    $follower->followedLists()->create(['list_id' => $this->list->id, 'notifications' => true]);
+    $this->gift->update(['title' => 'Changed']);
+    if ($state === 'sent') {
+        $this->travel(11)->minutes();
+        (new SendReservationAlert(ReservationAlert::sole()->id))->handle();
+    }
+    $this->travel(11)->minutes();
+    $this->artisan('friends:send-digest')->assertSuccessful();
+    Mail::assertNotSent(FriendDigestMail::class);
+})->with(['pending', 'sent']);
+
+it('shows a released gift to other followers but not to the buyer who released it', function () {
+    $buyer = User::factory()->create(['email' => $this->claim->claimer_email, 'last_friend_digest_at' => now()->subWeeks(2)]);
+    $other = User::factory()->create(['last_friend_digest_at' => now()->subWeeks(2)]);
     foreach ([$buyer, $other] as $user) {
         $user->followedLists()->create(['list_id' => $this->list->id, 'notifications' => true]);
     }
-    $this->gift->delete();
-    $alert = ReservationAlert::sole();
-    if ($state === 'sent') {
-        (new SendReservationAlert($alert->id))->handle();
-    } elseif ($state === 'released') {
-        $this->post($alert->choiceUrl('dismiss'))->assertRedirect();
-    }
+    $this->gift->update(['title' => 'Changed']);
+    $this->post(ReservationAlert::sole()->choiceUrl('release'))->assertRedirect();
     $this->travel(11)->minutes();
     $this->artisan('friends:send-digest')->assertSuccessful();
     Mail::assertSent(FriendDigestMail::class, 1);
     Mail::assertSent(FriendDigestMail::class, fn ($mail) => $mail->hasTo($other->email));
-})->with(['pending', 'sent', 'released']);
+});
 
 it('keeps opt-out after cancellation, applies it to future alerts, and honours follower settings', function () {
     $buyer = User::factory()->create(['email' => $this->claim->claimer_email]);
@@ -231,24 +239,80 @@ it('summarizes only changed fields and uses one removal summary', function () {
     expect((new ReservationAlertMail($alert))->content()->text)->not->toBeNull();
 });
 
-it('chooses a gentle closing for older reservations and past occasions only on removals', function (int $ageDays, ?int $occasionDays, bool $deleted, bool $gentle) {
-    $this->travelTo(now()->startOfSecond());
-    $this->claim->delete();
-    $this->claim = Claim::factory()->anonymous()->confirmed()->create(['gift_id' => $this->gift->id, 'created_at' => now()->subDays($ageDays)]);
+it('only mails reservations that are still open', function (int $confirmedDaysAgo, ?int $occasionDays, bool $deleted, bool $mailed) {
+    $this->claim->update(['confirmed_at' => now()->subDays($confirmedDaysAgo)]);
     $this->list->update(['occasion_date' => $occasionDays === null ? null : now('Europe/Brussels')->addDays($occasionDays)]);
     $deleted ? $this->gift->delete() : $this->gift->update(['title' => 'Updated']);
-    $alert = ReservationAlert::sole();
-    expect($alert->usesGentleRemoval())->toBe($gentle);
+    $this->travel(11)->minutes();
+    ReservationAlert::whereNull('resolved_at')->each(fn (ReservationAlert $alert) => (new SendReservationAlert($alert->id))->handle());
+    Mail::assertSentCount($mailed ? 1 : 0);
 })->with([
-    'recent' => [1, null, true, false], 'exactly seven days' => [7, null, true, false],
-    'older' => [8, null, true, true], 'occasion passed' => [1, -1, true, true],
-    'today' => [1, 0, true, false], 'future' => [1, 1, true, false],
-    'edit' => [8, -1, false, false],
+    'recent removal' => [1, null, true, true],
+    'removal at twenty-nine days' => [29, null, true, true],
+    'removal after thirty days' => [31, null, true, false],
+    'edit after thirty days' => [31, null, false, false],
+    'removal after the occasion' => [1, -1, true, false],
+    'edit after the occasion' => [1, -1, false, false],
+    'removal on the occasion day' => [1, 0, true, true],
 ]);
 
-it('uses the saved occasion date when a list has been deleted', function () {
-    $reservation = array_replace($this->claim->reservation, ['date' => now('Europe/Brussels')->subDay()->toDateString()]);
-    $this->claim->update(['reservation' => $reservation]);
-    $this->list->delete();
-    expect(ReservationAlert::sole()->usesGentleRemoval())->toBeTrue();
+it('drops a queued edit when the reservation settles before a removal', function () {
+    $this->claim->update(['confirmed_at' => now()->subDays(30)->addMinutes(5)]);
+    $this->gift->update(['title' => 'Updated']);
+    $this->travel(6)->minutes();
+    $this->gift->delete();
+    $this->travel(11)->minutes();
+    (new SendReservationAlert(ReservationAlert::sole()->id))->handle();
+    Mail::assertNothingSent();
+    expect(ReservationAlert::whereNull('resolved_at')->count())->toBe(0);
 });
+
+it('lets a settled removal replace an edit alert that was already sent', function () {
+    $this->gift->update(['title' => 'Updated']);
+    $this->travel(11)->minutes();
+    (new SendReservationAlert(ReservationAlert::sole()->id))->handle();
+    $this->travel(31)->days();
+    $this->gift->delete();
+    $claim = $this->claim->fresh(['alerts', 'gift']);
+    expect($claim->latestAlert())->toBeNull()->and($claim->isRemoved())->toBeTrue();
+    Mail::assertSentCount(1);
+});
+
+it('clears a sent edit when the removal for a muted buyer settles while queued', function () {
+    $this->claim->update(['confirmed_at' => now()->subDays(30)->addMinutes(30)]);
+    $this->gift->update(['title' => 'Updated']);
+    $this->travel(11)->minutes();
+    (new SendReservationAlert(ReservationAlert::sole()->id))->handle();
+    $this->post(ReservationAlert::sole()->choiceUrl('mute'))->assertRedirect();
+    $this->gift->delete();
+    $this->travel(30)->minutes();
+    (new SendReservationAlert(ReservationAlert::latest('id')->first()->id))->handle();
+    expect($this->claim->fresh('alerts')->latestAlert())->toBeNull();
+    Mail::assertSentCount(1);
+});
+
+it('checks the current occasion date when a queued alert is delivered', function (?int $occasionDays, bool $mailed) {
+    $this->list->update(['occasion_date' => now('Europe/Brussels')->addDays(2)]);
+    $this->gift->update(['title' => 'Updated']);
+    $this->list->update(['occasion_date' => $occasionDays === null ? null : now('Europe/Brussels')->addDays($occasionDays)]);
+    $this->travel(11)->minutes();
+    (new SendReservationAlert(ReservationAlert::sole()->id))->handle();
+    Mail::assertSentCount($mailed ? 1 : 0);
+})->with([
+    'moved into the past' => [-1, false],
+    'moved later' => [5, true],
+    'cleared' => [null, true],
+]);
+
+it('uses the occasion date of a deleted list as it was at deletion', function (int $savedDays, int $currentDays, int $travelDays, bool $mailed) {
+    $this->claim->update(['reservation' => array_replace($this->claim->reservation, ['date' => now('Europe/Brussels')->addDays($savedDays)->toDateString()])]);
+    $this->list->update(['occasion_date' => now('Europe/Brussels')->addDays($currentDays)]);
+    $this->list->delete();
+    $this->travel($travelDays)->days();
+    $this->travel(11)->minutes();
+    (new SendReservationAlert(ReservationAlert::sole()->id))->handle();
+    Mail::assertSentCount($mailed ? 1 : 0);
+})->with([
+    'rescheduled to later' => [-1, 5, 0, true],
+    'passed before delivery' => [5, 1, 2, false],
+]);
