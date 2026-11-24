@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\GiftList;
+use App\Support\ListColour;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -61,6 +62,7 @@ class PublicListController extends Controller
             'gifts' => $gifts,
             'isOwner' => $isOwner,
             'isFollowing' => $isFollowing,
+            'colour' => ListColour::forPosition((int) $list->creator->lists()->orderBy('lists.created_at')->orderBy('lists.id')->pluck('lists.id')->search($list->id)),
         ])->header('Cache-Control', 'private, no-store');
     }
 
