@@ -16,27 +16,14 @@
             <x-icons.check-circle-filled class="mt-0.5 h-6 w-6 shrink-0 text-teal-600" />
             <div class="min-w-0">
                 <h2 class="text-lg font-bold leading-7 text-gray-900">{{ __('Reserved for you') }}</h2>
-                <p class="text-teal-800">{{ $gift->allowsMultipleClaims() ? __('Done. Nothing to confirm.') : __('Nobody else can reserve it now. Nothing to confirm.') }}</p>
+                <p class="font-medium text-gray-900">{{ $gift->title }}</p>
+                <p class="mt-1 text-teal-800">{{ $gift->allowsMultipleClaims() ? '' : __('Nobody else can reserve it now.') }} {{ $gift->url ? __('You buy it yourself in the shop.') : __('You buy it yourself, wherever you like.') }}</p>
             </div>
         </div>
-        <div class="flex items-center gap-3">
-            @if($gift->hasImage())<img src="{{ $gift->getImageUrl('thumb') }}" alt="" class="h-16 w-16 shrink-0 rounded-lg border border-cream-200 bg-white object-contain">@endif
-            <div class="min-w-0">
-                <h3 class="text-base font-semibold text-gray-900">{{ $gift->title }}</h3>
-                <p class="text-gray-500">{{ $gift->formatPrice() }}{{ $gift->hasPrice() && $gift->siteName() ? ' · ' : '' }}{{ $gift->siteName() }}</p>
-            </div>
-        </div>
-        <div x-show="!editing" class="flex flex-col gap-2 border-t border-cream-200 pt-3">
-            <p><span class="font-semibold text-gray-900">{{ __('Your turn') }}.</span> {{ $gift->url ? __('Buy it yourself in the shop. We don\'t order or pay for anything.') : __('Buy it wherever you like.') }}</p>
+        <div x-show="!editing" class="flex flex-col gap-3">
             @if($gift->url)<a href="{{ $gift->url }}" target="_blank" rel="noopener noreferrer" class="btn-primary w-full">{{ __('Go to the shop') }} ↗</a>@endif
-        </div>
-        <div x-show="!editing" class="flex flex-col gap-1 text-gray-600">
-            <p class="flex gap-2"><x-icons.mail class="mt-0.5 h-4 w-4 shrink-0 text-gray-400" /><span>{!! __('We email your receipt to :email about ten minutes after your last reservation.', ['email' => '<strong class="text-gray-900">'.e($email).'</strong>']) !!} {{ $gift->url ? __('It has the shop link and an undo link.') : __('It has an undo link.') }}</span></p>
-            <div class="flex flex-wrap items-center gap-x-4 pl-6">
-                <button type="button" x-on:click="editing = true; $nextTick(() => $refs.email.focus())" class="btn-link min-h-11 text-sm">{{ __('Change email') }}</button>
-                <form method="POST" action="{{ route('claim.resend', $parameters) }}" x-on:submit.prevent="$dispatch('reservation-submit', {form: $el})">@csrf<button class="btn-link min-h-11 text-sm">{{ __('Send again') }}</button></form>
-            </div>
-            @if($suggestion)<button type="button" class="pl-6 text-left text-coral-600" x-on:click="editing = true; email = @js($suggestion); $nextTick(() => $refs.email.focus())">{{ __('Did you mean :email?', ['email' => $suggestion]) }}</button>@endif
+            <p class="text-gray-600">{!! __('Receipt goes to :email.', ['email' => '<strong class="text-gray-900">'.e($email).'</strong>']) !!} <button type="button" x-on:click="editing = true; $nextTick(() => $refs.email.focus())" class="font-medium whitespace-nowrap text-coral-600 hover:text-coral-700">{{ __('Change') }}</button></p>
+            @if($suggestion)<button type="button" class="text-left text-coral-600" x-on:click="editing = true; email = @js($suggestion); $nextTick(() => $refs.email.focus())">{{ __('Did you mean :email?', ['email' => $suggestion]) }}</button>@endif
         </div>
         <form x-show="editing" x-cloak method="POST" action="{{ route('claim.email', $parameters) }}" x-on:submit.prevent="$dispatch('reservation-submit', {form: $el})" class="flex flex-col gap-2">
             @csrf @method('PATCH')
@@ -48,16 +35,12 @@
         @auth
             <p class="text-sm text-gray-600">{{ __('Reserving follows this list automatically. You can turn updates off in Followed lists.') }} <a class="inline-flex min-h-11 items-center text-coral-700" href="{{ route('friends.index', ['locale' => app()->getLocale()]) }}">{{ __('Followed lists') }}</a></p>
         @endauth
-        <div x-show="!editing" class="flex flex-wrap items-center justify-between gap-x-4 border-t border-cream-200 pt-1">
-            @if($list)<a href="{{ $list->getPublicUrl() }}" x-on:click="if ($refs.dialog) { $event.preventDefault(); close(); }" class="btn-cancel whitespace-nowrap px-0">{{ __('Back to wishlist') }}</a>@else<span></span>@endif
+        <div x-show="!editing" class="flex flex-wrap items-center justify-between gap-x-4">
+            @if($list)<a x-show="! $refs.dialog" href="{{ $list->getPublicUrl() }}" class="btn-cancel whitespace-nowrap px-0">{{ __('Back to wishlist') }}</a>@endif
             <form method="POST" action="{{ route('claim.cancel', $parameters) }}" x-on:submit.prevent="$dispatch('reservation-submit', {form: $el})">@csrf @method('DELETE')<button class="btn-cancel whitespace-nowrap px-0 font-medium text-gray-500">{{ __('Undo reservation') }}</button></form>
         </div>
-        @guest
-            @if(config('app.allow_registration'))
-                <div x-show="!editing" class="rounded-xl bg-cream-50 p-3 text-sm"><p class="font-semibold text-gray-900">{{ __('Something on your own wishlist?') }}</p><p class="text-gray-600">{{ __('Your email is ready. One minute of work.') }}</p><a href="{{ route('register', ['locale' => app()->getLocale(), 'email' => $email]) }}" class="btn-link">{{ __('Make my wishlist') }} →</a></div>
-            @endif
-        @endguest
     @else
+        @if($list)<p class="text-gray-500">{{ __(':list by :name', ['list' => $list->name, 'name' => $list->creator?->name ?? $gift->user->name]) }}</p>@endif
         @if($gift->hasImage())
             <img src="{{ $gift->getImageUrl('card') }}" alt="" class="h-32 w-full rounded-xl bg-cream-50 object-contain">
         @else
@@ -86,9 +69,6 @@
             <p class="text-sm text-gray-600">{{ __('Reserving follows this list automatically. You can turn updates off in Followed lists.') }} <a class="inline-flex min-h-11 items-center text-coral-700" href="{{ route('friends.index', ['locale' => app()->getLocale()]) }}">{{ __('Followed lists') }}</a></p>
         @endauth
         <p class="text-sm text-gray-500">{{ __('So nobody else buys it. You still buy it yourself in the shop.') }}</p>
-        @guest
-            @if($email)<p x-show="email" class="text-sm text-gray-500">{{ __('Your email is ready from last time.') }} <button type="button" class="btn-link" x-on:click="forgetEmail(@js(route('claim.forget-email', ['locale' => app()->getLocale()]))); email = ''">{{ __('Not you?') }}</button></p>@endif
-        @endguest
     @endif
-    @if($list && ! $claim)<a href="{{ $list->getPublicUrl() }}" x-on:click="if ($refs.dialog) { $event.preventDefault(); close(); }" class="btn-cancel w-full text-center">{{ __('Back to wishlist') }}</a>@endif
+    @if($list && ! $claim)<a x-show="! $refs.dialog" href="{{ $list->getPublicUrl() }}" class="btn-cancel w-full text-center">{{ __('Back to wishlist') }}</a>@endif
 </div>
