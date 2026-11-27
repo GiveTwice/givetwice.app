@@ -15,8 +15,7 @@
         <div class="info-box-success flex items-start gap-3">
             <x-icons.check-circle-filled class="mt-0.5 h-6 w-6 shrink-0 text-teal-600" />
             <div class="min-w-0">
-                <h2 x-show="!editing" class="text-lg font-bold leading-7 text-gray-900">{{ __('Reserved for you') }}</h2>
-                <h2 x-show="editing" x-cloak class="text-lg font-bold leading-7 text-gray-900">{{ __('Change email') }}</h2>
+                <h2 class="text-lg font-bold leading-7 text-gray-900">{{ __('Reserved for you') }}</h2>
                 <p class="text-teal-800">{{ $gift->allowsMultipleClaims() ? __('Done. Nothing to confirm.') : __('Nobody else can reserve it now. Nothing to confirm.') }}</p>
             </div>
         </div>
@@ -41,7 +40,7 @@
         </div>
         <form x-show="editing" x-cloak method="POST" action="{{ route('claim.email', $parameters) }}" x-on:submit.prevent="$dispatch('reservation-submit', {form: $el})" class="flex flex-col gap-2">
             @csrf @method('PATCH')
-            <label for="reservation-email" class="sr-only">{{ __('Email') }}</label>
+            <label for="reservation-email" class="form-label mb-0">{{ __('Change email') }}</label>
             <input id="reservation-email" x-ref="email" x-model="email" type="email" name="email" required maxlength="255" autocomplete="email" placeholder="{{ __('Your email address') }}" class="form-input w-full min-w-0">
             <button class="btn-primary w-full" :disabled="busy">{{ __('Save and send again') }}</button>
             <button type="button" x-on:click="editing = false" class="btn-cancel">{{ __('Cancel') }}</button>
@@ -49,9 +48,9 @@
         @auth
             <p class="text-sm text-gray-600">{{ __('Reserving follows this list automatically. You can turn updates off in Followed lists.') }} <a class="inline-flex min-h-11 items-center text-coral-700" href="{{ route('friends.index', ['locale' => app()->getLocale()]) }}">{{ __('Followed lists') }}</a></p>
         @endauth
-        <div x-show="!editing" class="flex items-center justify-between gap-2 border-t border-cream-200 pt-1">
-            @if($list)<a href="{{ $list->getPublicUrl() }}" x-on:click="if ($refs.dialog) { $event.preventDefault(); close(); }" class="btn-cancel -ml-2.5">{{ __('Back to wishlist') }}</a>@else<span></span>@endif
-            <form method="POST" action="{{ route('claim.cancel', $parameters) }}" x-on:submit.prevent="$dispatch('reservation-submit', {form: $el})">@csrf @method('DELETE')<button class="btn-cancel -mr-2.5 font-medium text-gray-500">{{ __('Undo reservation') }}</button></form>
+        <div x-show="!editing" class="flex flex-wrap items-center justify-between gap-x-4 border-t border-cream-200 pt-1">
+            @if($list)<a href="{{ $list->getPublicUrl() }}" x-on:click="if ($refs.dialog) { $event.preventDefault(); close(); }" class="btn-cancel whitespace-nowrap px-0">{{ __('Back to wishlist') }}</a>@else<span></span>@endif
+            <form method="POST" action="{{ route('claim.cancel', $parameters) }}" x-on:submit.prevent="$dispatch('reservation-submit', {form: $el})">@csrf @method('DELETE')<button class="btn-cancel whitespace-nowrap px-0 font-medium text-gray-500">{{ __('Undo reservation') }}</button></form>
         </div>
         @guest
             @if(config('app.allow_registration'))
