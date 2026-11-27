@@ -2093,5 +2093,10 @@
     "Reservations": "Reservations",
     "Gifts you reserved": "Gifts you reserved",
     "Saving...": "Saving...",
-    "Description (optional)": "Description (optional)"
+    "Description (optional)": "Description (optional)",
+    "Undo this reservation?": "Undo this reservation?",
+    "For": "For",
+    "Wishlist": "Wishlist",
+    "Reserved on": "Reserved on",
+    "Keep my reservation": "Keep my reservation"
 }

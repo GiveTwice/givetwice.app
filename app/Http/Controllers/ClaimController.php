@@ -11,6 +11,7 @@ use App\Http\Requests\ReservationRequest;
 use App\Jobs\SendReservationReceipt;
 use App\Models\Claim;
 use App\Models\Gift;
+use App\Models\GiftList;
 use App\Support\EmailSuggestion;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -123,7 +124,13 @@ class ClaimController extends Controller
             return redirect($gift && ! $gift->trashed() ? route('claim.anonymous.form', ['locale' => $locale, 'gift' => $gift]) : route('reservations.index', ['locale' => $locale]))->with('success', __('Reservation cancelled. The gift is free again.'));
         }
 
-        return view('claims.undo', ['claim' => $claim]);
+        $list = GiftList::find($claim->reservation['list_id'] ?? null);
+
+        return view('claims.undo', [
+            'claim' => $claim,
+            'list' => $list,
+            'keepUrl' => $list && ! $claim->isRemoved() ? $list->getPublicUrl($locale) : route('reservations.index', ['locale' => $locale]),
+        ]);
     }
 
     public function forgetEmail(): Response

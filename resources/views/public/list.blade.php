@@ -12,7 +12,6 @@
 @php
     $reserved = fn ($gift) => $showReservations && ! $gift->allow_multiple_claims && $gift->claims->isNotEmpty();
     $sections = [$gifts];
-    $occasionLabels = ['sinterklaas' => __('Sinterklaas'), 'christmas' => __('Christmas'), 'birthday' => __('Birthday'), 'other' => __('Other')];
 @endphp
 <div x-data="publicList({ slug: @js($list->slug), showReservations: @js($showReservations) })">
 <div class="overflow-hidden rounded-2xl border border-stone-200/80 bg-white shadow-sm">
@@ -25,7 +24,7 @@
                 <span>{{ __('Created by :name', ['name' => $list->creator->name]) }}</span>
                 @if($list->occasion_date)
                     <span class="inline-flex flex-wrap gap-1 rounded-full bg-sunny-100 px-3 py-1 text-xs font-medium text-sunny-800">
-                        {{ $occasionLabels[$list->occasion] ?? __('Occasion') }} · {{ $list->occasion_date->translatedFormat('j F') }}
+                        {{ \App\Models\GiftList::occasionLabel($list->occasion) ?? __('Occasion') }} · {{ $list->occasion_date->translatedFormat('j F') }}
                         @unless($isOwner)
                             · {{ $list->occasion_date->isToday() ? __('Today') : ($list->occasion_date->isFuture() ? trans_choice(':count day to go|:count days to go', (int) now()->startOfDay()->diffInDays($list->occasion_date), ['count' => (int) now()->startOfDay()->diffInDays($list->occasion_date)]) : __('Past occasion')) }}
                         @endunless

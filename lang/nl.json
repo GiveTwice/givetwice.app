@@ -2093,5 +2093,10 @@
     "Reservations": "Reservaties",
     "Gifts you reserved": "Cadeaus die jij reserveerde",
     "Saving...": "Opslaan...",
-    "Description (optional)": "Beschrijving (optioneel)"
+    "Description (optional)": "Beschrijving (optioneel)",
+    "Undo this reservation?": "Deze reservatie ongedaan maken?",
+    "For": "Voor",
+    "Wishlist": "Verlanglijstje",
+    "Reserved on": "Gereserveerd op",
+    "Keep my reservation": "Mijn reservatie houden"
 }

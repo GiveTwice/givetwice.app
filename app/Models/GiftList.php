@@ -85,6 +85,21 @@ class GiftList extends Model
         ]);
     }
 
+    /**
+     * Returns the translated name of an occasion type, or null when there is none.
+     * It takes the type as a string, so a reservation snapshot can use it after the list is gone.
+     */
+    public static function occasionLabel(?string $occasion): ?string
+    {
+        return match ($occasion) {
+            'sinterklaas' => __('Sinterklaas'),
+            'christmas' => __('Christmas'),
+            'birthday' => __('Birthday'),
+            'other' => __('Other'),
+            default => null,
+        };
+    }
+
     /** @return BelongsTo<User, $this> */
     public function creator(): BelongsTo
     {
