@@ -5,6 +5,7 @@ use App\Jobs\SendListUpdate;
 use App\Jobs\SendReservationAlert;
 use App\Mail\FriendDigestMail;
 use App\Mail\ReservationAlertMail;
+use App\Mail\ReservationMail;
 use App\Models\Claim;
 use App\Models\Gift;
 use App\Models\GiftList;
@@ -316,3 +317,12 @@ it('uses the occasion date of a deleted list as it was at deletion', function (i
     'rescheduled to later' => [-1, 5, 0, true],
     'passed before delivery' => [5, 1, 2, false],
 ]);
+
+it('keeps the occasion the buyer reserved for after the list is repurposed and an edit is accepted', function () {
+    $this->list->update(['occasion' => 'birthday', 'occasion_date' => '2026-12-12']);
+    $this->claim->update(['reservation' => $this->claim->snapshot()]);
+    $this->list->update(['occasion' => 'christmas', 'occasion_date' => '2026-12-25']);
+    $this->gift->update(['title' => 'New title']);
+    $this->post(ReservationAlert::sole()->choiceUrl('new'))->assertRedirect();
+    $this->get((new ReservationMail($this->claim->fresh()))->undoUrl)->assertOk()->assertSeeText(['New title', 'Birthday · 12 December 2026'])->assertDontSeeText('25 December');
+});

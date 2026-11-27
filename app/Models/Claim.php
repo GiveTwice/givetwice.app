@@ -142,7 +142,10 @@ class Claim extends Model
         return ['locale' => app()->getLocale(), 'title' => $gift?->title, 'price' => $gift?->formatPrice(), 'url' => $gift?->url, 'owner_note' => $gift?->owner_note,
             'image' => $gift?->getImageUrl('thumb'), 'list_id' => $list?->id, 'list_name' => $list?->name,
             'owner' => $list ? $list->creator->name : $gift?->user?->name, 'owner_id' => $list ? $list->creator_id : $gift?->user_id,
-            'date' => $list?->occasion_date?->format('Y-m-d')];
+            'date' => $list?->occasion_date?->format('Y-m-d'),
+            // Kept apart from 'date', which reservation alerts overwrite with the list's current date.
+            // This pair stays as it was when the buyer reserved, so the undo page names the right occasion.
+            'occasion' => ['type' => $list?->occasion, 'date' => $list?->occasion_date?->format('Y-m-d')]];
     }
 
     public function isConfirmed(): bool
