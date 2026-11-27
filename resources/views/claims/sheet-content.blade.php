@@ -22,7 +22,7 @@
         </div>
         <div x-show="!editing" class="flex flex-col gap-3">
             @if($gift->url)<a href="{{ $gift->url }}" target="_blank" rel="noopener noreferrer" class="btn-primary w-full">{{ __('Go to the shop') }} ↗</a>@endif
-            <p class="text-gray-600">{!! __('Receipt goes to :email.', ['email' => '<strong class="text-gray-900">'.e($email).'</strong>']) !!} <button type="button" x-on:click="editing = true; $nextTick(() => $refs.email.focus())" class="font-medium whitespace-nowrap text-coral-600 hover:text-coral-700">{{ __('Change') }}</button></p>
+            <p class="text-gray-600">{!! __('Receipt goes to :email.', ['email' => '<strong class="text-gray-900">'.e($email).'</strong>']) !!}</p>
             @if($suggestion)<button type="button" class="text-left text-coral-600" x-on:click="editing = true; email = @js($suggestion); $nextTick(() => $refs.email.focus())">{{ __('Did you mean :email?', ['email' => $suggestion]) }}</button>@endif
         </div>
         <form x-show="editing" x-cloak method="POST" action="{{ route('claim.email', $parameters) }}" x-on:submit.prevent="$dispatch('reservation-submit', {form: $el})" class="flex flex-col gap-2">
@@ -35,10 +35,11 @@
         @auth
             <p class="text-sm text-gray-600">{{ __('Reserving follows this list automatically. You can turn updates off in Followed lists.') }} <a class="inline-flex min-h-11 items-center text-coral-700" href="{{ route('friends.index', ['locale' => app()->getLocale()]) }}">{{ __('Followed lists') }}</a></p>
         @endauth
-        <div x-show="!editing" class="flex flex-wrap items-center justify-between gap-x-4">
-            @if($list)<a x-show="! $refs.dialog" href="{{ $list->getPublicUrl() }}" class="btn-cancel whitespace-nowrap px-0">{{ __('Back to wishlist') }}</a>@endif
-            <form method="POST" action="{{ route('claim.cancel', $parameters) }}" x-on:submit.prevent="$dispatch('reservation-submit', {form: $el})">@csrf @method('DELETE')<button class="btn-cancel whitespace-nowrap px-0 font-medium text-gray-500">{{ __('Undo reservation') }}</button></form>
+        <div x-show="!editing" class="flex items-center justify-between gap-4 border-t border-cream-200">
+            <button type="button" x-on:click="editing = true; $nextTick(() => $refs.email.focus())" class="btn-cancel whitespace-nowrap px-0 font-medium text-gray-600">{{ __('Change email') }}</button>
+            <form method="POST" action="{{ route('claim.cancel', $parameters) }}" x-on:submit.prevent="$dispatch('reservation-submit', {form: $el})">@csrf @method('DELETE')<button class="btn-cancel whitespace-nowrap px-0 font-medium text-gray-600">{{ __('Undo reservation') }}</button></form>
         </div>
+        @if($list)<a x-show="! editing && ! $refs.dialog" href="{{ $list->getPublicUrl() }}" class="btn-cancel w-full text-center">{{ __('Back to wishlist') }}</a>@endif
     @else
         @if($list)<p class="text-gray-500">{{ __(':list by :name', ['list' => $list->name, 'name' => $list->creator?->name ?? $gift->user->name]) }}</p>@endif
         @if($gift->hasImage())
@@ -68,7 +69,7 @@
         @auth
             <p class="text-sm text-gray-600">{{ __('Reserving follows this list automatically. You can turn updates off in Followed lists.') }} <a class="inline-flex min-h-11 items-center text-coral-700" href="{{ route('friends.index', ['locale' => app()->getLocale()]) }}">{{ __('Followed lists') }}</a></p>
         @endauth
-        <p class="text-sm text-gray-500">{{ __('So nobody else buys it. You still buy it yourself in the shop.') }}</p>
+        <p class="text-sm text-gray-500">{{ __('So nobody else buys it. You buy it yourself.') }}</p>
     @endif
     @if($list && ! $claim)<a x-show="! $refs.dialog" href="{{ $list->getPublicUrl() }}" class="btn-cancel w-full text-center">{{ __('Back to wishlist') }}</a>@endif
 </div>
