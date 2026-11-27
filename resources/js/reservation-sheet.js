@@ -14,13 +14,17 @@ export default () => ({
     },
     async send(form) {
         if (this.busy) return;
-        await this.request(form.action, { method: 'POST', body: new FormData(form) });
+        // A submit always shows the loading state for at least half a second, so the next screen does not flash in.
+        await this.request(form.action, { method: 'POST', body: new FormData(form) }, 500);
     },
-    async request(url, options = {}) {
+    async request(url, options = {}, minimumMs = 0) {
         this.busy = true;
         this.error = '';
         try {
-            const response = await fetch(url, { ...options, headers: { 'X-Reservation-Sheet': '1', 'Accept': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content } });
+            const [response] = await Promise.all([
+                fetch(url, { ...options, headers: { 'X-Reservation-Sheet': '1', 'Accept': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content } }),
+                new Promise((resolve) => setTimeout(resolve, minimumMs)),
+            ]);
             if (!response.ok) {
                 const data = await response.json();
                 this.error = Object.values(data.errors || {}).flat().join(' ') || data.message;
@@ -34,9 +38,6 @@ export default () => ({
         } catch {
             this.error = document.documentElement.lang === 'nl' ? 'Geen verbinding. Probeer opnieuw.' : document.documentElement.lang === 'fr' ? 'Pas de connexion. Réessaie.' : 'No connection. Try again.';
         } finally { this.busy = false; }
-    },
-    async forgetEmail(url) {
-        await fetch(url, { method: 'DELETE', headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content } });
     },
     close() { this.$refs.dialog.close(); },
     closed() {

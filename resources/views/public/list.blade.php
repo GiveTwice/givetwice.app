@@ -91,10 +91,10 @@
             <dialog x-ref="dialog" x-on:cancel="close()" x-on:click="if ($event.target === $el) close()" x-on:close="closed()" class="reservation-dialog fixed inset-x-0 overflow-hidden bottom-0 top-auto m-0 mx-auto w-full max-w-md rounded-t-2xl bg-white p-0 text-gray-900 shadow-xl sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 sm:rounded-2xl">
                 <div class="overflow-x-hidden overflow-y-auto overscroll-contain p-4" style="max-height: inherit" x-on:touchstart.passive="touchY = $event.touches[0].clientY" x-on:touchend.passive="if ($event.changedTouches[0].clientY - touchY > 90 && $el.scrollTop === 0) close()">
                     <div class="mb-2 flex items-center justify-between"><span></span><span class="h-1 w-10 rounded-full bg-cream-300"></span><button type="button" x-on:click="close()" class="px-2 text-2xl" aria-label="{{ __('Close') }}">×</button></div>
-                    <p x-show="busy" role="status">{{ __('Loading...') }}</p>
                     <p x-show="error" x-text="error" role="alert" class="text-sm text-red-700"></p>
-                    <div x-ref="content"></div>
+                    <div x-ref="content" class="min-h-48"></div>
                 </div>
+                @include('claims.busy-overlay')
             </dialog>
         </div>
     @endif
