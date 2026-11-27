@@ -15,7 +15,7 @@
 <x-page-card icon="↩️" :title="__('Undo this reservation?')">
     <div class="flex flex-col gap-4 text-sm">
         <div class="flex items-center gap-3">
-            @if($image)<img src="{{ $image }}" alt="" class="h-16 w-16 shrink-0 rounded-lg border border-cream-200 bg-white object-contain">@endif
+            @if($image)<img x-data x-on:error.once="$el.remove()" src="{{ $image }}" alt="" class="h-16 w-16 shrink-0 rounded-lg border border-cream-200 bg-white object-contain">@endif
             <div class="min-w-0">
                 <h2 class="text-base font-semibold text-gray-900">{{ $title }}</h2>
                 @if(! empty($item['price']))<p class="text-gray-500">{{ $item['price'] }}</p>@endif
