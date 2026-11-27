@@ -2101,5 +2101,10 @@
     "Reservations": "Réservations",
     "Gifts you reserved": "Les cadeaux que tu as réservés",
     "Saving...": "Enregistrement...",
-    "Description (optional)": "Description (facultatif)"
+    "Description (optional)": "Description (facultatif)",
+    "Undo this reservation?": "Annuler cette réservation ?",
+    "For": "Pour",
+    "Wishlist": "Liste de souhaits",
+    "Reserved on": "Réservé le",
+    "Keep my reservation": "Garder ma réservation"
 }

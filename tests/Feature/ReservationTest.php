@@ -9,6 +9,7 @@ use App\Models\GiftList;
 use App\Models\User;
 use App\Support\EmailSuggestion;
 use Illuminate\Auth\Events\Verified;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Str;
@@ -104,6 +105,34 @@ it('allows signed mail undo from another browser and invalidates old mail links 
     $this->post((new ReservationMail($claim->fresh()))->undoUrl)->assertRedirect();
     expect($this->gift->fresh()->isClaimed())->toBeFalse();
 });
+
+it('sends a buyer who keeps the reservation back to the list, or to the unsigned reservations page once the list is gone', function () {
+    $claim = Claim::factory()->anonymous()->confirmed()->create(['gift_id' => $this->gift->id]);
+    $undoUrl = (new ReservationMail($claim))->undoUrl;
+    $this->get($undoUrl)->assertOk()->assertViewHas('keepUrl', $this->list->getPublicUrl('en'));
+    $this->list->delete();
+    $this->get($undoUrl)->assertOk()->assertViewHas('keepUrl', route('reservations.index', ['locale' => 'en']));
+    $this->get(route('reservations.index', ['locale' => 'en']))->assertOk()->assertDontSeeText($claim->reservation['title']);
+});
+
+it('shows the saved reservation on the undo page after the gift and its list are gone', function (string $delete) {
+    $this->list->update(['occasion' => 'birthday', 'occasion_date' => '2027-03-12']);
+    $claim = Claim::factory()->anonymous()->confirmed()->create(['gift_id' => $this->gift->id]);
+    $undoUrl = (new ReservationMail($claim))->undoUrl;
+    $this->list->delete();
+    $this->gift->{$delete}();
+    $this->get($undoUrl)->assertOk()->assertSeeText([$claim->reservation['title'], $claim->reservation['owner'], $claim->reservation['list_name'], 'Birthday · 12 March 2027']);
+})->with(['delete', 'forceDelete']);
+
+it('names the occasion from the reservation, never from the list as it is now', function (array $reservation, string $shown, string $hidden) {
+    $this->list->update(['occasion' => 'christmas', 'occasion_date' => '2026-12-25']);
+    $claim = Claim::factory()->anonymous()->confirmed()->create(['gift_id' => $this->gift->id]);
+    $claim->update(['reservation' => array_replace(Arr::except($claim->reservation, 'occasion'), $reservation)]);
+    $this->get((new ReservationMail($claim))->undoUrl)->assertOk()->assertSeeText($shown)->assertDontSeeText($hidden);
+})->with([
+    'type without a date' => [['occasion' => ['type' => 'birthday', 'date' => null]], 'Birthday', '25 December'],
+    'saved before the type was kept' => [['date' => '2027-03-12'], '12 March 2027', 'Christmas ·'],
+]);
 
 it('only prefills remembered email and can forget it', function () {
     $claim = Claim::factory()->anonymous()->confirmed()->create(['gift_id' => $this->gift->id]);
