@@ -36,7 +36,7 @@
                 <button type="button" x-on:click="editing = true; $nextTick(() => $refs.email.focus())" class="btn-link min-h-11 text-sm">{{ __('Change email') }}</button>
                 <form method="POST" action="{{ route('claim.resend', $parameters) }}" x-on:submit.prevent="$dispatch('reservation-submit', {form: $el})">@csrf<button class="btn-link min-h-11 text-sm">{{ __('Send again') }}</button></form>
             </div>
-            @if($suggestion)<button type="button" class="pl-6 text-left text-coral-600" x-on:click="editing = true; email = @js($suggestion)">{{ __('Did you mean :email?', ['email' => $suggestion]) }}</button>@endif
+            @if($suggestion)<button type="button" class="pl-6 text-left text-coral-600" x-on:click="editing = true; email = @js($suggestion); $nextTick(() => $refs.email.focus())">{{ __('Did you mean :email?', ['email' => $suggestion]) }}</button>@endif
         </div>
         <form x-show="editing" x-cloak method="POST" action="{{ route('claim.email', $parameters) }}" x-on:submit.prevent="$dispatch('reservation-submit', {form: $el})" class="flex flex-col gap-2">
             @csrf @method('PATCH')
